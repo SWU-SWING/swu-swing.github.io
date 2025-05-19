@@ -27,9 +27,9 @@
 <meta property="og:description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다. SQL Injection이란?우선">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://swu-swing.github.io/images/3103_250520_image1.png">
-<meta property="og:image" content="https://swu-swing.github.io/3103_250520_image2.png">
+<meta property="og:image" content="https://swu-swing.github.io/images/3103_250520_image2.png">
 <meta property="article:published_time" content="2025-05-19T19:00:00.000Z">
-<meta property="article:modified_time" content="2025-05-19T20:26:12.911Z">
+<meta property="article:modified_time" content="2025-05-19T20:34:07.532Z">
 <meta property="article:author" content="SWING">
 <meta property="article:tag" content="Web Hacking">
 <meta name="twitter:card" content="summary">
@@ -206,7 +206,7 @@
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2025-05-20 04:00:00 / Modified: 05:26:12" itemprop="dateCreated datePublished" datetime="2025-05-20T04:00:00+09:00">2025-05-20</time>
+      <time title="Created: 2025-05-20 04:00:00 / Modified: 05:34:07" itemprop="dateCreated datePublished" datetime="2025-05-20T04:00:00+09:00">2025-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -250,7 +250,7 @@
 <p>따라서 조건이 조작되어 인증 우회나 정보 탈취가 가능하게 된다.</p>
 <p><br><br></p>
 <h1 id="문제-개요-simple-sqli-chatgpt"><a href="#문제-개요-simple-sqli-chatgpt" class="headerlink" title="문제 개요: simple_sqli_chatgpt"></a>문제 개요: simple_sqli_chatgpt</h1><p>문제 링크: <a target="_blank" rel="noopener" href="https://dreamhack.io/wargame/challenges/769">https://dreamhack.io/wargame/challenges/769</a><br>이 문제는 로그인 페이지에서 사용자 입력을 통해 SQL Injection을 수행하여 플래그를 획득하는 것이 목표다. <br></p>
-<p><img src="/images/3103_250520_image1.png" alt="그림 1. https://github.com/user-attachments/assets/3178eaab-3ccc-4725-9f65-c95377d26422, [문제 풀이 중 로그인 화면면]"></p>
+<p><img src="/images/3103_250520_image1.png" alt="그림 1. https://github.com/user-attachments/assets/3178eaab-3ccc-4725-9f65-c95377d26422, [문제 풀이 중 로그인 화면]"></p>
 <center><span style="font-size: 90%;">그림 1. [문제 풀이 중 로그인 화면]</span><br><span style="font-size: 70%;"></span></center>
 <br>
 
@@ -290,8 +290,9 @@
 <li>userid&#x3D;’admin’ 조건 만족</li>
 <li>– 뒤는 주석 처리 -&gt; 쿼리 구문 오류 방지 (읽지 못하도록)<br></li>
 </ul>
-<h1 id="공격-수행"><a href="#공격-수행" class="headerlink" title="공격 수행"></a>공격 수행</h1><p><img src="/3103_250520_image2.png" alt="alt text"></p>
-<center><span style="font-size: 90%;">그림 2. [플래그 출력 화면]</span><br><span style="font-size: 70%;"></span></center><br>
+<h1 id="공격-수행"><a href="#공격-수행" class="headerlink" title="공격 수행"></a>공격 수행</h1><p><img src="/images/3103_250520_image2.png" alt="그림 2. https://github.com/user-attachments/assets/39b69ca1-b905-446e-a8fd-ed194a53af1c, [플래그 출력 화면]"></p>
+<center><span style="font-size: 90%;">그림 2. [플래그 출력 화면]</span><br><span style="font-size: 70%;"></span></center>
+<br>
 
 <p>이렇게 다음과 같은 플래그를 얻을 수 있었다.</p>
 <p><strong>Flag: DH{chatGPT_told_me_a_lullaby}</strong><br><br></p>
