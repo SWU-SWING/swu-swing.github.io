@@ -19,17 +19,17 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다. SQL Injection이란?우선">
+    <meta name="description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt">
 <meta property="og:url" content="https://swu-swing.github.io/2025/05/20/3103_250520/index.html">
 <meta property="og:site_name" content="SW1NGL0G">
-<meta property="og:description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다. SQL Injection이란?우선">
+<meta property="og:description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://swu-swing.github.io/images/3103_250520_image1.png">
 <meta property="og:image" content="https://swu-swing.github.io/images/3103_250520_image2.png">
 <meta property="article:published_time" content="2025-05-19T19:00:00.000Z">
-<meta property="article:modified_time" content="2025-05-19T22:31:19.399Z">
+<meta property="article:modified_time" content="2025-07-14T16:04:32.408Z">
 <meta property="article:author" content="SWING">
 <meta property="article:tag" content="Web Hacking">
 <meta name="twitter:card" content="summary">
@@ -121,18 +121,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -140,6 +140,9 @@
   <div class="links-of-author animated">
       <span class="links-of-author-item">
         <a href="/swu.swing@gmail.com" title="E-Mail → swu.swing@gmail.com" rel="noopener me"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.facebook.com/@swuswing" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
       </span>
   </div>
 
@@ -204,9 +207,8 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2025-05-20 04:00:00 / Modified: 07:31:19" itemprop="dateCreated datePublished" datetime="2025-05-20T04:00:00+09:00">2025-05-20</time>
+      <time title="Created: 2025-05-20 04:00:00" itemprop="dateCreated datePublished" datetime="2025-05-20T04:00:00+09:00">2025-05-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -214,7 +216,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/swinglog/" itemprop="url" rel="index"><span itemprop="name">swinglog</span></a>
+          <a href="/categories/%EC%A7%80%EC%9B%90%EC%84%9C-%EB%9C%AF%EC%96%B4%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">지원서 뜯어보기 series</span></a>
         </span>
     </span>
 
@@ -230,7 +232,9 @@
     <div class="post-body" itemprop="articleBody"><!-- 지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt -->
 
 <h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며"></a>들어가며</h1><p>2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다.</p>
-<p>뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.<br><br><br></p>
+<p>뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.</p>
+<span id="more"></span>
+<p><br><br></p>
 <h1 id="SQL-Injection이란"><a href="#SQL-Injection이란" class="headerlink" title="SQL Injection이란?"></a>SQL Injection이란?</h1><p>우선 본격적으로 라이트업을 쓰기 전에 SQL Injection이 뭔지에 대해 알아볼 것이다.</p>
 <p>문제 이름이 simple sqli chatgpt인 만큼, sqli에 대해 알고 넘어가는 게 중요하다.</p>
 <p>**SQL Injection(SQLi)**은 웹 애플리케이션에서 사용자 입력을 적절히 검증하지 않고 SQL 쿼리에 포함시킬 때 발생하는 보안 취약점이다.</p>
@@ -330,11 +334,14 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/05/17/3102_250517/" rel="prev" title="지원서 뜯어보기 [중]">
-                  <i class="fa fa-angle-left"></i> 지원서 뜯어보기 [중]
+                <a href="/2025/05/17/3102_250517/" rel="prev" title="지원서 뜯어보기 [중] dreamhack shell_basic">
+                  <i class="fa fa-angle-left"></i> 지원서 뜯어보기 [중] dreamhack shell_basic
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2025/05/27/323301_250527/" rel="next" title="[사이버 탐험 : 보안의 첫걸음] 스테가노그래피란?">
+                  [사이버 탐험 : 보안의 첫걸음] 스테가노그래피란? <i class="fa fa-angle-right"></i>
+                </a>
             </div>
           </div>
     </footer>
