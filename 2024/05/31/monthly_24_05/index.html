@@ -353,7 +353,7 @@
 <p>문제 분석을 위해 다음과 같이 환경을 세팅해주었다.</p>
 <br>
 
-<h3 id="4-2-1-vmlinux-생성"><a href="#4-2-1-vmlinux-생성" class="headerlink" title="4.2.1. vmlinux 생성"></a>4.2.1. vmlinux 생성</h3><p><code>bzImage</code>를 이용해 <code>vmlinux</code>를 생성한다.<br><code>extract-vmlinux</code> 스크립트를 이용하면 <code>vmlinux</code>를 쉽게 추출할 수 있다.<br>extract-vmlinux 스크립트는 아래 사이트는 참고하였다.<br><span class="exturl" data-url="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RvcnZhbGRzL2xpbnV4L21hc3Rlci9zY3JpcHRzL2V4dHJhY3Qtdm1saW51eA==">https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux<i class="fa fa-external-link-alt"></i></span> </p>
+<h3 id="4-2-1-vmlinux-생성"><a href="#4-2-1-vmlinux-생성" class="headerlink" title="4.2.1. vmlinux 생성"></a>4.2.1. vmlinux 생성</h3><p><code>bzImage</code>를 이용해 <code>vmlinux</code>를 생성한다.<br><code>extract-vmlinux</code> 스크립트를 이용하면 <code>vmlinux</code>를 쉽게 추출할 수 있다.<br>extract-vmlinux 스크립트는 아래 사이트는 참고하였다.<br><span class="exturl" data-url="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RvcnZhbGRzL2xpbnV4L21hc3Rlci9zY3JpcHRzL2V4dHJhY3Qtdm1saW51eA==">https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux</span> </p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./extract-vmlinux bzImage &gt; ./vmlinux </span><br></pre></td></tr></table></figure>
 <br>
 
@@ -480,14 +480,14 @@
 <h1 id="5-마무리하며"><a href="#5-마무리하며" class="headerlink" title="5. 마무리하며"></a>5. 마무리하며</h1><p>이번 CTF 문제를 해결하면서 커널에서 발생하는 Use-After-Free (UAF) 취약점의 심각성과 이를 악용하는 방법에 대해 이해할 수 있었다. 문제 해결 과정에서 메모리 할당 및 해제 관리가 얼마나 중요한지, 그리고 작은 부주의가 어떻게 심각한 보안 위협으로 이어질 수 있는지를 확인할 수 있었다.</p>
 <p>앞으로 커널 보안에 대한 깊이 있는 이해를 위해 커널 구조와 메모리 관리, 동기화 메커니즘 등을 심도 있게 공부하며 리눅스 커널 소스 코드를 분석해보는 것도 좋은 방법이 될 수 있다. </p>
 <p><br><br></p>
-<h1 id="6-참고문헌"><a href="#6-참고문헌" class="headerlink" title="6. 참고문헌"></a>6. 참고문헌</h1><p>[1] [Heap Exploit] UAF(Use After Free) 기법 이론설명. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9kb2toYWtkdWJpbmkudGlzdG9yeS5jb20vMzU=">https://dokhakdubini.tistory.com/35<i class="fa fa-external-link-alt"></i></span></p>
-<p>[2] Use After Free (UAF) 너 뭐임?. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zZWNsYWI2MTQudGlzdG9yeS5jb20vMw==">https://seclab614.tistory.com/3<i class="fa fa-external-link-alt"></i></span></p>
-<p>[3] Kernel (6) - CISCN 2017 babydriver write-up (Linux kernel UAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdW5yaW5qdW50YWUudGlzdG9yeS5jb20vMTMw">https://sunrinjuntae.tistory.com/130<i class="fa fa-external-link-alt"></i></span> </p>
-<p>[4] 까망눈 연구소. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9qZW9uZ3plcm8ub29weS5pby8=">https://jeongzero.oopy.io/<i class="fa fa-external-link-alt"></i></span></p>
-<p>[5] [Linux] QEMU 가상머신에 OS 설치하기. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdGFja2ZyYW1lLnRpc3RvcnkuY29tLzI4">https://stackframe.tistory.com/28<i class="fa fa-external-link-alt"></i></span> </p>
-<p>[6] [CISCN CTF 2017] babydriver (kernel exploit, kUAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9rb2hhcmlubi50aXN0b3J5LmNvbS81NjEjZ29vZ2xlX3ZpZ25ldHRl">https://koharinn.tistory.com/561#google_vignette<i class="fa fa-external-link-alt"></i></span> </p>
-<p>[7] [Linux Kernel] CISCN 2017 babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9hcHBsZW1hc3RlcnoxNy50aXN0b3J5LmNvbS8yMjk=">https://applemasterz17.tistory.com/229<i class="fa fa-external-link-alt"></i></span></p>
-<p>[8] [CISCN CTF 2017] babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cDovL2lwd24ua3IvaW5kZXgucGhwLzIwMjAvMDQvMDUvY2lzY24tY3RmLTIwMTctYmFieWRyaXZlci8=">http://ipwn.kr/index.php/2020/04/05/ciscn-ctf-2017-babydriver/<i class="fa fa-external-link-alt"></i></span></p>
+<h1 id="6-참고문헌"><a href="#6-참고문헌" class="headerlink" title="6. 참고문헌"></a>6. 참고문헌</h1><p>[1] [Heap Exploit] UAF(Use After Free) 기법 이론설명. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9kb2toYWtkdWJpbmkudGlzdG9yeS5jb20vMzU=">https://dokhakdubini.tistory.com/35</span></p>
+<p>[2] Use After Free (UAF) 너 뭐임?. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zZWNsYWI2MTQudGlzdG9yeS5jb20vMw==">https://seclab614.tistory.com/3</span></p>
+<p>[3] Kernel (6) - CISCN 2017 babydriver write-up (Linux kernel UAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdW5yaW5qdW50YWUudGlzdG9yeS5jb20vMTMw">https://sunrinjuntae.tistory.com/130</span> </p>
+<p>[4] 까망눈 연구소. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9qZW9uZ3plcm8ub29weS5pby8=">https://jeongzero.oopy.io/</span></p>
+<p>[5] [Linux] QEMU 가상머신에 OS 설치하기. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdGFja2ZyYW1lLnRpc3RvcnkuY29tLzI4">https://stackframe.tistory.com/28</span> </p>
+<p>[6] [CISCN CTF 2017] babydriver (kernel exploit, kUAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9rb2hhcmlubi50aXN0b3J5LmNvbS81NjEjZ29vZ2xlX3ZpZ25ldHRl">https://koharinn.tistory.com/561#google_vignette</span> </p>
+<p>[7] [Linux Kernel] CISCN 2017 babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9hcHBsZW1hc3RlcnoxNy50aXN0b3J5LmNvbS8yMjk=">https://applemasterz17.tistory.com/229</span></p>
+<p>[8] [CISCN CTF 2017] babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cDovL2lwd24ua3IvaW5kZXgucGhwLzIwMjAvMDQvMDUvY2lzY24tY3RmLTIwMTctYmFieWRyaXZlci8=">http://ipwn.kr/index.php/2020/04/05/ciscn-ctf-2017-babydriver/</span></p>
 
     </div>
 
