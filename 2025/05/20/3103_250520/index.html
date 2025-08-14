@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.">
 <meta property="og:type" content="article">
@@ -139,13 +139,13 @@
 </div>
   <div class="links-of-author animated">
       <span class="links-of-author-item">
-        <a href="mailto:swu.swing@gmail.com" title="E-Mail → mailto:swu.swing@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.facebook.com/@swuswing" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.instagram.com/swing_swu" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
       </span>
   </div>
 
@@ -161,7 +161,7 @@
         </div>
         <ul class="links-of-blogroll-list">
             <li class="links-of-blogroll-item">
-              <a href="https://swuswing.com/" title="https:&#x2F;&#x2F;swuswing.com&#x2F;" rel="noopener" target="_blank">SWING Official Website</a>
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
             </li>
         </ul>
       </div>
@@ -262,7 +262,7 @@
 <p>– 이후는 주석 처리되기 때문에 읽어내지 못한다.</p>
 <p>따라서 조건이 조작되어 인증 우회나 정보 탈취가 가능하게 된다.</p>
 <p><br><br></p>
-<h1 id="문제-개요-simple-sqli-chatgpt"><a href="#문제-개요-simple-sqli-chatgpt" class="headerlink" title="문제 개요: simple_sqli_chatgpt"></a>문제 개요: simple_sqli_chatgpt</h1><p>문제 링크: <a target="_blank" rel="noopener" href="https://dreamhack.io/wargame/challenges/769">https://dreamhack.io/wargame/challenges/769</a><br>이 문제는 로그인 페이지에서 사용자 입력을 통해 SQL Injection을 수행하여 플래그를 획득하는 것이 목표다. <br></p>
+<h1 id="문제-개요-simple-sqli-chatgpt"><a href="#문제-개요-simple-sqli-chatgpt" class="headerlink" title="문제 개요: simple_sqli_chatgpt"></a>문제 개요: simple_sqli_chatgpt</h1><p>문제 링크: <span class="exturl" data-url="aHR0cHM6Ly9kcmVhbWhhY2suaW8vd2FyZ2FtZS9jaGFsbGVuZ2VzLzc2OQ==">https://dreamhack.io/wargame/challenges/769<i class="fa fa-external-link-alt"></i></span><br>이 문제는 로그인 페이지에서 사용자 입력을 통해 SQL Injection을 수행하여 플래그를 획득하는 것이 목표다. <br></p>
 <p><img src="/images/3103_250520_image1.png" alt="그림 1. https://github.com/user-attachments/assets/3178eaab-3ccc-4725-9f65-c95377d26422, [문제 풀이 중 로그인 화면]"></p>
 <center><span style="font-size: 90%;">그림 1. [문제 풀이 중 로그인 화면]</span><br><span style="font-size: 70%;"></span></center>
 <br>
@@ -325,8 +325,8 @@
 <p>본인은 해당 문제를 1학년 때 처음 풀어봤는데, 꽤 재밌게 풀었던 기억이 난다.</p>
 <p><del>그렇게 풋풋했는데 지금은 어느덧 사망년이다.</del></p>
 <p>다음 기술블로그는 어떤 걸 써볼지 고민해봐야지.<br><br><br></p>
-<h1 id="출처"><a href="#출처" class="headerlink" title="출처"></a>출처</h1><p>SQL Injection. (n.d.). OWASP. <a target="_blank" rel="noopener" href="https://owasp.org/www-community/attacks/SQL_Injection">https://owasp.org/www-community/attacks/SQL_Injection</a></p>
-<p>simple_sqli_chatgpt. (n.d.). Dreamhack. <a target="_blank" rel="noopener" href="https://dreamhack.io/wargame/challenges/769">https://dreamhack.io/wargame/challenges/769</a></p>
+<h1 id="출처"><a href="#출처" class="headerlink" title="출처"></a>출처</h1><p>SQL Injection. (n.d.). OWASP. <span class="exturl" data-url="aHR0cHM6Ly9vd2FzcC5vcmcvd3d3LWNvbW11bml0eS9hdHRhY2tzL1NRTF9JbmplY3Rpb24=">https://owasp.org/www-community/attacks/SQL_Injection<i class="fa fa-external-link-alt"></i></span></p>
+<p>simple_sqli_chatgpt. (n.d.). Dreamhack. <span class="exturl" data-url="aHR0cHM6Ly9kcmVhbWhhY2suaW8vd2FyZ2FtZS9jaGFsbGVuZ2VzLzc2OQ==">https://dreamhack.io/wargame/challenges/769<i class="fa fa-external-link-alt"></i></span></p>
 
     </div>
 
@@ -378,7 +378,7 @@
     </span>
     <span class="author" itemprop="copyrightHolder">SWING</span>
   </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
   </div>
 
     </div>

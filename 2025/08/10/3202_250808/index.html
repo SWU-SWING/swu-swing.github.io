@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="1. 들어가며보고서의 주제는 Windows API를 활용한 후킹(Hooking) 기법과 이에 대한 보안 대응 메커니즘이다.DLL 인젝션과 API 후킹은 리버싱, 악성코드 분석, 프로그램 동작 변조 등에 사용되는 대표적인 기술로, 실습을 통해 함수 후킹 방식의 구조와 동작 원리를 학습하였다. 특히 여러 다양한 후킹 기법을 비교하고, 이를 탐지하는 Window">
 <meta property="og:type" content="article">
@@ -159,13 +159,13 @@
 </div>
   <div class="links-of-author animated">
       <span class="links-of-author-item">
-        <a href="mailto:swu.swing@gmail.com" title="E-Mail → mailto:swu.swing@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.facebook.com/@swuswing" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.instagram.com/swing_swu" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
       </span>
   </div>
 
@@ -181,7 +181,7 @@
         </div>
         <ul class="links-of-blogroll-list">
             <li class="links-of-blogroll-item">
-              <a href="https://swuswing.com/" title="https:&#x2F;&#x2F;swuswing.com&#x2F;" rel="noopener" target="_blank">SWING Official Website</a>
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
             </li>
         </ul>
       </div>
@@ -572,10 +572,10 @@
 <li>Solomon, D. A., Russinovich, M. E., &amp; Ionescu, A. (2017). <em>Windows Internals, Part 1: System architecture, processes, threads, memory management, and more</em> (7th ed.). Microsoft Press.</li>
 <li>Microsoft. (n.d.). Windows API 인덱스. Windows API 인덱스 - Win32 apps | Microsoft Learn</li>
 <li>Microsoft. (n.d.). DLL(동적 연결 라이브러리). DLL(동적 연결 라이브러리) - Windows Client | Microsoft Learn</li>
-<li>Microsoft Security. (2022-11-26). Microsoft Defender for Endpoint. <a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/security/business/endpoint-security/microsoft-defender-endpoint">https://www.microsoft.com/en-us/security/business/endpoint-security/microsoft-defender-endpoint</a>.</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/microsoft/detours">https://github.com/microsoft/detours</a></li>
-<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/ko-kr/windows/win32/apiindex/windows-api-list">https://learn.microsoft.com/ko-kr/windows/win32/apiindex/windows-api-list</a></li>
-<li><a target="_blank" rel="noopener" href="https://learn.microsoft.com/ko-kr/troubleshoot/windows-client/setup-upgrade-and-drivers/dynamic-link-library">https://learn.microsoft.com/ko-kr/troubleshoot/windows-client/setup-upgrade-and-drivers/dynamic-link-library</a></li>
+<li>Microsoft Security. (2022-11-26). Microsoft Defender for Endpoint. <span class="exturl" data-url="aHR0cHM6Ly93d3cubWljcm9zb2Z0LmNvbS9lbi11cy9zZWN1cml0eS9idXNpbmVzcy9lbmRwb2ludC1zZWN1cml0eS9taWNyb3NvZnQtZGVmZW5kZXItZW5kcG9pbnQ=">https://www.microsoft.com/en-us/security/business/endpoint-security/microsoft-defender-endpoint<i class="fa fa-external-link-alt"></i></span>.</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL21pY3Jvc29mdC9kZXRvdXJz">https://github.com/microsoft/detours<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2tvLWtyL3dpbmRvd3Mvd2luMzIvYXBpaW5kZXgvd2luZG93cy1hcGktbGlzdA==">https://learn.microsoft.com/ko-kr/windows/win32/apiindex/windows-api-list<i class="fa fa-external-link-alt"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2tvLWtyL3Ryb3VibGVzaG9vdC93aW5kb3dzLWNsaWVudC9zZXR1cC11cGdyYWRlLWFuZC1kcml2ZXJzL2R5bmFtaWMtbGluay1saWJyYXJ5">https://learn.microsoft.com/ko-kr/troubleshoot/windows-client/setup-upgrade-and-drivers/dynamic-link-library<i class="fa fa-external-link-alt"></i></span></li>
 </ul>
 
     </div>
@@ -627,7 +627,7 @@
     </span>
     <span class="author" itemprop="copyrightHolder">SWING</span>
   </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
   </div>
 
     </div>
