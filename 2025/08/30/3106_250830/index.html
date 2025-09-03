@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가며이 글을 읽는 여러분 중 대부분은 웹서핑하던 도중, 마우스 우클릭이 되지 않거나 드래그가 막혀있는 웹사이트들을 봤던 경험이 있을 것이다. 그리고 이런 웹사이트들을 뚫기 위해 확장 프로그램을 설치하거나, 방법을 찾아 더 많은 웹사이트를 검색해 본 경험 또한 있을 것이다. 이러한 웹사이트들은 어떻게 마우스 우클릭과 드래그를 막았고, 어떤 방식으로 해당">
+<meta property="og:type" content="article">
+<meta property="og:title" content="우클릭&#x2F;드래그 확장 프로그램(1) - 모험기">
+<meta property="og:url" content="https://log.swuswing.com/2025/08/30/3106_250830/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="들어가며이 글을 읽는 여러분 중 대부분은 웹서핑하던 도중, 마우스 우클릭이 되지 않거나 드래그가 막혀있는 웹사이트들을 봤던 경험이 있을 것이다. 그리고 이런 웹사이트들을 뚫기 위해 확장 프로그램을 설치하거나, 방법을 찾아 더 많은 웹사이트를 검색해 본 경험 또한 있을 것이다. 이러한 웹사이트들은 어떻게 마우스 우클릭과 드래그를 막았고, 어떤 방식으로 해당">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3106_250830_image10.png">
+<meta property="article:published_time" content="2025-08-30T14:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-03T00:29:42.290Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Web">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3106_250830_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/08/30/3106_250830/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/08/30/3106_250830/","path":"2025/08/30/3106_250830/","title":"우클릭/드래그 확장 프로그램(1) - 모험기"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>우클릭/드래그 확장 프로그램(1) - 모험기 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%97%90%EC%84%9C-%EB%A7%89%ED%9E%88%EB%8A%94-%EC%9D%B4%EC%9C%A0"><span class="nav-number">2.</span> <span class="nav-text">웹사이트에서 막히는 이유</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%97%90%EC%84%9C-%EC%9A%B0%ED%81%B4%EB%A6%AD-%EB%A7%89%EA%B8%B0"><span class="nav-number">2.1.</span> <span class="nav-text">웹사이트에서 우클릭 막기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#contextmenu"><span class="nav-number">2.1.1.</span> <span class="nav-text">contextmenu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#return-false"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">return false</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#preventDefault"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">preventDefault()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-web-html-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.1.2.</span> <span class="nav-text">test_web.html 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%97%90%EC%84%9C-%EB%93%9C%EB%9E%98%EA%B7%B8-%EB%A7%89%EA%B8%B0"><span class="nav-number">2.2.</span> <span class="nav-text">웹사이트에서 드래그 막기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#dragstart"><span class="nav-number">2.2.1.</span> <span class="nav-text">dragstart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#selectstart"><span class="nav-number">2.2.2.</span> <span class="nav-text">selectstart</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#return-false-1"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">return false</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#preventDefault-1"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">preventDefault()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#test-web-html-%EC%8B%A4%EC%8A%B5-1"><span class="nav-number">2.2.3.</span> <span class="nav-text">test_web.html 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B5%9C%EC%A2%85-test-web-html"><span class="nav-number">2.3.</span> <span class="nav-text">최종 test_web.html</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%97%90%EC%84%9C-JavaScript-%EB%9A%AB%EA%B8%B0"><span class="nav-number">3.</span> <span class="nav-text">웹사이트에서 JavaScript 뚫기</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9B%B9%EC%82%AC%EC%9D%B4%ED%8A%B8%EC%97%90%EC%84%9C-preventDefault-%EB%9A%AB%EA%B8%B0"><span class="nav-number">3.1.</span> <span class="nav-text">웹사이트에서 preventDefault() 뚫기</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%ED%99%95%EC%9E%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EB%A7%8C%EB%93%A4%EA%B8%B0"><span class="nav-number">4.</span> <span class="nav-text">확장 프로그램 만들기</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">5.</span> <span class="nav-text">마치며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C"><span class="nav-number">6.</span> <span class="nav-text">참고자료</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/30/3106_250830/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="우클릭/드래그 확장 프로그램(1) - 모험기 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          우클릭/드래그 확장 프로그램(1) - 모험기
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: SFicheu</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-08-30 23:00:00" itemprop="dateCreated datePublished" datetime="2025-08-30T23:00:00+09:00">2025-08-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/free/" itemprop="url" rel="index"><span itemprop="name">free</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며"></a>들어가며</h1><p>이 글을 읽는 여러분 중 대부분은 웹서핑하던 도중, 마우스 우클릭이 되지 않거나 드래그가 막혀있는 웹사이트들을 봤던 경험이 있을 것이다. 그리고 이런 웹사이트들을 뚫기 위해 확장 프로그램을 설치하거나, 방법을 찾아 더 많은 웹사이트를 검색해 본 경험 또한 있을 것이다.</p>
+<p>이러한 웹사이트들은 어떻게 마우스 우클릭과 드래그를 막았고, 어떤 방식으로 해당 기법을 뚫을 수 있었을까?<br>지금부터 하나하나 뜯어보고자 한다.</p>
+<span id="more"></span>
+<p><br><br></p>
+<h1 id="웹사이트에서-막히는-이유"><a href="#웹사이트에서-막히는-이유" class="headerlink" title="웹사이트에서 막히는 이유"></a>웹사이트에서 막히는 이유</h1><p>기본적으로 우리가 사용하는 웹사이트에서 마우스 우클릭과 드래그가 막혀있다면, 이는 대부분 <code>JavaScript Event</code> 때문이다. </p>
+<blockquote>
+<p><code>JavaScript Event</code>란? <strong>웹 브라우저 내에서 발생하는 특정 동작 및 상황</strong>으로, 해당 상황에 알맞은 이벤트가 발생했을 시 지정된 코드가 반응하는 것을 말한다.</p>
+</blockquote>
+<p>JavaScript Event의 정의만 읽어도 어떤 방식으로 마우스 우클릭과 드래그가 차단되는지 대충은 짐작할 수 있을 것이다. 그렇다면 대체 어떠한 Event가 사용됐길래 특정 웹사이트에서만 마우스의 동작이 막히는 것일까?<br><br></p>
+<h2 id="웹사이트에서-우클릭-막기"><a href="#웹사이트에서-우클릭-막기" class="headerlink" title="웹사이트에서 우클릭 막기"></a>웹사이트에서 우클릭 막기</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;ko&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;title&gt;test web&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  안녕하세요? 저는 SFicheu입니다.&lt;br&gt;</span><br><span class="line">  이 사이트는 간단한 테스트용 사이트입니다.</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>우선 다음과 같이 <code>test_web.html</code> 코드를 작성하여 가장 기본적인 웹사이트를 생성한다.</p>
+<p><img src="/images/3106_250830_image1.png" alt="그림 1. [test_web.html]"></p>
+<center><span style="font-size: 90%;">그림 1. [test_web.html]</span></center><br>
+일반적인 웹사이트에서 우클릭을 시도하면 다음 사진과 같은 메뉴 창이 뜬다. 이는 우클릭이 막히지 않고 제대로 기능하고 있다는 것이다.
+
+<p>웹사이트에서 우클릭을 막기 위해서는 마우스 우클릭이 발생하고 있는 것을 알 수 있어야 한다.<br>이러한 기능을 담당하는 JavaScript Event는 무엇일까?<br><br></p>
+<h3 id="contextmenu"><a href="#contextmenu" class="headerlink" title="contextmenu"></a>contextmenu</h3><p>그림 1에서 보았던 것처럼, 일반적으로 마우스 우클릭을 시도했을 때 뜨는 메뉴 창을 Context Menu라고 부른다.<br>이는 JavaScript Event의 <code>contextmenu</code>에서 확인할 수 있다.</p>
+<blockquote>
+<p><code>contextmenu</code>란? <strong>사용자가 Context Menu를 열려고 시도할 때 발생하는 이벤트</strong>로, 일반적으로 마우스 오른쪽 버튼을 누르거나 Context Menu 키(Shift + F10)를 누를 때 발생한다.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addEventListener(&quot;contextmenu&quot;, (event) =&gt; &#123; &#125;)</span><br></pre></td></tr></table></figure>
+<p>contextmenu를 사용하는 구문은 다음과 같다.</p>
+<p>해당 JavaScript Event만 사용하면 그저 우클릭을 감지하는 흐름만 진행될 것이다. 그렇다면 우클릭을 감지하여 이를 막으려면 어떻게 코드를 작성해야 할까?<br><br></p>
+<h4 id="return-false"><a href="#return-false" class="headerlink" title="return false"></a>return false</h4><p>첫 번째로 아주 간단한 방법이다. 그저 <code>oncontextmenu</code>의 값을 false로 만들어 마우스 우클릭이 금지되게<br>만드는 것이다.<br><code>oncontextmenu</code>는 contextmenu 이벤트와 기능은 같지만, HTML 속성이나 JavaScript의 핸들러 속성으로 지정되기에, return false를 사용하기 위해서는 <body> 태그로 삽입하거나, JavaScript로 코드를 작성하는 방법이 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;div oncontextmenu = &#x27;return false&#x27;&gt; &lt;/div&gt; // HTML</span><br><span class="line">document.oncontextmenu = function () &#123; return false; &#125;; // JavaScript</span><br></pre></td></tr></table></figure>
+
+<p>HTML 속성과 JavaScript 핸들러 속성을 사용하여 각각의 return false 코드로 사용할 수 있다.<br><br></p>
+<h4 id="preventDefault"><a href="#preventDefault" class="headerlink" title="preventDefault()"></a>preventDefault()</h4><p>두 번째로는 <code>preventDefault()</code> 메소드를 사용하여 마우스 우클릭을 막는 방법이다.</p>
+<blockquote>
+<p><code>preventDefault()</code>란? <strong>특정 이벤트가 발생했을 때, 기본적인 수행 동작을 막아주는 메소드</strong>이다.</p>
+</blockquote>
+<p>이를 contextmenu 이벤트와 합쳐 사용한다면, contextmenu 이벤트가 발생했을 때(우클릭했을 때)<br>기본적인 동작이 막히게 되는 것이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  document.addEventListener(&#x27;contextmenu&#x27;, event =&gt; event.preventDefault());</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>preventDefault() 메소드를 JavaScript 코드로 작성한다면 다음과 같이 사용할 수 있다.<br><br></p>
+<h3 id="test-web-html-실습"><a href="#test-web-html-실습" class="headerlink" title="test_web.html 실습"></a>test_web.html 실습</h3><p>return false 방법은 preventDefault() 방법보다 작성하긴 쉽지만, 일반적으로 JavaScript에선 preventDefault()를 더 명시적으로 사용한다기에 해당 글에서도 preventDefault() 방식으로 사용해 보려고 한다.</p>
+<p>앞서 생성했던 <code>test_web.html</code> 코드에 preventDefault() 방법을 추가하여 우클릭을 막는 웹사이트로<br>수정해 보자.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;ko&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;title&gt;test web&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  안녕하세요? 저는 SFicheu입니다.&lt;br&gt;</span><br><span class="line">  이 사이트는 간단한 테스트용 사이트입니다.</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    document.addEventListener(&#x27;contextmenu&#x27;, function(event) &#123;</span><br><span class="line">      event.preventDefault();</span><br><span class="line">      alert(&quot;preventDefault()로 우클릭을 차단했습니다.&quot;)</span><br><span class="line">    &#125;);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>우클릭이 막혀있다는 것을 알아보기 위해, 우클릭 시도 시 간단한 팝업 창이 나오게 코드를 추가했다.</p>
+<p><img src="/images/3106_250830_image2.png" alt="그림 2. [test_web.html - contextmenu]"></p>
+<center><span style="font-size: 90%;">그림 2. [test_web.html - contextmenu]</span></center><br>
+`test_web.html` 웹사이트에서 우클릭했을 때, 'preventDefault()로 우클릭을 차단했습니다.'라는 
+안내 팝업 창이 나온다.
+<br>
+
+<h2 id="웹사이트에서-드래그-막기"><a href="#웹사이트에서-드래그-막기" class="headerlink" title="웹사이트에서 드래그 막기"></a>웹사이트에서 드래그 막기</h2><p>성공적으로 우클릭 기능을 막았으니, 다음은 드래그를 막아보자.<br><br></p>
+<h3 id="dragstart"><a href="#dragstart" class="headerlink" title="dragstart"></a>dragstart</h3><p>드래그를 감지하는 JavaScript Event는 바로 <code>dragstart</code>이다.</p>
+<blockquote>
+<p><code>dragstart</code>란? <strong>사용자가 요소를 드래그하기 시작할 때 발생하는 이벤트</strong>로, 드래그하는 동안 지속적으로 발생하는 <code>drag</code> 이벤트와 달리 처음 드래그하는 순간을 감지하여 발생한다.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addEventListener(&quot;dragstart&quot;, (event) =&gt; &#123; &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>dragstart를 사용하는 구문은 다음과 같다.<br><br></p>
+<h3 id="selectstart"><a href="#selectstart" class="headerlink" title="selectstart"></a>selectstart</h3><p>다만, dragstart는 이미지 영역이나 링크와 같은 <em>드래그가 가능한 요소</em>에서만 이벤트가 발생하고, 지금 우리가 살펴보는 주제에서는 텍스트를 드래그하는 데 중점을 두고 있으므로 해당 부분에서는 dragstart보다 <code>selectstart</code>를 사용하는 것이 자연스럽다.</p>
+<blockquote>
+<p><code>selectstart</code>란? <strong>사용자가 새로운 선택을 시작할 때 발생하는 이벤트</strong>로, dragstart와 달리<br>일반적인 텍스트 문장에서도 드래그했을 시 이벤트가 발생한다.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addEventListener(&quot;selectstart&quot;, (event) =&gt; &#123; &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>따라서 해당 글에서는 selectstart 이벤트를 기본으로 사용할 것이지만, 이미지나 또 다른 요소들을 사용한다면 dragstart 이벤트와 함께 적용하는 것이 편할 것이다. 그렇다면 이 요소들을 사용하여 드래그를 감지하고 막으려면 어떻게 코드를 작성해야 할까?<br><br></p>
+<h4 id="return-false-1"><a href="#return-false-1" class="headerlink" title="return false"></a>return false</h4><p>사실 contextmenu와 selectstart는 둘 다 JavaScript Event이기에, Event가 들어가는 부분만 바꿔주면 코드는 거의 동일하게 가져가도 된다.<br>contextmenu - oncontextmenu처럼, selectstart 또한 기능은 같지만, HTML 속성이나 JavaScript<br>핸들러 속성으로 지정되는 <code>onselectstart</code>를 사용하여 return false 값을 조정하면 된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;div onselectstart = &#x27;return false&#x27;&gt; &lt;/div&gt; // HTML</span><br><span class="line">document.onselectstart = function() &#123; return false; &#125;; // JavaScript</span><br></pre></td></tr></table></figure>
+
+<p>동일하게 HTML 속성과 JavaScript 핸들러 속성을 사용하여 각각의 return false 코드로 사용할 수 있다.<br><br></p>
+<h4 id="preventDefault-1"><a href="#preventDefault-1" class="headerlink" title="preventDefault()"></a>preventDefault()</h4><p>preventDefault() 방법도 동일하다. 이를 selectstart 이벤트와 합쳐 사용한다면, selectstart<br>이벤트가 발생했을 때(드래그했을 때) 기본적인 동작이 막히는 것이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  document.addEventListener(&#x27;selectstart&#x27;, event =&gt; event.preventDefault());</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>preventDefault() 메소드를 JavaScript 코드로 작성한다면 다음과 같이 사용할 수 있다.<br><br></p>
+<h3 id="test-web-html-실습-1"><a href="#test-web-html-실습-1" class="headerlink" title="test_web.html 실습"></a>test_web.html 실습</h3><p>앞서 우클릭을 막기 위해 수정했던 <code>test_web.html</code> 코드와 동일하게 preventDefault() 방법을 사용해<br>드래그도 막아보고자 한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;ko&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;title&gt;test web&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  안녕하세요? 저는 SFicheu입니다.&lt;br&gt;</span><br><span class="line">  이 사이트는 간단한 테스트용 사이트입니다.</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    document.addEventListener(&#x27;selectstart&#x27;, function(event) &#123;</span><br><span class="line">      event.preventDefault();</span><br><span class="line">      alert(&quot;preventDefault()로 드래그를 차단했습니다.&quot;)</span><br><span class="line">    &#125;);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>드래그가 막혀있다는 것을 알아보기 위해, 드래그 시도 시 팝업 창이 나오게 코드를 추가했다.<br>다만, 해당 코드에서 우클릭 시에도 selectstart 이벤트가 발생하기에 팝업 창이 나타날 수 있다.</p>
+<p><img src="/images/3106_250830_image3.png" alt="그림 3. [test_web.html - selectstart]"></p>
+<center><span style="font-size: 90%;">그림 3. [test_web.html - selectstart]</span></center><br>
+
+<p><code>test_web.html</code> 웹사이트에서 드래그를 시도했을 때, ‘preventDefault()로 드래그를 차단했습니다.’라는<br>안내 팝업 창이 나온다.<br><br></p>
+<h2 id="최종-test-web-html"><a href="#최종-test-web-html" class="headerlink" title="최종 test_web.html"></a>최종 test_web.html</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;ko&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;title&gt;test web&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  안녕하세요? 저는 SFicheu입니다.&lt;br&gt;</span><br><span class="line">  이 사이트는 간단한 테스트용 사이트입니다.</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    document.addEventListener(&#x27;contextmenu&#x27;, e =&gt; e.preventDefault());</span><br><span class="line">    document.addEventListener(&#x27;selectstart&#x27;, e =&gt; e.preventDefault());</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>앞서 우클릭과 드래그 시 팝업 창이 나오게 한 코드는 모두 삭제하고, 오로지 우클릭과 드래그 기능을 preventDefault()로 막은 최종 <code>test_web.html</code> 코드는 다음과 같이 작성할 수 있다.<br><br><br></p>
+<h1 id="웹사이트에서-JavaScript-뚫기"><a href="#웹사이트에서-JavaScript-뚫기" class="headerlink" title="웹사이트에서 JavaScript 뚫기"></a>웹사이트에서 JavaScript 뚫기</h1><p>이제 우리는 웹사이트에서 JavaScript를 사용해 마우스 우클릭과 드래그를 막는 방법을 알아냈다.<br>그렇다면 그 많은 확장 프로그램은 어떻게 JavaScript를 뚫고 우클릭과 드래그 기능이 가능하게 만들었던<br>것일까?</p>
+<p>별도의 코드 필요없이, 정말 간단하게 개발자 모드(F12)를 사용하여 JavaScript를 끄는 방법부터 설명하고자 한다.</p>
+<p><img src="/images/3106_250830_image4.png" alt="그림 4. [test_web.html - 개발자 모드]"></p>
+<center><span style="font-size: 90%;">그림 4. [test_web.html - 개발자 모드]</span></center><br>
+개발자 모드를 키면 가장 먼저 보이는 화면은 아마 다음과 같을 것이다.
+이제 우측의 톱니바퀴 모양을 눌러 Settings으로 들어가 Preferences 메뉴에서 맨 밑으로 내린다.
+
+<p><img src="/images/3106_250830_image5.png" alt="그림 5. [test_web.html - Preferences]"></p>
+<center><span style="font-size: 90%;">그림 5. [test_web.html - Preferences]</span></center><br>
+Debugger 항목의 Disable JavaScript 체크박스를 눌러 활성화하면, 
+
+<p><img src="/images/3106_250830_image6.png" alt="그림 6. [test_web.html - Disable JavaScript]"></p>
+<center><span style="font-size: 90%;">그림 6. [test_web.html - Disable JavaScript]</span></center><br>
+웹사이트에 적용되어 있던 JavaScript가 사라져 마우스 우클릭과 드래그가 모두 제대로 적용된다.
+
+<p>이렇게 간단한 방법으로도 웹사이트의 JavaScript를 뚫을 수 있지만, 우리는 JavaScript Event를 사용해서 웹사이트의 우클릭과 드래그를 막은 만큼 다시 JavaScript Event를 사용하여 웹사이트를 뚫어보고자 한다.<br><br></p>
+<h2 id="웹사이트에서-preventDefault-뚫기"><a href="#웹사이트에서-preventDefault-뚫기" class="headerlink" title="웹사이트에서 preventDefault() 뚫기"></a>웹사이트에서 preventDefault() 뚫기</h2><p>앞서 우리는 addEventListener와 preventDefault()을 사용하여 contextmenu와 selectstart 이벤트를 등록하였으니, 이번엔 <code>removeEventListener</code>를 사용하여 등록된 이벤트를 삭제할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">removeEventListener(type, listener)</span><br></pre></td></tr></table></figure>
+
+<p>기본적인 removeEventListener 코드 구성은 다음과 같은데, 이때 필수로 포함되어야 하는 <code>type</code>과 <code>listener</code>를 조심해야 한다.</p>
+<blockquote>
+<p><code>type</code>: EventListener를 제거할 이벤트 유형을 지정하는 문자열 (ex. ‘contextmenu’)<br><code>listener</code>: 제거할 Event Handler 함수, 기존 addEventListener로 등록한 것과 동일한 함수여야 함</p>
+</blockquote>
+<p>listener를 보면 <em>기존 addEventListener로 등록한 것과 동일한 함수</em>여야 한다는 조건이 있다. 다만, 우리가 기존에 작성했던 <code>test_web.html</code> 코드는 addEventListener를 사용할 때 함수를 지정하여 등록하지 않았기에, removeEventListener가 제대로 적용되지 않는다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;ko&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span><br><span class="line">  &lt;title&gt;test web&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  안녕하세요? 저는 SFicheu입니다.&lt;br&gt;</span><br><span class="line">  이 사이트는 간단한 테스트용 사이트입니다.</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    contexthandler = e =&gt; e.preventDefault();</span><br><span class="line">    document.addEventListener(&#x27;contextmenu&#x27;, contexthandler);</span><br><span class="line">    selecthandler = e =&gt; e.preventDefault();</span><br><span class="line">    document.addEventListener(&#x27;selectstart&#x27;, selecthandler);</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>contextmenu 이벤트는 contexthandler 함수를, selectstart 이벤트는 selecthandler 함수를 지정하게끔 <code>test_web.html</code> 코드를 한 번 더 수정했다. </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">document.removeEventListener(&#x27;contextmenu&#x27;, contexthandler);</span><br><span class="line">document.removeEventListener(&#x27;selectstart&#x27;, selecthandler);</span><br></pre></td></tr></table></figure>
+
+<p>이제, 해당 코드의 웹사이트에서 개발자 모드(F12)를 열고 Console 창으로 이동하여 입력한다.</p>
+<p><img src="/images/3106_250830_image7.png" alt="그림 7. [test_web.html - contexthandler]"></p>
+<center><span style="font-size: 90%;">그림 7. [test_web.html - contexthandler]</span></center><br>
+
+<p>등록된 <code>contexthandler</code> 함수의 contextmenu 이벤트를 삭제하니 우클릭이 제대로 되고,</p>
+<p><img src="/images/3106_250830_image8.png" alt="그림 8. [test_web.html - selecthandler]"></p>
+<center><span style="font-size: 90%;">그림 8. [test_web.html - selecthandler]</span></center><br>
+
+<p>등록된 <code>selecthandler</code> 함수의 selectstart 이벤트를 삭제하니 드래그도 제대로 된다.<br><br><br></p>
+<h1 id="확장-프로그램-만들기"><a href="#확장-프로그램-만들기" class="headerlink" title="확장 프로그램 만들기"></a>확장 프로그램 만들기</h1><p>웹사이트에서 JavaScript를 뚫는 것까지 완료했지만, 웹사이트에 접속할 때마다 항상 우클릭과 드래그를 뚫기 위해 개발자 모드(F12)를 열고 Console 창에서 removeEventListener 코드를 입력하기 귀찮을 거다.<br>그렇기에 다음 글에서는 <code>test_web.html</code> 웹사이트에서 우클릭과 드래그를 하고 싶을 때 언제든 버튼을<br>누르기만 하면 removeEventListener 코드가 적용되는 확장 프로그램까지 만들어볼까 한다.</p>
+<p>기본적으로 해당 글에서는 <em>Chrome 브라우저</em>에서 적용되는 확장 프로그램을 다룬다.</p>
+<p><img src="/images/3106_250830_image9.png" alt="그림 9. [Chrome 확장 프로그램]"></p>
+<center><span style="font-size: 90%;">그림 9. [Chrome 확장 프로그램]</span></center><br>
+
+<p><em>Chrome 메뉴 → 확장 프로그램 → 확장 프로그램 관리</em>로 이동 시 chrome 확장 프로그램 사이트가 나온다.</p>
+<p><img src="/images/3106_250830_image10.png" alt="그림 10. [Chrome 확장 프로그램 - 개발자 모드]"></p>
+<center><span style="font-size: 90%;">그림 10. [Chrome 확장 프로그램 - 개발자 모드]</span></center><br>
+이때, 우측 상단의 개발자 모드를 활성화하면 좌측 상단에 '압축해제된 확장 프로그램 로드' 버튼이 생기는데, 
+이 기능을 통해 우리가 제작한 코드도 확장 프로그램으로 사용이 가능해진다.
+
+<p>그렇기에 다음 글에서는, JavaScript 코드와 chrome 확장 프로그램 개발자 모드를 통해 웹사이트에서 마우스 우클릭과 드래그 차단 기능을 뚫는 프로그램을 개발해 보고자 한다.<br><br><br></p>
+<h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h1><p>🔗 <span class="exturl" data-url="aHR0cHM6Ly90ZXN0LXdlYi1qcy5uZXRsaWZ5LmFwcC8=">test_web.html 웹사이트</span></p>
+<p>우클릭과 드래그를 막고, Event Handler 함수 지정까지 완료한 <code>test_web.html</code> 코드를<br>웹사이트로 배포했다.<br>이 글을 읽는 여러분 모두가 직접 체험해 볼 수 있으며, 해당 글의 실습을 따라 해보며 JavaScript를<br>쉽게 익힐 수 있는 기회가 되길 바란다.<br><br><br></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>mdn. (n.d.). Introduction to events. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9MZWFybl93ZWJfZGV2ZWxvcG1lbnQvQ29yZS9TY3JpcHRpbmcvRXZlbnRz">https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events</span><br>mdn. (n.d.). Element: contextmenu event. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL0VsZW1lbnQvY29udGV4dG1lbnVfZXZlbnQ=">https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event</span><br>mdn. (n.d.). GlobalEventHandlers.oncontextmenu. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL0VsZW1lbnQvY29udGV4dG1lbnVfZXZlbnQ=">https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event</span><br>mdn. (n.d.). Event: preventDefault() method. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL0V2ZW50L3ByZXZlbnREZWZhdWx0">https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault</span><br>mdn. (n.d.). HTMLElement: dragstart event. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL0hUTUxFbGVtZW50L2RyYWdzdGFydF9ldmVudA==">https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragstart_event</span><br>mdn. (n.d.). Node: selectstart event. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL05vZGUvc2VsZWN0c3RhcnRfZXZlbnQ=">https://developer.mozilla.org/en-US/docs/Web/API/Node/selectstart_event</span><br>mdn. (n.d.). EventTarget: removeEventListener() method. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIubW96aWxsYS5vcmcvZW4tVVMvZG9jcy9XZWIvQVBJL0V2ZW50VGFyZ2V0L3JlbW92ZUV2ZW50TGlzdGVuZXI=">https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener</span><br>chrome for developers. (n.d.). Hello World extension. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuY2hyb21lLmNvbS9kb2NzL2V4dGVuc2lvbnMvZ2V0LXN0YXJ0ZWQvdHV0b3JpYWwvaGVsbG8td29ybGQ/aGw9ZW4=">https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world?hl=en</span><br>chrome for developers. (n.d.). Inject scripts into the active tab. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuY2hyb21lLmNvbS9kb2NzL2V4dGVuc2lvbnMvZ2V0LXN0YXJ0ZWQvdHV0b3JpYWwvc2NyaXB0cy1hY3RpdmV0YWI/aGw9ZW4=">https://developer.chrome.com/docs/extensions/get-started/tutorial/scripts-activetab?hl=en</span><br>chrome for developers. (n.d.). The “activeTab” permission. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuY2hyb21lLmNvbS9kb2NzL2V4dGVuc2lvbnMvZGV2ZWxvcC9jb25jZXB0cy9hY3RpdmVUYWI/aGw9ZW4=">https://developer.chrome.com/docs/extensions/develop/concepts/activeTab?hl=en</span><br>chrome for developers. (n.d.). Content scripts. <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuY2hyb21lLmNvbS9kb2NzL2V4dGVuc2lvbnMvZGV2ZWxvcC9jb25jZXB0cy9jb250ZW50LXNjcmlwdHM/aGw9ZW4=">https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts?hl=en</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/Web/" rel="tag"># Web</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/24/3105_250824/" rel="prev" title="BleedingTooth">
+                  <i class="fa fa-angle-left"></i> BleedingTooth
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/02/3203_250902/" rel="next" title="Suricata-Based NIDS/NIPS (1)">
+                  Suricata-Based NIDS/NIPS (1) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2025</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
