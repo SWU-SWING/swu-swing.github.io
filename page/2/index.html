@@ -113,7 +113,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -124,7 +124,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -164,191 +164,6 @@
     </div>
 
     <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/10/3202_250808/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/10/3202_250808/" class="post-title-link" itemprop="url">Windows API 후킹과 보안 대응 메커니즘</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: yuna32</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-10T00:00:00+09:00">2025-08-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h2><p>보고서의 주제는 Windows API를 활용한 후킹(Hooking) 기법과 이에 대한 보안 대응 메커니즘이다.<br>DLL 인젝션과 API 후킹은 리버싱, 악성코드 분석, 프로그램 동작 변조 등에 사용되는 대표적인 기술로, 실습을 통해 함수 후킹 방식의 구조와 동작 원리를 학습하였다.</p>
-<p>특히 여러 다양한 후킹 기법을 비교하고, 이를 탐지하는 Windows의 보안 메커니즘(DEP, SRM, PatchGuard 등)에 대해서도 고찰하였다. 보고서는 이러한 후킹 기술이 실제로 어떻게 작동하며, Windows가 이를 어떻게 탐지하고 방어하는지를 실습과 이론을 통해 설명한다.<br>이를 통해 API 후킹 기술의 구조적 이해와 함께 보안 대응 체계의 필요성에 대해서도 생각해볼 수 있다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/08/10/3202_250808/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/04/3201_250804/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/04/3201_250804/" class="post-title-link" itemprop="url">DNS 보안 분석 및 DNSCrypt</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: meeeeing</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-04 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-04T00:00:00+09:00">2025-08-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/free/" itemprop="url" rel="index"><span itemprop="name">free</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h2><p>DNS는 사용자의 도메인 요청을 IP 주소로 해석하는 핵심 인프라이다. 그러나 전통적인 DNS는 <strong>평문(plaintext)</strong> 으로 동작한다. 이로 인해 경로 상의 관찰자(공격자, ISP, 내부 보안 장비 등)가 질의·응답 내용을 그대로 열람할 수 있으며, 캐시 포이즈닝·스푸핑·증폭 공격 등 구조적 위험이 발생한다.<br>이를 보완하기 위해 <strong>DNSSEC(무결성 검증)</strong>, <strong>DoT&#x2F;DoH(전송 구간 암호화)</strong>, <strong>DNSCrypt(전송 구간 암호화+인증)</strong> 이 도입되었다.<br>본 글은 <strong>DNSCrypt</strong>에 집중하여, 원리(X25519 + ChaCha20-Poly1305)와 <strong>패킷 레벨 특성</strong>을 Wireshark 실습으로 확인한다.</p>
-<p><img src="/images/3201_250804_image01.png" alt="그림 1">  </p>
-<center><span style="font-size:90%"><b>그림 1.</b> DNS 메시지가 DNSCrypt 계층으로 캡슐화되어 전송된다. 요청·응답 모두 AEAD 보호로 중간자는 내용을 확인할 수 없다.</span></center><br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/08/04/3201_250804/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
 
     
 
