@@ -113,7 +113,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -124,7 +124,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-count">42</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -164,6 +164,282 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/21/3303_250921/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/09/21/3303_250921/" class="post-title-link" itemprop="url">[네트워크 포렌식 기초] HTTP와 HTTPS 패킷 비교, 그리고 로그인 정보 추출</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: ssseo</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-21 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-21T00:00:00+09:00">2025-09-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h1><p>디지털 포렌식에서 네트워크 분석은 필수입니다.<br>네트워크를 타고 흐르는 패킷에는 사용자 행위의 흔적이 그대로 남기 때문입니다.</p>
+<p>하지만 프로토콜에 대한 제대로 된 이해가 선행되지 않은 채 실습부터 하게 된다면 막히는 부분이 많이 생길 수밖에 없습니다.</p>
+<p>예를 들자면, 스푸핑이나 디도스 공격 실습 과정 중에 HTTP와 HTTPS의 차이를<br>잘 몰라 두 프로토콜을 혼동하는 경우가 있을 수 있습니다.<br>(사실 제 경험이기는 한데…)</p>
+<p>이번 글에서는 HTTP와 HTTPS 프로토콜에 대해 알아보고, Wireshark를 활용하여 HTTP와 HTTPS 패킷을 직접 비교하고, 로그인 정보가 어떻게 노출되거나 보호되는지 확인해보겠습니다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/09/21/3303_250921/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/19/3208_250919/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/09/19/3208_250919/" class="post-title-link" itemprop="url">GAN (2)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: wogml</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-19 23:59:59" itemprop="dateCreated datePublished" datetime="2025-09-19T23:59:59+09:00">2025-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/2024-SWING-magazine/" itemprop="url" rel="index"><span itemprop="name">2024 SWING magazine</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="LSGAN-이미지-생성"><a href="#LSGAN-이미지-생성" class="headerlink" title="LSGAN 이미지 생성"></a>LSGAN 이미지 생성</h1><p>생성자와 판별자 간의 손실 함수를 최소 제곱 오류로 정의해서 안정적인 학습을 목표로 하는 LSGAN을 이용해서 이미지를 생성하고자 한다. </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/09/19/3208_250919/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/16/3207_250916/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/09/16/3207_250916/" class="post-title-link" itemprop="url">GAN (1)</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: wogml</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-16 11:45:30" itemprop="dateCreated datePublished" datetime="2025-09-16T11:45:30+09:00">2025-09-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/2024-SWING-magazine/" itemprop="url" rel="index"><span itemprop="name">2024 SWING magazine</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="GAN이란"><a href="#GAN이란" class="headerlink" title="GAN이란?"></a>GAN이란?</h1><p>생성적 적대 신경망으로 불리는 GAN은 Generative Adversarial Network의 약자로 두 개의 네트워크,<br>즉 생성자(Generator)와 판별자(Discriminator)로 구성되고 비지도 학습에 사용되는 머신러닝 프레임워크의 한 종류이다.<br>생성자는 최대한 실제처럼 보이는 데이터를 생성함으로써 판별자를 속이려 하고, 판별자는 실제 데이터와 만들어진 데이터를 구별한다. 생성자와 판별자가 상호 경쟁하며 학습을 진행한다. 이 과정에서 판별자는 실제 데이터와 만들어진 데이터를 잘 구별할 수 있게 되고 생성자는 실제 데이터와 흡사한 데이터를 잘 생성하게 된다.<br>GAN의 구조 및 학습 과정은 실제 데이터셋을 준비해서 판별자가 학습하는 데 사용되고 생성자는 이 데이터셋과 비슷한 분포를 따라 랜덤한 노이즈 벡터를 입력으로 받아서 가짜 데이터를 생성하게 된다. 이렇게 생성자가 만든 가짜 데이터를 판별자에게 입력하고 입력한 데이터가 실제 데이터인지 가짜 데이터인지 판단하기 위해 판별자의 손실 함수로 실제 데이터는 1, 가짜 데이터는 0로 예측하는 능력을 측정한다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/09/16/3207_250916/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -807,288 +1083,8 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/24/3105_250824/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/24/3105_250824/" class="post-title-link" itemprop="url">BleedingTooth</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: 6kitty, rlozll, SFicheu</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-24 22:58:33" itemprop="dateCreated datePublished" datetime="2025-08-24T22:58:33+09:00">2025-08-24</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/2024-SWING-magazine/" itemprop="url" rel="index"><span itemprop="name">2024 SWING magazine</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <br>
-
-<h1 id="I-블루투스-취약점의-한계와-블리딩투스의-의의"><a href="#I-블루투스-취약점의-한계와-블리딩투스의-의의" class="headerlink" title="I. 블루투스 취약점의 한계와 블리딩투스의 의의"></a>I. 블루투스 취약점의 한계와 블리딩투스의 의의</h1><br>
-해당 칼럼에서는 블루투스 호스트 공격인 Bleedingtooth에 대해 설명할 예정이다. Bleedingtooth는 제로클릭 원격 코드 실행 공격이다.
-보통 블루투스 공격은 펌웨어를 타겟으로 하거나 정보를 도청하고 조작하는 수준으로 이루어지지만, Bleedingtooth는 타겟 디바이스를 완전히 제어할 수 있다는 점에서 차별점을 가진다.
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/08/24/3105_250824/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/10/3202_250808/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/10/3202_250808/" class="post-title-link" itemprop="url">Windows API 후킹과 보안 대응 메커니즘</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: yuna32</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-10T00:00:00+09:00">2025-08-10</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h2><p>보고서의 주제는 Windows API를 활용한 후킹(Hooking) 기법과 이에 대한 보안 대응 메커니즘이다.<br>DLL 인젝션과 API 후킹은 리버싱, 악성코드 분석, 프로그램 동작 변조 등에 사용되는 대표적인 기술로, 실습을 통해 함수 후킹 방식의 구조와 동작 원리를 학습하였다.</p>
-<p>특히 여러 다양한 후킹 기법을 비교하고, 이를 탐지하는 Windows의 보안 메커니즘(DEP, SRM, PatchGuard 등)에 대해서도 고찰하였다. 보고서는 이러한 후킹 기술이 실제로 어떻게 작동하며, Windows가 이를 어떻게 탐지하고 방어하는지를 실습과 이론을 통해 설명한다.<br>이를 통해 API 후킹 기술의 구조적 이해와 함께 보안 대응 체계의 필요성에 대해서도 생각해볼 수 있다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/08/10/3202_250808/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/04/3201_250804/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/08/04/3201_250804/" class="post-title-link" itemprop="url">DNS 보안 분석 및 DNSCrypt</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: meeeeing</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-08-04 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-04T00:00:00+09:00">2025-08-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/free/" itemprop="url" rel="index"><span itemprop="name">free</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h2><p>DNS는 사용자의 도메인 요청을 IP 주소로 해석하는 핵심 인프라이다. 그러나 전통적인 DNS는 <strong>평문(plaintext)</strong> 으로 동작한다. 이로 인해 경로 상의 관찰자(공격자, ISP, 내부 보안 장비 등)가 질의·응답 내용을 그대로 열람할 수 있으며, 캐시 포이즈닝·스푸핑·증폭 공격 등 구조적 위험이 발생한다.<br>이를 보완하기 위해 <strong>DNSSEC(무결성 검증)</strong>, <strong>DoT&#x2F;DoH(전송 구간 암호화)</strong>, <strong>DNSCrypt(전송 구간 암호화+인증)</strong> 이 도입되었다.<br>본 글은 <strong>DNSCrypt</strong>에 집중하여, 원리(X25519 + ChaCha20-Poly1305)와 <strong>패킷 레벨 특성</strong>을 Wireshark 실습으로 확인한다.</p>
-<p><img src="/images/3201_250804_image01.png" alt="그림 1">  </p>
-<center><span style="font-size:90%"><b>그림 1.</b> DNS 메시지가 DNSCrypt 계층으로 캡슐화되어 전송된다. 요청·응답 모두 AEAD 보호로 중간자는 내용을 확인할 수 없다.</span></center><br>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/08/04/3201_250804/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" title="Next page" aria-label="Next page" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 </div>
