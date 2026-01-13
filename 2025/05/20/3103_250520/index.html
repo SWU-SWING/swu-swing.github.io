@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt">
+<meta property="og:url" content="https://log.swuswing.com/2025/05/20/3103_250520/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="들어가며2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다. 뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3103_250520_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3103_250520_image2.png">
+<meta property="article:published_time" content="2025-05-19T19:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T06:48:26.126Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Web Hacking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3103_250520_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/05/20/3103_250520/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/05/20/3103_250520/","path":"2025/05/20/3103_250520/","title":"지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL-Injection%EC%9D%B4%EB%9E%80"><span class="nav-number">2.</span> <span class="nav-text">SQL Injection이란?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%AC%B8%EC%A0%9C-%EA%B0%9C%EC%9A%94-simple-sqli-chatgpt"><span class="nav-number">3.</span> <span class="nav-text">문제 개요: simple_sqli_chatgpt</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%86%8C%EC%8A%A4-%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D"><span class="nav-number">4.</span> <span class="nav-text">소스 코드 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%83%9D%EC%84%B1"><span class="nav-number">4.1.</span> <span class="nav-text">1. 데이터베이스 생성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%EC%BF%BC%EB%A6%AC-%EC%88%98%ED%96%89"><span class="nav-number">4.2.</span> <span class="nav-text">2. 쿼리 수행</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%EC%A1%B0%EA%B1%B4-%ED%8C%90%EB%8B%A8"><span class="nav-number">4.3.</span> <span class="nav-text">3. 조건 판단</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%ED%95%B5%EC%8B%AC-%EC%B7%A8%EC%95%BD%EC%A0%90"><span class="nav-number">5.</span> <span class="nav-text">핵심 취약점</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SQL-Injection-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">6.</span> <span class="nav-text">SQL Injection 시나리오</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EA%B2%A9-%EC%9E%85%EB%A0%A5"><span class="nav-number">6.1.</span> <span class="nav-text">공격 입력</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%A0%9C-%EC%BF%BC%EB%A6%AC-%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D"><span class="nav-number">6.2.</span> <span class="nav-text">실제 쿼리 동작 방식</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EA%B3%B5%EA%B2%A9-%EC%88%98%ED%96%89"><span class="nav-number">7.</span> <span class="nav-text">공격 수행</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%8C%80%EC%9D%91-%EB%B0%A9%EC%95%88"><span class="nav-number">8.</span> <span class="nav-text">대응 방안</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8C%8C%EB%9D%BC%EB%AF%B8%ED%84%B0-%EB%B0%94%EC%9D%B8%EB%94%A9-%EC%82%AC%EC%9A%A9"><span class="nav-number">8.1.</span> <span class="nav-text">파라미터 바인딩 사용</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9E%85%EB%A0%A5-%EA%B2%80%EC%A6%9D"><span class="nav-number">8.2.</span> <span class="nav-text">입력 검증</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B5%9C%EC%86%8C-%EA%B6%8C%ED%95%9C-DB-%EC%82%AC%EC%9A%A9%EC%9E%90-%EC%84%A4%EC%A0%95"><span class="nav-number">8.3.</span> <span class="nav-text">최소 권한 DB 사용자 설정</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">9.</span> <span class="nav-text">마치며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B6%9C%EC%B2%98"><span class="nav-number">10.</span> <span class="nav-text">출처</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/05/20/3103_250520/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: rlozll</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-05-20 04:00:00" itemprop="dateCreated datePublished" datetime="2025-05-20T04:00:00+09:00">2025-05-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EC%A7%80%EC%9B%90%EC%84%9C-%EB%9C%AF%EC%96%B4%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">지원서 뜯어보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- 지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt -->
+
+<h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며"></a>들어가며</h1><p>2025년 32기 지원서는 상중하 세 문제로 이루어져 있었는데, 그 중 하 문제인 Dreamhack의 simple_sqli_chatgpt의 문제에 대한 라이트업을 써보려 한다.</p>
+<p>뭐 인터넷에 이미 나와있는 라이트업이 많긴 하지만 지원서 문제를 낸 입장에서도 그렇고, 기술블로그에 올리기도 하고 싶어서 써보려 한다.</p>
+<span id="more"></span>
+<p><br><br></p>
+<h1 id="SQL-Injection이란"><a href="#SQL-Injection이란" class="headerlink" title="SQL Injection이란?"></a>SQL Injection이란?</h1><p>우선 본격적으로 라이트업을 쓰기 전에 SQL Injection이 뭔지에 대해 알아볼 것이다.</p>
+<p>문제 이름이 simple sqli chatgpt인 만큼, sqli에 대해 알고 넘어가는 게 중요하다.</p>
+<p>**SQL Injection(SQLi)**은 웹 애플리케이션에서 사용자 입력을 적절히 검증하지 않고 SQL 쿼리에 포함시킬 때 발생하는 보안 취약점이다.</p>
+<p>공격자는 이를 이용해 데이터베이스의 정보를 조회, 수정, 삭제하거나 인증을 우회할 수 있다.</p>
+<p>예를 들어, 다음과 같은 쿼리가 있다고 가정하겠다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM users WHERE username = &#x27;rlozll&#x27; AND password = &#x27;swing31&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>만약 사용자가 username에 ‘ OR ‘1’&#x3D;’1을 입력하면, 쿼리는 다음과 같이 변형된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM users WHERE username = &#x27;&#x27; OR &#x27;1&#x27;=&#x27;1&#x27; AND password = &#x27;swing31&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 되면 1&#x3D;1이라는 조건이 항상 참이지 인증을 우회할 수 있게 된다.</p>
+<p>또다른 예시를 들어보겠다. 아래와 같은 코드가 있다고 가정하겠다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username = request.form[&#x27;username]</span><br><span class="line">query = f&quot;SELECT * FROM users WHERE username=&#x27;&#123;username&#125;&#x27;&quot;</span><br></pre></td></tr></table></figure>
+<p>이때 사용자가 username에 admin’–을 입력하면 쿼리는 다음과 같이 된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM users WHERE username=&#x27;admin&#x27; --&#x27;</span><br></pre></td></tr></table></figure>
+<p>– 이후는 주석 처리되기 때문에 읽어내지 못한다.</p>
+<p>따라서 조건이 조작되어 인증 우회나 정보 탈취가 가능하게 된다.</p>
+<p><br><br></p>
+<h1 id="문제-개요-simple-sqli-chatgpt"><a href="#문제-개요-simple-sqli-chatgpt" class="headerlink" title="문제 개요: simple_sqli_chatgpt"></a>문제 개요: simple_sqli_chatgpt</h1><p>문제 링크: <span class="exturl" data-url="aHR0cHM6Ly9kcmVhbWhhY2suaW8vd2FyZ2FtZS9jaGFsbGVuZ2VzLzc2OQ==">https://dreamhack.io/wargame/challenges/769</span><br>이 문제는 로그인 페이지에서 사용자 입력을 통해 SQL Injection을 수행하여 플래그를 획득하는 것이 목표다. <br></p>
+<p><img src="/images/3103_250520_image1.png" alt="그림 1. https://github.com/user-attachments/assets/3178eaab-3ccc-4725-9f65-c95377d26422, [문제 풀이 중 로그인 화면]"></p>
+<center><span style="font-size: 90%;">그림 1. [문제 풀이 중 로그인 화면]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>로그인 페이지에는 userlevel이라는 단일 입력 필드를 제공하고 있으며, 이를 기반으로 사용자를 인증한다.<br><br><br></p>
+<h1 id="소스-코드-분석"><a href="#소스-코드-분석" class="headerlink" title="소스 코드 분석"></a>소스 코드 분석</h1><p>문제에서 제공하는 코드 중 주요 부분만 추출해 보도록 하겠다.<br><br><br></p>
+<h2 id="1-데이터베이스-생성"><a href="#1-데이터베이스-생성" class="headerlink" title="1. 데이터베이스 생성"></a>1. 데이터베이스 생성</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.execute(&#x27;create table users(userid char(100), userpassword char(100), userlevel integer);&#x27;)</span><br><span class="line">db.execute(f&#x27;insert into users(userid, userpassword, userlevel) values (&quot;guest&quot;, &quot;guest&quot;, 0), (&quot;admin&quot;, &quot;&#123;binascii.hexlify(os.urandom(16)).decode(&quot;utf8&quot;)&#125;&quot;, 0);&#x27;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>userid: guest&#x2F;admin</li>
+<li>userpassword: guest&#x2F;랜덤값</li>
+<li><strong>모두 userlevel &#x3D; 0</strong>으로 설정되어 있음<br></li>
+</ul>
+<h2 id="2-쿼리-수행"><a href="#2-쿼리-수행" class="headerlink" title="2. 쿼리 수행"></a>2. 쿼리 수행</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">userlevel = request.form.get(&#x27;userlevel&#x27;)</span><br><span class="line">res = query_db(f&quot;select * from users where userlevel=&#x27;&#123;userlevel&#125;&#x27;&quot;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>userlevel 값을 사용자 입력에서 가져와 <strong>직접 쿼리에 삽입</strong></li>
+<li>파라미터 바인딩을 사용하지 않고, 문자열 포매팅을 사용 -&gt; <strong>SQL Injection 가능</strong><br></li>
+</ul>
+<h2 id="3-조건-판단"><a href="#3-조건-판단" class="headerlink" title="3. 조건 판단"></a>3. 조건 판단</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if res:</span><br><span class="line">    userid = res[0]</span><br><span class="line">    userlevel = res[2]</span><br><span class="line">    if userid == &#x27;admin&#x27; and userlevel == 0:</span><br><span class="line">        return f&#x27;hello &#123;userid&#125; flag is &#123;FLAG&#125;&#x27;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>조건을 만족하면 플래그 노출</li>
+<li>즉, <strong>userlevel&#x3D;0 이면서 userid&#x3D;’admin’인 경우</strong> 플래그가 출력됨<br></li>
+</ul>
+<h1 id="핵심-취약점"><a href="#핵심-취약점" class="headerlink" title="핵심 취약점"></a>핵심 취약점</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res = query_db(f&quot;select * from users where userlevel=&#x27;&#123;userlevel&#125;&#x27;&quot;)</span><br></pre></td></tr></table></figure>
+<p>이 부분에서 userlevel에 아무런 필터링 없이 쿼리에 삽입된다.</p>
+<p>이로 인해 공격자는 다음과 같이 조작할 수 있게 된다.<br><br><br></p>
+<h1 id="SQL-Injection-시나리오"><a href="#SQL-Injection-시나리오" class="headerlink" title="SQL Injection 시나리오"></a>SQL Injection 시나리오</h1><blockquote>
+<p>목표: userlvel 값 하나만 입력해서, <strong>userid가 ‘admin’인 행</strong>을 선택해야 함<br><br></p>
+</blockquote>
+<h2 id="공격-입력"><a href="#공격-입력" class="headerlink" title="공격 입력"></a>공격 입력</h2><p>다음 값을 userlevel에 입력하도록 하겠다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0&#x27; and userid=&#x27;admin&#x27; --</span><br></pre></td></tr></table></figure>
+<br>
+
+<h2 id="실제-쿼리-동작-방식"><a href="#실제-쿼리-동작-방식" class="headerlink" title="실제 쿼리 동작 방식"></a>실제 쿼리 동작 방식</h2><p>입력값을 반영한 최종 쿼리는 다음과 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT * FROM users WHERE userlevel=&#x27;0&#x27; and userid=&#x27;admin&#x27; --&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>userlevel&#x3D;’0’ 조건 만족</li>
+<li>userid&#x3D;’admin’ 조건 만족</li>
+<li>– 뒤는 주석 처리 -&gt; 쿼리 구문 오류 방지 (읽지 못하도록)<br></li>
+</ul>
+<h1 id="공격-수행"><a href="#공격-수행" class="headerlink" title="공격 수행"></a>공격 수행</h1><p><img src="/images/3103_250520_image2.png" alt="그림 2. https://github.com/user-attachments/assets/39b69ca1-b905-446e-a8fd-ed194a53af1c, [플래그 출력 화면]"></p>
+<center><span style="font-size: 90%;">그림 2. [플래그 출력 화면]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>이렇게 다음과 같은 플래그를 얻을 수 있었다.</p>
+<p><strong>Flag: DH{chatGPT_told_me_a_lullaby}</strong><br><br></p>
+<h1 id="대응-방안"><a href="#대응-방안" class="headerlink" title="대응 방안"></a>대응 방안</h1><p>문제는 다 풀었지만, 대응 방안도 간단히 알아보도록 하겠다.<br><br><br></p>
+<h2 id="파라미터-바인딩-사용"><a href="#파라미터-바인딩-사용" class="headerlink" title="파라미터 바인딩 사용"></a>파라미터 바인딩 사용</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.execute(&quot;SELECT * FROM users WHERE userlevel=?&quot;, (userlevel,))</span><br></pre></td></tr></table></figure>
+<br>
+
+<h2 id="입력-검증"><a href="#입력-검증" class="headerlink" title="입력 검증"></a>입력 검증</h2><ul>
+<li>숫자 입력값만 허용: int(userlevel)</li>
+<li>화이트리스트 기반 검증<br></li>
+</ul>
+<h2 id="최소-권한-DB-사용자-설정"><a href="#최소-권한-DB-사용자-설정" class="headerlink" title="최소 권한 DB 사용자 설정"></a>최소 권한 DB 사용자 설정</h2><ul>
+<li>데이터 조회 권한만 있는 사용자 사용</li>
+<li>시스템 테이블 접근 제한 <br></li>
+</ul>
+<h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h1><p>드림핵의 simple_sqli_chatgpt 문제는 SQL Injection의 핵심과 위험성을 간단히 보여주는 예제다.</p>
+<p>본인은 해당 문제를 1학년 때 처음 풀어봤는데, 꽤 재밌게 풀었던 기억이 난다.</p>
+<p><del>그렇게 풋풋했는데 지금은 어느덧 사망년이다.</del></p>
+<p>다음 기술블로그는 어떤 걸 써볼지 고민해봐야지.<br><br><br></p>
+<h1 id="출처"><a href="#출처" class="headerlink" title="출처"></a>출처</h1><p>SQL Injection. (n.d.). OWASP. <span class="exturl" data-url="aHR0cHM6Ly9vd2FzcC5vcmcvd3d3LWNvbW11bml0eS9hdHRhY2tzL1NRTF9JbmplY3Rpb24=">https://owasp.org/www-community/attacks/SQL_Injection</span></p>
+<p>simple_sqli_chatgpt. (n.d.). Dreamhack. <span class="exturl" data-url="aHR0cHM6Ly9kcmVhbWhhY2suaW8vd2FyZ2FtZS9jaGFsbGVuZ2VzLzc2OQ==">https://dreamhack.io/wargame/challenges/769</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web-Hacking/" rel="tag"># Web Hacking</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/17/3102_250517/" rel="prev" title="지원서 뜯어보기 [중] dreamhack shell_basic">
+                  <i class="fa fa-angle-left"></i> 지원서 뜯어보기 [중] dreamhack shell_basic
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/05/27/323301_250527/" rel="next" title="[사이버 탐험 : 보안의 첫걸음] 스테가노그래피란?">
+                  [사이버 탐험 : 보안의 첫걸음] 스테가노그래피란? <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

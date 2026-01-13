@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가며..이번 글에서는 리눅스 환경에서의 사이버 공격이 어떻게 가능하며, 실제 실습을 통해 어떤 방식으로 공격이 이뤄지는지 살펴보고자 한다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/07/3301_250907/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="들어가며..이번 글에서는 리눅스 환경에서의 사이버 공격이 어떻게 가능하며, 실제 실습을 통해 어떤 방식으로 공격이 이뤄지는지 살펴보고자 한다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3301_250907_image24.png">
+<meta property="article:published_time" content="2025-09-06T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T06:48:26.133Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="리눅스">
+<meta property="article:tag" content="취약점 분석">
+<meta property="article:tag" content="익스플로잇">
+<meta property="article:tag" content="metasploitable2">
+<meta property="article:tag" content="nmap">
+<meta property="article:tag" content="hydra">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3301_250907_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/07/3301_250907/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/07/3301_250907/","path":"2025/09/07/3301_250907/","title":"리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">들어가며..</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A6%AC%EB%88%85%EC%8A%A4%EC%99%80-%EC%82%AC%EC%9D%B4%EB%B2%84-%EA%B3%B5%EA%B2%A9"><span class="nav-number">2.</span> <span class="nav-text">리눅스와 사이버 공격</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A9%94%ED%83%80%EC%9D%B5%EC%8A%A4%ED%94%8C%EB%A1%9C%EC%9E%87%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%A6%AC%EB%88%85%EC%8A%A4%EC%97%90%EC%84%9C%EC%9D%98-%ED%99%9C%EC%9A%A9-%EC%98%88%EC%8B%9C"><span class="nav-number">3.</span> <span class="nav-text">메타익스플로잇을 이용한 리눅스에서의 활용 예시</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nmap-%EC%98%B5%EC%85%98-%EC%84%A4%EB%AA%85"><span class="nav-number">4.</span> <span class="nav-text">Nmap 옵션 설명</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hydra-root-vs-msfadmin-%EB%AC%B4%EC%B0%A8%EB%B3%84-%EB%8C%80%EC%9E%85-%EA%B3%B5%EA%B2%A9-%EB%B9%84%EA%B5%90"><span class="nav-number">5.</span> <span class="nav-text">Hydra root vs msfadmin 무차별 대입 공격 비교</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nmap-%EC%8A%A4%EC%BA%94-%EC%8B%A4%EC%8A%B5-%ED%8F%AC%ED%8A%B8-%EB%B0%8F-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%B7%A8%EC%95%BD%EC%A0%90-%ED%83%90%EC%83%89-%EA%B3%BC%EC%A0%95"><span class="nav-number">6.</span> <span class="nav-text">Nmap 스캔 실습, 포트 및 서비스 취약점 탐색 과정</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#telnet"><span class="nav-number">7.</span> <span class="nav-text">telnet</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">8.</span> <span class="nav-text">마치며..</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B6%9C%EC%B2%98"><span class="nav-number">8.1.</span> <span class="nav-text">출처</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/07/3301_250907/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: eo025o</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-07 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-07T00:00:00+09:00">2025-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며.."></a>들어가며..</h1><p>이번 글에서는 리눅스 환경에서의 사이버 공격이 어떻게 가능하며, 실제 실습을 통해 어떤 방식으로 공격이 이뤄지는지 살펴보고자 한다. </p>
+<span id="more"></span>
+<p><br><br></p>
+<h1 id="리눅스와-사이버-공격"><a href="#리눅스와-사이버-공격" class="headerlink" title="리눅스와 사이버 공격"></a>리눅스와 사이버 공격</h1><p>리눅스는 오랜 기간 동안 고성능과 안전성을 바탕으로 서버, 클라우드, IoT 등 다양한 환경에서 핵심 운영체제로 자리 잡아왔다.<br>특히 개방성과 유연성, 그리고 강력한 권한 제어 시스템 덕분에 보안에 강한 운영체제로 여겨지기도 한다.<br>하지만 현실적으로는 리눅스 시스템 또한 수많은 보안 위협에 노출되어 있으며, 특히 관리자의 부주의나 인간의 심리를 노리는 공격에 대해선 여전히 취약한 면이 존재한다.<br>오늘은 그중 익스플로잇을 이용한 사이버 공격 기법에 대해 정리할 것이다.<br>리눅스 시스템은 웹 서버, 데이터베이스, 인증 서버 등 핵심 인프라가 구동되는 기반 환경이므로, 이곳에서 발생하는 침해는 단순한 사용자 피해를 넘어 전체 시스템과 조직 전체의 정보 유출로 이어질 수 있다.<br><br><br></p>
+<h1 id="메타익스플로잇을-이용한-리눅스에서의-활용-예시"><a href="#메타익스플로잇을-이용한-리눅스에서의-활용-예시" class="headerlink" title="메타익스플로잇을 이용한 리눅스에서의 활용 예시"></a>메타익스플로잇을 이용한 리눅스에서의 활용 예시</h1><p>우선 모의침투 연습을 위해 vmware에 <strong>metasploitable2</strong>를 설치한다. metasploitable2는<br>metasploit에서 모의 침투를 위해 의도적으로 취약하게 만든 가상머신이다.<br>metasploitable2 설치 후 머신의 터미널을 연다. </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig</span><br></pre></td></tr></table></figure>
+<p>위 명령어는 활성화된 네트워크 인터페이스의 IP 주소, 상태 등을 출력하는 명령어이다.<br>이를 실행 하면 inet, netmask 등 여러 단어들이 출력되는데, inet은 IP 주소를 나타내고, netmask는 서브넷 마스크를 나타낸다. 이후 metasploit을 실행 후 머신의 터미널을 연다.<br><img src="/images/3301_250907_image1.png" alt="그림 1."></p>
+<center><span style="font-size: 90%;">그림 1.</span><br><span style="font-size: 70%;"></span></center>
+
+<p>실행하면 이와 같은 것들이 나오는데, <code>2461 exploits</code>은 현재 시스템이나 툴에서 사용 가능한 공격 코드인 익스플로잇의 개수를 의미하는 표현이고, <code>1471 payloads</code>는 현재 사용 가능한 페이로드가 1471개라는 뜻이다.<br>이때, 페이로드란, 익스플로잇이 성공한 후, 대상 시스템에 전달되어 실행되는 코드이다.</p>
+<p>그 다음, 사용자를 추가하는 명령어를 사용한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser </span><br></pre></td></tr></table></figure>
+<p>명령어를 보면 알 수 있듯이, 관리자 권한으로 실행하는데, 비밀번호는 metasploitable2의 기본 비밀번호인 msadmin을 사용한다.<br><br><br></p>
+<h1 id="Nmap-옵션-설명"><a href="#Nmap-옵션-설명" class="headerlink" title="Nmap 옵션 설명"></a>Nmap 옵션 설명</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap [IP] </span><br></pre></td></tr></table></figure>
+<p><strong>타겟의 포트와 서비스 등을 스캔하는 명령어</strong>인데, 네트워크 상 포트를 스캔해 서비스 정보를 파악할 수 있는 도구다. 침투 테스트에서 <strong>목표 시스템의 열린 포트, 실행 중인 서비스, 운영체제 등을 파악</strong>할 때 자주 사용한다. -sS, -sV, -O, -A, -p, -T[] 등의 옵션을 사용할 수 있다. </p>
+<table>
+<thead>
+<tr>
+<th>옵션</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-sS</td>
+<td>TCP SYN을 스캔</td>
+</tr>
+<tr>
+<td>-sV</td>
+<td>서비스 버전의 정보를 확인</td>
+</tr>
+<tr>
+<td>-O</td>
+<td>운영체제 추정</td>
+</tr>
+<tr>
+<td>-A</td>
+<td>운영체제, 버전, 스크립트 등 종합적 스캔</td>
+</tr>
+<tr>
+<td>-p</td>
+<td>특정 포트만 스캔, 옵션 뒤에 스캔할 포트를 입력하고 IP를 입력하여 사용</td>
+</tr>
+<tr>
+<td>-T[]</td>
+<td>속도를 조절하는 옵션 (T0~T5), 숫자가 클수록 빠름</td>
+</tr>
+</tbody></table>
+<p>그리고 이 옵션들을 조합하여 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -sS -sV -p 51,67 -T4 [IP] </span><br></pre></td></tr></table></figure>
+<p>이렇게 쓸 수 있다.<br>이는 <strong>TCP SYN 스캔, 서비스 버전 정보 확인, 51번 포트와 67번 포트 확인, T4는 스캔 속도 마지막 숫자는 IP임</strong>을 나타낸다.</p>
+<p> T[] 옵션에 대해 부가설명하자면, 보통 기본값은 T3인데, 실습시에는 일반적으로 조금 더 빠른 T4를 사용한다. 빠른 걸 원하면 T5를 사용하면 되지 않냐는 생각을 할 수도 있는데 매우 빠르기 때문에 부정확할 가능성이 있다는 것이다. 숫자가 클수록 정확도가 떨어지고 누락되는 값은 많아지며 방화벽에 의해 쉽게 탐지되고, 네트워크 부하가 걸릴 가능성이 높다는 것이다.</p>
+<p>위에 작성한 명령어들을 바탕으로 metasploitable2에서 nmap 스캔한 결과, 다음 두 가지<br>취약한 서비스들을 확인할 수 있었다.</p>
+<p>첫 번째는 <strong>telnet</strong> 명령어다.<br><img src="/images/3301_250907_image2.png" alt="그림 2."></p>
+<center><span style="font-size: 90%;">그림 2.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">telnet [IP]</span><br></pre></td></tr></table></figure>
+<p>이는 대상 호스트의 Telnet 서비스에 직접 접속하는 명령어다.<br>실행 시 로그인까지 하면 셸이 열려서 ls, whoami 등 <strong>metasploitable2 내부 명령어를 실행</strong>할 수 있다.<br><br><br>  </p>
+<h1 id="Hydra-root-vs-msfadmin-무차별-대입-공격-비교"><a href="#Hydra-root-vs-msfadmin-무차별-대입-공격-비교" class="headerlink" title="Hydra root vs msfadmin 무차별 대입 공격 비교"></a>Hydra root vs msfadmin 무차별 대입 공격 비교</h1><p><img src="/images/3301_250907_image3.png" alt="그림 3."></p>
+<center><span style="font-size: 90%;">그림 3.</span><br><span style="font-size: 70%;"></span></center>
+hydra를 이용해 Telnet 서비스에 무차별 대입 공격을 시도한 결과, **root 계정**으로는
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -l root -P small.txt telnet://[IP]</span><br></pre></td></tr></table></figure>
+<p>위의 명령어를 실행했을 때, <code>0 valid passwords found</code>가 출력되며 실패했다. 이는 root 계정이 <strong>보안 상의 이유로 접속 시도 제한이나 계정 잠금 정책이 적용</strong>되어 있거나, <strong>공격에 사용된 비밀번호 리스트(small.txt) 내에 root 계정의 실제 비밀번호가 포함되어 있지 않기 때문이다.</strong><br>반면, <strong>msfadmin 계정</strong>으로 같은 단어 리스트를 사용해</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -l msfadmin -P small.txt telnet://[IP]</span><br></pre></td></tr></table></figure>
+<p>위의 명령어를 실행하자, <code>login: msfadmin</code>, <code>password:msfadmin</code>이라는 결과가 출력되며 <strong>로그인 정보 추출에 성공했다.</strong> 이는 msfadmin 계정이 <strong>초기 설정 시 기본값</strong>으로 남아 있거나 <strong>취약한 비밀번호가 사용된 상태여서 무차별 대입 공격에 쉽게 노출된 것</strong>으로 판단된다. 즉, <strong>root 계정은 보안 조치나 강력한 비밀번호로 인해 공격을 방어한 반면, msfadmin 계정은 기본 계정 및 비밀번호 관리 미흡으로 인한 취약점이 드러난 것이다.</strong></p>
+<p><img src="/images/3301_250907_image4.png" alt="그림 4."></p>
+<center><span style="font-size: 90%;">그림 4.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig </span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/3301_250907_image5.png" alt="그림 5."></p>
+<center><span style="font-size: 90%;">그림 5.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip a </span><br></pre></td></tr></table></figure>
+
+<p>리눅스와 우분투에서 각각 ip값을 알아낸다.</p>
+<p><img src="/images/3301_250907_image6.png" alt="그림 6."></p>
+<center><span style="font-size: 90%;">그림 6.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sT [IP] </span><br></pre></td></tr></table></figure>
+<p><strong>3-way handshaking을 이용하여 포트가 열려있는지 닫혀있는지 알아보는 스캔 방법</strong><br>연결 기록이 남기 때문에 공격자가 자주 사용하진 않는다.<br>여기서는 <strong>포트가 다 닫혀 있어서 공격을 할 수 없다.</strong> 따라서 우분투에서 nmap에서 포트가 보이게 해야 공격 실습이 가능하다. 위 내용은 포트가 닫혀 있어 진행할 수 없음을 나타낸다. 따라서 <strong>우분투에서 포트를 먼저 열어주어야 한다.</strong><br><img src="/images/3301_250907_image7.png" alt="그림 7."></p>
+<center><span style="font-size: 90%;">그림 7.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install xinetd telnetd </span><br></pre></td></tr></table></figure>
+<p><img src="/images/3301_250907_image8.png" alt="그림 8."></p>
+<center><span style="font-size: 90%;">그림 8.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start xinetd </span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/3301_250907_image9.png" alt="그림 9."></p>
+<center><span style="font-size: 90%;">그림 9.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install net-tools -y </span><br><span class="line">sudo netstat -tulnp | grep 23 </span><br></pre></td></tr></table></figure>
+<p>이를 통해 <strong>우분투에 telnet 서비스가 열리고,  23포트가 열리며 공격이 가능해진 상태</strong>가 되는 것이다.<br><br><br>  </p>
+<h1 id="Nmap-스캔-실습-포트-및-서비스-취약점-탐색-과정"><a href="#Nmap-스캔-실습-포트-및-서비스-취약점-탐색-과정" class="headerlink" title="Nmap 스캔 실습, 포트 및 서비스 취약점 탐색 과정"></a>Nmap 스캔 실습, 포트 및 서비스 취약점 탐색 과정</h1><p><img src="/images/3301_250907_image10.png" alt="그림 10."></p>
+<center><span style="font-size: 90%;">그림 10.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sS [IP] </span><br></pre></td></tr></table></figure>
+<p>nmap을 사용해 <strong>타겟 시스템 [IP]의 열린 포트를 스캔</strong>한 결과, 23번 포트가 열려 있고 telnet 서비스가 실행 중인 것을 확인할 수 있었다. 이는 <strong>우분투 피해자 시스템에서 telnet 서비스를 활성화한 결과이며, 해당 포트를 통해 인증 우회, 무차별 대입 공격 등 다양한 취약점 실습이 가능해진다.</strong> 나머지 999개의 포트는 닫혀 있었으며, nmap은 TCP SYN 스캔인 -sS 옵션을 통해 포트 상태를 빠르게 판별했다.  </p>
+<p><img src="/images/3301_250907_image11.png" alt="그림 11."></p>
+<center><span style="font-size: 90%;">그림 11.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sU –top-ports 30 [IP] </span><br></pre></td></tr></table></figure>
+<p><strong>UDP 서비스 탐지</strong>를 위해 nmap -sU –top-ports 30 명령어를 사용하여 상위 30개의 UDP 포트를 스캔한 결과, 68번 (dhcpc) 포트와 5353번(zeroconf) 포트가 <code>open|filtered</code> 상태로 확인되었다. 이는 <strong>해당 포트들이 열려 있거나 방화벽 등에 의해 필터링되어 명확한 상태를 판단할 수 없음을 의미한다.</strong> UDP는 특성상 응답이 없어도 열려 있을 가능성이 있어 <code>open|filtered</code>라는 중간 상태로 나타나는 경우가 많다. 스캔에는 약 26초가 소요되었으며, 나머지 28개의 포트는 응답 없음 (port-unreach)으로 닫혀 있는 상태였다.<br>참고로, TCP 스캔 결과에서는 23번 포트(telnet)가 열린 상태였지만, 이번 UDP 스캔에서는 해당 포트는 나타나지 않았다. 이는 telnet 서비스가 TCP 기반이기 때문이며, UDP 스캔에서는 별도로 동작하는 UDP 서비스만 탐지된다.</p>
+<p><img src="/images/3301_250907_image12.png" alt="그림 12."></p>
+<center><span style="font-size: 90%;">그림 12.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sN [IP] </span><br></pre></td></tr></table></figure>
+<p><strong>TCP Null 스캔</strong>을 통해 타겟 시스템의 포트를 탐지한 결과, 23번 포트가 <code>open|filtered</code> 상태로 나타났다. 이는 해당 포트가 열려 있을 수도 있고, 방화벽 등 보안 장치에 의해 정확한 응답이 차단되어 있을 수도 있음을 의미한다. Null 스캔은 TCP 플래그를 설정하지 않고 전송하는 방식으로, 일부 시스템에서는 보안 장비 우회를 위해 활용되지만, 신뢰성이 떨어질 수 있다는 단점이 있다. 나머지 999개 포트는 reset 응답으로 닫혀 있는 것으로 확인되었다.<br><br><br>  </p>
+<h1 id="telnet"><a href="#telnet" class="headerlink" title="telnet"></a>telnet</h1><p><img src="/images/3301_250907_image13.png" alt="그림 13."></p>
+<center><span style="font-size: 90%;">그림 13.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -sV [IP] </span><br></pre></td></tr></table></figure>
+<p>에서 nmap -sV 명령어를 사용해 <strong>타겟 시스템의 서비스 버전</strong>을 탐지한 결과, 23번 포트가 열려 있고 해당 포트에서 Linux telnetd 서비스가 실행 중인 것을 확인했다. 이는 <strong>telnet 서버가 리눅스 기반 시스템에서 동작하고 있음을 의미하며, 서비스 정보에는 운영체제 (OS)가 Linux로 식별되었다.</strong> 버전 탐지를 통해 구체적인 서비스 종류를 파악할 수 있어, 이후 취약점 검색 및 익스플로잇 도구 선택에 유용한 정보를 제공한다.</p>
+<p><img src="/images/3301_250907_image14.png" alt="그림 14."></p>
+<center><span style="font-size: 90%;">그림 14.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -A [IP] -T4</span><br></pre></td></tr></table></figure>
+<p>종합적인 시스템 정보를 수집하기 위해 nmap -A -T4 명령어를 사용해 스캔을 수행했다. 그 결과, <strong>23번 포트에서 Linux telnetd 서비스가 실행중이며, 운영체제는 Linux 커널 4.15~5.8 범위로 추정되었다.</strong> <strong>-A 옵션</strong>은 <strong>서비스 버전, 운영체제 정보, 트레이서트 등을 포함한 고급 탐지 기능을 활성화하며, -T4는 스캔 속도를 빠르게 하기 위한 성능 옵션</strong>이다. 이 결과는 공격 대상 시스템의 구조와 취약점을 파악하는 데 매우 유용하며, 향후 exploit 도구를 선택하는 데 중요한 기초 정보로 활용될 수 있다. </p>
+<p><img src="/images/3301_250907_image15.png" alt="그림 15."></p>
+<center><span style="font-size: 90%;">그림 15.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dpkg -l | grep telnetd </span><br></pre></td></tr></table></figure>
+<p>이 명령어로 설치된 <strong>패키지의 버전</strong>을 확인했다. 피해자 시스템에는 telnetd 0.17-44build1 이 설치되어 있었으며, 이는 Ubuntu용으로 리패키징된 구형 telnet 서버다. <strong>해당 버전은 과거 BSD 기반 telnetd의 버퍼 오버플로우 취약점(CVE-2001-0554) 코드에서 파생</strong>되었지만, encryption 기능이 제거되거나 비활성화되어 있는 경우 이 취약점은 직접적으로 적용되지 않는다. 그러나 telnet 프로토콜 자체가 암호화되지 않은 평문 통신을 사용하기 때문에, <strong>여전히 스니핑 및 무차별 대입 공격에 매우 취약하다.</strong></p>
+<p><img src="/images/3301_250907_image16.png" alt="그림 16."></p>
+<center><span style="font-size: 90%;">그림 16.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap –script=telnet-brute.nse -p23 –script</span><br><span class="line">args=brute.threads=10,brute.max_retries=1 [IP]</span><br></pre></td></tr></table></figure>
+<p>telnet-brute.nse가 10분 제한 시간 초과 후 <code>No valid accounts found</code>가 나왔다. 즉, <strong>nmap brute-force는 너무 느리고 효율적이지 않았다.</strong> 따라서 무차별 대입 공격에 빠르고 효과적인 <strong>hydra</strong>를 이용했다.  </p>
+<p><img src="/images/3301_250907_image17.png" alt="그림 17."></p>
+<center><span style="font-size: 90%;">그림 17.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hydra -l msfadmin -P /usr/share/wordlists/rockyou.txt telnet://[IP]</span><br></pre></td></tr></table></figure>
+<p>실행 결과를 통해 알 수 있는 것은 <strong>공격은 정상적으로 시작되었으며, 계정은 msfadmin이고, 비밀번호 리스트는 rockyou.txt, 진행 속도는 매우 느리다는 것</strong>이다. 현재 리스트가 너무 커서 현실적으로는 불가능하다고 보기에 <strong>작은 리스트로 공격을 진행하는 것</strong>을 추천한다. </p>
+<p><img src="/images/3301_250907_image18.png" alt="그림 18."></p>
+<center><span style="font-size: 90%;">그림 18.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfconsole </span><br></pre></td></tr></table></figure>
+<p>Metasploit을 실행한다.  </p>
+<p><img src="/images/3301_250907_image19.png" alt="그림 19."></p>
+<center><span style="font-size: 90%;">그림 19.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">search telnet </span><br></pre></td></tr></table></figure>
+<p><strong>telnet 관련 모듈을 검색</strong>한다. 여기서 내가 사용할 모듈은 **72번 <code>auxiliary/scanner/telnet/telnet_login</code>**이다.  </p>
+<p><img src="/images/3301_250907_image20.png" alt="그림 20."></p>
+<center><span style="font-size: 90%;">그림 20.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use auxiliary/scanner/telnet/telnet_login </span><br></pre></td></tr></table></figure>
+<p>모듈을 선택해서 프롬프트가 변경된 것을 알 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show options </span><br></pre></td></tr></table></figure>
+<p>기본 설정값을 확인한다. 여기서 어떤 값들을 set 해야 하는지 보여준다. </p>
+<p><img src="/images/3301_250907_image21.png" alt="그림 21."></p>
+<center><span style="font-size: 90%;">그림 21.</span><br><span style="font-size: 70%;"></span></center>
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set RHOSTS 192.168.245.131 </span><br><span class="line">set RPORT 23 </span><br><span class="line">set USERNAME msfadmin </span><br><span class="line">set PASSWORD msfadmin </span><br></pre></td></tr></table></figure>
+<p><strong>설정되어있지 않은 RHOSTS, RPORT, USERNAME, PASSWORD 등을 추가로 설정</strong>해준다. </p>
+<p><img src="/images/3301_250907_image22.png" alt="그림 22."></p>
+<center><span style="font-size: 90%;">그림 22.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run </span><br></pre></td></tr></table></figure>
+<p>실행한다.<br>Metasploit의 telnet_login 모듈을 이용해 msfadmin:msfadmin 조합으로 로그인을 시도했으나 실패했다. 계정과 그 비밀번호가 msfadmin:msfadmin이 아니었고, <strong>계정 자체가 없었던</strong> 문제점을 발견해서 우분투로 돌아가 재설정을 했다.  </p>
+<p><img src="/images/3301_250907_image23.png" alt="그림 23."></p>
+<center><span style="font-size: 90%;">그림 23.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo useradd -m msfadmin </span><br><span class="line">echo ‘msfadmin:msfadmin’ | sudo chpasswd </span><br><span class="line">Sudo systemctl restart inetd </span><br></pre></td></tr></table></figure>
+
+<p>이 명령어들을 활용하여 우분투에서 계정을 만들고 비밀번호를 설정했다. 계정을 만들 때 캡처를 하지 않고 터미널을 종료했어서 이미 만든 계정을 확인하는 명령어 실행 부분을 첨부했다.</p>
+<p><img src="/images/3301_250907_image24.png" alt="그림 24."></p>
+<center><span style="font-size: 90%;">그림 24.</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">run </span><br></pre></td></tr></table></figure>
+<p>내부 테스트 환경에서 Kali Linux를 이용해 Ubuntu 호스트의 Telnet 서비스 취약점을 탐지하고 공격하는 과정을 진행했다. 우선 <strong>Nmap 스크립트를 통해 Telnet 서비스가 활성화된 것을 확인</strong>했고, <strong>Metasploit 프레임워크의 auxiliary&#x2F;scanner&#x2F;telnet&#x2F;telnet_login 모듈을 사용</strong>해 <strong>기본 계정 msfadmin과 비밀번호 msfadmin으로 로그인 시도</strong>를 했다. 초기에는 위와 같이 로그인 실패가 발생하여, 다른 취약점을 더 찾아보려 했으나 이 마저도 실패하여 다시 시도한 후 해당 조합으로 성공적으로 <strong>로그인에 성공</strong>했다. 이후 <strong>자동으로 명령어 셀 세션이 열리면서 원격 시스템에 대한 제어 권한을 획득</strong>하였다. 이는 <strong>Telnet 서비스에 기본 계정이 활성화된 상태에서 쉽게 접근이 가능하다</strong>는 점을 입증한 사례다.<br><br><br></p>
+<h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며.."></a>마치며..</h1><p>이번 글에서는 리눅스 환경에서 익스플로잇을 활용한 공격 실습 과정을 자세히 살펴보았다. 메타익스플로잇과 nmap, hydra 같은 도구를 통해 취약한 서비스 탐색부터 무차별 대입 공격, 권한 획득까지 실제 상황을 재현해 보았다. 특히 기본 계정과 약한 비밀번호 관리가 얼마나 치명적인 보안 취약점이 될 수 있는지를 확인할 수 있었다. 앞으로도 보안 강화와 철저한 계정 관리가 중요하다는 점을 다시 한번 느낀 시간이었다. 또한, 정말 많은 오류들을 마주하며 그만하고 싶다는 생각을 몇 번이고 했는데 해야만 한다는 생각에 계속 하다보니 오류들을 고칠 수 있게 되었고 오류없이 실행되었을 때의 성취감이 너무 행복했다.<br><br><br></p>
+<h2 id="출처"><a href="#출처" class="headerlink" title="출처"></a>출처</h2><ul>
+<li>Gordon Lyon. (n.d.). Nmap Network Scanning. Retrieved July 7, 2025, from<br><span class="exturl" data-url="aHR0cHM6Ly9ubWFwLm9yZy9ib29rL21hbi1wb3J0LXNjYW5uaW5nLXRlY2huaXF1ZXMuaHRtbA==">https://nmap.org/book/man-port-scanning-techniques.html</span></li>
+<li>Rapid7. (n.d.). Metasploit Framework Documentation. Retrieved July 7, 2025, from<br><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLnJhcGlkNy5jb20vbWV0YXNwbG9pdA==">https://docs.rapid7.com/metasploit</span> </li>
+<li>van Jauser &#x2F; THC Hydra. (2023). THC Hydra – A parallelized login cracker. Retrieved July 7,<br>2025, from <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3ZhbmhhdXNlci10aGMvdGhjLWh5ZHJh">https://github.com/vanhauser-thc/thc-hydra</span> </li>
+<li>MITRE Corporation. (n.d.). Common Vulnerabilities and Exposures(CVE). Retrieved July 7,<br>2025, from <span class="exturl" data-url="aHR0cHM6Ly9jdmUubWl0cmUub3JnLw==">https://cve.mitre.org</span> </li>
+<li>Offensive Security. (n.d.). Kali Linux Documentation. Retrieved July 7, 2025, from<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2FsaS5vcmcvZG9jcy8=">https://www.kali.org/docs/</span> </li>
+<li>Offensive Security. (n.d.). Exploit Database. Retrieved July 7, 2025, from<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuZXhwbG9pdC1kYi5jb20v">https://www.exploit-db.com</span> </li>
+<li>Samir, C. (2025, June). How to Use Nmap for Penetration Testing in 2025. Cyber Samir.<br>Retrieved July 7, 2025, from <span class="exturl" data-url="aHR0cHM6Ly9jeWJlcnNhbWlyLmNvbS9ob3ctdG8tdXNlLW5tYXAtZm9yLXBlbmV0cmF0aW9uLXRlc3RpbmctaW4tMjAyNQ==">https://cybersamir.com/how-to-use-nmap-for-penetration-testing-in-2025</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%EB%A6%AC%EB%88%85%EC%8A%A4/" rel="tag"># 리눅스</a>
+              <a href="/tags/%EC%B7%A8%EC%95%BD%EC%A0%90-%EB%B6%84%EC%84%9D/" rel="tag"># 취약점 분석</a>
+              <a href="/tags/%EC%9D%B5%EC%8A%A4%ED%94%8C%EB%A1%9C%EC%9E%87/" rel="tag"># 익스플로잇</a>
+              <a href="/tags/metasploitable2/" rel="tag"># metasploitable2</a>
+              <a href="/tags/nmap/" rel="tag"># nmap</a>
+              <a href="/tags/hydra/" rel="tag"># hydra</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/05/3204_250905/" rel="prev" title="[2025 SWING magazine] Suricata-Based NIDS/NIPS (2)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] Suricata-Based NIDS/NIPS (2)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/07/3205_250909/" rel="next" title="[2025 SWING magazine] CAPTCHA bypass (1)">
+                  [2025 SWING magazine] CAPTCHA bypass (1) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

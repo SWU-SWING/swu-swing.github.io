@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="4. 가상머신을 통한 네트워크 침투 테스트 탐지 실습4.1 네트워크 침투 테스트와 탐지 룰 작성 실습이제 가상머신을 활용해 네트워크 침투 테스트를 진행해 보고, suricata 툴이 탐지 룰을 통해 탐지할 수 있는지 실습을 진행해 보려고 한다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] Suricata-Based NIDS&#x2F;NIPS (2)">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/05/3204_250905/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="4. 가상머신을 통한 네트워크 침투 테스트 탐지 실습4.1 네트워크 침투 테스트와 탐지 룰 작성 실습이제 가상머신을 활용해 네트워크 침투 테스트를 진행해 보고, suricata 툴이 탐지 룰을 통해 탐지할 수 있는지 실습을 진행해 보려고 한다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image7-1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3204_250905_image34.png">
+<meta property="article:published_time" content="2025-09-05T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.249Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="NIDS">
+<meta property="article:tag" content="NIPS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3204_250905_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/05/3204_250905/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/05/3204_250905/","path":"2025/09/05/3204_250905/","title":"[2025 SWING magazine] Suricata-Based NIDS/NIPS (2)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] Suricata-Based NIDS/NIPS (2) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%EA%B0%80%EC%83%81%EB%A8%B8%EC%8B%A0%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%B9%A8%ED%88%AC-%ED%85%8C%EC%8A%A4%ED%8A%B8-%ED%83%90%EC%A7%80-%EC%8B%A4%EC%8A%B5"><span class="nav-number">1.</span> <span class="nav-text">4. 가상머신을 통한 네트워크 침투 테스트 탐지 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%B9%A8%ED%88%AC-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%99%80-%ED%83%90%EC%A7%80-%EB%A3%B0-%EC%9E%91%EC%84%B1-%EC%8B%A4%EC%8A%B5"><span class="nav-number">1.1.</span> <span class="nav-text">4.1 네트워크 침투 테스트와 탐지 룰 작성 실습</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%EC%95%94%ED%98%B8%ED%99%94-%ED%8A%B8%EB%9E%98%ED%94%BD-%EB%B6%84%EC%84%9D"><span class="nav-number">1.2.</span> <span class="nav-text">4.2 암호화 트래픽 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Suricata%EB%A1%9C-%ED%8C%8C%EC%9D%BC-%EC%B6%94%EC%B6%9C%ED%95%98%EA%B8%B0"><span class="nav-number">1.3.</span> <span class="nav-text">4.3 Suricata로 파일 추출하기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-Suricata-pcap-%ED%8C%8C%EC%9D%BC-%EB%B6%84%EC%84%9D"><span class="nav-number">1.4.</span> <span class="nav-text">4.4 Suricata .pcap 파일 분석</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-NIDPS-%ED%86%B5%ED%95%A9-%ED%83%90%EC%A7%80-%ED%88%B4%EC%9D%84-%ED%86%B5%ED%95%9C-pcap-%EB%B6%84%EC%84%9D-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.</span> <span class="nav-text">5. NIDPS 통합 탐지 툴을 통한 pcap 분석 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-Security-Onion-%ED%86%B5%ED%95%A9-%ED%83%90%EC%A7%80-%ED%88%B4%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%95%85%EC%84%B1-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%ED%8A%B8%EB%9E%98%ED%94%BD-%EB%B6%84%EC%84%9D-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.1.</span> <span class="nav-text">5.1 Security Onion 통합 탐지 툴을 활용한 악성 네트워크 트래픽 분석 실습</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-security-onion-%ED%8A%B8%EB%9E%98%ED%94%BD-%ED%83%90%EC%A7%80%EC%97%90-%EC%82%AC%EC%9A%A9%EB%90%9C-suricata-rules-%EB%B6%84%EC%84%9D"><span class="nav-number">2.2.</span> <span class="nav-text">5.2 security onion 트래픽 탐지에 사용된 suricata rules 분석</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#References"><span class="nav-number">3.</span> <span class="nav-text">References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/05/3204_250905/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] Suricata-Based NIDS/NIPS (2) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] Suricata-Based NIDS/NIPS (2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: banda</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-05 13:00:00" itemprop="dateCreated datePublished" datetime="2025-09-05T13:00:00+09:00">2025-09-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="4-가상머신을-통한-네트워크-침투-테스트-탐지-실습"><a href="#4-가상머신을-통한-네트워크-침투-테스트-탐지-실습" class="headerlink" title="4. 가상머신을 통한 네트워크 침투 테스트 탐지 실습"></a>4. 가상머신을 통한 네트워크 침투 테스트 탐지 실습</h2><h3 id="4-1-네트워크-침투-테스트와-탐지-룰-작성-실습"><a href="#4-1-네트워크-침투-테스트와-탐지-룰-작성-실습" class="headerlink" title="4.1 네트워크 침투 테스트와 탐지 룰 작성 실습"></a>4.1 네트워크 침투 테스트와 탐지 룰 작성 실습</h3><p>이제 가상머신을 활용해 네트워크 침투 테스트를 진행해 보고, suricata 툴이 탐지 룰을 통해 탐지할 수 있는지 실습을 진행해 보려고 한다.</p>
+<span id="more"></span>
+
+<p><img src="/images/3204_250905_image1.png" alt="그림 15.tmNIDS 기반 NIDS 탐지 테스트 메뉴"></p>
+<center><span style="font-size: 90%;">그림 15. [tmNIDS 기반 NIDS 탐지 테스트 메뉴]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Testmynids.org는 NIDS 탐지 테스트를 위한 웹 사이트와 프레임워크를 제공한다. 해당 모드를 사용하면 효과적으로 NIDS를 테스트해 볼 수 있다.<br><br></p>
+<p><img src="/images/3204_250905_image2.png" alt="그림 16.tmNIDS UID 테스트(curl 실행 결과)"></p>
+<center><span style="font-size: 90%;">그림 16. [tmNIDS UID 테스트(curl 실행 결과)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Curl 명령어를 통해 URL에서 제공되는 리소스를 반환하도록 한다. 이 테스트 공격은 공격자가 시스템, 권한에 대해 root 권한을 가질 수 있다고 시뮬레이션 된다. 이제 이 공격이 suricata 내장 룰로 탐지가 될 수 있는지 확인한다.<br><br></p>
+<p><img src="/images/3204_250905_image3.png" alt="그림 17.Suricata fast.log 탐지 결과 (UID 반환 공격 응답)"></p>
+<center><span style="font-size: 90%;">그림 17. [Suricata fast.log 탐지 결과 (UID 반환 공격 응답)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Tail 명령어를 통해 실시간으로 모니터링이 출력되도록 설정하고, 2100498이라는 SID 넘버를 픽스한다. Suricata는 TCP 프로토콜을 사용한 악성 활동을 수행하는 공격 GPL 공격을 탐지하였다. 해당 공격의 우선순위는 2이며 심각도는 1이 가장 높다.<br><br></p>
+<p><img src="/images/3204_250905_image4.png" alt="그림 18. 주요 네트워크 공격 탐지 룰 세트"></p>
+<center><span style="font-size: 90%;">그림 18. [주요 네트워크 공격 탐지 룰 세트]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/var/lib/suricata/rules]</span><br><span class="line">└─# sudo suricata -T -c /etc/suricata/suricata.yaml</span><br><span class="line"></span><br><span class="line">i: suricata: This is Suricata version 7.0.6 RELEASE running in SYSTEM mode i: suricata: Configuration provided was successfully loaded. Exiting.</span><br></pre></td></tr></table></figure>
+
+<p>다양한 침입 시도에 대해 custom rules를 작성해 보기로 했다. 이때 직접 작성한 탐지 룰이 작동하는지 확인하기 위해 suricata에서 자체 제공되는 .rules 파일은 모두 해제하고 yaml 파일을 수행하며, systemctl을 재시작하였다.<br><br><br></p>
+<p><strong>[TCP Flood Attack]</strong></p>
+<p><img src="/images/3204_250905_image5.png" alt="그림 19. hping3를 이용한 TCP SYN Flood 공격 실습"></p>
+<center><span style="font-size: 90%;">그림 19. [hping3를 이용한 TCP SYN Flood 공격 실습]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>TCP Flood Attack 공격을 탐지하는지 확인하기 위한 실습을 진행하였다. 공격자 가상머신에서 TCP SYN 패킷을 suricata 가 설치된 IP 주소로 다량의 패킷을 전송해 과부하를 일으키는 TCP Flood Attack를 수행한다.</p>
+<p><img src="/images/3204_250905_image6.png" alt="그림 20. Suricata 로그 탐지 결과(TCP SYN Flood 공격)"></p>
+<center><span style="font-size: 90%;">그림 20. [Suricata 로그 탐지 결과(TCP SYN Flood 공격)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>&#x2F;var&#x2F;log&#x2F;suricata에서는 .rules 에는 작성한 TCP SYN Flood Attack 이 탐지되었다. 만약 TCP SYN Flood Attack 이 발생한다면 tcpdump 나 wireshark 툴과 연계하여 동작을 분석할 수 있다.<br><br></p>
+<p><strong>[Xmas Tree Attack]</strong></p>
+<p><img src="/images/3204_250905_image7.png" alt="그림 21. Nmap Xmas 스캔 실습 결과"></p>
+<center><span style="font-size: 90%;">그림 21. [Nmap Xmas 스캔 실습 결과]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Xmas Tree Attack을 탐지하는지 확인하기 위해 nmap을 통해 탐지 실습을 진행하였다. Nmap 스캔은 열린 포트와 사용된 프로토콜을 스캔해 민감 개인 식별 정보를 훔칠 수 있으므로, -sX 옵션을 사용해서 Xmas Tree 스캔을 수행했다. Nmap 을 사용하여 허가되지 않은 타인의 시스템의 네트워크를 스캐닝하는 행위는 불법이며, 일부 국가에서는 징계를 받을 수 있다.</p>
+<p><img src="/images/3204_250905_image7-1.png" alt="그림 22. Suricata Xmas Tree Attack 탐지 로그"></p>
+<center><span style="font-size: 90%;">그림 22. [Suricata Xmas Tree Attack 탐지 로그]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>마찬가지로 이번에도 suricata 툴의 fast.log에서는 Xmas Tree Attack에 대한 실시간 탐지가 로그 파일에 기록되었다. 공격자와 대상 사용자의 ip 주소가 나타났으며, 소스 포트 또한 확인할 수 있었다.<br><br></p>
+<p><strong>[SQL Injection Attempt(DVWA)]</strong></p>
+<p><img src="/images/3204_250905_image8.png" alt="그림 23. SQL Injection 탐지 룰 모음)"></p>
+<center><span style="font-size: 90%;">그림 23. [SQL Injection 탐지 룰 모음]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>마지막 실습에서는 DVWA SQL Injection 실습 사이트에서 공격자가 SQL Injection 취약점을 악용해 페이로드를 작성해 Submit 했을 때, 이를 suricata 가 탐지할 수 있는지를 확인해 보았다. 이때 동일한 네트워크상에서 DVWA를 구축하고 방어를 수행하는 환경과, Firefox를 통해 방어자의 DVWA 사이트에 접근해 공격을 수행하는 환경 총 두 개의 가상머신을 준비했다. 위 이미지는 SQL Injection Attack을 방지할 수 있는 규칙이다.</p>
+<p><img src="/images/3204_250905_image9.png" alt="그림 24. DVWA SQL Injection 공격 실습 결과)"></p>
+<center><span style="font-size: 90%;">그림 24. [DVWA SQL Injection 공격 실습 결과]</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5&#x27; union select column_name, 2 from information_schema.columns where table_schema=&#x27;dvwa&#x27; and table_name=&#x27;users&#x27;#</span><br></pre></td></tr></table></figure>
+
+<p>그림과 같이 공격자의 가상머신에서 Information_schema.columns 테이블을 통해 DVWA users 테이블에 대한 컬럼 네임을 확인하는 구문을 작성해 Submit 버튼을 눌러주었다.<br><br></p>
+<p><strong>[Eve.json로그를 확인해본 결과]</strong></p>
+<p><img src="/images/3204_250905_image10.png" alt="그림 25. Suricata EveJSON 로그 - SQL Injection 탐지 기록)"></p>
+<center><span style="font-size: 90%;">그림 25. [Suricata EveJSON 로그 - SQL Injection 탐지 기록]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Eve.json파일은 JSON 포맷으로 저장되어 구조화된 데이터 형식을 가지고 있고, 세부 정보를 제공하며, SIEM 과 같은 보안 분석 시스템에 통합하기에 용이하다. 해당 json 파일은 Timestamp, flow_id, src_ip, dest_ip, http 필드 등을 제공하였고, 특히 공격자의 ip 주소와 SQLi 공격문 url 이 어떤 형태로 나타나는지 정보를 모두 확인할 수 있었다.<br><br></p>
+<p><strong>[Fast.log를 확인해본 결과]</strong></p>
+<p><img src="/images/3204_250905_image11.png" alt="그림 26. Suricata fast.log SQL Injection 탐지 결과)"></p>
+<center><span style="font-size: 90%;">그림 26. [Suricata fast.log SQL Injection 탐지 결과]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Fast.log는 실시간으로 비교적 간단하고 직관적인 suricata 로그 파일로, 어떤 규칙이 탐지되었는지를 확인할 수 있다. eve.json과 같이 세부적인 기록은 제공되지 않는다. 그러나 짧은 로그 기록, 간단한 중요 정보라는 이점 때문에 fast.log는 주로 실시간 모니터링 확인에 적합하다. 해당 로그 파일에서 singlequote, UNION, SELECT, comment # 같은 대표적인 공격 구문들이 탐지되었다.<br><br><br></p>
+<h3 id="4-2-암호화-트래픽-분석"><a href="#4-2-암호화-트래픽-분석" class="headerlink" title="4.2 암호화 트래픽 분석"></a>4.2 암호화 트래픽 분석</h3><p><img src="/images/3204_250905_image12.png" alt="그림 27. Suricata 악성 행위 탐지 룰(PowerShell Empire 및 Sliver C2)"></p>
+<center><span style="font-size: 90%;">그림 27. [PowerShell Empire 및 Sliver C2]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Suricata에서는 암호화된 트래픽을 탐지할 수 있는 규칙을 지정할 수 있다. 특히 SSL&#x2F;TLS 인증서와 JA3 fingerprint와 관련된 부분이다. 네트워크 보안 환경에서 악의적인 도메인이 비정상적인 SSL&#x2F;TLS 인증서를 사용했다고 가정해보자. 다음 규칙은 16 진수 값을 통해 인증서의 여러 가지 필드를 확인하거나, 특정 JA3 해시를 사용해 TLS 연결을 식별할 때마다 Sliver 변형을 감지한다.</p>
+<p><img src="/images/3204_250905_image13.png" alt="그림 28. Suricata PCAP 분석 결과 - PowerShell Empire 탐지"></p>
+<center><span style="font-size: 90%;">그림 28. [Suricata PCAP 분석 결과 - PowerShell Empire 탐지]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>사전에 구성된 암호화된 트래픽 pcap 파일을 실행해 ET MALWARE 이 감지된 것을 확인한다. Dridex 악성코드와 관련된 SSL 인증서에 대해 SSL&#x2F;TLS handshake 과정에서 교환되는 인증서 정보를 분석하고, suricata는 외부 네트워크에서 내부로의 TLS 트래픽에 대해 특정한 패턴과 내용 탐지를 적용했다.</p>
+<p><img src="/images/3204_250905_image14.png" alt="그림 29. Suricata JA3 기반 TLS 트래픽 로그"></p>
+<center><span style="font-size: 90%;">그림 29. [Suricata JA3 기반 TLS 트래픽 로그]</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ja3 -a --json /home/htb-student/pcaps/sliverenc.pcap</span><br></pre></td></tr></table></figure>
+
+<p>JA3 해시를 사용해 암호화된 트래픽을 분석할 수 있도록 지정한 Sliver 트래픽 부분을 확인한다. 해당 명령어를 사용하면 JA3 해시 도구가 pcap 파일에서 TLS handshake 데이터를 해석하는 암호화된 Sliver 트래픽을 담고 있다. Sliverence.pcap 파일을 suricata에서 실행하면 sliver 을 감지하는 로그가 기록된다.<br><br><br></p>
+<h3 id="4-3-Suricata로-파일-추출하기"><a href="#4-3-Suricata로-파일-추출하기" class="headerlink" title="4.3 Suricata로 파일 추출하기"></a>4.3 Suricata로 파일 추출하기</h3><p>Suricata에는 포렌식이나 데이터 분석에 매우 중요하게 사용될 수 있는 파일 추출 기능이 내장되어 있다. 이 기능을 사용하면 다양한 프로토콜을 통해 전송된 파일을 캡처하고 저장할 수 있다.</p>
+<p><img src="/images/3204_250905_image15.png" alt="그림 30. Suricata 파일 저장(file-store) 설정"></p>
+<center><span style="font-size: 90%;">그림 30. [Suricata 파일 저장(file-store) 설정]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>suricata.yaml에 들어가 -file-store 부분을 활성화해준다. 결과는 다음과 같도록 한다.</p>
+<p><img src="/images/3204_250905_image16.png" alt="그림 31. Suricata 파일 저장 룰 예시"></p>
+<center><span style="font-size: 90%;">그림 31. [Suricata 파일 저장 룰 예시]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>파일 추출 기능을 활성화한 suricata 규칙을 개발할 때에는 어떤 종류의 파일을 추출해야 하는지 명확하게 기입한다.</p>
+<p><img src="/images/3204_250905_image17.png" alt="그림 32. Suricata PCAP 파일 분석 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 32. [Suricata PCAP 파일 분석 실행 결과]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>특정 pcap 파일을 suricata에 실행해 주었고, filestore이라는 디렉토리가 새롭게 생성되었다. Suricata는 .pcap 파일을 읽어 803 개의 패킷을 오프라인 분석했고, 이에 대한 수행 기록을 나타낸다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~/filestore# find . -type f</span><br><span class="line">./fb/fb20d18d00c806deafe14859052072aecfb9f46be6210acfce80289740f2e20e</span><br><span class="line">./21/214306c98a3483048d6a69eec6bf3b50497363bc2c98ed3cd954203ec52455e5</span><br><span class="line">./21/21742fc621f83041db2e47b0899f5aea6caa00a4b67dbff0aae823e6817c5433</span><br><span class="line">./26/2694f69c4abf2471e09f6263f66eb675a0ca6ce58050647dcdcfebaf69f11ff4</span><br><span class="line">./2c/2ca1a0cd9d8727279f0ba99fd051e1c0acd621448ad4362e1c9fc78700015228</span><br><span class="line">./7d/7d4c00f96f38e0ffd89bc2d69005c4212ef577354cc97d632a09f51b2d37f877</span><br><span class="line">./6b/6b7fee8a4b813b6405361db2e70a4f5a213b34875dd2793667519117d8ca0e4e</span><br><span class="line">./2e/2e2cb2cac099f08bc51abba263d9e3f8ac7176b54039cc30bbd4a45cfa769018</span><br><span class="line">./50/508c47dd306da3084475faae17b3acd5ff2700d2cd85d71428cdfaae28c9fd41</span><br><span class="line">./c2/c210f737f55716a089a33daf42658afe771cfb43228ffa405d338555a9918815</span><br><span class="line">./ea/ea0936257b8d96ee6ae443adee0f3dacc3eff72b559cd5ee3f9d6763cf5ee2ab</span><br><span class="line">./1a/1aab7d9c153887dfa63853534f684e5d46ecd17ba60cd3d61050f7f231c4babb</span><br><span class="line">./c4/c4775e980c97b162fd15e0010663694c4e09f049ff701d9671e1578958388b9f</span><br><span class="line">./63/63de4512dfbd0087f929b0e070cc90d534d6baabf2cdfbeaf76bee24ff9b1638</span><br><span class="line">./48/482d9972c2152ca96616dc23bbaace55804c9d52f5d8b253b617919bb773d3bb</span><br><span class="line">./8e/8ea3146c676ba436c0392c3ec26ee744155af4e4eca65f4e99ec68574a747a14</span><br><span class="line">./8e/8e23160cc504b4551a94943e677f6985fa331659a1ba58ef01afb76574d2ad7c</span><br><span class="line">./a5/a52dac473b33c22112a6f53c6a625f39fe0d6642eb436e5d125342a24de44581</span><br></pre></td></tr></table></figure>
+
+<p>Filestore의 기본 logging 디렉토리 안에는 SHA256 문자열이 시작되는 규칙에 따라 분류되어 디렉토리에 저장된다. .&#x2F;ea&#x2F;ea0936257b8d96ee6ae443adee0f3dacc3eff72b559cd5ee3f9d6763cf5ee2ab 라면 ea 디렉토리 안에 저장된다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~/filestore#</span><br><span class="line">xxd ./21/21742fc621f83041db2e47b0899f5aea6caa00a4b67dbff0aae823e6817c5433 | head</span><br><span class="line">00000000:	4d5a	9000	0300	0000	0400	0000	ffff	0000	MZ..............</span><br><span class="line">00000010:	b800	0000	0000	0000	4000	0000	e907	0000	........@.......</span><br><span class="line">00000020:	0000	0000	0000	0000	0000	0000	0000	0000	................</span><br><span class="line">00000030:	0000	0000	0000	0000	0000	0000	8000	0000	................</span><br><span class="line">00000040:	0e1f	ba0e	00b4	09cd	21b8	014c	cd21	5468	.	!..L.!Th</span><br><span class="line">00000050:	6973	2070	726f	6772	616d	2063	616e	6e6f	is program canno</span><br><span class="line">00000060:	7420	6265	2072	756e	2069	6e20	444f	5320	t be run in DOS</span><br><span class="line">00000070:	6d6f	6465	2e0d	0d0a	2400	0000	0000	0000	mode....$.......</span><br><span class="line">00000080:	5045	0000	4c01	0300	fc90	8448	0000	0000	PE..L......H....</span><br><span class="line">00000090:	0000	0000	e000	0f01	0b01	0600	00d0	0000	................</span><br></pre></td></tr></table></figure>
+
+<p>원하는 파일의 내부 파일을 선별해 검사하였다. 21…로 시작하는 추출 파일을 검사하면 MZ라는 형식의 Windows 실행 파일이 발견되었다.<br><br><br></p>
+<h3 id="4-4-Suricata-pcap-파일-분석"><a href="#4-4-Suricata-pcap-파일-분석" class="headerlink" title="4.4 Suricata .pcap 파일 분석"></a>4.4 Suricata .pcap 파일 분석</h3><p><img src="/images/3204_250905_image18.png" alt="그림 33. Suricata pcap-log 설정"></p>
+<center><span style="font-size: 90%;">그림 33. [Suricata pcap-log 설정]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>&#x2F;etc&#x2F;suricata&#x2F;suricata.yaml에 pcap-log 을 검사할 수 있는 설정 란이 있다. Pcap-log 부분을 수정해 규칙 옵션을 적용시켜주면 pcap 분석을 위한 사전 작업이 완료된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~# suricata -r /home/htb-student/pcaps/vm-2.pcap</span><br><span class="line">29/9/2024 -- 07:30:30 - &lt;Notice&gt; - This is Suricata version 6.0.13 RELEASE running in USER mode 29/9/2024 -- 07:30:30 - &lt;Notice&gt; - all 3 packet processing threads, 4 management threads initialized, engine started.</span><br><span class="line">29/9/2024 -- 07:30:30 - &lt;Notice&gt; - Signal Received. Stopping engine.</span><br><span class="line">29/9/2024 -- 07:30:30 - &lt;Notice&gt; - Pcap-file module read 1 files, 803 packets, 683915 bytes</span><br></pre></td></tr></table></figure>
+
+<p>오프라인 입력으로 pcap 파일을 읽어줄 경우 다음의 명령어를 실행해 주어야 하며, eve.json과 fast.log 및 stats.log, 추가로 YAML 파일 설정 시 pcap-log 세부 파일을 생성할 수 있다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ sudo tcpreplay -i ens160 /home/htb-student/pcaps/suspicious.pcap</span><br><span class="line">^C User interrupt... sendpacket_abort</span><br><span class="line">Actual: 730 packets (663801 bytes) sent in 15.09 seconds</span><br><span class="line">Rated: 43988.2 Bps, 0.351 Mbps, 48.37 pps Statistics for network device: ens160</span><br><span class="line">Successful packets:	729</span><br><span class="line">Failed packets:	0</span><br><span class="line">Truncated packets:	0</span><br><span class="line">Retried packets (ENOBUFS): 0 Retried packets (EAGAIN): 0</span><br></pre></td></tr></table></figure>
+
+<p>실시간 트래픽을 처리하기 위해서 다음 명령어를 통해 tcpreplay pcap 파일의 네트워크 트래픽을 replay 한다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">(root㉿kali)-[/etc/suricata]</span><br><span class="line">└─# suricata -c /etc/suricata/suricata.yaml -r /etc/suricata/2024-08-15-traffic-analysisexercise.pcap</span><br><span class="line">i: suricata: This is Suricata version 7.0.6 RELEASE running in USER mode</span><br><span class="line">i: log-pcap: Ring buffer initialized with 0 files.</span><br><span class="line">i: threads: Threads created -&gt; RX: 1 W: 1 FM: 1 FR: 1 Engine started.</span><br><span class="line">i: suricata: Signal Received. Stopping engine.</span><br><span class="line">i: pcap: read 1 file, 18189 packets, 11674125 bytes</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/3204_250905_image19.png" alt="그림 34. Suricata PCAP Ring Buffer 초기화 로그"></p>
+<center><span style="font-size: 90%;">그림 34. [Suricata PCAP Ring Buffer 초기화 로그]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>이 명령어는 IDS&#x2F;IPS 시스템을 사용해 malware-traffic-analysis.net 의 pcap 파일을 분석할 수 있게 해주었다. 해당 파일을 통해 suricata 가 네트워크 트래픽을 모니터링하고 미리 정해둔 규칙에 따라 악성 활동을 탐지해 로그 기록으로 보고한다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/var/log/suricata]</span><br><span class="line">└─# ls</span><br><span class="line">eve.json	log.pcap.1727181005 log.pcap.1727183248 log.pcap.1727184857 PCAP fast.log	log.pcap.1727181731 log.pcap.1727183447 log.pcap.1727187048</span><br><span class="line">pcap-log.pcap.1727195066</span><br><span class="line">log.pcap.1727175311	log.pcap.1727182090	log.pcap.1727183549	log.pcap.1727187746 stats.log</span><br><span class="line">log.pcap.1727177243	log.pcap.1727182258	log.pcap.1727184669	log.pcap.1727188407 suricata.log</span><br><span class="line">log.pcap.1727179256	log.pcap.1727182875	log.pcap.1727184766	log.pcap.1727189629</span><br></pre></td></tr></table></figure>
+
+<p>suricata.yaml에서 pcap 로그 파일을 구분 가능하게 이름을 지정해 주었는데, pcap- log.pcap.1727195066 이라고 적혀져 있는 부분이 바로 직전 pcap 파일을 분석해 보고한 로그 파일이다. 또한 eve.json, fast.log, stats.log 와 같은 파일에 저장된 pcap 파일 로그 정보가 나타날 수 있다.<br><br></p>
+<p><img src="/images/3204_250905_image20.png" alt="그림 35. Suricata Kerberos 트래픽 탐지 로그(eve.json)"></p>
+<center><span style="font-size: 90%;">그림 35. [Suricata Kerberos 트래픽 탐지 로그(eve.json)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>특히 suricata 로그 디렉터리에 해당되는 eve.json파일에서는 suricata로 이벤트를 기록한 pcap 파일에 대해 더 자세한 분석 정보나 네트워크 트래픽과 관련된 정보를 확인할 수 있다. Eve.json에서 Kerberos 프로토콜 관련 트래픽에서 특정 사용자인 plucero 가 네트워크 자원에 접근하기 위해 AES256 암호화 인증에 접근을 시도한 내역이 기록되었다.</p>
+<hr>
+<h2 id="5-NIDPS-통합-탐지-툴을-통한-pcap-분석-실습"><a href="#5-NIDPS-통합-탐지-툴을-통한-pcap-분석-실습" class="headerlink" title="5. NIDPS 통합 탐지 툴을 통한 pcap 분석 실습"></a>5. NIDPS 통합 탐지 툴을 통한 pcap 분석 실습</h2><h3 id="5-1-Security-Onion-통합-탐지-툴을-활용한-악성-네트워크-트래픽-분석-실습"><a href="#5-1-Security-Onion-통합-탐지-툴을-활용한-악성-네트워크-트래픽-분석-실습" class="headerlink" title="5.1 Security Onion 통합 탐지 툴을 활용한 악성 네트워크 트래픽 분석 실습"></a>5.1 Security Onion 통합 탐지 툴을 활용한 악성 네트워크 트래픽 분석 실습</h3><p>Security Onion 은 NIDS&#x2F;NIPS(suricata, zeek), SIEM, HIDS, 네트워크 패킷 캡처, 포렌식, threat huning 기능이 포함된 매우 유용한 통합 탐지 모니터링 툴이다. Security Onion 은 네트워크 전반 로그 통계를 제공하며, suricata를 취급하고 있으므로 네트워크 트래픽 분석 실습을 진행해 보기로 했다.</p>
+<p><img src="/images/3204_250905_image21.png" alt="그림 36. Security Onion Solutions"></p>
+<center><span style="font-size: 90%;">그림 36. [Security Onion Solutions]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Security Onion의 NIDS&#x2F;NIPS 기능을 기업과 실무 등의 환경에서 사용하면 주요 프로토콜 트래픽을 분석하여 비정상적인 사용을 통제하고, 실시간 트래픽 분석을 통해 데이터 유출 시도나 이상 징후를 빠르게 파악할 수 있다. 또한 threat hunting 기능을 사용하여 기존에 있는 위협 패턴뿐만이 아닌 발견되지 않은 패턴을 발견하여 NIDS&#x2F;NIPS의 단점을 보완한다.</p>
+<p><img src="/images/3204_250905_image22.png" alt="그림 37. Security Onion 기반 PCAP 파일 분석 구조"></p>
+<center><span style="font-size: 90%;">그림 37. [Security Onion 기반 PCAP 파일 분석 구조]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Security onion 을 통한 악성 트래픽 분석 시나리오는 다음과 같다.</p>
+<div style="background-color:#f5f5f5; padding:10px; border-radius:8px;">
+※ 악성 트래픽 데이터를 분석할 수 있는 pcap 실습 자료들이 있는 Malware Traffic Analysis 페이지에 있는 자료들을 Security Onion에 적용한다. Pcap 파일을 분석해 사건이 언제, 어떤 침해로 발생했는지, 피해자의 신원 정보와 감염과 관련된 IP 주소를 확인하고, 의심스러운 활동 등을 security onion 이 파악할 수 있는지 확인하는 것이 목표이다. (이때, 부가적으로 Wireshark 와 함께 활용할 것이다.)
+</div>
+<br><br>
+
+<p><img src="/images/3204_250905_image23.png" alt="그림 38. Security Onion 설치 완료 및 웹 콘솔 확인"></p>
+<center><span style="font-size: 90%;">그림 38. [Security Onion 설치 완료 및 웹 콘솔 확인]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>초기 구성은 Web user <span class="exturl" data-url="bWFpbHRvOiYjMTE1OyYjeDc3OyYjMTA1OyYjeDZlOyYjMTAzOyYjeDQwOyYjMTE4OyYjMTExOyYjMTEwOyYjMTA1OyYjMTExOyYjMTEwOyYjeDJlOyYjOTk7JiN4NmY7JiN4NmQ7">&#115;&#x77;&#105;&#x6e;&#103;&#x40;&#118;&#111;&#110;&#105;&#111;&#110;&#x2e;&#99;&#x6f;&#x6d;</span>이라는 name 을 지정해 oracle linux에서 Security Onion 서버 환경 구축을 완료했으며, 192.168.132.133에 위치한 kali linux 클라이언트의 로그인을 통한 접속을 허용하였다.<br><br></p>
+<p><img src="/images/3204_250905_image24.png" alt="그림 39. Security Onion so-import-pcap을 이용한 PCAP 파일 분석"></p>
+<center><span style="font-size: 90%;">그림 39. [Security Onion so-import-pcap을 이용한 PCAP 파일 분석]</span><br><span style="font-size: 70%;"></span></center>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo so-import-pcap 2022-01-07-traffic-analysis-exercise.pcap</span><br></pre></td></tr></table></figure>
+
+<p>so-import 명령어를 통해 분석하고자 하는 pcap 파일을 import 해주고, 나타난 security onion hyperlink에 접속한다.<br><br></p>
+<p><img src="/images/3204_250905_image25.png" alt="그림 40. Security Onion Dashboard를 통한 PCAP 분석 결과 확인"></p>
+<center><span style="font-size: 90%;">그림 40. [Security Onion Dashboard를 통한 PCAP 분석 결과 확인]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>이와 같이 특정 hyperlink에 접속하면 security onion 이 해당 pcap를 분석해준 데이터 검색 조건을 전부 포함하고 있으며, 날짜 지정을 통한 dashboards에는 해당 시간 범위에 이루어진 수치화 그래프, NIDS&#x2F;NIPS 이상 징후 탐색, 중요한 이벤트 분석 기록이 나타난다.<br><br></p>
+<p><img src="/images/3204_250905_image26.png" alt="그림 41. Security Onion Alerts – Malware 및 의심스러운 활동 탐지"></p>
+<center><span style="font-size: 90%;">그림 41. [Security Onion Alerts – Malware 및 의심스러운 활동 탐지]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Alerts 탭을 확인해 보면 중요도 순으로 중요 알림들을 확인할 수 있는데, 이 경고들을 모두 suricata 가 탐지해준 것을 확인할 수 있다. Suricata 가 가장 많이 count 한 ET MALWARE Vidar&#x2F;Arkei&#x2F;Megumin&#x2F;Oski Stealer HTTP POST Pattern 을 별도로 중요 case로 분류해주고 이를 hunt 하여, 이후 징후를 자세히 탐색해 보도록 하였다.<br><br></p>
+<p><img src="/images/3204_250905_image27.png" alt="그림 42. Security Onion Hunt – Vidar/Oski Stealer C2 통신 세션 추적"></p>
+<center><span style="font-size: 90%;">그림 42. [Security Onion Hunt – Vidar/Oski Stealer C2 통신 세션 추적]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Hunt 된 내용에서는 2022 년도 1 월 7 일경 source ip 192.168.1.216 이 Vidar&#x2F;Arkei&#x2F;Oski 같은 정보 탈취형 악성코드에 감염되어 해당 시스템이 destination ip인 2.56.57.108 서버로 민감 정보를 전송하려고 했을 수도 있는 시도가 발견되었다. 이는 suricata.alert ET 규칙에 의해 탐지되었다.<br><br></p>
+<p><img src="/images/3204_250905_image28.png" alt="그림 43. Wireshark 분석 – Vidar/Oski Stealer 악성 HTTP POST 트래픽 확인"></p>
+<center><span style="font-size: 90%;">그림 43. [Wireshark 분석 – Vidar/Oski Stealer 악성 HTTP POST 트래픽 확인]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>해당 분석과 같은 source ip 와 destination ip 와 같은 내용이 wireshark에서도 나타나는 것을 확인한다.<br><br></p>
+<p><img src="/images/3204_250905_image29.png" alt="그림 44. 악성 HTTP POST 통신과 정상 윈도우 업데이트 요청 비교 분석"></p>
+<center><span style="font-size: 90%;">그림 44. [악성 HTTP POST 통신과 정상 윈도우 업데이트 요청 비교 분석]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>또한 ET MALWARE Vidar&#x2F;Arkei&#x2F;Megumin&#x2F;Oski Stealer HTTP POST Pattern 경고 부분의 case를 종합적으로 분석해 본 결과, windowsupdate.com 와 같은 도메인으로부터 &#x2F;osk&#x2F; 아래 .php와 .jpg와 같은 여러 가지 파일 요청들이 2.56.57.108 ip 주소를 대상으로 발생하고 있다. 이때 windowsupdate.com 은 위장된 도메인일 가능성이 있다.<br><br></p>
+<p><img src="/images/3204_250905_image30.png" alt="그림 45. 의심스러운 EXE/DLL 파일 다운로드 탐지 (HTTP 기반)"></p>
+<center><span style="font-size: 90%;">그림 44. [의심스러운 EXE/DLL 파일 다운로드 탐지 (HTTP 기반)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>다시 돌아와, ET POLICY PE EXE or DLL Windows file download HTTP를 중요하게 파악 후 case 분류하여 network.data.decoded의 부분에서 다음과 같은 EXE, DLL 에 사용되는 DOS 실행 파일의 시그니처인 <code>MZ</code> 형식의 내용을 발견했다.<br><br></p>
+<p><img src="/images/3204_250905_image31.png" alt="그림 46. JPEG 위장 Windows 실행 파일 탐지"></p>
+<center><span style="font-size: 90%;">그림 46. [JPEG 위장 Windows 실행 파일 탐지]</span><br><span style="font-size: 70%;"></span></center>
+
+<p><img src="/images/3204_250905_image32.png" alt="그림 47. Wireshark TCP Stream – JPEG 위장 악성 PE 파일 전송 탐지"></p>
+<center><span style="font-size: 90%;">그림 47. [Wireshark TCP Stream – JPEG 위장 악성 PE 파일 전송 탐지]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Security onion, wireshark에서는 똑같은 TCP stream 내용이 발견되었는데, 이들의 차이점에 유의해야 한다.<br>-&gt; 각각의 로그를 확인해보면 security onion 은 이상 징후나 악성 트래픽을 NIDS&#x2F;NIPS 가 탐지한 이벤트에 대한 내용들을 나타내고 있으며, wireshark 는 개별 패킷을 직접 선별하고 필터링 해 발견한 TCP Stream 내용을 나타내고 있는 것이다.</p>
+<div style="background-color:#f5f5f5; padding:10px; border-radius:8px;">
+※ 공격자는 악성 서버에서 PE파일을 .php .jpg 와 같은 파일 형식으로 위장하여 악성 파일 탐지를 우회하려고 했을 가능성이 있다. Security onion 은 PE POLICY Alerts를 통해 이에 대한 이벤트를 생성했다.
+</div>
+<br><br>
+
+<p><img src="/images/3204_250905_image33.png" alt="그림 48. 악성 POST 요청 내 민감 데이터 정보 (passwords.txt, system.txt)"></p>
+<center><span style="font-size: 90%;">그림 48. [악성 POST 요청 내 민감 데이터 정보 (passwords.txt, system.txt)]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Wireshark 와 suricata 가 분석한 내용들을 종합적으로 확인해 본 결과, 탐지된 HTTP POST 요청에서 Chrome_default.txt 파일이 담긴 ZIP 파일이 전송되고 있었으며, 해당 데이터에는 passwords.txtUT, system.txtUT… 와 같이 민감한 내용이 탈취당할 수 있는 정보들이 담겨있었다.<br><br></p>
+<p><img src="/images/3204_250905_image34.png" alt="그림 49. Security Onion에서 탐지된 Kerberos 인증 트래픽 이벤트 분석"></p>
+<center><span style="font-size: 90%;">그림 49. [Security Onion에서 탐지된 Kerberos 인증 트래픽 이벤트 분석]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>마지막으로 NIDPS 툴인 zeek 가 수집한 Kerberos 요청 실패 내용을 확인 해본다. 클라이언트 192.168.1.216, steve.smith 가 SPOONWATCH라는 서비스에 접속하기 위해 192.168.1.2에 인증 요청을 보냈지만, 서버는 KDC_ERR_PREAUTH_REQUIRED 메시지를 통해 요청을 에러로 응답했다. 이 행위가 공격자에 의한 것이라면, 비밀번호, 인증 토큰과 같은 인증 데이터가 부족해 인증에 실패했을 가능성이 존재한다.</p>
+<p>이 정보들을 토대로 종합적으로 분석한 결과는 다음과 같다.</p>
+<ul>
+<li><strong>사건 일시</strong>: 2022년 1월 7일 1607UTC</li>
+<li><strong>감염된 악성코드 명</strong>: Spoonwatch Malware</li>
+<li><strong>감염된 호스트 이름</strong>: DESKTOP-GXMYNO2</li>
+<li><strong>사용자</strong>: steve.smith</li>
+<li><strong>감염된 호스트 IP 주소</strong>: 192.168.1.216</li>
+<li><strong>MAC 주소</strong>: 9c:5c:8e:32:58:f9</li>
+<li><strong>사건 요약</strong>: DESKTOP-GXMYNO2 가 Oski Stealer 이라는 malware에 감염되었을 위험이 존재한다. 공격자는 위장된 .jpg, .php 파일을 통해 악성 MZ 파일을 배포하려고 했다. 공격자는 감염된 시스템에서 암호를 추출해 .passwords.txtUT, .system.txtUT를 인증 정보로 활용하려고 했을 수 있으며, Kerberos 인증을 통해 사용자 인증 정보를 우회하려고 했지만 실패했다.</li>
+</ul>
+<p><br><br></p>
+<h3 id="5-2-security-onion-트래픽-탐지에-사용된-suricata-rules-분석"><a href="#5-2-security-onion-트래픽-탐지에-사용된-suricata-rules-분석" class="headerlink" title="5.2 security onion 트래픽 탐지에 사용된 suricata rules 분석"></a>5.2 security onion 트래픽 탐지에 사용된 suricata rules 분석</h3><p>Security onion 통합 툴에서 pcap 파일에 의해 suricata 가 탐지한 주요 탐지 룰의 내용을 알아보자.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">alert http $HOME_NET any -&gt; $EXTERNAL_NET any</span><br><span class="line">(msg:&quot;ET MALWARE Vidar/Arkei/Megumin/Oski Stealer HTTP POST Pattern&quot;; flow:established,to_server</span><br><span class="line">; http.method; content:&quot;POST&quot;; http.header; content:&quot;boundary=1BEF0A57BE110FD467A&quot;; fast_pattern</span><br><span class="line">; reference:md5,dd5e5142ba2ab5f31e5518396c45ba1f; classtype:trojan-</span><br><span class="line">activity; sid:2034813; rev:5; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit</span><br><span class="line">, attack_target Client_Endpoint, created_at 2018_08_15, deployment Perimeter, malware_family Ark ei, signature_severity Major, updated_at 2020_08_28;)</span><br></pre></td></tr></table></figure>
+
+<p>ET MALWARE Vidar&#x2F;Arkei&#x2F;Megumin&#x2F;Oski Stealer HTTP POST Pattern이라는 내용으로 HTTP 헤더 내에 boundary&#x3D;1BEF0A57B110FD467A(고유 악성 패턴)라는 문자열이 포함되어 있는지 확인하고, 내부 네트워크에서 외부로 발생하는 TCP 프로토콜에 의해 연결된 POST 요청이 발생한 경우 경고를 발생시켰다. Arkei Stealer 악성코드는 실제로 존재하며, 사용자가 특정한 악성 파일을 실행할 때 시스템에 감염될 수 있는 정형화된 패턴을 이용해 suricata 가 Arkei Stealer 로 분류하고 탐지 룰을 적용했다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alert http $EXTERNAL_NET any &gt; $HOME_NET any (msg:&quot;ET POLICY PE EXE or DLL Windows file download HTTP&quot;; flow:established,to_client; flowbits:isnotset,ET.http.binary; flowbits:isnotset,ET.INFO. WindowsUpdate; file_data; content:&quot;MZ&quot;; within:2; byte_jump:4,58,relative,little; content:&quot;PE|00 00|&quot;; distance:-64; within:4; flowbits:set,ET.http.binary; classtype:policy-</span><br><span class="line">violation; sid:2018959; rev:4; metadata:created_at 2014_08_19, updated_at 2023_04_12;)</span><br></pre></td></tr></table></figure>
+
+<p>해당 탐지 룰은 suricata 가 PE 형식의 EXE 파일, DLL 파일이 HTTP를 통해 다운로드될 때, 사용자에게 경고 기능을 발생시키고 있다. 특히 모든 PE 파일의 첫 두 바이트에 나타나는 매직 넘버가 MZ 인지 확인했다. 이후 추가로 byte_jump를 이용해 PE 파일의 점프 과정을 거치며 최종 위치에서 PE 파일의 헤더 시그니처에서 해당 부분이 올바른지 분석하는 과정을 수행하였다.<br><br></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alert http $HOME_NET any -</span><br><span class="line">&gt;$EXTERNAL_NET any (msg:&quot;ET HUNTING Suspicious Zipped Filename in Outbound POST Request (Chrome_ Default.txt)&quot;; flow:established,to_server; http.method; content:&quot;POST&quot;; http.request_body; conte nt:&quot;PK|03 04|&quot;; content:&quot;Chrome_Default.txt&quot;; nocase; distance:0; fast_pattern; classtype:bad- unknown; sid:2033886; rev:1; metadata:affected_product Any, attack_target Client_Endpoint, creat ed_at 2021_09_02, deployment Perimeter, signature_severity Minor, updated_at 2021_09_02;)</span><br></pre></td></tr></table></figure>
+
+<p>네트워크 POST 요청의 페이로드를 검사하여, ZIP, Chrome_Default.txt 이 포함된 경우 suricata 가 경고를 할 수 있는 탐지문이 작성되었다. HTTP 요청의 payload를 분석하고, ZIP 파일의 매직 넘버인 PK|03 04|를 추적해 POST 요청 본문에 ZIP 파일이 포함되어 의심스러운 요청을 보내고 있는지 확인하였다. 또한 해당 ZIP 파일에 Chrome_Default.txt라는 파일명이 있는지 탐색하여 조건이 모두 만족하면 경고를 생성하였다.</p>
+<hr>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><p>Sophos. (n.d.). Survey of Current Network Intrusion Detection Techniques. <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3NlLnd1c3RsLmVkdS9+amFpbi9jc2U1NzEtMDcvZnRwL2lkcy8=">https://www.cse.wustl.edu/~jain/cse571-07/ftp/ids/</span></p>
+<p>Oisf. (n.d.). Suricata User Guide. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL09JU0Yvc3VyaWNhdGEvYmxvYi9zdXJpY2F0YS00LjEuNC9kb2MvdXNlcmd1aWRlL2luZGV4LnJzdA==">https://github.com/OISF/suricata/blob/suricata-4.1.4/doc/userguide/index.rst</span></p>
+<p>오동진, 추다영, &amp; 에이콘출판사. (n.d.). 우분투 리눅스 기반의 IDS&#x2F;IPS 설치와 운영. <span class="exturl" data-url="aHR0cHM6Ly93d3cueWVzMjQuY29tL1Byb2R1Y3QvR29vZHMvNjA3NDIwNTg=">https://www.yes24.com/Product/Goods/60742058</span></p>
+<p>디지털 산업정보학회논문지. (2016, January). 오픈소스 IDS&#x2F;IPS Snort 와 Suricata 의 탐지 성능에 대한 비교 연구. <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGJwaWEuY28ua3IvSm91cm5hbC9hcnRpY2xlRGV0YWlsP25vZGVJZD1OT0RFMTAxMzAxMDM=">https://www.dbpia.co.kr/Journal/articleDetail?nodeId=NODE10130103</span></p>
+<p>(N.d.). Which Open-Source IDS? Snort, Suricata or Zeek. <span class="exturl" data-url="aHR0cHM6Ly93d3cuc2NpZW5jZWRpcmVjdC5jb20vc2NpZW5jZS9hcnRpY2xlL2Ficy9waWkvUzEzODkxMjg2MjIwMDI0MjA=">https://www.sciencedirect.com/science/article/abs/pii/S1389128622002420</span></p>
+<p>(N.d.). Install a Real-Time Intrusion Detection System (IDS) with Suricata and Python. <span class="exturl" data-url="aHR0cHM6Ly9tZWRpdW0uY29tL0BydWJlbnN6aW1icmVzL2luc3RhbGwtYS1yZWFsLXRpbWUtaW50cnVzaW9uLWRldGVjdGlvbi1zeXN0ZW0taWRzLQ==">https://medium.com/@rubenszimbres/install-a-real-time-intrusion-detection-system-ids-</span> with-suricata-and-python-7ce7ae78c5a3</p>
+<p>(N.d.). HTB ACADEMY Working with IDS&#x2F;IPS Module. <span class="exturl" data-url="aHR0cHM6Ly9hY2FkZW15LmhhY2t0aGVib3guY29tL21vZHVsZS9kZXRhaWxzLzIyNg==">https://academy.hackthebox.com/module/details/226</span></p>
+<p>(N.d.). Security Onion Blog - quick malware analysis <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLnNlY3VyaXR5b25pb24ubmV0L3NlYXJjaC9sYWJlbC9xdWljayUyMG1hbHdhcmUlMjBhbmFseXNpcw==">https://blog.securityonion.net/search/label/quick%20malware%20analysis</span></p>
+<p>(N.d.). Gartner - Intrusion Detection and Prevention Systems Reviews <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ2FydG5lci5jb20vcmV2aWV3cy9tYXJrZXQvaW50cnVzaW9uLXByZXZlbnRpb24tc3lzdGVtcw==">https://www.gartner.com/reviews/market/intrusion-prevention-systems</span></p>
+<p>(N.d.). A comprehensive review of AI based intrusion detection system <span class="exturl" data-url="aHR0cHM6Ly93d3cuc2NpZW5jZWRpcmVjdC5jb20vc2NpZW5jZS9hcnRpY2xlL3BpaS9TMjY2NTkxNzQyMzAwMTYzMA==">https://www.sciencedirect.com/science/article/pii/S2665917423001630</span></p>
+<p>(N.d.). suricata SQLi Example rules – seanlinmt <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3NlYW5saW5tdC9zdXJpY2F0YS9ibG9iL21hc3Rlci9SRUFETUUubWQ=">https://github.com/seanlinmt/suricata/blob/master/README.md</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Network/" rel="tag"># Network</a>
+              <a href="/tags/NIDS/" rel="tag"># NIDS</a>
+              <a href="/tags/NIPS/" rel="tag"># NIPS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/02/3203_250902/" rel="prev" title="[2025 SWING magazine] Suricata-Based NIDS/NIPS (1)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] Suricata-Based NIDS/NIPS (1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/07/3301_250907/" rel="next" title="리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석">
+                  리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

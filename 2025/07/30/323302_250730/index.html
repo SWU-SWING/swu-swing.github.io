@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="파일 은닉의 정의파일 은닉이란?파일 은닉이란 시스템 혹은 사용자 눈을 피해 파일을 숨기거나 속이는 기술을 의미해요. 예를 들어, 실행 파일을 이미지 파일처럼 위장하거나, 윈도우에서 보이지 않게 숨기거나, 텍스트 파일 안에 다른 파일을 몰래 숨겨두는 방식 등이 있어요. 윈도우 환경에서는 기본적으로 파일 확장자가 숨김으로 설정되어 있어 일반 사용자는 이러한">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[사이버 탐험 : 보안의 첫걸음] 파일 은닉이란?">
+<meta property="og:url" content="https://log.swuswing.com/2025/07/30/323302_250730/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="파일 은닉의 정의파일 은닉이란?파일 은닉이란 시스템 혹은 사용자 눈을 피해 파일을 숨기거나 속이는 기술을 의미해요. 예를 들어, 실행 파일을 이미지 파일처럼 위장하거나, 윈도우에서 보이지 않게 숨기거나, 텍스트 파일 안에 다른 파일을 몰래 숨겨두는 방식 등이 있어요. 윈도우 환경에서는 기본적으로 파일 확장자가 숨김으로 설정되어 있어 일반 사용자는 이러한">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323302_250730_image27.png">
+<meta property="article:published_time" content="2025-07-30T13:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T06:48:26.131Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Forensics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/323302_250730_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/07/30/323302_250730/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/07/30/323302_250730/","path":"2025/07/30/323302_250730/","title":"[사이버 탐험 : 보안의 첫걸음] 파일 은닉이란?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[사이버 탐험 : 보안의 첫걸음] 파일 은닉이란? | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC-%EC%9D%80%EB%8B%89%EC%9D%98-%EC%A0%95%EC%9D%98"><span class="nav-number">1.</span> <span class="nav-text">파일 은닉의 정의</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC-%EC%9D%80%EB%8B%89%EC%9D%B4%EB%9E%80"><span class="nav-number">1.1.</span> <span class="nav-text">파일 은닉이란?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC-%EC%9D%80%EB%8B%89%EC%9D%98-Stuxnet"><span class="nav-number">1.2.</span> <span class="nav-text">파일 은닉의 Stuxnet</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC-%EC%9D%80%EB%8B%89%EC%9D%98-%EA%B8%B0%EB%B2%95"><span class="nav-number">2.</span> <span class="nav-text">파일 은닉의 기법</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%94%8E-%ED%99%95%EC%9E%A5%EC%9E%90-%EC%9C%84%EC%9E%A5%EC%9D%B4%EB%9E%80"><span class="nav-number">2.1.</span> <span class="nav-text">🔎 확장자 위장이란?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-%ED%99%95%EC%9E%A5%EC%9E%90-%EC%9C%84%EC%9E%A5-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.1.1.</span> <span class="nav-text">🔎 확장자 위장 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E2%86%AA%EF%B8%8F-%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C-%EC%9A%B0%ED%9A%8C%EB%9E%80"><span class="nav-number">2.2.</span> <span class="nav-text">↪️ 유니코드 우회란?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%86%AA%EF%B8%8F-%EC%9C%A0%EB%8B%88%EC%BD%94%EB%93%9C-%EC%9A%B0%ED%9A%8C-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.2.1.</span> <span class="nav-text">↪️ 유니코드 우회 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%81-%EC%8B%9C%EC%8A%A4%ED%85%9C-%ED%8F%B4%EB%8D%94-%EB%B0%8F-%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B2%84-%EC%9C%84%EC%9E%A5%EC%9D%B4%EB%9E%80"><span class="nav-number">2.3.</span> <span class="nav-text">📁 시스템 폴더 및 드라이버 위장이란?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC%EB%AA%85-%EC%9C%84%EC%9E%A5"><span class="nav-number">2.3.1.</span> <span class="nav-text">파일명 위장</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%ED%8C%8C%EC%9D%BC%EB%AA%85-%EC%9C%84%EC%9E%A5-%EC%98%88%EC%8B%9C"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">파일명 위장 예시</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9C%84%EC%B9%98-%EC%9C%84%EC%9E%A5"><span class="nav-number">2.3.2.</span> <span class="nav-text">위치 위장</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%EC%9C%84%EC%B9%98-%EC%9C%84%EC%9E%A5-%EC%98%88%EC%8B%9C"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">위치 위장 예시</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%94%8F-%EB%94%94%EC%A7%80%ED%84%B8-%EC%84%9C%EB%AA%85%EC%9D%B4%EB%9E%80"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">🔏 디지털 서명이란?</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C"><span class="nav-number">3.</span> <span class="nav-text">참고자료</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/07/30/323302_250730/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[사이버 탐험 : 보안의 첫걸음] 파일 은닉이란? | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [사이버 탐험 : 보안의 첫걸음] 파일 은닉이란?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: Y3bb1, BBangu195, ycl</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-07-30 22:00:00" itemprop="dateCreated datePublished" datetime="2025-07-30T22:00:00+09:00">2025-07-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EC%82%AC%EC%9D%B4%EB%B2%84-%ED%83%90%ED%97%98-series/" itemprop="url" rel="index"><span itemprop="name">사이버 탐험 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- 파일 은닉이란? -->
+
+<h1 id="파일-은닉의-정의"><a href="#파일-은닉의-정의" class="headerlink" title="파일 은닉의 정의"></a>파일 은닉의 정의</h1><h2 id="파일-은닉이란"><a href="#파일-은닉이란" class="headerlink" title="파일 은닉이란?"></a>파일 은닉이란?</h2><p>파일 은닉이란 시스템 혹은 사용자 눈을 피해 파일을 숨기거나 속이는 기술을 의미해요.</p>
+<p>예를 들어, 실행 파일을 이미지 파일처럼 위장하거나, 윈도우에서 보이지 않게 숨기거나, 텍스트 파일 안에 다른 파일을 몰래 숨겨두는 방식 등이 있어요.</p>
+<p>윈도우 환경에서는 기본적으로 파일 확장자가 숨김으로 설정되어 있어 일반 사용자는 이러한 사실을 쉽게 눈치챌 수 없는데요, 하지만 이러한 은닉 기법을 알면 입문자도 충분히 탐지할 수 있습니다.</p>
+<p>은닉된 파일은 단순히 ‘<strong>숨겨져 있는 파일</strong>’이 아니라 ‘<strong>공격자가 숨기고 싶었던 파일</strong>’이기 때문에 핵심 증거이거나 백도어일 가능성이 높아 공격 역추적의 실마리가 되기도 한답니다!</p>
+<span id="more"></span> 
+<br>
+
+<h2 id="파일-은닉의-Stuxnet"><a href="#파일-은닉의-Stuxnet" class="headerlink" title="파일 은닉의 Stuxnet"></a>파일 은닉의 Stuxnet</h2><p>실제 사례를 알아볼까요? 🌎</p>
+<p><img src="/images/323302_250730_image1.png" alt="그림 1. [파일 은닉 - Stuxnet 사건]"></p>
+<center><span style="font-size: 90%;">그림 1. [파일 은닉 - Stuxnet 사건]</span></center><br>
+
+<p>요즘도 이란 핵 시설이 이슈가 되고 있죠. 2010년 이란에서는 핵 시설을 겨냥한 사이버 무기 ‘Stuxnet 사건’이 있었습니다.🚀</p>
+<p>Stuxnet, 일명 스턱스넷은 이란 핵 농축 시설의 원심분리기를 무력화하기 위해 특별 설계된 악성코드인데요, 주목해야 할 점은 이 악성코드 구성 파일들이 <strong>윈도우 시스템 파일처럼 보이는 이름</strong>으로 위장되어 있었다는 것이죠!</p>
+<p>예를 들어, 공격자는 <code>mrxdav.sys</code> Microsoft 네트워크 리디렉터 드라이버와 비슷한 이름의 <code>mrxcls.sys</code>라는 가짜 파일을 만들어 기존 서비스인 척 속이기에 성공했어요.</p>
+<p><img src="/images/323302_250730_image2.png" alt="그림 2. [파일 은닉 - Stuxnet 기업 감염 경로]"></p>
+<center><span style="font-size: 90%;">그림 2. [파일 은닉 - Stuxnet 기업 감염 경로]</span></center><br>
+
+<p>밝혀진 공격자는 미국과 이스라엘이었는데요, 이란 엔지니어 기업 ‘베파주’에 이러한 스턱스넷을 심었고, 이곳을 기지로 이란의 주요 핵 시설 원자력발전소까지 퍼져 나가게 되었습니다.</p>
+<p>사이버 공격으로 현실 세계의 시설물을 물리적으로 일부 파괴했다는 점에서, 이 사건은 많은 이들에게 충격을 주었고 이후 많은 사이버 공격이 파일 은닉 기법을 사용하기 시작했습니다.</p>
+<p>그렇다면 이런 은밀한 파괴력을 가진 ‘파일 은닉 기법‘에는 어떤 것들이 있을까요? 오늘은 일반적이고 친숙한 사용자 환경, 윈도우에서 자주 쓰이는 은닉 기법을 소개합니다.</p>
+<p>숨겨진 트릭을 꿰뚫어 보는 눈, 👁️‍🗨️ 그 통찰력을 기르러 함께 가봅시다!<br><br><br></p>
+<h1 id="파일-은닉의-기법"><a href="#파일-은닉의-기법" class="headerlink" title="파일 은닉의 기법"></a>파일 은닉의 기법</h1><p>파일 은닉의 대표적인 기법 3가지에는 <strong>확장자 위장</strong>, <strong>유니코드 우회</strong>, <strong>시스템 폴더 및 드라이버 위장</strong>이 있어요. </p>
+<p>그중 가장 대중적인 것은 확장자 위장입니다.<br><br></p>
+<h2 id="🔎-확장자-위장이란"><a href="#🔎-확장자-위장이란" class="headerlink" title="🔎 확장자 위장이란?"></a>🔎 확장자 위장이란?</h2><p>확장자 위장을 알아보기 전에 우선 확장자가 무엇인지에 대한 개념이 선행되어야 하는데요,</p>
+<p>사실 우리는 이미 확장자가 무엇인지 알고 있습니다. 👀 이게 무슨 소리죠?</p>
+<p><img src="/images/323302_250730_image3.png" alt="그림 3. [안녕.jpg]"></p>
+<center><span style="font-size: 90%;">그림 3. [안녕.jpg]</span></center><br>
+
+<p><img src="/images/323302_250730_image4.png" alt="그림 4. [VisualStudioSetup.exe]"></p>
+<center><span style="font-size: 90%;">그림 4. [VisualStudioSetup.exe]</span></center><br>
+
+<p>바로 이렇게 파일 이름 끝에 있는 친구들이 확장자이거든요! 파일을 실행하거나 저장해 본 경험이 있다면 누구든 접해보셨을 거예요. 대표적으로 .jpg로 끝나는 파일은 이미지, .exe로 끝나는 파일은 실행 파일입니다.</p>
+<p>확장자 위장 기법에서의 핵심은 <strong>윈도우 기본 설정에서는 확장자가 보이지 않는다는 것</strong>에 있습니다.</p>
+<p>예를 들어 파일 이름을 <strong>사진.jpg.exe</strong> 로 만들면 윈도우 기본 설정에선 .exe가 안 보이고, 사용자는 .jpg 이미지라고 착각하게 되는 것이죠.</p>
+<p>대표적인 기법이니만큼, 실제로 가능한지 확인해 보도록 할까요?<br><br></p>
+<h3 id="🔎-확장자-위장-실습"><a href="#🔎-확장자-위장-실습" class="headerlink" title="🔎 확장자 위장 실습"></a>🔎 확장자 위장 실습</h3><p><img src="/images/323302_250730_image5.png" alt="그림 5. [파일 탐색기]"></p>
+<center><span style="font-size: 90%;">그림 5. [파일 탐색기]</span></center><br>
+
+<p>윈도우에서 파일 탐색기에 들어갑니다. 윈도우 기본 설정을 바꿔주기 위함인데요,</p>
+<p><img src="/images/323302_250730_image6.png" alt="그림 6. [파일 확장명이 보이게 설정하기]"></p>
+<center><span style="font-size: 90%;">그림 6. [파일 확장명이 보이게 설정하기]</span></center><br>
+
+<p>보기 &gt; 표시 &gt; 파일 확장명에 들어가 파일 확장명이 보이게끔 설정을 바꾸어줍니다.</p>
+<p><img src="/images/323302_250730_image7.png" alt="그림 7. [메모장에 코드 작성하기]"></p>
+<center><span style="font-size: 90%;">그림 7. [메모장에 코드 작성하기]</span></center><br>
+
+<p>그다음 메모장을 켜 사진과 같이 코드를 작성해 줍니다. 악성코드가 아닌 테스트 용도의 텍스트 파일이니까 “나는 사진이 아니고 실은 실행 파일이야!”라고 적어 볼게요.</p>
+<p><img src="/images/323302_250730_image8.png" alt="그림 8. [메모장 .txt 파일]"></p>
+<center><span style="font-size: 90%;">그림 8. [메모장 .txt 파일]</span></center><br>
+
+<p>바탕화면에 저장하면 사진과 같이 되는데요, 우리가 흔히 아는 텍스트 파일입니다. </p>
+<p>하지만, 이 파일 이름을 <strong>cat.jpg.exe</strong> 로 변경한다면 어떻게 될까요?</p>
+<p><img src="/images/323302_250730_image9.png" alt="그림 9. [파일 확장명 변경 시 경고창]"></p>
+<center><span style="font-size: 90%;">그림 9. [파일 확장명 변경 시 경고창]</span></center><br>
+
+<p>시도하면 이런 경고창이 뜹니다. 예를 눌러 볼게요.</p>
+<p><img src="/images/323302_250730_image10.png" alt="그림 10. [.jpg.exe 파일]"></p>
+<center><span style="font-size: 90%;">그림 10. [.jpg.exe 파일]</span></center><br>
+
+<p>마치 실행 파일처럼 보이네요. 이것은 우리가 확장자가 보이게 설정해 두었기 때문이죠.</p>
+<p>이걸 이미지 파일로 속여 볼까요?</p>
+<p><img src="/images/323302_250730_image11.png" alt="그림 11. [.jpg.exe 바로 가기 파일]"></p>
+<center><span style="font-size: 90%;">그림 11. [.jpg.exe 바로 가기 파일]</span></center><br>
+
+<p>바로 가기 파일을 하나 만들어 줍니다. 바로 가기 파일을 만든 이유는 아이콘 변경을 위해서인데요,</p>
+<p><img src="/images/323302_250730_image12.png" alt="그림 12. [.jpg.exe 바로 가기 파일 아이콘 변경]"></p>
+<center><span style="font-size: 90%;">그림 12. [.jpg.exe 바로 가기 파일 아이콘 변경]</span></center><br>
+
+<p>이렇게 이미지 파일인 것처럼 아이콘을 바꾸고, 바로 가기 부분도 삭제해 주었습니다.</p>
+<p>그러면 이제 진짜 이미지 파일을 가져와 볼까요?</p>
+<p><img src="/images/323302_250730_image13.png" alt="그림 13. [난 냐옹이다옹!]"></p>
+<center><span style="font-size: 90%;">그림 13. [난 냐옹이다옹!]</span></center><br>
+
+<p>나옹이다옹. 귀여운 고양이 사진입니다.</p>
+<p><img src="/images/323302_250730_image14.png" alt="그림 14. [진짜 이미지 파일과 가짜 이미지 파일]"></p>
+<center><span style="font-size: 90%;">그림 14. [진짜 이미지 파일과 가짜 이미지 파일]</span></center><br>
+
+<p>나란히 두어보았습니다. 마지막으로 바로 가기 파일 이름을 그냥 cat으로 바꾸어주고, 맨 처음 켜 두었던 파일 확장명 설정을 다시 꺼 볼게요.</p>
+<p><img src="/images/323302_250730_image15.png" alt="그림 15. [둘 다 진짜 이미지 파일?]"></p>
+<center><span style="font-size: 90%;">그림 15. [둘 다 진짜 이미지 파일?]</span></center><br>
+
+<p>짜잔✨ 의심의 여지 없이 마치 아래의 파일이 위의 고양이 사진을 실행하기 위한 바로 가기 파일처럼 보이네요! </p>
+<p><img src="/images/323302_250730_image16.png" alt="그림 16. [가짜 이미지 파일을 실행하면]"></p>
+<center><span style="font-size: 90%;">그림 16. [가짜 이미지 파일을 실행하면]</span></center><br>
+
+<p>고양이 사진을 기대하고 아래 아이콘을 클릭하면, 실행할 수 없다는 팝업 창이 나옵니다. 이건 <code>.jpg.exe</code>라고 이름 붙였지만 내용은 텍스트인 경우라  윈도우가 실행 불가능하다고 판단한 것인데요, 지금은 시각적 이해를 위한 단순 실습이지만 만약 이게 변환 도구로 생성된 악성 코드 파일이었다면 결과는 끔찍했을 것 같습니다.🤯</p>
+<p>확장자를 착각시키는 또 다른 방법이 있습니다. 이번에는 조금만 더 난이도를 높여볼게요!<br><br></p>
+<h2 id="↪️-유니코드-우회란"><a href="#↪️-유니코드-우회란" class="headerlink" title="↪️ 유니코드 우회란?"></a>↪️ 유니코드 우회란?</h2><p>유니코드 우회란, <strong>RLO 문자</strong>(유니코드 U+202E)를 파일명 중간에 끼워 넣어 확장자가 뒤집히도록 하는 방법이에요.</p>
+<p>RLO 문자란 <em>Right-To-Left Override</em>의 약자로 글자의 표시 방향을 강제로 오른쪽에서 왼쪽으로 바꾸는 역할을 합니다.</p>
+<p>이 RLO 문자가 바로 <strong>유니코드 U+202E</strong>인데요, 어렵게 생각하실 것 없어요.</p>
+<p>유니코드란 컴퓨터가 모든 문자를 숫자로 표현하기 때문에, 세계 모든 문자를 숫자로 변환시킨 표준 번호 체계예요.</p>
+<p>예를 들어</p>
+<p><code>가 → U+AC00</code><br><code>A → U+0041</code></p>
+<p>이런 식으로 대응된답니다.</p>
+<p>다시 돌아와서, RLO 문자가 유니코드 U+202E인 것을 이해하셨다면 추가적인 의문이 드시지 않나요?</p>
+<p>어떻게 이 코드를 삽입하여 확장자를 교란시킬 수 있을까요?</p>
+<p>실습한 과정을 소개해 드릴 테니, 이전의 확장자 위장과 비교하며 공부해 보아요!<br><br></p>
+<h3 id="↪️-유니코드-우회-실습"><a href="#↪️-유니코드-우회-실습" class="headerlink" title="↪️ 유니코드 우회 실습"></a>↪️ 유니코드 우회 실습</h3><p><img src="/images/323302_250730_image17.png" alt="그림 17. [.exe 실행 파일]"></p>
+<center><span style="font-size: 90%;">그림 17. [.exe 실행 파일]</span></center><br>
+
+<p>이전 실습처럼 파일 탐색기에서 파일 확장명 보기 옵션을 켜준 후 아무 실행 파일 하나를 준비합니다.</p>
+<p><img src="/images/323302_250730_image18.png" alt="그림 18. [Windows PowerShell 관리자 권한으로 실행]"></p>
+<center><span style="font-size: 90%;">그림 18. [Windows PowerShell 관리자 권한으로 실행]</span></center><br>
+
+<p>PowerShell을 관리자 권한으로 실행합니다.</p>
+<p><img src="/images/323302_250730_image19.png" alt="그림 19. [.exe 실행 파일 위치로 이동]"></p>
+<center><span style="font-size: 90%;">그림 19. [.exe 실행 파일 위치로 이동]</span></center><br>
+
+<p>먼저 cd 디렉터리 이동 명령어를 통해 오하아사 시스템의 파일 위치로 이동해줍니다. 그다음 유니코드를 삽입하면 되는데요,</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$RLO = [char]0x202E</span><br><span class="line">Rename-Item -Path &quot;오하아사 시스템.exe&quot; -NewName (&quot;photo&quot; + $RLO + &quot;gpj.exe&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>입력한 명령어입니다. 한 줄씩 설명해 드릴게요.</p>
+<p><strong>$RLO &#x3D; [char]0x202E</strong></p>
+<ul>
+<li><code>0x202E</code>는 유니코드 제어 문자로 텍스트 방향을 오른쪽 → 왼쪽 <strong>(RTL)</strong> 으로 바꿉니다.</li>
+<li>이 문자를 변수 <code>$RLO</code>에 저장합니다.</li>
+</ul>
+<p><strong>Rename-Item -Path “오하아사 시스템.exe” -NewName (“photo” + $RLO + “gpj.exe”)</strong></p>
+<ul>
+<li><strong>원래 파일 이름</strong>: <code>오하아사 시스템.exe</code></li>
+<li><strong>변경할 이름</strong>:<ul>
+<li><code>&quot;photo&quot;</code> + RLO + <code>&quot;gpj.exe&quot;</code> → RLO 속성으로 뒷부분이 거꾸로 표시되어 눈에 보이는 형태는 <code>photoexe.jpg</code></li>
+<li><strong>하지만 실제로는 <code>.exe</code> 확장자</strong></li>
+</ul>
+</li>
+<li><code>Rename-Item</code>은 PowerShell에서 파일 이름을 바꾸는 명령어입니다.</li>
+</ul>
+<p>즉, 이 명령 내용은 <strong>확장자가 jpg인 척하지만 실제로는 exe인 실행파일을 만들기 위한 속임수</strong>인 것입니다.</p>
+<p><img src="/images/323302_250730_image20.png" alt="그림 20. [photoexe.jpg 파일]"></p>
+<center><span style="font-size: 90%;">그림 20. [photoexe.jpg]</span></center><br>
+
+<p>실제로 확인해 보니, 이렇게 확장자가 뒤집힌 상태가 되었습니다. 파일 확장명 보기 속성을 꺼 볼까요?</p>
+<p><img src="/images/323302_250730_image21.png" alt="그림 21. [photo.jpg 파일]"></p>
+<center><span style="font-size: 90%;">그림 21. [photo.jpg]</span></center><br>
+
+<p>짜잔✨ 이렇게 사용자의 눈에 마치 이미지 파일처럼 보이시는 것을 확인하실 수 있습니다.</p>
+<p>이 파일 역시도 아이콘만 바꾼다면 이미지 파일로 착각시킬 수 있겠죠?</p>
+<p>별도의 도구 설치가 필요하지 않고 윈도우에 내장되어 있으니, 두 실습은 꼭 따라 해보시기를 추천드립니다!💪</p>
+<p>확장자 위장이 아닌 다른 위장 기법도 있는데요, 이어서 함께 알아봅시다.<br><br></p>
+<h2 id="📁-시스템-폴더-및-드라이버-위장이란"><a href="#📁-시스템-폴더-및-드라이버-위장이란" class="headerlink" title="📁 시스템 폴더 및 드라이버 위장이란?"></a>📁 시스템 폴더 및 드라이버 위장이란?</h2><p>시스템 폴더 및 드라이버 위장이란, 악성 파일이 윈도우 시스템 파일처럼 보이도록 이름과 위치를 위장하는 방식입니다. 악성코드가 자신의 정체를 숨기기 위해 가장 자주 사용하는 은닉 기법 중 하나로, 백신 탐지를 회피하고 보안 분석가의 초기 시선을 교란시키기도 합니다.</p>
+<p>시스템 위장 기법의 유형을 소개해 볼게요.<br><br></p>
+<h3 id="파일명-위장"><a href="#파일명-위장" class="headerlink" title="파일명 위장"></a>파일명 위장</h3><p>파일명 위장이란, 실제 윈도우 시스템 파일 이름과 동일한 이름을 사용하는 방식입니다.</p>
+<p>악성 코드 실행 파일을  윈도우 환경에서 많이 쓰는 파일명으로 둔갑합니다.</p>
+<p>대표적으로</p>
+<table>
+<thead>
+<tr>
+<th><code>lsass.exe</code></th>
+<th>로그인 세션 관리자</th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>winlogon.exe</code></th>
+<th>로그인 창 프로세스</th>
+</tr>
+</thead>
+</table>
+<table>
+<thead>
+<tr>
+<th><code>svchost.exe</code></th>
+<th>서비스 관리자</th>
+</tr>
+</thead>
+</table>
+<p>다음과 같은 이름이 자주 쓰입니다.</p>
+<p>→ <strong>일반 사용자 입장에서는</strong> 🤷<br>윈도우 주요 시스템 파일들은 축약된 이름이나 기술적인 명칭들을 사용하므로 파일명과 역할 매핑 자체가 어려워요.</p>
+<p>또한</p>
+<ul>
+<li>이런 파일들은 대부분 <strong>숨겨진 시스템 폴더</strong>에 있고,</li>
+<li><strong>작업 관리자</strong>에서도 이름만 나타날 뿐 상세한 설명은 거의 없습니다.</li>
+<li>따라서 평소에 이런 프로세스를 <strong>구분하거나 의심할 기회조차 없는</strong> 환경인 것이죠.</li>
+</ul>
+<p>악성 코드는 이걸 노립니다.<br><br></p>
+<h4 id="파일명-위장-예시"><a href="#파일명-위장-예시" class="headerlink" title="파일명 위장 예시"></a>파일명 위장 예시</h4><p>예를 들어 <strong>lsass 위장 악성코드의 경우,</strong></p>
+<p>정상적인 <code>lsass.exe</code> 의 위치는 <code>C:\Windows\System32\lsass.exe</code> 이지만,<br>악성 위장 파일의 위치는 <code>C:\Users\Public\lsass.exe</code> 입니다.</p>
+<p>일반인은 이 둘이 다른지조차 구별하지 못하고, 심지어 작업 관리자에선 둘 다 그냥 “lsass.exe”로 보이기 때문에 더더욱 탐지가 어려운 것입니다.</p>
+<p>하지만 우리에게도 의심의 기회는 있습니다.</p>
+<p>바로 파일이 <strong>System32 디렉터리</strong> 안에 있는지 확인해 보는 것인데요,</p>
+<p>파일이 System32에 없다면 쉽사리 실행해서는 안 됩니다.❎</p>
+<p><img src="/images/323302_250730_image22.png" alt="그림 22. [System32 파일]"></p>
+<center><span style="font-size: 90%;">그림 22. [System32 파일]</span></center><br>
+
+<p>실제로 내 PC에 검색해 보면 System32 파일을 확인해 보실 수 있을 거예요.<br>윈도우 시스템에서 정상적인 시스템 파일들은 대부분 이 폴더에 위치하게 됩니다.</p>
+<p>일부 보안 시스템은 ‘<strong>경로 기반 예외 처리</strong>’라는 것을 하는데요,</p>
+<p>예를 들어 파일 위치가 <strong>C:\Windows\System32</strong> (System32) 라면 허용하지만,<br><strong>D:\tmp</strong>일 경우에는 실행 시 경고하거나 차단합니다.</p>
+<p>경로 자체가 신뢰의 기준으로 쓰이는 것이죠.</p>
+<p>그렇다면 위치를 확인한다면 악성 코드를 걸러낼 수 있을까요? 🤔</p>
+<p>안타깝게도, 그렇지 않습니다.😂 다른 시스템 위장 유형이 남아있기에 안심하기엔 이릅니다.😩💨<br><br></p>
+<h3 id="위치-위장"><a href="#위치-위장" class="headerlink" title="위치 위장"></a>위치 위장</h3><p>우리는 이제 윈도우 운영체제가 특정 디렉터리를 신뢰된 시스템 경로로 간주한다는 사실을 알고 있습니다.</p>
+<p>이러한 파일 위치가  <code>C:\Windows\System32</code> 말고도 <code>C:\Windows\drivers</code>, <code>C:\Program Files\Common Files</code> 등 몇 가지 더 있는데요, 그렇다면 파일을 이러한 경로에 옮겨 넣는다면 어떻게 될까요?</p>
+<p><code>C:\Windows\System32</code>에 있으면 대부분의 사용자는 “정상 시스템 파일이겠지”라고 생각하여 사용자 의심이 감소하고,📉</p>
+<p>일부 백신&#x2F;EDR은 이 경로에 있는 파일은 무해한 것으로 간주하고 예외 처리하여 보안 프로그램의 허용 대상이 되며,💊</p>
+<p>UAC (사용자 계정 컨트롤) 우회 시도에 이용되거나,  드라이버 폴더(drivers) 혹은 공유 라이브러리(Common Files)에 있으면 시작 시 자동 로드되는 컴포넌트처럼 자동 실행에 성공할 수 있게 됩니다.👻</p>
+<p>주요 경로별 위장 목적과 예시를 알아볼까요?<br><br></p>
+<h4 id="위치-위장-예시"><a href="#위치-위장-예시" class="headerlink" title="위치 위장 예시"></a>위치 위장 예시</h4><p><strong><code>C:\Windows\System32</code></strong></p>
+<ul>
+<li>윈도우 핵심 실행파일(EXE), 시스템 도구(DLL), 서비스용 실행 파일이 존재합니다.</li>
+<li>해당 위치에 위장하면 <strong>svchost.exe</strong>, <strong>lsass.exe</strong>, <strong>cmd.exe</strong> 등과 혼동하기 쉽습니다.</li>
+</ul>
+<p>예: svch0st.exe ← ‘0’을 넣은 유사 이름으로 시스템 파일처럼 위장이 가능합니다.</p>
+<p><strong><code>C:\Windows\System32\drivers</code></strong></p>
+<ul>
+<li>커널 드라이버(.sys) 파일들이 위치합니다.</li>
+<li><code>.exe</code>나 <code>.dll</code>도 해당 위치에 놓을 경우, <strong>드라이버(운영체제와 하드웨어 장치 사이의 중계 역할을 하는 소프트웨어)처럼 보이게 하거나, 실제 드라이버로 로드 시도</strong>할 수 있습니다.</li>
+<li>일부 악성코드는 실제 <code>.sys</code>로 위장하고 <strong>서비스로 등록</strong>하여 부팅 시 자동 실행합니다.</li>
+</ul>
+<p>예: intel.sys, dxgmms2.sys 같은 이름으로 위장이 가능합니다.</p>
+<p><strong><code>C:\Program Files\Common Files</code></strong></p>
+<ul>
+<li>여러 프로그램이 공유하는 라이브러리나 서비스 파일이 위치합니다.</li>
+<li>해당 경로에 <code>update.exe</code>, <code>helper.dll</code>, <code>servicehost.exe</code> 같은 모호한 이름의 파일을 넣어 <strong>정상 백그라운드 프로세스처럼 위장</strong>할 수 있습니다.</li>
+</ul>
+<p>예: C:\Program Files\Common Files\Adobe\updater.exe</p>
+<p>해당 위치에 들어간 파일이라고 해서 전부 믿을 수 있는 파일은 아니라는 사실, 이제 아셨죠?</p>
+<p>그렇다면 이러한 파일들의 신뢰성은 어떻게 검증할까요?</p>
+<p>바로 ‘<strong>디지털 서명</strong>’이라는 개념입니다.<br><br></p>
+<h4 id="🔏-디지털-서명이란"><a href="#🔏-디지털-서명이란" class="headerlink" title="🔏 디지털 서명이란?"></a>🔏 디지털 서명이란?</h4><p>디지털 서명이란, 파일이 신뢰할 수 있는 개발자나 회사에 의해 만들어졌다는 것을 증명하는 전자적 인증 도장입니다.</p>
+<p>정상 시스템 파일은 보통 Microsoft 서명 <code>Microsoft Windows Publisher</code>이 존재한답니다.</p>
+<p><img src="/images/323302_250730_image23.png" alt="그림 23. [Microsoft Windows Publisher 디지털 서명]"></p>
+<center><span style="font-size: 90%;">그림 23. [Microsoft Windows Publisher 디지털 서명]</span></center><br>
+
+<p>이렇게 말이죠. 실제 System32 디렉터리에 들어가 실행 파일의 디지털 서명을 확인해 보았는데요,</p>
+<p>서명을 확인하는 법은 간단합니다.<br>파일에서 오른쪽 마우스를 클릭해 속성 탭에 들어가기만 하면 되고, 만약 디지털 서명이라는 탭 자체가 존재하지 않는다면 이는 거짓 파일일 가능성이 기하급수적으로 올라가는 것이죠.📈</p>
+<p>그렇다면 디지털 서명이 있는 경우는 무조건 믿을 수 있을까요?</p>
+<p>우선 Microsoft, Adobe, NVIDIA처럼 유명 회사인지 확인해 볼 수 있는데요, 그래도 찝찝함이 가시지 않으신다구요? 🧐 그런 여러분을 위한 유효성 검증 기준과 도구가 준비되어 있답니다.</p>
+<p><img src="/images/323302_250730_image24.png" alt="그림 24. [인증서 정보 타임스탬프]"></p>
+<center><span style="font-size: 90%;">그림 24. [인증서 정보 타임스탬프]</span></center><br>
+
+<p>속성 → 디지털 서명 → 고급 탭에 들어가면 인증서를 볼 수 있는데요, 서명 당시 시점과 유효 기간이 존재하는 것을 알 수 있습니다. 이렇게 <strong>타임스탬프</strong>⏰가 존재해야  믿을 만한 서명이 되는 것이죠.</p>
+<p>대량의 파일을 검증하기 위해서는 일일이 인증서를 확인하기 어려우니 도구를 설치해 봅시다.</p>
+<p>🔗 <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/sysinternals/downloads/sigcheck"><strong>Sigcheck</strong> 다운로드 링크</a></p>
+<p>Sigcheck는 파일 버전 번호, 타임스탬프 정보, 인증서 체인을 포함한 디지털 서명 상태를 정확히 확인할 수 있는 명령줄 도구로, Microsoft가 공식적으로 개발했어요.</p>
+<p><img src="/images/323302_250730_image25.png" alt="그림 25. [cmd 관리자 권한 실행]"></p>
+<center><span style="font-size: 90%;">그림 25. [cmd 관리자 권한 실행]</span></center><br>
+
+<p>Sigcheck를 설치했다면 윈도우에서 cmd를 찾아 관리자 권한으로 실행해 줍니다.</p>
+<p><img src="/images/323302_250730_image26.png" alt="그림 26. [cmd에 명령어 입력하기]"></p>
+<center><span style="font-size: 90%;">그림 26. [cmd에 명령어 입력하기]</span></center><br>
+
+<p>입력한 명령인데요,</p>
+<p>먼저 cd 명령어를 통해 Sigcheck 위치로 이동합니다. 그다음 명령에는 옵션이 붙습니다.</p>
+<p><strong>sigcheck.exe -u -e -s “C:\Windows\System32”</strong></p>
+<ul>
+<li><code>u</code>: 서명되지 않은 파일만 표시</li>
+<li><code>e</code>: 실행 파일만 검사</li>
+<li><code>s</code>: 하위 디렉터리 포함</li>
+</ul>
+<p>요약하자면 System32 디렉터리 안에 있는 실행 파일들 중에서 서명되지 않은 파일을 찾아내라는 거예요.</p>
+<p><img src="/images/323302_250730_image27.png" alt="그림 27. [명령어 실행 결과]"></p>
+<center><span style="font-size: 90%;">그림 27. [명령어 실행 결과]</span></center><br>
+
+<p>제 실행 결과는 이러했는데요, 대표적으로 두 파일의 해석을 함께 살펴볼까요?</p>
+<ol>
+<li><strong>DMRDecoder.dll</strong></li>
+</ol>
+<ul>
+<li>Verified: 글자가 깨졌지만, 서명은 유효한 것으로 보임</li>
+<li>Link date: 2024-12-17</li>
+<li>Publisher: Microsoft Azure Code Signing</li>
+</ul>
+<p>이 파일은 결론적으로 의심할 필요가 없다는 진단을 받았는데요, </p>
+<p>그 이유는 어쨌든 마이크로소프트 공식 서명이 있고 Azure 관련 시스템 구성 요소일 가능성 높기 때문이에요.</p>
+<p>반면 위험성을 띤 파일도 있었답니다.</p>
+<ol start="2">
+<li><strong>HNCEPPRMONP.dll</strong></li>
+</ol>
+<ul>
+<li>Verified: Unsigned → 디지털 서명이 없음</li>
+<li>Publisher: Hancom Inc. (한컴)</li>
+<li>Description: Hancom PDF Port Monitor</li>
+<li>파일 생성일: 2023-07-10</li>
+<li>파일 위치: C:\Windows\System32</li>
+</ul>
+<p>이 파일은 의심 대상이에요. System32 안에 있으나 디지털 서명이 없기 때문인데요,</p>
+<p>Publisher 이름만 ‘Hancom Inc.’로 적혀 있어 정식 한컴 소프트웨어인지 확인이 필요하다고 해요.</p>
+<p>또 파일명이 한컴의 실제 드라이버 이름인지 조사해 보아야 할 것 같습니다.😱</p>
+<p>의도치 않게 위조 파일의 예시를 찾아버렸네요. 준비한 내용 어떠셨나요?</p>
+<p>오늘은 어쩌면 우리가 가장 자주, 자연스럽게 또 많이 접하던 ‘파일’이라는 존재를 의심해 보았는데요,</p>
+<p>유쾌한 시간이 되었기를 바랍니다.😝</p>
+<p>다음에 더 재밌는 주제로 찾아올게요!🫡 안녕!👋<br><br><br></p>
+<h1 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h1><p>경향신문. (2014.). ‘사이버 저격수’ 스턱스넷 웜 감염경로 확인. <span class="exturl" data-url="aHR0cHM6Ly93d3cua2hhbi5jby5rci9hcnRpY2xlLzIwMTQxMTE0MTY1NDEzMT91dG1fc291cmNlPWNoYXRncHQuY29t">https://www.khan.co.kr/article/201411141654131?utm_source=chatgpt.com</span></p>
+<p>PICUS. (2024.). Masquerading Attacks Explained - MITRE ATT&amp;CK T1036. <span class="exturl" data-url="aHR0cHM6Ly93d3cucGljdXNzZWN1cml0eS5jb20vcmVzb3VyY2UvbWFzcXVlcmFkaW5n">https://www.picussecurity.com/resource/masquerading</span></p>
+<p>EST SECURITY. (2017.). 확장자 숨겨 악성파일 열어보게 만드는 메일 유포… 고소장, 방 예약 문의 등으로 위장해 랜섬웨어 감염. <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmFseWFjLmNvLmtyLzk0MA==">https://blog.alyac.co.kr/940</span></p>
+<p>LOGPRESSO. (2025.). [위협 분석] 한글 문서로 위장한 두 공격 그룹의 악성코드 비교. <span class="exturl" data-url="aHR0cHM6Ly9sb2dwcmVzc28uY29tL2tvL2Jsb2cvMjAyNS0wMy0wNC1jb21wYXJpc29uLW9mLW1hbHdhcmUtZGlzZ3Vpc2VkLWFzLWEtaGFuZ3VsLWRvY3VtZW50P3V0bV9zb3VyY2U9Y2hhdGdwdC5jb20=">https://logpresso.com/ko/blog/2025-03-04-comparison-of-malware-disguised-as-a-hangul-document?utm_source=chatgpt.com</span></p>
+<p>Guillaume Bonfante, Jean-Yves Marion, Fabrice Sabatier, Aurélien Thierry. (2014.). Analysis and Diversion of Duqu’s Driver. <span class="exturl" data-url="aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzE0MDEuNjEyMA==">https://arxiv.org/abs/1401.6120</span></p>
+<p>CROWDSTRIKE. (2024.). CrowdStrike Falcon Prevents Multiple Vulnerable Driver Attacks in Real-World Intrusion. <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3Jvd2RzdHJpa2UuY29tL2VuLXVzL2Jsb2cvZmFsY29uLXByZXZlbnRzLXZ1bG5lcmFibGUtZHJpdmVyLWF0dGFja3MtcmVhbC13b3JsZC1pbnRydXNpb24vP3V0bV9zb3VyY2U9Y2hhdGdwdC5jb20=">https://www.crowdstrike.com/en-us/blog/falcon-prevents-vulnerable-driver-attacks-real-world-intrusion/?utm_source=chatgpt.com</span></p>
+<p>Microsoft Ignite. (2025.). SignTool을 사용하여 파일 서명 확인. <span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2tvLWtyL3dpbmRvd3Mvd2luMzIvc2VjY3J5cHRvL3VzaW5nLXNpZ250b29sLXRvLXZlcmlmeS1hLWZpbGUtc2lnbmF0dXJl">https://learn.microsoft.com/ko-kr/windows/win32/seccrypto/using-signtool-to-verify-a-file-signature</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Forensics/" rel="tag"># Forensics</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/17/3104_250617/" rel="prev" title="블루본 취약점을 이용한 안드로이드 해킹 분석 및 실습(1)">
+                  <i class="fa fa-angle-left"></i> 블루본 취약점을 이용한 안드로이드 해킹 분석 및 실습(1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/04/3201_250804/" rel="next" title="DNS 보안 분석 및 DNSCrypt">
+                  DNS 보안 분석 및 DNSCrypt <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

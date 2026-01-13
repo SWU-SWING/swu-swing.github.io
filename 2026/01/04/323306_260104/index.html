@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="서론IoT 기기 Token 인증의 필요성사물인터넷의 급속한 발전은 우리 생활과 산업에 혁신적인 변화를 가져왔다. 수많은 기기들이 끊임없이 연결되며 새로운 가능성을 열어가지만, 그 이면에는 해결해야 할 중요한 과제가 있다. 바로 ‘보안’ 문제이다. IoT 기기들이 네트워크에 연결되기 전에 반드시 자신의 신분을 증명하지 않는다면, 누군가가 악의적으로 접근해 중">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축">
+<meta property="og:url" content="https://log.swuswing.com/2026/01/04/323306_260104/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="서론IoT 기기 Token 인증의 필요성사물인터넷의 급속한 발전은 우리 생활과 산업에 혁신적인 변화를 가져왔다. 수많은 기기들이 끊임없이 연결되며 새로운 가능성을 열어가지만, 그 이면에는 해결해야 할 중요한 과제가 있다. 바로 ‘보안’ 문제이다. IoT 기기들이 네트워크에 연결되기 전에 반드시 자신의 신분을 증명하지 않는다면, 누군가가 악의적으로 접근해 중">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image34.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image35.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image36.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image37.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323306_260110_image38.png">
+<meta property="article:published_time" content="2026-01-04T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-13T01:49:29.604Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/323306_260110_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/01/04/323306_260104/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/01/04/323306_260104/","path":"2026/01/04/323306_260104/","title":"[2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%84%9C%EB%A1%A0"><span class="nav-number">1.</span> <span class="nav-text">서론</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IoT-%EA%B8%B0%EA%B8%B0-Token-%EC%9D%B8%EC%A6%9D%EC%9D%98-%ED%95%84%EC%9A%94%EC%84%B1"><span class="nav-number">1.1.</span> <span class="nav-text">IoT 기기 Token 인증의 필요성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EB%AA%A9%ED%91%9C-%EB%B0%8F-%EA%B8%B0%EB%8C%80-%ED%9A%A8%EA%B3%BC"><span class="nav-number">1.2.</span> <span class="nav-text">실습 목표 및 기대 효과</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IoT-%EA%B8%B0%EA%B8%B0%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-%EC%A3%BC%EC%9A%94-%EC%9D%B8%EC%A6%9D-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.</span> <span class="nav-text">IoT 기기에서 사용되는 주요 인증 방식</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A0%84%ED%86%B5%EC%A0%81%EC%9D%B8-%EC%9D%B8%EC%A6%9D-%EB%B0%A9%EC%8B%9D-%EA%B0%9C%EC%9A%94"><span class="nav-number">2.1.</span> <span class="nav-text">전통적인 인증 방식 개요</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B0%A9%EC%8B%9D-%EB%B3%84-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC"><span class="nav-number">2.1.1.</span> <span class="nav-text">방식 별 동작 원리</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Token-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D%EB%B0%A9%EC%8B%9D-%EA%B0%9C%EC%9A%94"><span class="nav-number">2.2.</span> <span class="nav-text">Token 기반 인증방식 개요</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%86%A0%ED%81%B0-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D%EC%9D%98-%EB%8F%99%EC%9E%91-%EC%9B%90%EB%A6%AC"><span class="nav-number">2.2.1.</span> <span class="nav-text">토큰 기반 인증의 동작 원리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%86%A0%ED%81%B0-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D%EA%B3%BC-%EC%A0%84%ED%86%B5-%EB%B0%A9%EC%8B%9D%EC%9D%98-%EB%B9%84%EA%B5%90"><span class="nav-number">2.2.2.</span> <span class="nav-text">토큰 기반 인증과 전통 방식의 비교</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JWT-JSON-Web-Token-%EA%B8%B0%EC%88%A0%EA%B0%9C%EC%9A%94"><span class="nav-number">3.</span> <span class="nav-text">JWT (JSON Web Token) 기술개요</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT%EC%9D%B4%EB%9E%80"><span class="nav-number">3.1.</span> <span class="nav-text">JWT이란?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%82%AC%EC%9A%A9%EC%9E%90-%EB%A1%9C%EA%B7%B8%EC%9D%B8"><span class="nav-number">3.1.1.</span> <span class="nav-text">사용자 로그인</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%81%B4%EB%9D%BC%EC%9D%B4%EC%96%B8%ED%8A%B8-%EC%A0%80%EC%9E%A5-%EB%B0%A9%EC%8B%9D"><span class="nav-number">3.1.2.</span> <span class="nav-text">클라이언트 저장 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B8%EC%A6%9D-%EC%9A%94%EC%B2%AD"><span class="nav-number">3.1.3.</span> <span class="nav-text">인증 요청</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%84%9C%EB%B2%84-%EA%B2%80%EC%A6%9D"><span class="nav-number">3.1.4.</span> <span class="nav-text">서버 검증</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A1%9C%EA%B7%B8%EC%95%84%EC%9B%83-%EC%B2%98%EB%A6%AC"><span class="nav-number">3.1.5.</span> <span class="nav-text">로그아웃 처리</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT-%EA%B5%AC%EC%A1%B0-Header-Payload-Signature"><span class="nav-number">3.2.</span> <span class="nav-text">JWT 구조 : Header, Payload, Signature</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Header-%ED%97%A4%EB%8D%94"><span class="nav-number">3.2.1.</span> <span class="nav-text">Header(헤더)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Payload-%ED%8E%98%EC%9D%B4%EB%A1%9C%EB%93%9C"><span class="nav-number">3.2.2.</span> <span class="nav-text">Payload(페이로드)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Signature-%EC%84%9C%EB%AA%85"><span class="nav-number">3.2.3.</span> <span class="nav-text">Signature(서명)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%A2%85%EB%A5%98-%EB%B0%8F-%EC%B0%A8%EC%9D%B4-HS256-RS256-ES256"><span class="nav-number">3.3.</span> <span class="nav-text">서명 알고리즘 종류 및 차이(HS256, RS256, ES256)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HS256-%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"><span class="nav-number">3.3.1.</span> <span class="nav-text">HS256 서명 알고리즘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RS256-%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"><span class="nav-number">3.3.2.</span> <span class="nav-text">RS256 서명 알고리즘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HS256-%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98%EA%B3%BC-RS256-%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"><span class="nav-number">3.3.3.</span> <span class="nav-text">HS256 서명 알고리즘과 RS256 서명 알고리즘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ES256-%EC%84%9C%EB%AA%85-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"><span class="nav-number">3.3.4.</span> <span class="nav-text">ES256 서명 알고리즘</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EA%B0%9C-%EB%B9%84%EA%B3%B5%EA%B0%9C-%ED%81%B4%EB%A0%88%EC%9E%84-%EB%B9%84%EA%B5%90-%EB%B0%8F-%EB%B3%B4%EC%95%88%EC%A0%81-%EA%B3%A0%EB%A0%A4-%EC%82%AC%ED%95%AD"><span class="nav-number">3.4.</span> <span class="nav-text">공개&#x2F;비공개 클레임 비교 및 보안적 고려 사항</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JWT-%ED%81%B4%EB%A0%88%EC%9E%84%EC%9D%98-%EC%9C%A0%ED%98%95"><span class="nav-number">3.4.1.</span> <span class="nav-text">JWT 클레임의 유형</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B3%B4%EC%95%88%EC%A0%81-%EA%B3%A0%EB%A0%A4-%EC%82%AC%ED%95%AD-%EB%B0%8F-%EC%A0%84%EB%9E%B5"><span class="nav-number">3.4.2.</span> <span class="nav-text">보안적 고려 사항 및 전략</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IoT%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C%EC%9D%98-JWT-%ED%99%9C%EC%9A%A9-%EC%82%AC%EB%A1%80"><span class="nav-number">3.5.</span> <span class="nav-text">IoT환경에서의 JWT 활용 사례</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JWT-%EC%9D%B8%EC%A6%9D-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%ED%98%84-%ED%95%99%EC%8A%B5"><span class="nav-number">4.</span> <span class="nav-text">JWT 인증 시스템 구현 학습</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%84%A4%EA%B3%84-JWT-%EC%84%9C%EB%AA%85-%EC%83%9D%EC%84%B1-%EC%8B%A4%EC%8A%B5"><span class="nav-number">4.1.</span> <span class="nav-text">JWT 기반 인증 시스템 설계 : JWT 서명 생성 실습</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node-js%EB%A5%BC-%ED%86%B5%ED%95%9C-JWT-%EC%9D%B8%EC%A6%9D%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%8B%A4%EC%8A%B5-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%84%B1"><span class="nav-number">4.2.</span> <span class="nav-text">Node.js를 통한 JWT 인증시스템 실습 환경 구성</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A1%9C%EA%B7%B8%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80-%EA%B5%AC%ED%98%84"><span class="nav-number">4.2.1.</span> <span class="nav-text">로그인 페이지 구현</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%84%A4%EA%B3%84-%EC%84%A0%ED%83%9D%EA%B3%BC-%EB%B3%B4%EC%95%88-%EA%B7%BC%EA%B1%B0"><span class="nav-number">4.2.2.</span> <span class="nav-text">설계 선택과 보안 근거</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT-%EB%B0%9C%EA%B8%89-%EB%B0%8F-%EA%B2%80%EC%A6%9D-API-%EA%B5%AC%ED%98%84"><span class="nav-number">4.3.</span> <span class="nav-text">JWT 발급 및 검증 API 구현</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B7%A8%EC%95%BD%EC%A0%90-%EC%8B%9C%EB%AE%AC%EB%A0%88%EC%9D%B4%EC%85%98"><span class="nav-number">5.</span> <span class="nav-text">취약점 시뮬레이션</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT-%EA%B4%80%EB%A0%A8-%EA%B3%B5%EA%B2%A9-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">5.1.</span> <span class="nav-text">JWT 관련 공격 시나리오</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5%EC%9D%84-%ED%86%B5%ED%95%9C-%EA%B3%B5%EA%B2%A9-%EC%9E%AC%ED%98%84"><span class="nav-number">5.2.</span> <span class="nav-text">실습을 통한 공격 재현</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B3%B5%EA%B2%A9-%EC%9E%AC%ED%98%84-%EA%B2%B0%EA%B3%BC-%EB%B6%84%EC%84%9D-%EB%B0%8F-%EB%B3%B4%EC%95%88-%EC%8B%9C%EC%82%AC%EC%A0%90"><span class="nav-number">5.3.</span> <span class="nav-text">공격 재현 결과 분석 및 보안 시사점</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EA%B2%B0%EB%A1%A0-%EB%B0%8F-%ED%8F%89%EA%B0%80"><span class="nav-number">6.</span> <span class="nav-text">실습 결론 및 평가</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reference"><span class="nav-number">7.</span> <span class="nav-text">Reference</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/04/323306_260104/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: TakTok (banda)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-04 10:00:00" itemprop="dateCreated datePublished" datetime="2026-01-04T10:00:00+09:00">2026-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="서론"><a href="#서론" class="headerlink" title="서론"></a>서론</h1><h2 id="IoT-기기-Token-인증의-필요성"><a href="#IoT-기기-Token-인증의-필요성" class="headerlink" title="IoT 기기 Token 인증의 필요성"></a>IoT 기기 Token 인증의 필요성</h2><p>사물인터넷의 급속한 발전은 우리 생활과 산업에 혁신적인 변화를 가져왔다. 수많은 기기들이 끊임없이 연결되며 새로운 가능성을 열어가지만, 그 이면에는 해결해야 할 중요한 과제가 있다. 바로 ‘보안’ 문제이다. IoT 기기들이 네트워크에 연결되기 전에 반드시 자신의 신분을 증명하지 않는다면, 누군가가 악의적으로 접근해 중요한 정보를 빼내거나 시스템을 마비시키는 심각한 위협에 노출될 수 있다.</p>
+<span id="more"></span>
+
+<p>이렇듯 기기 인증은 단순한 보안 절차를 넘어, 산업과 생활의 안전을 담보하는 필수적인 첫 걸음이다. 다양한 인증 방식이 존재하지만, 토큰 기반 인증은 특히 그 중요성이 부각되고 있다. 관리가 복잡하고 까다로운 수명 주기 과정을 효과적으로 간소화하며, 빠르게 성장하는 IoT 환경에서도 확장성이 뛰어나기 때문이다. 또한 권한 부여 기능을 통해 보안성을 한층 높여, 수많은 기기들이 서로 안전하게 소통할 수 있는 기반을 마련하고 있다. 특히 토큰 기반 인증의 가장 큰 이점은 토큰 인증이 상태를 유지하지 않는다는 것(무상태성)이다. 세션 기반 인증이 로그인한 사용자의 상태를 지속적으로 관리해야 하기에 서버에 과부하를 일으킬 수 있는 반면, 토큰 기반 인증은 무상태성을 바탕으로 단순히 토큰의 유효성만 확인하면 되므로 훨씬 가볍고 확장성이 뛰어나다. 따라서 토큰 기반 인증은 서버의 부담을 최소화하면서도 효율적으로 기기의 신원을 확인할 수 있다. 이러한 이유로 오늘날 IoT 환경에서 토큰 기반 인증은 기기 보안의 핵심적인 역할을 담당하고 있다.<br><br></p>
+<h2 id="실습-목표-및-기대-효과"><a href="#실습-목표-및-기대-효과" class="headerlink" title="실습 목표 및 기대 효과"></a>실습 목표 및 기대 효과</h2><p>이번 실습을 통해 JWT(JSON Web Token) 기반 인증 시스템을 직접 구현하고, 토큰의 발급, 검증, 갱신 과정을 직접 경험해 봄으로써 JWT 인증 시스템의 동작 원리를 심도 있게 익히는 것이 가장 큰 목표이다. 더 나아가, 실제 공격 시나리오를 구성하여 취약점 시뮬레이션을 수행하고, 그 결과를 분석함으로써 보안을 강화할 수 있는 현실적이고 효과적인 전략을 고민해 보는 기회를 가져보려 한다.</p>
+<p>이러한 과정은 단순히 JWT나 토큰 인증 방식의 작동 원리를 이해하는 수준을 넘어, 보안적 관점에서 잠재된 취약점을 구체적이고 실질적으로 파악하고, 이러한 취약점을 극복하기 위한 방안을 실질적으로 모색하는 데 큰 도움을 줄 수 있을 것이다. 이를 통해 IoT 보안에 대한 이해와 대응 역량이 한층 강화될 것으로 기대한다.<br><br><br></p>
+<h1 id="IoT-기기에서-사용되는-주요-인증-방식"><a href="#IoT-기기에서-사용되는-주요-인증-방식" class="headerlink" title="IoT 기기에서 사용되는 주요 인증 방식"></a>IoT 기기에서 사용되는 주요 인증 방식</h1><h2 id="전통적인-인증-방식-개요"><a href="#전통적인-인증-방식-개요" class="headerlink" title="전통적인 인증 방식 개요"></a>전통적인 인증 방식 개요</h2><p>전통적인 인증 방식에는 PSK, Enterprise 모드, X.509 등이 있다.<br><br></p>
+<h3 id="방식-별-동작-원리"><a href="#방식-별-동작-원리" class="headerlink" title="방식 별 동작 원리"></a>방식 별 동작 원리</h3><ol>
+<li><strong>PSK(Pre-Shared Key)</strong><br>개인 사용자나 소규모 네트워크에서 사용되는 간단한 인증방식이다. 네트워크에 연결하려면 사전에 공유된 비밀번호를 입력해야하며, 입력된 비밀번호는 해싱 과정을 거쳐 256비트 키로 변환되어 암호화에 사용된다.</li>
+<li><strong>Enterprise 모드</strong><br>Enterprise 모드는 대규모 네트워크에서 사용되는 고급 인증 방식으로, 802.X  표준과 RADIUS 서버를 사용하여 인증을 수행한다. 각 사용자가 고유한 인증  정보를 통해 네트워크에 접근하며, RADIUS 서버는 사용자 정보를 확인하고 인증한다. </li>
+<li><strong>X.509 인증서</strong><br>X.509(공개키 기반의 인증서)는 인증기관(CA)이 발급한 전자 인증서를 이용해  통신 상대의 신원을 확인하는 원리이다. 각 사용자 또는 장비는 자신의 공개키&#x2F;개인키 쌍과 해당 공개키에 대한 인증서를 보유한다. CA가 인증서를 생성한 후에는 클라이언트가 해당 인증서를 검증하는 방식으로 작동한다.<br></li>
+</ol>
+<h2 id="Token-기반-인증방식-개요"><a href="#Token-기반-인증방식-개요" class="headerlink" title="Token 기반 인증방식 개요"></a>Token 기반 인증방식 개요</h2><h3 id="토큰-기반-인증의-동작-원리"><a href="#토큰-기반-인증의-동작-원리" class="headerlink" title="토큰 기반 인증의 동작 원리"></a>토큰 기반 인증의 동작 원리</h3><p>토큰 기반 인증은 애플리케이션, 웹 API, 사물인터넷(IoT)의 증가로 인해 최근 몇 년간 널리 사용되고 있다. 토큰을 구현하는 방법에는 여러 가지가 있으며, 특히 JWT(JSON 웹 토큰)과 같은 표준 포맷이 대표적으로 사용된다.</p>
+<p>토큰 기반 인증은 서버가 로그인한 사용자에 대한 세션 상태를 별도로 유지하지 않는다는 특징이 있다. 대신 클라이언트가 요청마다 토큰을 함께 보내고, 서버는 이 토큰의 유효성을 확인해 요청의 진위 여부를 판단한다.</p>
+<p>토큰 기반 인증은 사용자가 로그인 자격 증명을 입력하는 것으로부터 시작한다. 사용자의 로그인 자격은 주로 아이디와 패스워드 입력으로 증명된다. 이후 서버가 이 자격 증명의 진위 여부를 확인한 뒤, 이후 요청에서 사용할 수 있는 토큰을 발급한다. 토큰이 발급된 이후에는, 별도의 로그인 과정 없이 이 토큰을 이용해 인증을 대체하게 된다.</p>
+<p>발급된 토큰은 클라이언트 측에 저장된다. 일반적으로는 브라우저나 앱이 제공하는 저장소(로컬 스토리지, 세션 스토리지, 쿠키 등)에 보관되며, 환경에 따라 적절한 저장 방식을 선택한다. 로컬 스토리지는 브라우저를 닫아도 데이터가 남는 영구 저장 공간이고, 세션 스토리지는 브라우저 탭이나 창이 닫히면 데이터가 삭제되는 저장 공간이다.</p>
+<p>토큰 발급 이후의 요청에는 이 토큰이 보통 HTTP 헤더에 포함되어 전송되지만, 상황에 따라 요청 본문이나 쿼리 매개변수로 전달될 수도 있다. 서버는 전달된 토큰을 해석하고, 유효한 토큰이면 요청을 처리한다.<br>마지막으로 사용자가 로그아웃을 하면 토큰은 클라이언트 측에서 삭제되며, 서버는 별도의 세션 정리 없이 상호작용을 종료한다. 이해를 돕기 위해, 참고 자료에서 소개하는 흐름을 토대로 토큰 기반 인증 방식을 간단히 정리하면 다음과 같다.</p>
+<ol>
+<li>사용자가 로그인을 하면 서버가 재인증에 사용할 토큰을 클라이언트로 보낸다.</li>
+<li>클라이언트는 이 토큰을 활용해 일정 주기로 새로운 액세스 토큰을 발급받을 수 있다.</li>
+<li>클라이언트는 발급받은 액세스 토큰을 로컬 저장소 등에 보관하고, 이후 요청 시 헤더에 실어 서버로 전송한다.<br></li>
+</ol>
+<h3 id="토큰-기반-인증과-전통-방식의-비교"><a href="#토큰-기반-인증과-전통-방식의-비교" class="headerlink" title="토큰 기반 인증과 전통 방식의 비교"></a>토큰 기반 인증과 전통 방식의 비교</h3><p>전통적인 인증 방식은 일반적으로 사용자명과 비밀번호 기반 인증이며, 중앙 서버가 이를 검증하는 구조이다. 이 방식에서는 매 요청마다 서버가 세션을 조회해 사용자를 식별하고, 세션 정보가 저장된 중앙 서버가 단일 실패 지점이 된다. 반면 토큰 기반 방식에서는 서버가 한 번 인증한 뒤, 토큰을 발급해 클라이언트가 이후 요청에서 스스로를 증명하도록 한다. 표준화된 토큰 포맷을 사용하면 토큰의 위조·변조 여부를 확인할 수 있고, 별도의 세션 저장소 없이도 여러 서버가 동일한 규칙으로 토큰을 검증할 수 있다는 장점이 있다.</p>
+<p>전통 방식에서는 사용자명과 비밀번호만 탈취하면 세션을 새로 만들어 접근할 수 있기 때문에, 비밀번호 재사용이나 피싱으로 인한 계정 탈취 위험이 크다. 토큰 기반 방식에서도 토큰 탈취 위험은 존재하지만, 토큰에 담기는 만료 시간 등 메타데이터와 검증 절차를 적절히 설계해 더 정교한 방어 전략을 구축할 수 있다.</p>
+<p>또한 전통적인 세션 기반 인증이 주로 일반 웹·앱 로그인에 사용되는 것과 달리, 토큰 기반 인증은 마이크로서비스, API 게이트웨이, 분산 애플리케이션 등 다양한 환경에서 재사용되며, 한 번 발급된 토큰을 여러 서비스가 공통으로 검증하는 구조를 만들 수 있다는 점에서 활용 범위가 넓다.<br><br><br></p>
+<h1 id="JWT-JSON-Web-Token-기술개요"><a href="#JWT-JSON-Web-Token-기술개요" class="headerlink" title="JWT (JSON Web Token) 기술개요"></a>JWT (JSON Web Token) 기술개요</h1><h2 id="JWT이란"><a href="#JWT이란" class="headerlink" title="JWT이란?"></a>JWT이란?</h2><p>JWT(Json Web Token)이란 Json 객체 형태를 이용해 사용자에 대한 정보를 안전하게 전송하기 위한 개방형 표준(RFC 7519)이며, Claim 기반의 Web Token이다. 전달하고 싶은 정보는 디지털 서명을 통해 검증되고 신뢰할 수 있으며, 서명 방식에는 대칭키(HMAC), 비대칭키(RSA, ECDSA)가 존재한다. JWT 동작 흐름은 아래와 같다.</p>
+<p><img src="/images/323306_260110_image1.png" alt="그림 1. [JWT 발급 후 토큰으로 보호 자원에 접근하는 전체 흐름]"></p>
+<center><span style="font-size: 90%;">그림 1. [JWT 발급 후 토큰으로 보호 자원에 접근하는 전체 흐름]</span></center>
+<br>
+
+<h3 id="사용자-로그인"><a href="#사용자-로그인" class="headerlink" title="사용자 로그인"></a>사용자 로그인</h3><p>사용자가 아이디와 비밀번호 등 자격 증명을 입력하면 서버는 이를 검증한 뒤, 해당 사용자 정보를 기반으로 JWT를 하나 생성한다. 이때 토큰에는 발급 시각, 만료 시간, 발급자, 수신자 같은 클레임이 함께 포함되며, 서명까지 붙은 최종 JWT가 브라우저나 모바일 앱 같은 클라이언트로 전달된다.<br><br></p>
+<h3 id="클라이언트-저장-방식"><a href="#클라이언트-저장-방식" class="headerlink" title="클라이언트 저장 방식"></a>클라이언트 저장 방식</h3><p>클라이언트는 전달받은 JWT를 저장해 두고 이후 요청에 재사용한다. 대표적인 방식이 브라우저의 로컬 스토리지에 JWT를 보관하는 방법이다. 이렇게 저장하면 페이지를 새로고침하거나 브라우저를 다시 열었을 때도 로그인 상태를 유지할 수 있다. 다만 매번 로컬 스토리지에서 값을 꺼내서 헤더에 붙이는 과정은 오버헤드를 만들 수 있기 때문에, 실행 중인 애플리케이션 내부의 전역 상태나 상태 관리 변수에도 JWT를 같이 보관해 두고 메모리에서 바로 읽어 쓰는 방식이 자주 사용된다.<br><br></p>
+<h3 id="인증-요청"><a href="#인증-요청" class="headerlink" title="인증 요청"></a>인증 요청</h3><p>클라이언트가 보호된 API에 접근하고자 할 때는 HTTP 요청 헤더에 JWT를 실어 보낸다. 구체적으로 Authorization 헤더에 Bearer <JWT> 형식으로 토큰을 넣어 서버로 전송한다. 서버 입장에서는 이 헤더만 보면 클라이언트가 자신을 어떤 토큰으로 증명하고 있는지 바로 알 수 있다.<br><br></p>
+<h3 id="서버-검증"><a href="#서버-검증" class="headerlink" title="서버 검증"></a>서버 검증</h3><p>서버는 들어온 요청에서 Authorization 헤더를 읽어 JWT를 꺼낸 뒤, 우선 토큰 구조와 클레임이 유효한지 확인한다. 만료 시간이 지나지 않았는지, 발급자와 수신자가 기대한 값인지 등을 점검한 다음, 마지막으로 서명 부분을 검증해 중간에 내용이 변조되지 않았는지와 실제로 신뢰할 수 있는 발급자가 만든 토큰인지 확인한다. 이 모든 검증을 통과한 경우에만 요청을 계속 처리하고, 해당 클라이언트에게 보호된 자원이나 서비스에 대한 접근을 허용한다.<br><br></p>
+<h3 id="로그아웃-처리"><a href="#로그아웃-처리" class="headerlink" title="로그아웃 처리"></a>로그아웃 처리</h3><p>클라이언트가 로그아웃을 선택하면 우선 로컬 스토리지나 메모리에 저장해 두었던 JWT를 삭제해 더 이상 새로운 요청에 토큰이 실리지 않도록 한다. 그러나 실 서비스에서는 이 정도로는 충분하지 않은 경우가 많기 때문에, 서버 측에서도 사용 중이던 토큰을 별도의 블랙리스트 테이블에 기록해 둔다. 이후에는 이 목록에 올라간 토큰으로 요청이 들어오면 서명과 클레임이 유효하더라도 강제로 거부해, 로그아웃 이후 동일 토큰이 재사용되는 상황을 차단한다.<br><br></p>
+<h2 id="JWT-구조-Header-Payload-Signature"><a href="#JWT-구조-Header-Payload-Signature" class="headerlink" title="JWT 구조 : Header, Payload, Signature"></a>JWT 구조 : Header, Payload, Signature</h2><p><img src="/images/323306_260110_image2.png" alt="그림 2. [JWT가 헤더·페이로드·서명 세 부분으로 구성되는 구조]"></p>
+<center><span style="font-size: 90%;">그림 2. [JWT가 헤더·페이로드·서명 세 부분으로 구성되는 구조]</span></center><br>
+
+<p>JWT은 ‘.’ 으로 구분된 3부분으로 구성된다.<br><br></p>
+<h3 id="Header-헤더"><a href="#Header-헤더" class="headerlink" title="Header(헤더)"></a>Header(헤더)</h3><p><img src="/images/323306_260110_image3.png" alt="그림 3. [JWT 헤더 예시]"></p>
+<center><span style="font-size: 90%;">그림 3. [JWT 헤더 예시]</span></center><br>
+
+<p>JWT는 마침표(.)로 구분된 세 부분으로 구성된다. 첫 번째 부분인 헤더(Header)는 토큰의 타입(보통 “typ”: “JWT”)과 사용할 서명 알고리즘(예: HS256, RS256 등)을 기술하는 작은 JSON 객체이며, 이 객체를 Base64Url로 인코딩한 값이 JWT의 첫 번째 조각이 된다.<br><br></p>
+<h3 id="Payload-페이로드"><a href="#Payload-페이로드" class="headerlink" title="Payload(페이로드)"></a>Payload(페이로드)</h3><p><img src="/images/323306_260110_image4.png" alt="그림 4. [JWT 페이로드 예시]"></p>
+<center><span style="font-size: 90%;">그림 4. [JWT 페이로드 예시]</span></center><br>
+
+<p>두 번째 부분인 페이로드(Payload)는 클레임(Claims)을 담는 영역으로, 여기에는 등록된 클레임(iss, exp, sub, aud 등), IANA 레지스트리나 URI 기반으로 정의한 공개 클레임, 그리고 서비스 당사자끼리만 약속한 비공개 클레임 같은 값들이 포함된다. 이 페이로드 JSON 역시 Base64Url로 인코딩되어 JWT의 두 번째 조각을 이룬다. 단, 페이로드는 암호화가 아니라 인코딩만 된 상태이기 때문에 누구나 내용을 열람할 수 있으며, 따라서 비밀번호나 카드번호 같은 비밀 데이터는 넣지 않는 것이 원칙이다.<br><br></p>
+<h3 id="Signature-서명"><a href="#Signature-서명" class="headerlink" title="Signature(서명)"></a>Signature(서명)</h3><p><img src="/images/323306_260110_image5.png" alt="그림 5. [JWT 서명 생성 식]"></p>
+<center><span style="font-size: 90%;">그림 5. [JWT 서명 생성 식]</span></center><br>
+
+<p>세 번째 부분인 서명(Signature)은 앞서 인코딩한 헤더와 페이로드를 일정한 규칙으로 이어 붙인 뒤, 선택한 알고리즘과 키를 사용해 서명한 결과이다. 이 서명 값이 JWT의 마지막 조각으로 붙어 전체 토큰이 완성되며, 서버는 이 서명을 검증함으로써 전송 중 메시지가 변조되지 않았는지와 발신자가 신뢰할 수 있는 주체인지 확인할 수 있다.<br><br></p>
+<h2 id="서명-알고리즘-종류-및-차이-HS256-RS256-ES256"><a href="#서명-알고리즘-종류-및-차이-HS256-RS256-ES256" class="headerlink" title="서명 알고리즘 종류 및 차이(HS256, RS256, ES256)"></a>서명 알고리즘 종류 및 차이(HS256, RS256, ES256)</h2><h3 id="HS256-서명-알고리즘"><a href="#HS256-서명-알고리즘" class="headerlink" title="HS256 서명 알고리즘"></a>HS256 서명 알고리즘</h3><p>HS256 서명 알고리즘은 하나의 비밀 키를 사용하는 대칭 키 기반 해싱 알고리즘이다. 여기서 대칭이라는 말은 서명을 만드는 쪽과 검증하는 쪽이 같은 비밀 키를 공유한다는 의미이며, 이 하나의 키가 JWT에 서명을 생성할 때도 쓰이고, 그 서명이 올바른지 검증할 때도 그대로 사용된다. 때문에 공유 키를 쓸 때는 검증자 역할을 하는 여러 애플리케이션이 이 키를 얼마나 잘 보호하느냐가 핵심 보안 포인트가 된다.<br><br></p>
+<h3 id="RS256-서명-알고리즘"><a href="#RS256-서명-알고리즘" class="headerlink" title="RS256 서명 알고리즘"></a>RS256 서명 알고리즘</h3><p>RS256은 RSA 공개키 암호와 SHA-256 해시를 결합한 비대칭키 기반 서명 알고리즘이다. 이 방식에서도 하나의 개인 키와 하나의 공개 키가 쌍을 이루며, 서버는 개인 키로 JWT(Json Web Token)에 서명을 남기고, 검증 측은 공개 키로 서명의 진위를 확인한다. 개인 키는 오직 발급자만 보관하고, 공개 키는 여러 검증 서버나 외부 서비스에 자유롭게 배포할 수 있기 때문에, “발급자는 하나, 검증자는 여러 개”인 구조를 자연스럽게 구성할 수 있다. 이 덕분에 마이크로서비스, 외부 파트너 API, 멀티 테넌트 환경 등에서 토큰 발급과 검증 역할을 분리하기가 쉽다.<br><br></p>
+<h3 id="HS256-서명-알고리즘과-RS256-서명-알고리즘"><a href="#HS256-서명-알고리즘과-RS256-서명-알고리즘" class="headerlink" title="HS256 서명 알고리즘과 RS256 서명 알고리즘"></a>HS256 서명 알고리즘과 RS256 서명 알고리즘</h3><p>두 알고리즘 모두 제3자가 잠재적으로 사용자의 비밀 키를 갖고 사용자의 응용프로그램에 유효한 것으로 간주되는 JWT을 생성할 수 있다. 특히 HS256 알고리즘의 경우, 토큰의 검증자는 JWT에 서명하는 동일한 키를 가지고 있으며, 이 키가 제3자에게 노출될 위험을 증가시킬 수 있다. 이러한 비밀 키를 안전한 저장소에 넣고, 접근을 제한하는 등 키가 손상되거나 노출되지 않도록 보호하기 위해 주의가 필요하다. 또한 두 알고리즘 모두 JWT의 무결성을 확인하는 데 사용될 수 있지만, 현재 권장되는 알고리즘은 RS256이다. 서명은 사실을 보장해야하며, 이는 JWT 콘텐츠 발신자가 생성한 콘텐츠와 동일하다는 것을 의미한다. HS256과 RS256 모두 JWT의 신뢰성을 보장한다. 하지만 RS256을 지원할 수 없는 레거시 응용 프로그램에서 작업할 때 HS256을 사용하는 것이 유용할 수 있다. 또한 응용 프로그램들이 매우 많은 요청을 할 때의 경우, HS256이 RS256보다 효율적인 선택이 될 수 있다.<br><br></p>
+<h3 id="ES256-서명-알고리즘"><a href="#ES256-서명-알고리즘" class="headerlink" title="ES256 서명 알고리즘"></a>ES256 서명 알고리즘</h3><p>ES256은 ECDSA(P-256 + SHA-256)를 사용하는 비대칭키 서명 알고리즘이다. 이 방식에서는 하나의 개인 키와 하나의 공개 키가 쌍을 이루며, 서버는 개인 키로 토큰에 서명을 남기고 검증 측은 공개 키로 서명의 진위를 확인한다. 구조상 비밀 값은 개인 키 하나뿐이기 때문에, 이 키만 안전하게 관리하면 공개 키는 여러 서비스나 검증 서버에 폭넓게 배포해도 문제되지 않는다. 이러한 특성 덕분에 서비스 간 신뢰 관계를 확장하거나, 여러 마이크로서비스가 같은 발급자의 토큰을 검증해야 하는 환경에서 유리하다. 성능 면에서는 단순 HMAC 기반 알고리즘보다 상대적으로 느릴 수 있지만, 더 작은 키 길이로도 충분한 보안 강도를 제공하기 때문에, 높은 보안 수준과 확장성을 동시에 요구하는 환경에서 많이 사용된다.<br><br></p>
+<h2 id="공개-비공개-클레임-비교-및-보안적-고려-사항"><a href="#공개-비공개-클레임-비교-및-보안적-고려-사항" class="headerlink" title="공개&#x2F;비공개 클레임 비교 및 보안적 고려 사항"></a>공개&#x2F;비공개 클레임 비교 및 보안적 고려 사항</h2><h3 id="JWT-클레임의-유형"><a href="#JWT-클레임의-유형" class="headerlink" title="JWT 클레임의 유형"></a>JWT 클레임의 유형</h3><p>JWT 클레임은 JWT가 전달하는 핵심 정보로, 페이로드에 포함된 값들이 사용자의 신원, 권한, 토큰의 만료 시점 등 “이 토큰이 무엇을 의미하는지”를 정의한다. 이러한 클레임은 크게 등록된 클레임, 공개 클레임, 비공개 클레임의 세 가지 범주로 나눌 수 있다.</p>
+<ol>
+<li><p>등록된 클레임<br>먼저 등록된 클레임은 표준에서 미리 정해지고 공식 문서로 공개된 클레임들이다. 예를 들어 발행자 클레임인 iss는 “이 토큰을 발행한 주체가 누구인지”를 나타낸다. 주체 클레임인 sub는 “이 토큰이 가리키는 사용자 또는 엔티티가 누구인지”를 표현한다. aud는 청중(audience) 클레임으로, “이 토큰이 어떤 애플리케이션이나 서비스에서 사용되도록 발급되었는지”를 지정한다. exp는 만료 시간(expiration) 클레임으로, “이 토큰을 언제까지 유효한 것으로 받아들일 수 있는지”를 의미한다. nbf(Not Before)는 “이 시각 이전에는 이 토큰을 받아들이면 안 된다”는 하한 시간을 나타내고, iat(Issued At)는 “이 토큰이 언제 발행되었는지”를 기록한다. 마지막으로 jti(JWT ID)는 개별 JWT를 구분하기 위한 고유 식별자로, 토큰을 한 개씩 추적하거나 재사용 공격을 막는 데 활용할 수 있다.</p>
+</li>
+<li><p>사용자 지정 클레임<br>공개 클레임은 애플리케이션이 상황에 맞게 추가로 정의하는 사용자 지정 클레임 가운데, 이름과 의미를 대외적으로 공개하는 종류이다. 개발자가 특정 클레임 이름과 그 의미를 스스로 정한 뒤, IANA(인터넷 할당 번호 관리 기관)의 레지스트리에 등록해 “이 이름은 이런 의미로 사용된다”는 사실을 전 세계에 공유하는 방식이다. 이렇게 등록된 공개 클레임은 표준화된 이름처럼 취급되므로, 서로 다른 서비스나 라이브러리에서도 동일한 의미로 이해될 수 있도록 돕는다.</p>
+</li>
+</ol>
+<p>비공개 클레임은 특정 서비스나 조직 내부에서만 사용하는 사용자 지정 클레임이다. 이 경우 IANA 레지스트리에 등록하지 않고, 해당 시스템이나 관련된 당사자들끼리만 “이 클레임 이름은 이런 의미로 쓰자”라고 합의해 사용한다. 외부에 공개할 필요는 없지만, 여러 내부 시스템이나 팀 사이에서 의미와 사용 방식을 미리 약속해 두어야 운영상의 혼란을 줄이고, 상호 간의 호환성을 유지할 수 있도록 설계하는 것이 중요하다.<br><br></p>
+<h3 id="보안적-고려-사항-및-전략"><a href="#보안적-고려-사항-및-전략" class="headerlink" title="보안적 고려 사항 및 전략"></a>보안적 고려 사항 및 전략</h3><ol>
+<li>토큰 저장 위치</li>
+</ol>
+<p><img src="/images/323306_260110_image6.png" alt="그림 6. [Express에서 HttpOnly·Secure 쿠키로 JWT를 저장하는 예시]"></p>
+<center><span style="font-size: 90%;">그림 6. [Express에서 HttpOnly·Secure 쿠키로 JWT를 저장하는 예시]</span></center><br>
+
+<p>토큰 기반 인증을 설계할 때 가장 먼저 정해야 할 것은 “클라이언트에서 JWT를 어디에 저장할 것인가”이다. 로컬 스토리지(localStorage)에 저장하면 구현이 단순하고 디버깅도 편하지만, 스크립트에서 그대로 읽을 수 있기 때문에 XSS가 한 번 터지면 토큰이 그대로 털린다는 문제가 생긴다. 그래서 실서비스에서는 주로 HttpOnly 쿠키를 쓴다. Express 예제 코드처럼 res.cookie(‘token’, token, { httpOnly: true, secure: …, maxAge: … }) 형태로 내려주면, 브라우저가 자동으로 쿠키를 붙여 보내 주지만 자바스크립트에서는 이 값을 읽을 수 없다. 결과적으로 “토큰 탈취 난이도를 XSS 난이도까지 끌어올리는” 효과가 생긴다.</p>
+<ol start="2">
+<li>리프레시 토큰 전략</li>
+</ol>
+<p><img src="/images/323306_260110_image7.png" alt="그림 7. [리프레시 토큰을 검증해 새 액세스 토큰을 발급하는 예시]"></p>
+<center><span style="font-size: 90%;">그림 7. [리프레시 토큰을 검증해 새 액세스 토큰을 발급하는 예시]</span></center><br>
+
+<p>또 하나 중요한 축은 리프레시 토큰 전략이다. 액세스 토큰(access token)은 유효기간을 짧게 잡아서 유출되더라도 피해 범위를 제한하고, 대신 리프레시 토큰(refresh token)을 이용해 새 액세스 토큰을 재발급받는 구조로 만든다. 예제 코드의 refreshAccessToken (refreshToken)처럼 서버가 리프레시 토큰을 검증한 뒤 generateAccessToken을 다시 호출해 새로운 토큰을 만들어 주는 패턴이다. 이렇게 하면 사용자는 세션이 오래 이어지는 것처럼 느끼지만, 실제로는 짧은 수명의 액세스 토큰이 여러 번 교체되기 때문에 보안성과 사용자 경험 사이의 균형을 맞출 수 있다.</p>
+<ol start="3">
+<li>클레임 설계</li>
+</ol>
+<p><img src="/images/323306_260110_image8.png" alt="그림 8. [sub·name·role·iat·exp 클레임을 담은 JWT 페이로드 예시]"></p>
+<center><span style="font-size: 90%;">그림 8. [sub·name·role·iat·exp 클레임을 담은 JWT 페이로드 예시]</span></center><br>
+
+<p>JWT 페이로드에는 어떤 클레임을 포함할지 신중히 결정해야한다. 또한 필요한 정보만 포함하여 토큰 크기를 최소화해야한다.<br><br></p>
+<h2 id="IoT환경에서의-JWT-활용-사례"><a href="#IoT환경에서의-JWT-활용-사례" class="headerlink" title="IoT환경에서의 JWT 활용 사례"></a>IoT환경에서의 JWT 활용 사례</h2><p><img src="/images/323306_260110_image9.png" alt="그림 9. [아두이노에서 JWT를 생성·검증해 디바이스를 인증하는 예시]"></p>
+<center><span style="font-size: 90%;">그림 9. [아두이노에서 JWT를 생성·검증해 디바이스를 인증하는 예시]</span></center><br>
+
+<p>IoT 환경에서 JWT는 리소스가 제한된 기기들끼리도 안전하게 서로를 인증하고 통신할 수 있게 해주는 핵심 도구로 쓰인다. 예를 들어 스마트홈 환경에서는 조명, 도어락, 온도 조절기 같은 개별 IoT 기기가 서로 요청을 주고받기 전에 JWT를 통해 상대가 신뢰할 수 있는 기기인지 확인한 뒤 데이터를 교환하도록 만들 수 있다. 이렇게 하면 네트워크에 우연히 붙어 있는 악성 장치나 위조된 기기가 임의로 명령을 보내는 상황을 줄일 수 있다. </p>
+<p>또한 JWT는 자체적으로 필요한 클레임 정보를 모두 담고 있는 자체 포함(self-contained) 구조라, 매 요청마다 별도의 세션 저장소를 조회할 필요가 없다. 이 덕분에 메모리·CPU가 부족한 IoT 기기 입장에서도 비교적 가볍게 인증을 처리할 수 있다. 더 나아가, 기기들이 중앙 서버를 매번 거치지 않고 JWT를 기반으로 상호 인증·통신을 수행하도록 설계하면, 전체 시스템이 특정 서버에 과도하게 의존하지 않게 되어 서버 부하를 줄이고 장애 시에도 일부 기능을 계속 유지할 수 있는 아키텍처를 만들 수 있다.<br><br><br></p>
+<h1 id="JWT-인증-시스템-구현-학습"><a href="#JWT-인증-시스템-구현-학습" class="headerlink" title="JWT 인증 시스템 구현 학습"></a>JWT 인증 시스템 구현 학습</h1><h2 id="JWT-기반-인증-시스템-설계-JWT-서명-생성-실습"><a href="#JWT-기반-인증-시스템-설계-JWT-서명-생성-실습" class="headerlink" title="JWT 기반 인증 시스템 설계 : JWT 서명 생성 실습"></a>JWT 기반 인증 시스템 설계 : JWT 서명 생성 실습</h2><p><img src="/images/323306_260110_image10.png" alt="그림 10. [파이썬에서 HS256과 RS256 두 방식으로 동일 페이로드에 서명하는 예시]"></p>
+<center><span style="font-size: 90%;">그림 10. [파이썬에서 HS256과 RS256 두 방식으로 동일 페이로드에 서명하는 예시]</span></center><br>
+
+<p><img src="/images/323306_260110_image11.png" alt="그림 11. [iat·exp가 포함된 페이로드에 HS256/RS256 서명을 비교하는 예시]"></p>
+<center><span style="font-size: 90%;">그림 11. [iat·exp가 포함된 페이로드에 HS256/RS256 서명을 비교하는 예시]</span></center><br>
+
+<p>해당 예제는 JWT를 두 가지 방식으로 발급해보는 예제다. <strong>HS256(HMAC-SHA256)</strong> 과 <strong>RS256(RSA-SHA256)</strong> 의 차이를 알아보기 위해 해당 실습을 진행하였다. HS256은 대칭키 방식이며, 서버가 secret 키를 통해 토큰을 서명하면 클라이언트도 같은 secret 키를 알아야 검증 가능한 방식이다. RS256는 비대칭키 방식이며, 서버가 RSA private key로 토큰에 서명하면, 누구나 public key로만 유효성을 검증할 수 있다. 실제 서비스인 OAuth2, OpenID Connect와 같은 서비스에서 주로 사용되는 방식이다.</p>
+<p><img src="/images/323306_260110_image12.png" alt="그림 12. [Python 코드로 생성한 HS256·RS256 토큰과 공개키 출력 결과]"></p>
+<center><span style="font-size: 90%;">그림 12. [Python 코드로 생성한 HS256·RS256 토큰과 공개키 출력 결과]</span></center><br>
+
+<p>코드 실행 결과, HS256, RS256 JWT 토큰 생성 결과가 나타나고 RS256 검증 시 사용된 공개키가 PEM 포맷으로 출력되었다.</p>
+<p><strong>[HS256 JWT]</strong><br><img src="/images/323306_260110_image13.png" alt="그림 13. [HS256 JWT를 jwt.io에서 디코딩한 화면]"></p>
+<center><span style="font-size: 90%;">그림 13. [HS256 JWT를 jwt.io에서 디코딩한 화면]</span></center><br>
+
+<p><strong>[RS256 JWT]</strong><br><img src="/images/323306_260110_image14.png" alt="그림 14. [RS256 JWT를 공개키로 검증한 jwt.io 화면]"></p>
+<center><span style="font-size: 90%;">그림 14. [RS256 JWT를 공개키로 검증한 jwt.io 화면]</span></center><br>
+
+<p>RS256 JWT는 HS256과 다르게 검증하려면 public key를 입력해 전달해줘야 한다.<br>공개키를 넣어주면 서명 검증이 완료된다.<br><br></p>
+<h2 id="Node-js를-통한-JWT-인증시스템-실습-환경-구성"><a href="#Node-js를-통한-JWT-인증시스템-실습-환경-구성" class="headerlink" title="Node.js를 통한 JWT 인증시스템 실습 환경 구성"></a>Node.js를 통한 JWT 인증시스템 실습 환경 구성</h2><h3 id="로그인-페이지-구현"><a href="#로그인-페이지-구현" class="headerlink" title="로그인 페이지 구현"></a>로그인 페이지 구현</h3><p><img src="/images/323306_260110_image15.png" alt="그림 15. [SWING JWT LAB 로그인 페이지 화면]"></p>
+<center><span style="font-size: 90%;">그림 15. [SWING JWT LAB 로그인 페이지 화면]</span></center><br>
+
+<p>본 로그인 사이트는 WSL(Ubuntu) 상의 Node.js 20을 기반으로 구현하였다. 인증 · 인가 경로는 세 개의 독립 서비스로 분리하였다. 인증 서버는 Express , jsonwebtoken , bcrypt, better-sqlite3 를 사용하여 계정 검증과 JWT 발급·갱신을 담당하게 구성하였다. 또한 <strong>BFF(Backend For Frontend)</strong> 는 Next.js14(App Router)를 사용해 브라우저와 백엔드 사이의 경계면을 제공하도록 하였다. 보안적인 관점에서 프론트엔드는 토큰을 직접 다루지 않고, 모든 인증 행위는 BFF의 API( &#x2F;api&#x2F;login , &#x2F;api&#x2F;refresh , &#x2F;api&#x2F;logout , &#x2F;api&#x2F;me)를 통해서만 수행된다. 또한 보안 실습을 위해 <strong>보호 리소스 API</strong>도 구현하였는데, 이는Express로 구현하였고, 전달받은 Access Token만을 근거로 리소스를 제공하도록 했다.</p>
+<p><img src="/images/323306_260110_image16.png" alt="그림 16. [RS256·BFF 쿠키 기반 로그인 플로우 시퀀스 다이어그램]"></p>
+<center><span style="font-size: 90%;">그림 16. [RS256·BFF 쿠키 기반 로그인 플로우 시퀀스 다이어그램]</span></center><br>
+
+<p>로그인 플로우는 다음과 같다. 사용자가 BFF에 id&#x2F;pw를 제출하면 BFF는 인증 서버&#x2F;auth&#x2F;login 으로 전달한다. 인증 서버는 비밀번호 해시를 검증한 뒤 RS256으로 Access&#x2F;Refresh 토큰을 서명하고, Refresh 토큰은 DB에 저장한다. BFF는 응답을 받아 두 토큰을 at , rt 라는 <strong>HttpOnly 쿠키</strong>에 담아 브라우저로 내려보낸다. 이후 사용자가 보호 API에 접근할 때는 BFF가 쿠키에서 Access Token을 꺼내 검증하며, 만료된 경우 자동으로 &#x2F;api&#x2F;refresh 를 호출해 중단하지 않고 갱신을 수행한다.</p>
+<p><img src="/images/323306_260110_image17.png" alt="그림 17. [Docker Compose로 server·bff·api·reverse 포트와 환경 변수를 설정한 구성]"></p>
+<center><span style="font-size: 90%;">그림 17. [Docker Compose로 server·bff·api·reverse 포트와 환경 변수를 설정한 구성]</span></center><br>
+
+<p>이번 랩은 server(인증), bff(Next.js), api(보호 리소스), reverse(Nginx&#x2F;TLS) 네 개의 블록<br>으로 구성했다. BFF가 인증 서버를 찾을 때는 AUTH_ORIGIN&#x3D;<span class="exturl" data-url="aHR0cDovL3NlcnZlcjo0MDAwLw==">http://server:4000</span> 같은 내부 DNS만 사용해 외부 DNS나 프록시 상태에 영향받지 않도록 했다. API는 <strong>공개키 디렉터리만 읽기 전용으로 마운트</strong>하고, 비밀키는 절대 공유하지 않는다. 이 단순한 설정만으로도 “비밀키 혼용·유출 → 토큰 위조” 루트를 효과적으로 차단할 수 있다.<br><br></p>
+<h3 id="설계-선택과-보안-근거"><a href="#설계-선택과-보안-근거" class="headerlink" title="설계 선택과 보안 근거"></a>설계 선택과 보안 근거</h3><p><strong>토큰 발급: RS256 고정 + kid&#x2F;iss&#x2F;aud</strong><br><img src="/images/323306_260110_image18.png" alt="그림 18. [RS256으로 Access/Refresh 토큰을 서명하는 signAccess/signRefresh 코드]"></p>
+<center><span style="font-size: 90%;">그림 18. [RS256으로 Access/Refresh 토큰을 서명하는 signAccess/signRefresh 코드]</span></center><br>
+
+<p>signAccess와 signRefresh는 알고리즘을 <strong>RS256으로 고정</strong>했다. HS256이나 none 알고리즘을 허용하지 않는 게 보안적으로 안전하기 때문이다. 토큰 헤더에는 kid를 포함해 검증 시 어떤 공개키를 써야 하는지 명시했다. 페이로드에는 iss(발급자), aud(수신자)를 넣어 토큰의 주체와 대상이 분명히 드러나도록 했다. 리프레시 토큰에는 typ:’rt’를 추가해 용도를 구분했다.</p>
+<p><strong>토큰 검증: RS256만 허용</strong><br><img src="/images/323306_260110_image19.png" alt="그림 19. [AT 검증 로직(alg·iss·aud 검사)]"></p>
+<center><span style="font-size: 90%;">그림 19. [AT 검증 로직(alg·iss·aud 검사)]</span></center><br>
+
+<p>verifyAccess는 원칙적으로 RS256만 허용한다. 연구용으로 ALLOW_NONE, ALLOW_HS25 옵션을 남겨두었지만 기본값은 비활성화 상태다. 검증 시 헤더의 kid로 공개키를 고르고, iss와 aud가 기대값과 맞지 않으면 즉시 거부한다. 이 두 가지 체크만으로도 임의 토큰 우회 공격을 막을 수 있다.</p>
+<p><strong>JWKS 공개키 배포</strong><br><img src="/images/323306_260110_image20.png" alt="그림 20. [JWK(JSON Web Key Set) 엔드포인트 구현]"></p>
+<center><span style="font-size: 90%;">그림 20. [JWK(JSON Web Key Set) 엔드포인트 구현]</span></center><br>
+
+<p>공개키는 &#x2F;.well-known&#x2F;jwks.json을 통해 배포된다. 활성 디렉터리에 있는 .pub 파일들을 읽어 JWK(n&#x2F;e, kid) 포맷으로 내보내고, 검증자는 이 URL만 캐싱하면 된다. 핵심은 “활성 세트만 노출”이다. 구키와 신키가 함께 존재할 때도 둘 다 노출되므로, 로테이션 직후에도 만료되지 않은 구키로 검증이 가능하다. 별도의 캐시 무효화 없이도 동작이 이어진다.</p>
+<p><strong>JWKS 공개키 배포</strong><br><img src="/images/323306_260110_image21.png" alt="그림 21. [관리자용 RSA 키 로테이션 엔드포인트]"></p>
+<center><span style="font-size: 90%;">그림 21. [관리자용 RSA 키 로테이션 엔드포인트]</span></center><br>
+
+<p>&#x2F;admin&#x2F;rotate 엔드포인트는 새 키를 생성하고, 기존 키는 archive&#x2F; 로 옮긴 뒤 kid.txt를 새 값으로 바꾼다. JWKS는 활성 디렉터리만 읽으므로 자동으로 반영된다. 구키로 발급된 토큰은 만료까지 유효하고, 새 토큰은 새 kid를 달기 때문에 서비스 중단 없이 안전하게 로테이션이 이뤄진다.</p>
+<p><strong>쿠키 정책</strong><br><img src="/images/323306_260110_image22.png" alt="그림 22. [BFF가 로그인 요청을 프록시하고 쿠키로 AT·RT 설정]"></p>
+<center><span style="font-size: 90%;">그림 22. [BFF가 로그인 요청을 프록시하고 쿠키로 AT·RT 설정]</span></center><br>
+
+<p>로그인 성공 시 BFF는 Access와 Refresh를 <strong>HttpOnly 쿠키</strong>에 심는다. 여기에서 중요한 속성은 HttpOnly: true, Secure: true, SameSite: lax&#x2F;stric, maxAge가 있다.</p>
+<ul>
+<li>HttpOnly: true → 자바스크립트 접근 차단 (XSS 대응)</li>
+<li>Secure: true → HTTPS 전용 전송</li>
+<li>SameSite: lax&#x2F;strict → AT는 lax(사용성 고려), RT는 strict(보안 강화)</li>
+<li>maxAge → 토큰 만료와 동일하게 설정</li>
+</ul>
+<p>이 정책 덕분에 브라우저는 쿠키를 자동으로 관리하고, 애플리케이션 코드가 토큰을 직접 들고 다니지 않는다.<br><br></p>
+<h2 id="JWT-발급-및-검증-API-구현"><a href="#JWT-발급-및-검증-API-구현" class="headerlink" title="JWT 발급 및 검증 API 구현"></a>JWT 발급 및 검증 API 구현</h2><p><img src="/images/323306_260110_image23.png" alt="그림 23. [reverse(443)·BFF(3000)·auth(4000) 포트 포워딩 상태]"></p>
+<center><span style="font-size: 90%;">그림 23. [reverse(443)·BFF(3000)·auth(4000) 포트 포워딩 상태]</span></center><br>
+
+<p>포트 정보를 확인해보면 컨테이너 안에서 각각 nginx&#x2F;TLS가 443 포트에서 대기, Next.js가 3000 포트에서 대기, server가 4000 포트에서 대기하고 있는 것을 확인할 수 있다.</p>
+<p><img src="/images/323306_260110_image24.png" alt="그림 24. [curl로 /auth/login 호출 시 200 OK 응답 헤더]"></p>
+<center><span style="font-size: 90%;">그림 24. [curl로 /auth/login 호출 시 200 OK 응답 헤더]</span></center><br>
+
+<p>Server 컨테이너, 포트 4000 인증 서버의 &#x2F;auth&#x2F;login에 {“id”:”user1”,”pw”:”pass1234”} JSON을 POST로 보내서 user1 계정으로 로그인을 시도하는 요청 내용을 보냈다.</p>
+<p><img src="/images/323306_260110_image25.png" alt="그림 25. [로그인 응답 바디에 포함된 access·refresh JWT]"></p>
+<center><span style="font-size: 90%;">그림 25. [로그인 응답 바디에 포함된 access·refresh JWT]</span></center><br>
+
+<p>서버 쪽 흐름에서는 DB에 user1이 존재했기 때문에 저장된 비밀번호 해시와 pass1234 입력 정보를 bcrypt.compare로 검증했고, 이 둘이 일치하기 때문에 ‘인증 성공’ 처리가 된 것을 확인할 수 있다. </p>
+<p><img src="/images/323306_260110_image26.png" alt="그림 26. [user1 기준 AT·RT를 RS256으로 서명하는 코드]"></p>
+<center><span style="font-size: 90%;">그림 26. [user1 기준 AT·RT를 RS256으로 서명하는 코드]</span></center><br>
+
+<p>인증에 성공하면 JWT 발급 함수들을 호출하면서 alg: ‘RS256’, kid: ‘k1’ 헤더를 붙이고 페이로드에 sub, iss, aud를 넣으며, &#x2F;server&#x2F;keys&#x2F;active&#x2F;k1.pem 개인키로 서명하는 것을 확인할 수 있다.</p>
+<p><img src="/images/323306_260110_image27.png" alt="그림 27. [서버가 반환하는 JWT 응답 JSON 형식 예시]"></p>
+<center><span style="font-size: 90%;">그림 27. [서버가 반환하는 JWT 응답 JSON 형식 예시]</span></center><br>
+
+<p>결론적으로 이런 형태가 되어 JWT 발급 API가 정상 동작했다는 것을 확인할 수 있었다.<br><br><br></p>
+<h1 id="취약점-시뮬레이션"><a href="#취약점-시뮬레이션" class="headerlink" title="취약점 시뮬레이션"></a>취약점 시뮬레이션</h1><h2 id="JWT-관련-공격-시나리오"><a href="#JWT-관련-공격-시나리오" class="headerlink" title="JWT 관련 공격 시나리오"></a>JWT 관련 공격 시나리오</h2><p>본격적으로 실습을 진행해보기 이전에 두 가지 케이스를 설계해 공격 시나리오를 구성해볼 것이다.</p>
+<p><img src="/images/323306_260110_image28.png" alt="그림 28. [alg=none 허용 시, 서명 없는 위조 Access 토큰으로 보호 API를 우회하는 흐름]"></p>
+<center><span style="font-size: 90%;">그림 28. [alg=none 허용 시, 서명 없는 위조 Access 토큰으로 보호 API를 우회하는 흐름]</span></center><br>
+
+<p>첫 번째는 alg&#x3D;none 토큰 위조다. 인증 서버 코드에는 이미 ALLOW_NONE 토글이 들어가 있고, 기본값은 꺼져 있다. 이 값을 실험용으로 켜면 verifyAccess 단계에서 hd.alg가 ‘none’인 토큰에 대해 jwt.decode만 하고 서명 검증을 건너뛴다. 공격자는 한 번 정상 로그인해서 sub, iss, aud 구조만 파악한 뒤, 서명이 아예 없는 {“alg”:”none”} 헤더 + 페이로드만으로 토큰을 새로 만들 수 있다. 이 토큰을 BFF나 API에 보내면 그대로 통과되는지 확인하는 구조가 된다. “서명 검증을 끄면 어떤 일이 일어나는지”를 실습으로 보여주는 시나리오다. </p>
+<p><img src="/images/323306_260110_image29.png" alt="그림 29. [iss/aud 검증을 끈 상태에서, 서비스 A용 토큰으로 서비스 B의 관리자 API까지 오남용되는 흐름]"></p>
+<center><span style="font-size: 90%;">그림 29. [iss/aud 검증을 끈 상태에서, 서비스 A용 토큰으로 서비스 B의 관리자 API까지 오남용되는 흐름]</span></center><br>
+
+<p>두 번째는 클레임 검증 부족, 특히 iss&#x2F;aud를 무시했을 때의 영향이다. 현재 코드는 verifyAccess에서 발급자(iss)와 수신자(aud)를 모두 비교하도록 되어 있다. 이 부분을 주석 처리하거나, chkIss, chkAud 같은 플래그를 false로 바꿔버리면, 토큰이 어디에서 발급됐고, 원래 누구를 향한 것인지와 상관없이 “서명만 맞으면 통과”하는 구조가 된다. 예를 들어 “&#x2F;auth&#x2F;me” 같은 단순 프로필 API와 “&#x2F;admin&#x2F;*” 같은 민감 리소스가 같은 키를 공유하는 경우, 원래 ‘프로필 조회용’으로 발급된 토큰을 들고 관리자 API를 두드릴 수 있다는 걸 시나리오로 보여줄 수 있다.<br><br></p>
+<h2 id="실습을-통한-공격-재현"><a href="#실습을-통한-공격-재현" class="headerlink" title="실습을 통한 공격 재현"></a>실습을 통한 공격 재현</h2><p><img src="/images/323306_260110_image30.png" alt="그림 30. [alg=none 허용 · ISS / AUD 검사 활성화 설정]"></p>
+<center><span style="font-size: 90%;">그림 30. [alg=none 허용 · ISS / AUD 검사 활성화 설정]</span></center><br>
+
+<p>먼저 첫 번째 실습의 취지는 JWT의 alg&#x3D;none 옵션을 허용했을 때 어떤 보안 문제가 발생하는지 직접 확인하고자 하였다. 실습 환경의 인증 서버의 .env 파일의 토글에 ALLOW_NONE&#x3D;1, ALLOW_HS256&#x3D;0, CHECK_ISS&#x3D;1, CHECK_AUD&#x3D;1로 설정하여 RS256 서명 검증은 그대로 유지하되, alg가 none인 토큰에 대해서는 서명 검증을 건너뛰도록 환경을 구성하였다. 이 설정으로 인해 서버의 verifyAccess 단계에서 헤더의 alg 값이 none일 경우 jwt.decode만 수행하고 서명 검증 함수를 호출하지 않게 된다.</p>
+<p><img src="/images/323306_260110_image31.png" alt="그림 31. [정상 로그인으로 초기 JWT를 발급 요청한 화면]"></p>
+<center><span style="font-size: 90%;">그림 31. [정상 로그인으로 초기 JWT를 발급 요청한 화면]</span></center><br>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;access&quot;:&quot;eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImsxIn0.eyJzdWIi OiJ1c2VyMSIsImlzcyI6ImF1dGgubGFiIiwiYXVkIjoiYXBpLmxhYiIsImlhdCI6MTc2MzczMDM4MiwiZXhwIjoxNzYzNzMxMjgyfQ.LPly8bl3BzEh356SiPp1Xj6y4a97IZ8QNhHPAzx7M8HkDSwmYydK5TNdfpnHbRoGlIpcTZeqlaCAxcTTKoufPZket5E45CKTl35HbjdigyoLD5qX9Wb1SfDRxT2acfJ95UbXvWbmJYoB tGEpaC45rNs6IeoJJ8109n_oi-szdBB_MzslN8LmyT8GgQ4Ax574V2PiXqsmB_M8IBtr9_A43xMjtnmu7 fw-INrOMfvrSA7cEl5JRn79abttTtCcSJSR7mfhaj6Sg5SdrQwLGC4iXPO4HoO5Xickz5YbTEamQn4ozX V8IE4YgbOnEIMjHGDnyeDcNC63gCE-gt2IZhQqG6XfVaRMxrp6lWcUvPZjRQ7srXMOCk1bvKMKNLfZZ8C Mm5_6pzluBHkfudoT-C_5IMu8mZ9vo4g03uo_uFjcqXOIjjsplKp9S_f6yGJ8xIZx6YeSttiM44Y9lxcg GQNh7YLSPz0vR8X1BpIQmIrTB0ha_398VnI36ic9Pss9-bf0qhm9bPqyGwUGunqK02TOZF3ODmQWVPgmt C8KWl4QzfrYBueVz5ZYqSRgu-AxytBrZUzMOGP5d_zzNcwAqT90p1HzYJ_yNYnE85UPM5cpVl8X89ud23 -r6CpDOUOAxfOsy5GzJyQ06z_Ms3P0h-rxZO3QYzh5r782uTvtn1s9Asg&quot;</span><br></pre></td></tr></table></figure>
+
+<p>환경 구성이 끝난 뒤, 정상 사용자의 토큰 구조를 파악하기 위해 먼저 합법적인 로그인 과정을 진행했다. Curl을 이용해 port 4000 &#x2F;auth&#x2F;login 엔드포인트에 id&#x3D;user1, pw&#x3D;pass1234를 담은 JSON을 PORT로 전송하였고, 응답으로 access 필드에 RS256 알고리즘으로 서명된 JWT를 획득하였다. 이 토큰은 헤더, 페이로드, 서명으로 이루어진 RS256 JWT였으며, 페이로드에 sub, iss, aud, iat, exp 등의 필드가 포함되어 있는 것을 확인했다.</p>
+<p><img src="/images/323306_260110_image32.png" alt="그림 32. [alg=none 토큰을 생성하는 파이썬 스크립트]"></p>
+<center><span style="font-size: 90%;">그림 32. [alg=none 토큰을 생성하는 파이썬 스크립트]</span></center><br>
+
+<p>정상 토큰을 확보한 이후에는 alg&#x3D;none 토큰을 직접 생성하기 위해 파이썬 스크립트를 작성했다. 스크립트에서는 먼저 정상 토큰 문자열을 orig 변수에 저장한 후, orig.split(‘.’)[1]을 통해 페이로드 부분만 분리했다. JWT는 URL-safe Base64 인코딩을 사용하기 때문에, 패딩을 보정한 뒤 base64.urlsafe_b64decode로 페이로드를 디코딩하고 json.loads를 사용해 JSON 객체로 변환하였다. 새로 만들 헤더는 hd &#x3D; {“alg”:”none”,”typ”:”JWT”}로 정의하였고, b64u 함수로 헤더와 기존 페이로드를 다시 URL-safe Base64로 인코딩하였다. 마지막으로 “헤더.페이로드.” 형태로 이어 붙여 서명 부분을 완전히 제거한 토큰 문자열을 출력하도록 구성하였다. </p>
+<p><img src="/images/323306_260110_image33.png" alt="그림 33. [조작된 alg=none JWT가 터미널에 출력된 결과]"></p>
+<center><span style="font-size: 90%;">그림 33. [조작된 alg=none JWT가 터미널에 출력된 결과]</span></center><br>
+
+<p>코드를 실행하면 sub, iss, aud 값은 원래 토큰과 동일하게 유지되지만, 서명은 존재하지 않는 완전한 위조 토큰이 만들어지게 된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@banda:/home/banda/auth-rs256-lab# </span><br><span class="line">curl -i http://localhost:4000/api/secret \</span><br><span class="line">  -H &quot;Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJ1c2VyMSIsImlzcyI6ImF1dGgubGFiIiwiYXVkIjoiYXBpLmxhYiIsImlhdCI6MTc2MzczMDM4MiwiZXhwIjoxNzYzNzMxMjgyfQ.&quot;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 생성한 alg&#x3D;none 토큰을 이용해 보호 자원에 실제로 접근이 가능한지 확인을 위해 curl 명령으로 <span class="exturl" data-url="aHR0cDovL2xvY2FsaG9zdDo0MDAwL2FwaS9zZWNyZXQ=">http://localhost:4000/api/secret</span> 엔드포인트에 접속해 Authorization 헤더에 “Bearer &lt;alg&#x3D;none 토큰&gt;”을 실어 보냈다.</p>
+<p><img src="/images/323306_260110_image34.png" alt="그림 34. [위조 토큰으로 보호된 API 응답을 받은 화면]"></p>
+<center><span style="font-size: 90%;">그림 34. [위조 토큰으로 보호된 API 응답을 받은 화면]</span></center><br>
+
+<p>명령어 실행 결과 서버는 HTTP&#x2F;1.1 200 OK 응답을 반환하였고, 본문에는 {“ok”:true,”msg”:”you found this!”,”sub”:”user1”}가 포함되어 있었다. 이는 인증 서버가 토큰의 서명을 전혀 검증하지 않았음에도 불구하고, 토큰에 들어 있는 sub, iss, aud 값만 보고 정상 사용자(user1)의 권한을 부여했음을 의미한다. 내부적으로는 ALLOW_NONE&#x3D;1 설정 때문에 verifyAccess 로직이 alg&#x3D;none인 토큰에 대해 서명 검증을 건너뛰고, 단순 디코딩과 iss·aud 체크만 수행한 후 통과시킨 결과라고 볼 수 있다.</p>
+<p>시나리오 2<br><img src="/images/323306_260110_image35.png" alt="그림 35. [RS256 실습을 위해 검증 옵션을 비활성화한 .env 설정]"></p>
+<center><span style="font-size: 90%;">그림 35. [RS256 실습을 위해 검증 옵션을 비활성화한 .env 설정]</span></center><br>
+
+<p>두 번째 시나리오는 JWT의 서명은 정상적으로 검증하지만 iss(issuer)와 aud(audience)를 체크하지 않을 때 어떤 문제가 발생하는지 확인하기 위한 목적으로 실습을 진행했다. 먼저 인증 서버의 설정 파일(.env)에서 ALLOW_NONE&#x3D;0, ALLOW_HS256&#x3D;0으로 alg&#x3D;none, HS256은 모두 비활성화하고, CHECK_ISS&#x3D;0, CHECK_AUD&#x3D;0으로 발급자와 대상자 검증을 끄도록 설정했다. 즉 이 설정 상태에서는 서버가 RS256 서명은 확인하지만, 토큰이 어떤 발급자에서 나왔는지, 어떤 서비스용으로 발급되었는지 확인하지 않게 된다.</p>
+<p><img src="/images/323306_260110_image36.png" alt="그림 36. [악성 iss·aud 값을 가진 RS256 토큰 생성 코드]"></p>
+<center><span style="font-size: 90%;">그림 36. [악성 iss·aud 값을 가진 RS256 토큰 생성 코드]</span></center><br>
+
+<p>실습 환경을 구성한 뒤에는 공격자가 임의의 JWT를 만들어도 되는 상황을 가정하고, 파이썬 스크립트를 통해 RS256 토큰을 직접 생성하였다. 스크립트에는 인증 서버에서 사용하는 것과 동일한 RSA 개인키가 하드코딩되어 있으며, 헤더에는 alg&#x3D;”RS256”, kid&#x3D;”k1”을 지정하였다. 페이로드에는 정상 사용자와 동일한 sub: “user1”을 넣되, iss: “malicious.attacker”, aud: “not.api.lab”처럼 서버 설정과 전혀 다른 값들을 의도적으로 넣었다. 마지막으로 jwt.encode(…, algorithm&#x3D;”RS256”)를 호출해 이 페이로드와 헤더를 RSA 개인키로 서명한 토큰을 출력하도록 하였다.</p>
+<p><img src="/images/323306_260110_image37.png" alt="그림 37. [개인키로 서명된 악성 RS256 JWT가 출력된 결과]"></p>
+<center><span style="font-size: 90%;">그림 37. [개인키로 서명된 악성 RS256 JWT가 출력된 결과]</span></center><br>
+
+<p>구성한 파이썬 스크립트를 실행하면 겉보기에는 정상적인 RS256 JWT처럼 보이지만, 발급자와 대상자는 모두 공통 인증 서버와 api.lab이 아닌 악의적인 값으로 되어 있는 토큰이 된다. </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i http://localhost:4000/api/secret   -H &quot;Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJzdWIiOiJ1c2VyMSIsImlzcyI6Im1hbGljaW91cy5hdHRhY2tlciIsImF1ZCI6Im5vdC5hcGkubGFiIiwiaWF0IjoxNzYzNzQ3NzIyLCJleHAiOjE3NjM3NDgwMjJ9.tMFbmlWuy1LY0ivOhMg6Uo1Y5DVJnDbit2C7mzTtnGYLVSvzI0v8o_pX1VoQN9MT7yzfwoSpM1_4zKIwh0qxdBjNmUkmZuX940I3Z_PxhaELR4znCdMwzN6f1DWj_lOJyTp1hezFLIX1zLaKdgELyqEwsexoOeFPzSAG1m-XQRrW1xGLwdBXgmqOelsrEcxIhwInqct1EKwCmXxRctW0DS0AaRcHxKyjO-xPZGnQpcAr9NSzGF2RHuHCw-3jqfXSZw3P-hNUfBZwUBJOky_u2oCGt1zPxTIJVBE3VJ9c_zOxkwTl8rWAcpFATp5i0sVAIFN_jw6UzkuG3XK5AvGy14UgtT6u59RZLIfm7XnI91_1y23YnAjH7v6XNBjRih08zddtMnJGDG8HPYIN9asewBUEUc2fYYUDDRv8HDZl3oaNdeEBCeCaN3TMH8xPEc3SHLOhstv_WIm-Xv4anGwRWsxSXy5NApgCF_i-7J2l6pwWm0DAqhLQeF7hsctQq8v_7Q6vsH8idx8o0Mf5v9ezalm783oZ5cRI3pzrEt0NLaNAdzRFjaYZ_kL2CbVyCvmB8jUtXscDdv9Jnm1AlcHKiLJ9D5eJJFD5q4X2k0WovKeV59zIcAJ6l20XLBEcQxo5-owSfPBRj-9UbTVCvC7YsEQyCmvtHjkLAMatEgkemc0&quot;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 생성된 위조 토큰이 실제로 보호 API에서 통과되는지를 확인하기 위해, curl을 사용해 <span class="exturl" data-url="aHR0cDovL2xvY2FsaG9zdDo0MDAwL2FwaS9zZWNyZXQ=">http://localhost:4000/api/secret</span> 엔드포인트에 접근하였다.</p>
+<p><img src="/images/323306_260110_image38.png" alt="그림 38. [검증 없는 RS256 토큰으로도 200 OK 응답을 받은 화면]"></p>
+<center><span style="font-size: 90%;">그림 38. [검증 없는 RS256 토큰으로도 200 OK 응답을 받은 화면]</span></center><br>
+
+<p>Authorization 헤더에 “Bearer &lt;파이썬 스크립트가 출력한 토큰&gt;”을 그대로 넣고 요청을 보냈을 때, 서버는 HTTP&#x2F;1.1 200 OK 응답과 함께 {“ok”:true,”msg”:”you found this!”,”sub”:”user1”} 형태의 JSON을 반환하였다. 즉, 서버가 토큰의 iss와 aud가 전혀 기대값과 맞지 않음에도 불구하고, 서명만 유효하면 정상 사용자(user1)의 액세스 토큰으로 그대로 받아들였다는 뜻이다. 내부적으로 verifyAccess(t)는 RS256 서명 검증만 수행하고, 설정에서 CHECK_ISS와 CHECK_AUD가 꺼져 있기 때문에 발급자와 대상자 불일치는 아예 검사하지 않고 넘겨 버렸기 때문에 해당 결과가 발생했다는 점을 확인했다.<br><br></p>
+<h2 id="공격-재현-결과-분석-및-보안-시사점"><a href="#공격-재현-결과-분석-및-보안-시사점" class="headerlink" title="공격 재현 결과 분석 및 보안 시사점"></a>공격 재현 결과 분석 및 보안 시사점</h2><p>두 가지 실습을 통해 다음과 같은 재현 결과와 보안 시사점을 얻을 수 있었다. 먼저 첫 번째 시나리오의 JWT에서 서명 검증을 비활성화하는 것이 얼마나 치명적인 보안 취약점으로 이어지는지를 실습으로 확인했다는 점에 있다. 한 번만 정상 로그인해서 토큰 구조와 필드를 확인하면, 공격자는 누구나 임의의 sub 값을 넣은 alg&#x3D;none 토큰을 만들어 서명 없이도 인증을 통과할 수 있다. 이는 클라이언트가 제시한 토큰의 alg 값을 그대로 신뢰하거나, 실험용 옵션(ALLOW_NONE와 같은 토글)을 실수로 운영 환경에 남겨둘 경우 발생할 수 있는典型적인 설정 취약점이다. 실습을 통해 JWT 기반 시스템에서 반드시 서명 검증을 강제해야 하며, 허용할 알고리즘 목록을 서버 설정에서 고정하고, alg&#x3D;none과 같은 옵션은 절대 사용해서는 안 된다는 보안 원칙을 확인하였다.</p>
+<p>두 번째 시나리오의 의의는 JWT 기반 인증에서 서명 검증만으로는 충분하지 않으며, iss와 aud 같은 컨텍스트 정보까지 반드시 함께 검증해야 한다는 점을 실습으로 확인한 데 있다. 동일한 키 쌍을 사용하는 여러 서비스가 있을 때나, 외부 IdP를 연동하는 환경에서는 특히 더 중요하다. 발급자와 대상자 검증을 끄면 RS256 서명을 사용하고 있어도 보안상 안전하지 않으며, 공격자가 같은 키를 사용하는 다른 서비스나 악성 발급자를 가장해 토큰을 만들어 관리자 API에 접근할 수 있다는 점을 확인한 실습이라고 정리할 수 있다.<br><br><br></p>
+<h1 id="실습-결론-및-평가"><a href="#실습-결론-및-평가" class="headerlink" title="실습 결론 및 평가"></a>실습 결론 및 평가</h1><p>본 실습을 통해 IoT 환경에서 널리 사용되는 JWT 기반 토큰 인증이 “알고리즘 선택, 클레임 검증, 키 관리”와 같은 세부 설정에 따라 얼마든지 취약해질 수 있음을 확인하였다. Node.js로 구현한 인증 서버와 BFF 구조를 직접 구성한 뒤, alg&#x3D;none 허용, iss&#x2F;aud 검증 비활성화, RS256 개인키를 이용한 임의 토큰 생성 시나리오를 차례로 재현하면서, 토큰 자체의 형식이 올바르고 서명만 통과한다면 서비스가 쉽게 오용될 수 있다는 사실을 실습 수준에서 체감할 수 있었다. 이는 JWT 자체의 설계보다는 구현·설정 오류로 인해 취약점이 발생한다는 기존 연구 결과와도 일치한다. </p>
+<p>이러한 결과는 IoT 환경에서 특히 더 심각한 의미를 가진다. IoT 기기는 리소스 제약과 무인 운영 특성 때문에, 중앙 서버와의 통신에 JWT·JWS·JWK 같은 경량 표준이 자주 사용되고 있으며, MQTT·HTTP 기반 IoT 메시징에서도 JWT나 OAuth2 토큰을 통한 인증이 권장되고 있다. 그러나 최신 연구들을 보면 IoT 관리 플랫폼과 디바이스용 API에서 여전히 인증 우회, 권한 없는 원격 제어 등 심각한 취약점이 반복적으로 발견되고 있고, 그 원인 중 상당수가 약한 인증·토큰 검증 부재와 같은 기본적인 설정 오류인 것으로 보고된다. 본 실습에서 재현한 JWT 설정 취약점은, 실제 IoT 관리 콘솔이나 펌웨어 업데이트 API에 그대로 존재할 경우 대규모 기기 장악 공격으로 이어질 수 있다는 점에서, 단순한 이론 실습을 넘어 현실적인 위협 모델을 학습하는 계기가 되었다.</p>
+<p>동향을 살펴보면, 최근 JWT 관련 보안 글과 가이드들은 “서명 + 클레임 전체 검증”을 반복해서 강조한다. 모든 요청마다 토큰의 서명뿐 아니라 iss, aud, exp, nbf 등 주요 클레임을 검증하고, 허용할 알고리즘(예: RS256&#x2F;ES256)을 서버 측 설정에서 강제하며, none 및 약한 알고리즘(취약한 HS256 사용, 알고리즘 혼동 공격 등)을 확실히 차단할 것을 권고한다. 종합적으로, 이번 JWT 실습은 IoT 기기 인증을 “단순히 토큰만 쓰면 안전하다”는 수준이 아니라, 구체적인 알고리즘 선택, 클레임 설계, 검증 로직, 키 관리까지 포함한 전체 아키텍처 관점에서 바라보게 만든다는 점에서 의미가 있다. 직접 토큰을 변조하고, 검증 옵션을 끄고, 위조 토큰으로 보호 API를 통과해보는 과정을 통해, 문서로만 접했던 JWT 공격 시나리오가 실제 코드와 트래픽 수준에서 어떻게 구현되는지 체험할 수 있었다. 향후에는 mTLS, 디바이스 단위의 인증서 기반 식별, 토큰 스코프 세분화, 침해 탐지 로깅 등 IoT 특화 보안 요소를 추가한 통합 실습으로 확장한다면, 보다 현실적인 IoT 토큰 인증 보안 전략을 설계·검증하는 데 도움이 될 것이다.<br><br><br></p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><ul>
+<li>Mohammad, A., Al-Refai, H., &amp; Alawneh, A. A. (2022). User Authentication and Authorization Framework in IoT Protocols. Computers, 11(147). MDPI. <span class="exturl" data-url="aHR0cHM6Ly9kb2kub3JnLzEwLjMzOTAvY29tcHV0ZXJzMTExMDAxNDc=">https://doi.org/10.3390/computers11100147</span> SciSpace</li>
+<li>Keyfactor. (2020, September 29). The Top IoT Authentication Methods and Options. Keyfactor Blog. <span class="exturl" data-url="aHR0cHM6Ly93d3cua2V5ZmFjdG9yLmNvbS9ibG9nL3RoZS10b3AtaW90LWF1dGhlbnRpY2F0aW9uLW1ldGhvZHMtYW5kLW9wdGlvbnMv">https://www.keyfactor.com/blog/the-top-iot-authentication-methods-and-options/</span> Keyfactor</li>
+<li>Microsoft Learn. (2023, April 26). X.509 인증서. Microsoft Learn. <span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2tvLWtyL2F6dXJlL2lvdC1odWIvcmVmZXJlbmNlLXg1MDktY2VydGlmaWNhdGVz">https://learn.microsoft.com/ko-kr/azure/iot-hub/reference-x509-certificates</span> Microsoft Learn</li>
+<li>우지 (uz). (2024, June 13). [Server] 세션 기반 인증 VS 토큰 기반 인증. 우지의 개발로그 (Tistory). <span class="exturl" data-url="aHR0cHM6Ly9rc3c0MDYwLnRpc3RvcnkuY29tLzIwOQ==">https://ksw4060.tistory.com/209</span> 우지의 개발로그</li>
+<li>IoThentix. (n.d.). Advantages of Tokens. IoThentix GitBook. <span class="exturl" data-url="aHR0cHM6Ly9pb3RoZW50aXguZ2l0Ym9vay5pby9vdmVydmlldy93aHktdXNlLXRva2Vucy9hZHZhbnRhZ2VzLW9mLXRva2Vucw==">https://iothentix.gitbook.io/overview/why-use-tokens/advantages-of-tokens</span> iothentix.gitbook.io</li>
+<li>lilac_21. (2025, January 13). Daily CS) WPA. velog. <span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9AbGlsYWNfMjEvRGFpbHktQ1MtV1BB">https://velog.io/@lilac_21/Daily-CS-WPA</span> Velog</li>
+<li>두아앙. (2025, January 26). X.509 인증서 구조 정리 : TBSCertificate, SignatureAlgorithm, SignatureValue에 대한 이해. 두아앙의 기록보관소 (Tistory).</li>
+<li>Wootaepark. (발행연도 미상). Spring JWT HS256 vs ES256. 벨로그. <span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9Ad29vdGFlcGFyay9TcHJpbmctSldULUhTMjU2LXZzLUVTMjU2">https://velog.io/@wootaepark/Spring-JWT-HS256-vs-ES256</span></li>
+<li>진, J. (2024년 8월 19일). JWT 완벽 가이드. 진 블로그. <span class="exturl" data-url="aHR0cHM6Ly9qaW5uYmxvZy50aXN0b3J5LmNvbS8xODc=">https://jinnblog.tistory.com/187</span></li>
+<li>Auth0. (발행연도 미상). JSON Web Token 소개. JWT.io. <span class="exturl" data-url="aHR0cHM6Ly93d3cuand0LmlvL2ludHJvZHVjdGlvbg==">https://www.jwt.io/introduction</span></li>
+<li>Auth0. (2018년 4월 3일). RS256 vs HS256: 무엇이 다른가? Auth0 블로그. <span class="exturl" data-url="aHR0cHM6Ly9hdXRoMC5jb20vYmxvZy9yczI1Ni12cy1oczI1Ni13aGF0cy10aGUtZGlmZmVyZW5jZS8=">https://auth0.com/blog/rs256-vs-hs256-whats-the-difference/</span></li>
+<li>BizSpring. (2023년 6월 27일). JWT(JSON Web Token) 구조 및 사용. BizSpring 블로그. <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmJpenNwcmluZy5jby5rci8lRUQlODUlOEMlRUQlODElQUMvand0LWpzb24td2ViLXRva2VuLSVFQSVCNSVBQyVFQyVBMSVCMC0lRUMlODIlQUMlRUMlOUElQTkv">https://blog.bizspring.co.kr/테크/jwt-json-web-token-구조-사용/</span></li>
+<li>Jones, M., Bradley, J., &amp; Sakimura, N. (2015). JSON Web Algorithms (RFC 7518). 인터넷 공학 태스크 포스. <span class="exturl" data-url="aHR0cHM6Ly9kYXRhdHJhY2tlci5pZXRmLm9yZy9kb2MvaHRtbC9yZmM3NTE4">https://datatracker.ietf.org/doc/html/rfc7518</span></li>
+<li>JJWT Project. (발행연도 미상). Signature algorithms &amp; keys. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2p3dGsvamp3dCNzaWduYXR1cmUtYWxnb3JpdGhtcy1rZXlz">https://github.com/jwtk/jjwt#signature-algorithms-keys</span></li>
+<li>Stytch. (2023년 7월 6일). JWT 클레임 가이드.Stytch 블로그. <span class="exturl" data-url="aHR0cHM6Ly9zdHl0Y2guY29tL2Jsb2cvand0LWNsYWltcy8=">https://stytch.com/blog/jwt-claims/</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Network/" rel="tag"># Network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/03/323305_260103/" rel="prev" title="[2026 SWING magazine] 생성형 AI의 취약점 Part 3: Insecure Output Handling">
+                  <i class="fa fa-angle-left"></i> [2026 SWING magazine] 생성형 AI의 취약점 Part 3: Insecure Output Handling
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/05/323307_260105/" rel="next" title="[2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발">
+                  [2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

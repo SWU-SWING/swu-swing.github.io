@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="서론칼럼을 시작하며웹 애플리케이션의 발전으로 개인 정보와 민감한 데이터의 디지털화가 급격히 진행되면서 웹 보안은 현대 정보 기술 환경에서 가장 중요한 요소 중 하나로 자리 잡았다. 그중에서도 크로스 사이트 스크립팅(이하 XSS)은 웹 애플리케이션의 취약점을 악용하여 사용자와 서버 간의 신뢰를 깨뜨리고 데이터를 탈취하거나 악성코드를 실행하도록 유도하는 대표적">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] XSS">
+<meta property="og:url" content="https://log.swuswing.com/2025/10/11/3211_251011/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="서론칼럼을 시작하며웹 애플리케이션의 발전으로 개인 정보와 민감한 데이터의 디지털화가 급격히 진행되면서 웹 보안은 현대 정보 기술 환경에서 가장 중요한 요소 중 하나로 자리 잡았다. 그중에서도 크로스 사이트 스크립팅(이하 XSS)은 웹 애플리케이션의 취약점을 악용하여 사용자와 서버 간의 신뢰를 깨뜨리고 데이터를 탈취하거나 악성코드를 실행하도록 유도하는 대표적">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3211_251011_image26.png">
+<meta property="article:published_time" content="2025-10-10T15:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.252Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="XSS">
+<meta property="article:tag" content="Secure Coding">
+<meta property="article:tag" content="WAF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3211_251011_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/10/11/3211_251011/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/10/11/3211_251011/","path":"2025/10/11/3211_251011/","title":"[2025 SWING magazine] XSS"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] XSS | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%84%9C%EB%A1%A0"><span class="nav-number">1.</span> <span class="nav-text">서론</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%B9%BC%EB%9F%BC%EC%9D%84-%EC%8B%9C%EC%9E%91%ED%95%98%EB%A9%B0"><span class="nav-number">1.1.</span> <span class="nav-text">칼럼을 시작하며</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XSS-%EA%B0%9C%EC%9A%94-%EB%B0%8F-%EC%9B%B9-%EB%B3%B4%EC%95%88%EC%9D%98-%EC%A4%91%EC%9A%94%EC%84%B1"><span class="nav-number">2.</span> <span class="nav-text">XSS 개요 및 웹 보안의 중요성</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS%EC%9D%98-%EC%A0%95%EC%9D%98%EC%99%80-%EC%A3%BC%EC%9A%94-%EC%9C%A0%ED%98%95"><span class="nav-number">2.1.</span> <span class="nav-text">XSS의 정의와 주요 유형</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS-%EA%B3%B5%EA%B2%A9%EC%9D%B4-%EC%9B%B9-%EB%B3%B4%EC%95%88%EC%97%90-%EB%AF%B8%EC%B9%98%EB%8A%94-%EC%98%81%ED%96%A5"><span class="nav-number">2.2.</span> <span class="nav-text">XSS 공격이 웹 보안에 미치는 영향</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EB%B0%A9%ED%96%A5%EC%84%B1-%EC%A0%9C%EC%8B%9C"><span class="nav-number">2.3.</span> <span class="nav-text">실습 방향성 제시</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B7%A8%EC%95%BD%ED%95%9C-%EC%9B%B9-%EC%82%AC%EC%9D%B4%ED%8A%B8-%EA%B5%AC%EC%B6%95-%EB%B0%8F-XSS-%EA%B3%B5%EA%B2%A9-%EC%8B%A4%EC%8A%B5"><span class="nav-number">3.</span> <span class="nav-text">취약한 웹 사이트 구축 및 XSS 공격 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%B7%A8%EC%95%BD%ED%95%9C-%EC%9B%B9-%EC%82%AC%EC%9D%B4%ED%8A%B8-%EA%B5%AC%EC%B6%95"><span class="nav-number">3.1.</span> <span class="nav-text">취약한 웹 사이트 구축</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS-%EA%B3%B5%EA%B2%A9-%EC%8B%A4%EC%8A%B5"><span class="nav-number">3.2.</span> <span class="nav-text">XSS 공격 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%B4%EB%A1%A0%EC%A0%81-%EA%B3%B5%EB%B6%80-%EB%B0%8F-%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9-%EC%8B%A4%EC%8A%B5"><span class="nav-number">4.</span> <span class="nav-text">시큐어 코딩에 대한 이론적 공부 및 시큐어 코딩 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9%EC%9D%B4%EB%9E%80"><span class="nav-number">4.1.</span> <span class="nav-text">시큐어 코딩이란?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9B%B9-%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EB%B0%A9%ED%99%94%EB%B2%BD%EC%9D%B4%EB%9E%80"><span class="nav-number">4.2.</span> <span class="nav-text">웹 애플리케이션 방화벽이란?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS-%EB%B0%A9%EC%96%B4-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC"><span class="nav-number">4.3.</span> <span class="nav-text">XSS 방어 라이브러리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9-%EC%8B%A4%EC%8A%B5"><span class="nav-number">4.4.</span> <span class="nav-text">시큐어 코딩 실습</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2%EC%B0%A8-XSS-%EA%B3%B5%EA%B2%A9-%EC%8B%A4%EC%8A%B5-%EB%B0%8F-XSS-%EB%B0%A9%EC%96%B4-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B6%84%EC%84%9D"><span class="nav-number">5.</span> <span class="nav-text">2차 XSS 공격 실습 및 XSS 방어 라이브러리 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EC%B0%A8-XSS-%EA%B3%B5%EA%B2%A9-%EC%8B%A4%EC%8A%B5-%EA%B0%9C%EC%9A%94"><span class="nav-number">5.1.</span> <span class="nav-text">2차 XSS 공격 실습 개요</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A3%BC%EC%9A%94-%EC%8B%9C%ED%81%90%EC%96%B4-%EC%BD%94%EB%94%A9-%EB%B6%84%EC%84%9D"><span class="nav-number">5.2.</span> <span class="nav-text">주요 시큐어 코딩 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%EC%B0%A8-XSS-%EA%B3%B5%EA%B2%A9-%EC%8B%A4%EC%8A%B5"><span class="nav-number">5.3.</span> <span class="nav-text">2차 XSS 공격 실습</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS-%EB%B0%A9%EC%96%B4-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B6%84%EC%84%9D"><span class="nav-number">5.4.</span> <span class="nav-text">XSS 방어 라이브러리 분석</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">6.</span> <span class="nav-text">결론</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%B9%BC%EB%9F%BC%EC%9D%84-%EB%A7%88%EB%AC%B4%EB%A6%AC%ED%95%98%EB%A9%B0"><span class="nav-number">6.1.</span> <span class="nav-text">칼럼을 마무리하며</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EC%9E%90%EB%A3%8C"><span class="nav-number">7.</span> <span class="nav-text">참고자료</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/10/11/3211_251011/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] XSS | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] XSS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: esol</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-10-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-11T00:00:00+09:00">2025-10-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="서론"><a href="#서론" class="headerlink" title="서론"></a>서론</h2><h3 id="칼럼을-시작하며"><a href="#칼럼을-시작하며" class="headerlink" title="칼럼을 시작하며"></a>칼럼을 시작하며</h3><p>웹 애플리케이션의 발전으로 개인 정보와 민감한 데이터의 디지털화가 급격히 진행되면서 웹 보안은 현대 정보 기술 환경에서 가장 중요한 요소 중 하나로 자리 잡았다. 그중에서도 크로스 사이트 스크립팅(이하 XSS)은 웹 애플리케이션의 취약점을 악용하여 사용자와 서버 간의 신뢰를 깨뜨리고 데이터를 탈취하거나 악성코드를 실행하도록 유도하는 대표적인 공격 방식으로, 전 세계적으로 빈번히 발생하고 있다. 예를 들어, OWASP(Open Web Application Security Project)에서 발표한 데이터에 따르면, XSS는 웹 애플리케이션 보안 취약점 중 꾸준히 상위 10위 안에 포함될 만큼 주요한 위협으로 평가받고 있다. 실제로, 유명한 소셜 미디어 플랫폼에서 발생한 XSS 공격으로 인해 수백만 명의 사용자 데이터가 유출된 사례는 XSS 취약점의 심각성을 잘 보여준다.</p>
+<span id="more"></span>
+
+<p>이 칼럼은 XSS 공격의 기본 개념과 유형을 이해하는 데서 출발해, 취약한 웹 사이트를 직접 구축하고 XSS 공격을 실습함으로써 공격 원리를 심도 있게 분석한다. 더불어, XSS 공격 방어를 위한 시큐어 코딩과 방어 라이브러리를 활용해 실질적인 대응 방안을 모색한다. 이를 통해 독자들이 XSS 공격의 위험성을 체감하고, 이를 방어하기 위한 기법을 실제 환경에서 적용할 수 있는 능력을 갖추는 데 목적이 있다.</p>
+<p>이 글이 독자들에게 웹 애플리케이션 보안의 중요성을 되새기고, XSS 공격에 대한 기초적인 이해를 돕는 데 도움이 되기를 바란다.<br><br></p>
+<hr>
+<h2 id="XSS-개요-및-웹-보안의-중요성"><a href="#XSS-개요-및-웹-보안의-중요성" class="headerlink" title="XSS 개요 및 웹 보안의 중요성"></a>XSS 개요 및 웹 보안의 중요성</h2><h3 id="XSS의-정의와-주요-유형"><a href="#XSS의-정의와-주요-유형" class="headerlink" title="XSS의 정의와 주요 유형"></a>XSS의 정의와 주요 유형</h3><p>XSS(Cross Site Scripting)는 공격자가 악의적인 스크립트를 삽입하고 실행하도록 하는 공격 기법이다. XSS는 웹 애플리케이션에서 클라이언트 사이드의 스크립트를 악용해 사용자의 브라우저에서 원하지 않는 작업을 수행하게 하는 취약점을 의미하며, 크게 세 가지 주요 유형으로 분류된다.</p>
+<p><img src="/images/3211_251011_image1.png" alt="그림 1.Reflected XSS"></p>
+<center><span style="font-size: 90%;">그림 1. [Reflected XSS]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<ul>
+<li>Reflected XSS : 해당 유형의 공격은 공격자가 악성 스크립트를 URL 파라미터나 HTTP 요청의 다른 요소에 삽입해 공격하는 방식이다. 서버는 요청된 데이터를 그대로 반영해 사용자에게 응답하기 때문에 사용자가 악성 링크를 클릭할 때(해당 데이터에 접근할 때)마다 악성 스크립트가 실행된다. 따라서 Reflected XSS는 보통 피싱 공격과 결합되어 사용되고, 주로 이메일이나 메시지에서 링크를 통해 발생한다.</li>
+</ul>
+<p>실제로 일어난 Reflected XSS 사례를 확인해보자. 2020년 2월, PayPal의 환율 변환 기능에서 Reflected XSS 취약점이 발견되었다. 이 취약점은 공격자가 URL 파라미터에 악성 스크립트를 삽입하고, 이를 브라우저가 실행하도록 유도함으로써 발생했다. PayPal은 해당 취약점이 “환율 변환 엔드포인트에서 사용자 입력이 적절히 검증되지 않아 발생했으며, 악성 스크립트가 DOM에서 사용자 동의 없이 실행될 수 있었다”고 밝혔다. 실제로 공격자(버그바운티 헌터)는 피해자가 악성 링크를 클릭하도록 유도해 브라우저 내에서 악성 JavaScript를 실행하고, 세션 토큰을 탈취하는 등의 공격을 수행할 수 있었다. 이러한 Reflected XSS 취약점을 해결하기 위해 PayPal은 입력 검증을 강화하고 추가적인 보안조치를 도입했다.<br><br><br></p>
+<p><img src="/images/3211_251011_image2.png" alt="그림 2.Stored XSS"></p>
+<center><span style="font-size: 90%;">그림 2. [Stored XSS]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<ul>
+<li>Stored XSS : 해당 유형의 공격은 공격자가 악성 스크립트를 웹 애플리케이션의 데이터베이스나 파일 시스템에 저장해 공격하는 방식이다. 악성 스크립트가 서버에 저장되며, 사용자가 서버에 정보를 요청하면 스크립트가 포함된 정보가 전달되면서 공격이 진행된다. 개인을 타겟으로 공격하지 않고 서버 자체를 공격하기 때문에 대규모 피해를 초래할 수 있는 위험한 공격이다.</li>
+</ul>
+<p>2014년부터 2017년까지, eBay에서 여러 차례의 Stored XSS 공격이 발생한 사례가 있다. 공격자들은 상품 설명 필드에 악성 스크립트를 삽입했고, 이를 클릭한 사용자의 브라우저에서 스크립트가 실행되도록 유도했다. 이 공격으로 인해 사용자의 세션 쿠키가 탈취되었으며, 공격자는 탈취한 정보를 통해 사용자 계정에 접근하고 추가적인 악성 활동을 수행할 수 있어 큰 논란이 되었다.<br><br><br></p>
+<p><img src="/images/3211_251011_image3.png" alt="그림 3.Dom-based XSS"></p>
+<center><span style="font-size: 90%;">그림 3. [Dom-based XSS]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<ul>
+<li>DOM-based XSS : 해당 유형의 공격은 웹 페이지의 Document Object Model(DOM)이 클라이언트측 스크립트에 의해 조작될 때 발생한다. 서버의 응답이 아닌 클라이언트 측에서 발생한다는 특징을 가진다. 이 공격은 클라이언트 측 스크립트가 데이터 입력을 검증하지 않거나 잘못된 방식으로 처리할 때 발생하며, 서버와의 상호작용 없이도 공격이 가능하다는 점에서 위험하다.</li>
+</ul>
+<p>2019년 7월, Google의 Gmail에서 도입한 AMP4Email 기능에서 DOM-based XSS 취약점이 발견되었다. AMP4Email은 동적 콘텐츠를 이메일에서 표시하도록 설계되었지만, 일부 태그와 속성이 화이트리스트에 포함된 상태로 인증되지 않은 입력이 허용되었다. 공격자는 HTML 요소의 id 속성을 악용해 브라우저가 악성 JavaScript를 실행하도록 만들었다.</p>
+<br>
+이렇듯 XSS는 다양한 방식으로 웹 애플리케이션과 사용자에게 영향을 미치는 공격이다. 특히 세 가지 유형의 XSS는 각자 다른 방식으로 공격하기 때문에, 이에 대한 방어전략 또한 다르다.
+
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>Reflected XSS</th>
+<th>Stored XSS</th>
+<th>DOM-based XSS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>발생 위치</strong></td>
+<td>서버 응답</td>
+<td>서버 데이터베이스</td>
+<td>클라이언트 (DOM)</td>
+</tr>
+<tr>
+<td><strong>작동 방식</strong></td>
+<td>사용자 입력 → 서버 → 응답으로 반영</td>
+<td>사용자 입력 → 서버에 저장 → 다른 사용자 요청 시 실행</td>
+<td>클라이언트 측 스크립트 조작</td>
+</tr>
+<tr>
+<td><strong>전파 경로</strong></td>
+<td>URL 파라미터, HTTP 요청 등</td>
+<td>데이터베이스를 통해 여러 사용자에게 전파</td>
+<td>클라이언트에서 즉시 실행</td>
+</tr>
+<tr>
+<td><strong>위험성</strong></td>
+<td>단일 사용자 대상, 주로 피싱과 결합</td>
+<td>대규모 사용자 피해 가능</td>
+<td>탐지가 어려움, 서버 로그에 기록되지 않음</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+<h3 id="XSS-공격이-웹-보안에-미치는-영향"><a href="#XSS-공격이-웹-보안에-미치는-영향" class="headerlink" title="XSS 공격이 웹 보안에 미치는 영향"></a>XSS 공격이 웹 보안에 미치는 영향</h3><p>XSS 공격은 조직의 정보 보안 및 사용자 신뢰에 악영향을 미치며 다양한 형태의 피해를 초래할 수 있다. 먼저, XSS 공격의 가장 직접적인 악영향은 사용자 데이터가 유출된다는 점이다.<br>공격자는 악성 스크립트를 통해 세션 쿠키, 인증 토큰, 개인 정보 등을 탈취할 수 있으며 다음과 같이 악용될 수 있다.</p>
+<p><strong>[01. 사용자 데이터 유출 피해]</strong></p>
+<p>공격자는 XSS 공격을 통해 사용자의 세션 쿠키를 탈취할 수 있다. 사용자의 세션 쿠키를 탈취한 공격자는 해당 사용자의 신분으로 웹 애플리케이션에 접근할 수 있다. 공격자는 사용자의 정보를 이용해 사용자의 권한으로 행동하며 비밀번호 변경, 개인정보 수정, 금융 거래 수행 등을 수행할 수 있다. 또한 공격자는 XSS 공격을 통해 사용자가 입력하는 신용카드 번호 등과 같은 민감한 정보를 가로채거나 기록할 수 있다. 이는 정보 유출로 이어져 개인정보 침해뿐만 아니라 재정적 손실까지 초래할 수 있다.</p>
+<p><strong>[02. 악성 코드 실행 및 자원 소모]</strong></p>
+<p>공격자는 XSS 공격을 통해 사용자의 브라우저를 감염시키거나, 시스템에 접근할 수 있는 악성 소프트웨어를 다운로드하도록 해 추가적인 피해를 입힐 수 있다. 또한 XSS 공격을 활용해 사용자의 브라우저에서 자원을 과도하게 소모시키거나 비정상적인 행동을 유도해 서비스가 응답하지 않도록 만들 수 있다. 이러한 공격은 웹 사이트의 서비스 중단 등의 결과를 초래할 수 있다. 추가로, XSS 공격을 통해 자동화된 스크립트나 요청을 실행시켜 웹 애플리케이션의 자원을 소모시킬 수 있는데, 이는 서버에 부담을 주어 성능 저하나 서비스 거부의 결과를 낳을 수 있다.</p>
+<p>뿐만 아니라 XSS 공격은 웹 사이트의 신뢰도 저하로 인한 사용자 이탈, 법적 책임 등으로 인한 경제적 손실, 데이터 손실 등을 초래할 수 있으므로 이러한 XSS 공격 방식을 정확히 이해하고 직접 실습하며 공부할 필요가 있다.</p>
+<br>
+
+<h3 id="실습-방향성-제시"><a href="#실습-방향성-제시" class="headerlink" title="실습 방향성 제시"></a>실습 방향성 제시</h3><p>앞으로 진행될 칼럼에서는 직접 취약한 웹 사이트를 제작하고, 해당 사이트에서 XSS공격을 실습하고자 한다. 따라서 XSS 취약점을 정확히 이해하고 공부하기 위해서는 이를 실제로 확인하고 테스트할 수 있는 환경을 갖춘 웹 사이트를 제작하는 것이 중요하다. XSS 실습에 필요한 구성 요소와 기능은 다음과 같다.</p>
+<p><strong>01. 사용자 입력 폼 구성</strong></p>
+<p>사용자가 입력한 내용이 웹 사이트에 직접적으로 반영되는 기능들은 XSS 공격에 취약하다. 따라서 다음과 같은 기능을 제작한 후, 이를 이용한 XSS 실습을 진행하겠다.</p>
+<ul>
+<li>검색 창 : 사용자가 입력한 검색어가 웹 페이지에 반영되는 기능을 구현해야 한다. 이러한 검색어를 URL 파라미터로 받아와 페이지에 출력하도록 하는 Reflected XSS 실습이 가능하기 때문이다.</li>
+<li>게시글 작성 : 사용자가 직접 게시글을 작성할 수 있는 기능을 구현해야 한다. 사용자가 작성한 댓글이 웹 사이트에 저장되고, 다른 사용자들이 이를 조회할 수 있도록 한다면 Stored XSS 실습 또한 가능하기 때문이다.</li>
+</ul>
+<p><strong>02. 출력 및 데이터 처리 기능</strong></p>
+<p>웹 사이트의 출력 기능 또한 XSS 취약점을 발생시킬 수 있는 주요 지점이다. 사용자의 입력을 처리하고 출력하는 과정에서 XSS 공격을 어떻게 이용할 수 있는지 확인하고자 한다. 이때, 출력 기능은 입력 기능과 동일하게 사용자가 입력한 검색어에 대한 결과를 출력하는 기능, 사용자가 작성한 게시글(입력 내용)을 웹 사이트에 표시하는 기능을 제작할 필요가 있다.</p>
+<p><strong>03. 데이터베이스 기능</strong></p>
+<p>데이터베이스 기능을 구현한다면 공격자가 악성 스크립트를 데이터베이스에 저장하고 다른 사용자들이 조회할 때 실행되도록 하는 공격인 Stored XSS를 실습할 수 있다.</p>
+<ul>
+<li>데이터베이스 저장 : 사용자가 입력한 게시글이 데이터베이스에 저장되고, 웹 페이지에서 불러와 표시된다. 해당 기능을 통해 Stored XSS 공격을 실습할 수 있을 것이다.</li>
+</ul>
+<p><strong>04. 사용자 인증</strong></p>
+<ul>
+<li>로그인 및 로그아웃 시스템 : 사용자 인증 시스템을 구현해 XSS 공격이 제대로 이루어<br>졌는지, 인증된 사용자의 정보를 탈취할 수 있는지 등을 확인할 수 있도록 한다.</li>
+</ul>
+<p>이처럼 추후 다양한 XSS 공격이 가능하도록 고려해 웹 사이트의 기능을 파악한 후 웹 사이트 구현을 완료했다. JDK와 TOMCAT을 활용해 제작했으며, 회원가입, 로그인, 데이터베이스 구축, 게시판 기능 등을 구현했다.<br><br></p>
+<hr>
+<h2 id="취약한-웹-사이트-구축-및-XSS-공격-실습"><a href="#취약한-웹-사이트-구축-및-XSS-공격-실습" class="headerlink" title="취약한 웹 사이트 구축 및 XSS 공격 실습"></a>취약한 웹 사이트 구축 및 XSS 공격 실습</h2><h3 id="취약한-웹-사이트-구축"><a href="#취약한-웹-사이트-구축" class="headerlink" title="취약한 웹 사이트 구축"></a>취약한 웹 사이트 구축</h3><p>이제 XSS 공격을 직접 실습하기 위한 취약한 웹 사이트를 직접 구축했으니, 해당 웹 사이트가 어떤 면에서 XSS 공격에 취약할 수 있는지 예측해보고자 한다. 다음과 같이 웹 사이트의 주요 기능을 소개할 수 있다.</p>
+<p><strong>01. 회원 DB 구축</strong></p>
+<p><img src="/images/3211_251011_image4.png" alt="그림 4.회원 DB 구축 화면"></p>
+<center><span style="font-size: 90%;">그림 4. [회원 DB 구축 화면]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>사용자의 정보를 저장하고 관리하는 데이터베이스를 구축해 사용자 정보를 효과적으로 관리하고자 했다. 구현한 DB에는 사용자의 ID와 비밀번호, 실명, 성별, 그리고 이메일이 포함되어 있다.<br><br></p>
+<p><strong>02. 로그인 기능 구현</strong></p>
+<p><img src="/images/3211_251011_image5.png" alt="그림 5.회원 DB에 존재하지 않는 아이디 입력 경고창"></p>
+<center><span style="font-size: 90%;">그림 5. [회원 DB에 존재하지 않는 아이디 입력 경고창]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>사용자 인증을 통해 웹 사이트에 접근할 수 있는 권한을 부여하도록 구현했다. 회원DB에 존재하지 않는 아이디를 입력시 ‘존재하지 않는 아이디입니다.’라는 경고창을 띄우도록 구현했다.<br><br></p>
+<p><strong>03. 회원가입 기능 구현</strong></p>
+<p><img src="/images/3211_251011_image6.png" alt="그림 6.회원가입 기능"></p>
+<center><span style="font-size: 90%;">그림 6. [회원가입 기능]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>새로운 사용자가 웹 사이트에 등록할 수 있는 회원가입 기능을 구현했다. 만약, 회원가입 조건의 양식을 지키지 않을 시 가입이 불가능하도록 구현했다.<br><br></p>
+<p><strong>04. 접속한 회원 세션 관리</strong></p>
+<p><img src="/images/3211_251011_image7.png" alt="그림 7.회원 세션 관리"></p>
+<center><span style="font-size: 90%;">그림 7. [회원 세션 관리]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>로그인한 사용자의 세션을 관리해 사용자가 웹 사이트에 접속해 있는 동안 지속적으로 인증 상태를 유지할 수 있도록 구현했다.<br><br></p>
+<p><strong>05. 게시판 DB 구축</strong></p>
+<p><img src="/images/3211_251011_image8.png" alt="그림 8.게시판 DB 구축"></p>
+<center><span style="font-size: 90%;">그림 8. [게시판 DB 구축]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>웹 사이트의 게시판 기능을 지원하기 위해 게시판 DB를 구축했으며, 이는 사용자가 작성한 게시글을 저장하고 관리하는 데 사용하기 위함이다.<br><br></p>
+<p><strong>06. 게시판 기능 구현</strong></p>
+<p><img src="/images/3211_251011_image9.png" alt="그림 9.게시판 기능"></p>
+<center><span style="font-size: 90%;">그림 9. [게시판 기능]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>사용자가 게시글을 작성하고, 게시글 목록을 조회하며, 기존 게시글을 수정하거나 삭제할 수 있도록 하는 게시판을 구현했다. 이때, 게시판의 데이터는 게시판 DB에 저장된다.<br><br></p>
+<p><strong>07. 웹 사이트 메인 페이지 디자인</strong></p>
+<p><img src="/images/3211_251011_image10.png" alt="그림 10.웹 사이트 메인 페이지"></p>
+<center><span style="font-size: 90%;">그림 10. [웹 사이트 메인 페이지]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>마지막으로, 사용자가 웹 사이트에 접속했을 때 첫번째로 마주하는 메인 페이지를 디자인해 웹 사이트의 기본적인 모습을 제공할 수 있도록 했다.</p>
+<p><br><br></p>
+<h3 id="XSS-공격-실습"><a href="#XSS-공격-실습" class="headerlink" title="XSS 공격 실습"></a>XSS 공격 실습</h3><p>직접 제작한 취약한 웹 사이트에서 XSS 공격을 실습해 보았다. 해당 공격 실습은 웹 사이트의 게시판 입력 필드에서 이루어졌다. 회원가입과 로그인 필드에서도 공격을 시도해 보았지만, 부적절한 형식의 글을 입력 시 사용자가 입력한 내용을 포함한 알림창을 띄우지 않아 공격이 불가능해 게시판 입력 필드를 대상으로 공격을 진행했다.</p>
+<p><strong>01. 취약점 탐색 및 공격 준비</strong></p>
+<p>가장 먼저 크롬 브라우저의 자체 XSS 필터링 기능을 해제했다. XSS 공격 실습을 크롬에서 진행해야 하는데, 크롬을 비롯한 대부분의 브라우저들은 XSS 공격을 방지하기 위해 브라우저 자체에서 자동으로 XSS 공격 코드를 필터링하기 때문에 CMD 창에서 아래 명령어를 입력해 XSS공격 실습이 가능하게 해준다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chrome.exe --disable-web-security --user-data-dir=C:\temp</span><br></pre></td></tr></table></figure>
+
+<p>다음으로 사이트의 입력 필드와 URL 파라미터에서 스크립트 삽입이 가능한지 확인한다. 먼저, 회원가입과 로그인 필드는 앞서 기술한 것처럼 알림창에 사용자가 입력한 값을 포함하지 않아 공격이 불가능했다. 다음으로 URL 파라미터의 경우, 스크립트 태그를 삽입해 연결하면 ‘올바른 연결&#x2F;링크가 아니다’며 연결이 되지 않아 해당 방식으로도 공격이 불가능했다. 마지막으로, 게시판 입력 필드에 스크립트를 입력 시 정상적으로 공격이 가능한 것을 확인할 수 있었다.</p>
+<br>
+
+<p><strong>02. 스크립트 삽입 및 각 공격에 대한 취약점 분석</strong></p>
+<p>게시판 입력 필드에서 공격이 가능함을 확인하고 다양한 스크립트를 작성해 XSS 공격을 실습했다.</p>
+<p><strong>[1]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(&#x27;XSS&#x27;);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>해당 스크립트는 가장 기본적인 형태의 XSS 공격으로, 스크립트 태그를 사용해 웹 페이지에서 JavaScript alert() 함수가 실행되도록 한다. 웹 페이지의 게시판 작성 기능을 활용해 해<br>당 스크립트를 삽입했고, 등록된 게시판의 게시글을 선택하면 사용자의 브라우저에서 알림창이 표시된다. 이는 웹 페이지가 사용자의 부적절한 입력(script 태그)을 허용하거나 적절히 필터링하지 않았기 때문에 공격이 성공했음을 확인할 수 있다.</p>
+<p>이러한 공격은 웹 사이트의 입력 필드나 URL 파라미터에 악성 스크립트를 삽입할 수 있는지 테스트하기에 가장 유용한 공격이다. 해당 공격은 XSS 취약점이 존재한다는 것을 명확히 확인하는 데 도움이 된다. 또한 사용자 입력을 통해 쉽게 실행될 수 있고, 스크립트가 포함된 응답을 통해 특정 정보를 클라이언트 측에서 추출할 수 있다는 장점이 있다.</p>
+<p><img src="/images/3211_251011_image11.png" alt="그림 11.스크립트[1]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 11. [스크립트[1]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[2]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=&quot;javascript:alert(&#x27;XSS&#x27;)&quot;&gt;XSS&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>해당 스크립트는 ‘href’ 속성에 ‘javascript:’ 프로토콜을 사용해 JSP 코드를 직접 실행하도록 하는 코드이다. 따라서 등록된 게시판의 게시글 내용에는 XSS라는 링크가 보여지고, 사용자가 해당 링크를 클릭하면 JavaScript alert() 함수가 호출되며 XSS라는 내용을 담은 알림창이 실행된다. 해당 공격은 웹 페이지에서 웹 페이지에서 ‘javascript:’ 프로토콜을 허용하거나 필터링하지 않았기 때문에 성공했다.</p>
+<p>이러한 공격은 사용자가 클릭할 수 있는 링크를 통해 XSS 공격을 실행할 때 유용하다. 링크 클릭을 통해 JSP 코드를 실행하거나, 악성 페이지로 리다이렉트할 수 있다. 따라서 사용자에게 신뢰할 수 있는 링크처럼 보이게 만들어 클릭을 유도하고, 악성 스크립트가 실행되도록 하기에 유용한 공격이다.</p>
+<p><img src="/images/3211_251011_image12.png" alt="그림 12.스크립트[2]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 12. [스크립트[2]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[3]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;#&quot; onerror=&quot;alert(&#x27;XSS&#x27;);&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>해당 스크립트는 이미지가 로드되지 않을 때 실행되는 ‘onerror’ 이벤트 핸들러를 이용한다. 만약 이미지의 ‘src’ 속성이 유효하지 않으면 ‘onerror’ 핸들러에 설정된 ‘alert(‘XSS’)’<br>가 실행된다. 이때, 게시물에는 이미지 로드가 실패된 흔적이 남게 된다.</p>
+<p>이러한 공격은 이미지 로딩 실패를 이용해 악성 스크립트를 실행할 수 있다. 다양한 웹 페이지 요소나 상황에서 이미지 로딩 오류를 유도해 공격할 수 있다는 점에서 유용하다.</p>
+<p><img src="/images/3211_251011_image13.png" alt="그림 13.스크립트[3]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 13. [스크립트[3]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[4]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;IFRAME SRC=&quot;&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#39;XSS&amp;#39;&amp;#41;&amp;#59;&quot; width=&quot;0&quot; height=&quot;0&quot; frameborder=&quot;0&quot;&gt;&lt;/IFRAME&gt;</span><br></pre></td></tr></table></figure>
+
+<p>해당 스크립트는 HTML 특수 문자의 아스키 코드로 인코딩된 ‘javascript:’ URL을 포함하는 ‘IFRAME’ 태그를 사용하는 공격 방법이다. 이는 HTML 엔터티 인코딩을 우회해 JavaScript 코드를 삽입하는 방법으로, 이 공격이 성공하려면 웹 페이지가 아스키 코드로 인코딩된 ‘javascript:’ URL을 허용하거나 제대로 필터링하지 않아야 한다. 따라서 이전의 공격들보다 필터링이 더 어려운 공격이며, 아스키 코드 인코딩을 처리하지 않거나 제대로 필터링하지 않는 웹 사이트에서 해당 공격이 성공할 수 있다.</p>
+<p>해당 공격은 HTML 엔터티 인코딩을 사용해 XSS 필터를 우회할 수 있을 때 사용하기 좋은 공격이다. 웹 사이트가 인코딩된 스크립트를 제대로 처리하지 않는 경우를 이용한 공격이다.</p>
+<p><img src="/images/3211_251011_image14.png" alt="그림 14.스크립트[4]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 14. [스크립트[4]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[5]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;IFRAME ID=&quot;showFrame&quot; SRC=&quot;javascript: document.write (&#x27;</span><br><span class="line">&lt;script&gt; alert(XSS1); function show () &#123; alert (XSS3) ; &#125; alert (XSS2) ; &lt;/script&gt;</span><br><span class="line">&#x27;):&quot; width=&quot;0&quot; height=&quot;0&quot; frameborder=&quot;0&quot;&gt;&lt;/IFRAME&gt;</span><br><span class="line">&lt;button id=&quot;button&quot; onClick=&#x27;document.getElementById(&quot;showFrame&quot;).contentWindow.show()&#x27;&gt;버튼&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+
+<p>해당 공격은 ‘IFRAME’을 사용해 ‘javascript:’ URL을 포함시키고, ‘document.write’를 사용해 스크립트를 삽입하는 공격 방식이다. 버튼 클릭 시 IFRAME 내의 show 함수가 호출되어 설정된 JSP 코드인 alert()이 실행되는 방식으로 작동한다. ‘javascript:’ URL을 포함한 ‘IFRAME’과 ‘document.write’가 제대로 필터링되지 않는 경우에 공격이 성공한다. 또한 IFRAME의 SRC 속성에 JSP 코드 삽입을 허용하는 웹 페이지에서도 발생할 수 있다.</p>
+<p>해당 공격은 버튼 클릭을 통해 실행될 수 있는 스크립트를 삽입해 더 다채로운 공격이 가능하다. 또한 내부 IFRAME을 통해 외부 컨텐츠를 조작할 수 있는 공격에 사용될 수 있다.</p>
+<p><img src="/images/3211_251011_image15.png" alt="그림 15.스크립트[5]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 15. [스크립트[5]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[6]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>이 스크립트는 ‘alert(document.cookie)’를 사용해 쿠키 정보를 브라우저의 알림 창에 표시하는 공격이다. 쿠키 정보는 웹 페이지의 ‘document.cookie’ 속성을 통해 접근할 수 있다. 원래 해당 공격은 알림창에 쿠키 정보를 표시해야 하지만, 여러 번 실습한 결과, 알림창이 빈 화면(아무 글자도 표시되지 않음)이나 ‘undefined’로 표시되는 것을 확인했다. 검색 결과 이는 쿠키의 SameSite 속성으로 인해 접근이 제한되는 경우 혹은 보안 설정으로 인해 발생하는 문제로 보인다. 문제 해결 방법을 찾아 추가적으로 실습을 진행하고자 했지만, 노트북의 무선랜 드라이버 오류 문제로 서버에 접속해 실습할 수 없어 이번 주차에는 여기까지 실습을 진행하고, 다음 주차에 추가적인 공격 실습을 진행하고자 한다.</p>
+<p>해당 공격은 사용자의 쿠키 정보를 클라이언트 측에서 직접 추출해 세션 하이재킹을 시도하는 공격으로, 공격이 성공한다면 사용자의 계정 정보, IP 등 중요한 정보가 유출될 수 있다.</p>
+<p><img src="/images/3211_251011_image16.png" alt="그림 16.스크립트[6]을 통한 공격"></p>
+<center><span style="font-size: 90%;">그림 16. [스크립트[6]을 통한 공격]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<hr>
+<h2 id="시큐어-코딩에-대한-이론적-공부-및-시큐어-코딩-실습"><a href="#시큐어-코딩에-대한-이론적-공부-및-시큐어-코딩-실습" class="headerlink" title="시큐어 코딩에 대한 이론적 공부 및 시큐어 코딩 실습"></a>시큐어 코딩에 대한 이론적 공부 및 시큐어 코딩 실습</h2><h3 id="시큐어-코딩이란"><a href="#시큐어-코딩이란" class="headerlink" title="시큐어 코딩이란?"></a>시큐어 코딩이란?</h3><p>시큐어 코딩은 사이버 공격과 취약점 발생을 막기 위해 소프트웨어 개발 단계에서 보안 요소를 반영하는 기법을 의미한다. 개발자는 공격 등을 사전에 방지하기 위해 설계부터 배포까지의 전 과정에서 보안 고려사항을 포함해야 한다.</p>
+<p>시큐어 코딩은 단순히 기능적인 오류를 방지하는 것에 그치지 않고, 악의적인 공격으로부터 시스템과 데이터를 보호하는 것을 목적으로 한다. 잘못된 입력이나 예상치 못한 사용자 행위가 발생할 경우에도 시스템이 안전하게 작동하도록 방어할 수 있어야 한다.</p>
+<p><strong>01. 입력 검증</strong></p>
+<p>입력 검증은 외부에서 입력되는 데이터를 사전에 검토하여 허용된 범위 내에서만 처리되도록 하는 기법이다. 이는 SQL Injection, XSS, Buffer Overflow 등의 공격을 방지하기 위한 방안 중 하나이다. 먼저, 허용 리스트란 사용자로부터 입력 받는 데이터가 예상된 값들 중 하나인지를 확인하는 방법이다. 예를 들어, 숫자나 특정한 형식만 허용해야 하는 필드에 문자열이나 특수 문자가 들어오지 못하게 차단할 수 있다. 다음으로 입력 형식 검증 같은 경우, 이메일 주소나 전화번호처럼 특정 형식이 요구되는 데이터를 정규식을 사용해 확인한다. 이로 인해 예상치 못한 값이 시스템에 전달되지 않도록 방지할 수 있다. 이 과정이 제대로 수행되지 않으면 악의적인 사용자는 데이터베이스에 부적절하게 접근하거나 서버를 악용할 수 있다.</p>
+<p><strong>02. 데이터 암호화</strong></p>
+<p>민감한 정보는 전송 또는 저장 중에 보호되지 않으면 쉽게 노출될 수 있다. 따라서 이를 막기 위해서 중요한 데이터를 암호화해야 한다. 암호화는 데이터를 읽을 수 없는 형태로 변환해, 제3자가 데이터를 도청하거나 무단으로 접근할 수 없도록 한다. 먼저, 전송중 암호화란 네트워크 상에서 데이터를 전송할 때는 TLS(Transport Layer Security) 같은 프로토콜을 사용해 데이터를 암호화하는 것이다. 이로 인해 사용자의 비밀번호, 신용카드 정보 등이 공격자에게 유출되는 것을 막을 수 있다. 다음으로 저장 중 암호화는 데이터가 디스크나 데이터베이스에 저장될 때도 암호화하도록 하는 것이다. 이는 서버나 데이터베이스에 직접 접근할 수 있는 권한이 있는 내부자도 민감한 정보에 접근할 수 없도록 보장한다. 만약 암호화가 잘못 적용되면, 암호 키나 암호화된 데이터가 쉽게 해독되어 공격자에게 정보를 제공하게 된다.</p>
+<p><strong>03. 인증 및 권한 관리</strong></p>
+<p>인증은 시스템 사용자가 누구인지 확인하는 과정이고, 권한 관리는 각 사용자가 시스템 내에서 무엇을 할 수 있는지 정의하는 과정이다. 잘못된 인증 및 권한 관리가 이루어지면 비인가 사용자가 시스템에 접근하여 악용할 수 있다. 다중 인증이란 사용자 인증시 하나의 인증 요소만 사용하지 않고, 여러 요소를 결합하여 보안 수준을 높이는 것으로, 비밀번호와 함께 휴대폰으로 전송된 코드를 입력하는 방식을 예로 들 수 있다.</p>
+<p>다음으로 세션 관리란 세션 쿠키나 토큰을 사용자 인증 후 시스템에 접근하는 데 사용하는 것이다. 이러한 세션 관리가 제대로 이루어지지 않으면 공격자가 세션을 도용해 사용자로 가장할 수 있다. 따라서 세션 쿠키에 HttpOnly 속성을 추가해 스크립트에서 접근하지 못하게 하거나, 세션의 만료 시간을 짧게 설정하는 것이 좋다. 권한 관리에서는 각 사용자가 시스템 내에서 적절한 권한을 가지고 있는지 철저히 확인해야 한다. 권한이 잘못 설정되면 일반 사용자가 관리자 권한으로 중요한 데이터를 변경하거나 삭제할 수 있게 된다.</p>
+<p><strong>04. 예외 처리</strong></p>
+<p>프로그램에서 오류가 발생했을 때 잘못된 방식으로 처리를 하면 시스템의 취약점이 드러나거나, 민감한 정보가 노출될 수 있다. 먼저 사용자에게 제공하는 정보를 제한해야 한다. 특히 시스템이 오류 메시지를 반환할 때, 내부 정보나 코드 구조에 대한 힌트를 주지 않도록 주의해야 한다. 공격자는 오류 메시지를 분석해 시스템의 취약점을 찾으려고 시도할 수 있다. 사용자에게는 적절한 에러 메시지를 보여주고, 상세한 오류 로그는 관리자에게만 전달되도록 설정하는 것이 중요하다. 다음으로 예외를 포괄적으로 처리해야 한다. 프로그램이 예외 상황에 직면할 경우, 이를 적절하게 처리하지 않으면 공격자가 그 틈을 이용할 수 있다. 따라서 가능한 모든 예외 상황을 포괄적으로 처리해야 한다.</p>
+<p><strong>05. 민감 정보 보호</strong></p>
+<p>개인 식별 정보(PII), 비밀번호, 금융 정보와 같은 민감한 데이터는 보호가 필수적이다. 따라서 비밀번호를 반드시 해시화해야 한다. 비밀번호를 저장할 때는 단순한 텍스트로 저장하지 않고, 해시 함수를 사용해 변환된 형태로 저장해야 한다. 다음으로 데이터 최소화 또한 필요하다. 시스템에 꼭 필요한 정보만 수집하고, 더 이상 필요 없는 데이터는 즉시 삭제하는 것이 원칙인데, 이는 불필요한 데이터를 오래 보관하면 그만큼 위험이 증가하기 때문이다.</p>
+<p><br><br></p>
+<h3 id="웹-애플리케이션-방화벽이란"><a href="#웹-애플리케이션-방화벽이란" class="headerlink" title="웹 애플리케이션 방화벽이란?"></a>웹 애플리케이션 방화벽이란?</h3><p>웹 애플리케이션 방화벽(WAF)은 웹 애플리케이션 계층에서 발생하는 다양한 공격을 실시간으로 탐지하고 방어하는 중요한 보안 솔루션이다. 기존 네트워크 방화벽이 주로 네트워크 트래픽을 필터링하는 데 반해, WAF는 웹 애플리케이션 자체에 대한 공격을 방어하는 데 중점을 둔다. 따라서 이는 SQL Injection, XSS, CSRF 등의 웹 기반 공격에 효과적이다.</p>
+<p>현재 많은 웹 애플리케이션은 다양한 기능을 제공하기 위해 사용자 입력을 처리한다. 이러한 입력이 제대로 검증되지 않으면 악성 스크립트나 명령이 주입될 수 있으며, 이는 공격자가 애플리케이션을 손상시키거나 데이터를 탈취할 수 있는 통로가 된다. WAF는 이와 같은 보안 취약점을 이용한 공격을 방어하는 데 중요한 역할을 한다.</p>
+<p><strong>01. WAF의 작동 방식</strong></p>
+<p>WAF는 웹 애플리케이션과 사용자의 트래픽을 중간에서 모니터링하고, 악성 활동이 감지될 경우 이를 차단한다. WAF는 기본적으로 다음 두 가지 방식을 통해 트래픽을 분석한다. 먼저 허용 목록 방식이란 허용된 요청만 처리하는 방식이다. 사용자의 입력이나 요청 중 사전에 설정된 안전한 패턴과 일치하는 것들만 허용하고, 나머지는 차단한다. 이 방식은 보안성이 높지만, 허용하지 않은 요청에 대해 불필요하게 차단할 가능성도 있다.</p>
+<p>차단 목록 방식은 알려진 공격 패턴을 기반으로 악성 요청을 탐지하고 차단하는 방식이다. 예를 들어, SQL Injection이나 XSS와 같은 특정 패턴이 포함된 요청을 실시간으로 감지하여 차단할 수 있다. 이 방식은 새로운 패턴의 공격에 취약할 수 있지만, 기존의 공격을 효과적으로 차단하는 데 유리하다.</p>
+<p><strong>02. WAF의 이점</strong></p>
+<p>가장 먼저 보안 패치가 적용되지 않은 취약점을 WAF가 탐지하고 차단하기 때문에 취약점이 해결되기 전에 임시 방어 수단으로 작용할 수 있다. 또한 기존에 알려지지 않은 공격에 대해서도 WAF는 패턴 기반 분석을 통해 즉각적인 방어를 수행하기도 한다. 또한 WAF는 특정 웹 애플리케이션에 맞춰 보안 정책을 설정할 수 있어 관리자가 필요에 따라 정책을 조정해 적응형 방어를 수행할 수 있다. 마지막으로, 여러 국가 및 산업 규제에서는 웹 애플리케이션의 보안을 필수로 요구하고 있는데, WAF는 이런 규제 준수를 위한 중요한 역할을 담당한다.</p>
+<p><strong>03. WAF와 다른 보안 솔루션과의 차이점</strong></p>
+<p>WAF는 주로 웹 애플리케이션 계층에서의 보안을 담당하지만, 네트워크 방화벽(NFW), IDS&#x2F;IPS(침입 탐지 및 방지 시스템)와 같이 다른 보안 솔루션과 함께 사용하면 더 강력한 보안을 구축할 수 있다. 먼저 네트워크 방화벽(NFW)의 경우는 네트워크 계층에서 트래픽을 필터링하고, 주로 IP 주소나 포트를 기반으로 필터링한다. 반면, WAF는 애플리케이션 계층에서 발생하는 구체적인 웹 요청을 분석한다. 다음으로 IDS(침입 탐지 시스템)와 IPS(침입 방지 시스템)는 네트워크 트래픽을 분석해 악성 활동을 탐지하고 방지한다. 이 시스템은 주로 네트워크나 호스트 수준에서의 공격을 방어하는 데 사용되는 반면, WAF는 애플리케이션 레벨의 공격에 특화되어 있다.</p>
+<p><br><br></p>
+<h3 id="XSS-방어-라이브러리"><a href="#XSS-방어-라이브러리" class="headerlink" title="XSS 방어 라이브러리"></a>XSS 방어 라이브러리</h3><p>XSS를 방어하기 위해서는 웹 애플리케이션에서 사용자 입력을 철저히 검증하고, HTML이나 JavaScript 코드에 안전하게 삽입하는 것이 중요하다. 이러한 방어 작업을 자동으로 처리하는 도구들이 XSS 방어 라이브러리이다. XSS 방어 라이브러리는 웹 애플리케이션에서 악성 스크립트 삽입을 막기 위해 제공되는 다양한 함수와 메커니즘을 포함하고 있고, 개발자들이 안전한 코드를 작성하는 데 도움을 준다.</p>
+<p><strong>01. XSS 방어 라이브러리의 필요성</strong></p>
+<p>XSS 취약점을 완전히 해결하려면 모든 사용자 입력을 철저히 검증하고, HTML, JavaScript, URL 등 다양한 콘텍스트에서 안전하게 처리해야 한다. 이러한 과정을 수동으로 처리하려면 많은 시간과 리소스가 소요되며, 실수로 인해 취약점이 남을 가능성도 높다. 이를 보완하기 위해 XSS 방어 라이브러리를 사용하면 여러 이점을 얻을 수 있다. 먼저 라이브러리가 제공하는 함수를 사용하면, 입력된 데이터가 안전한지 검증하고 자동으로 필요한 조치를 취할 수 있다. 또한 개발자가 직접 XSS 방어 코드를 작성할 필요 없이, 라이브러리를 통해 간결하고 안전한 코드를 유지할 수 있다. 마지막으로 XSS 방어 라이브러리가 지속적으로 업데이트되기 때문에 최신 공격 기법에 대응할 수 있도록 개선된다.</p>
+<p><strong>02. XSS 방어 라이브러리의 주요 기능</strong></p>
+<p>XSS 방어 라이브러리는 여러 기능을 통해 XSS 공격을 방어한다.</p>
+<ul>
+<li>HTML 이스케이핑: 사용자 입력을 HTML 문서에 삽입할 때, &lt;, &gt;, “, ‘ 등의 특수 문자가 HTML 태그나 속성으로 해석되지 않도록 이스케이핑(escaping)한다. 예를 들어, script 태그가 입력되었을 때 이스케이핑을 통해 &lt;과 &gt;를 문자 엔티티(<code>&amp;lt;</code>, <code>&amp;gt;</code>)로 변환해 브라우저가 이를 태그로 인식하지 않도록 한다.</li>
+<li>JavaScript 이스케이핑: HTML 문서 내에서 JavaScript 코드에 사용자 입력을 삽입할 경우, 악성 코드 실행을 방지하기 위해 따옴표(‘, “)나 특수 기호를 이스케이핑해 악성 스크립트가 실행되지 않도록 한다.</li>
+<li>URL 이스케이핑: URL에 사용자 입력을 포함하는 경우, 안전하지 않은 문자나 제어 문자를 이스케이핑해 URL 내에서 명령어로 해석되지 않도록 한다. 예를 들어, javascript: 스킴을 악용한 XSS 공격을 방지할 수 있다.</li>
+<li>쿠키 보호: <code>document.cookie</code>를 통해 쿠키 정보를 탈취하는 XSS 공격을 방어하기 위해, XSS 방어 라이브러리는 쿠키에 HttpOnly 및 Secure 속성을 추가한다. HttpOnly 속성은 스크립트에서 쿠키에 접근하지 못하게 하고, Secure 속성은 HTTPS를 통해서만 쿠키가 전송되도록 보장한다.</li>
+</ul>
+<p><br><br></p>
+<h3 id="시큐어-코딩-실습"><a href="#시큐어-코딩-실습" class="headerlink" title="시큐어 코딩 실습"></a>시큐어 코딩 실습</h3><p><strong>[1]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(&#x27;XSS&#x27;);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>공격 설명 및 공격 가능 원인</strong></p>
+<p>이 XSS 공격은 사용자 입력에 <code>script</code> 태그가 포함되어 서버로 전달된 뒤, 이를 필터링하지 않고 그대로 HTML 문서에 삽입하면서 발생한다. 기본적으로 브라우저는 HTML 문서에서 <code>script</code> 태그를 만나면 그 안의 JavaScript 코드를 실행한다. 따라서 공격자가 <code>script</code> 태그를 통해 JavaScript 코드를 실행해 사용자에게 경고창을 띄우거나 쿠키 정보를 탈취하는 등의 악성 행위를 수행한 것이다.</p>
+<p>이런 공격은 주로 사용자 입력을 처리하는 부분에서 필터링 없이 출력하거나, 사용자 입력을 HTML에 그대로 삽입하는 부분에서 발생한다. 내가 만든 웹 사이트의 경우 writeAction.jsp나 updateAction.jsp에서 게시물 작성 또는 수정 시 입력한 데이터가 view.jsp나 bbs.jsp에서 그대로 출력된다면, 이 공격이 가능하다.</p>
+<p><strong>시큐어 코딩 작성</strong></p>
+<p>해당 공격을 방어하기 위해서는 사용자가 입력한 데이터를 서버에서 필터링하거나 인코딩해야 한다. 입력 값 필터링은 사용자가 입력한 데이터에서 위험한 문자를 제거하거나 변환하는 방법으로 <code>script</code>, <code>iframe</code>과 같은 태그를 제거한다. 인코딩은 &lt;, &gt;와 같은 HTML 특수 문자를 브라우저에서 해석하지 않도록 &lt;, &gt; 등의 HTML 엔티티로 변환하는 방식이다. 이렇게 처리하면 브라우저는 HTML 태그나 스크립트 코드를 코드로 인식하지 않고 단순 텍스트로 처리하게 된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String userInput = request.getParameter(&quot;content&quot;);</span><br><span class="line">String safeInput = userInput.replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;).replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>해당 코드는 사용자가 입력한 <code>script</code> 태그를 HTML 엔티티로 변환해서 브라우저가 이를 코드로 인식하지 못하게 한다. 이를 통해 XSS 공격을 방어할 수 있다.</p>
+<p><strong>시큐어 코딩 적용 후 다시 공격한 결과</strong></p>
+<p><img src="/images/3211_251011_image17.png" alt="그림 17.스크립트[1]에 대한 시큐어 코딩 적용 후 공격 결과"></p>
+<center><span style="font-size: 90%;">그림 17. [스크립트[1]에 대한 시큐어 코딩 적용 후 공격 결과]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[2]</strong></p>
+<p><strong>공격 설명 및 공격 가능 원인</strong></p>
+<p>이 공격은 <code>a</code> 태그의 href 속성에 javascript: 프로토콜을 삽입해 브라우저가 이를 자바스크립트로 해석하고 실행하게 만든다. 즉, 사용자가 링크를 클릭하면 alert() 함수가 실행되고, 이를 악용하여 쿠키 정보 탈취 등의 악성 스크립트를 실행할 수 있게 된다.</p>
+<p><strong>시큐어 코딩 작성</strong></p>
+<p>사용자가 입력한 URL을 검증해 javascript: 프로토콜을 허용하지 않도록 해야 한다. URL은 반드시 HTTP, HTTPS, FTP 등의 안전한 프로토콜로 시작하는지 확인하고, JavaScript 코드가 포함된 경우 이를 차단해야 한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">String linkInput = request.getParameter(&quot;link&quot;);</span><br><span class="line">if (!linkInput.toLowerCase().startsWith(&quot;javascript:&quot;)) &#123;</span><br><span class="line">    // 안전한 URL만 저장</span><br><span class="line">    saveLink(linkInput);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    // 오류 처리</span><br><span class="line">    throw new IllegalArgumentException(&quot;JavaScript URL은 허용되지 않습니다.&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>추가적으로, 이번 주차에 작성한 시큐어 코딩은 사용자 입력을 검증해야 하기 때문에 모두 writeAction.jsp와 updateAction.jsp에서 이루어졌지만, 이 단계에서는 write 메소드를 수정할 때 DB에 link 요소를 추가해야 했기 때문에 BbsDAO에서도 관련 코드 수정이 필요했다.</p>
+<p><img src="/images/3211_251011_image18.png" alt="그림 18.BbsDAO 코드 수정"></p>
+<center><span style="font-size: 90%;">그림 18. [BbsDAO 코드 수정]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p><strong>시큐어 코딩 적용 후 다시 공격한 결과</strong></p>
+<p><img src="/images/3211_251011_image19.png" alt="그림 19.스크립트[2]에 대한 시큐어 코딩 적용 후 공격 결과"></p>
+<center><span style="font-size: 90%;">그림 19. [스크립트[2]에 대한 시큐어 코딩 적용 후 공격 결과]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[3]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;#&quot; onerror=&quot;alert(&#x27;XSS&#x27;);&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>공격 설명 및 공격 가능 원인</strong></p>
+<p>이 공격은 <code>img</code> 태그의 onerror 이벤트 핸들러를 악용하는 공격이다. onerror는 이미지 로딩이 실패했을 때 실행되는 JavaScript 이벤트로, 공격자는 이 이벤트 핸들러를 사용하여 악의적인 JavaScript 코드를 실행할 수 있다. 이미지 로딩이 실패하면 onerror 이벤트가 트리거되어 alert(‘XSS’)가 실행된다.</p>
+<p><strong>시큐어 코딩 작성</strong></p>
+<p>먼저 사용자가 제출한 이미지 태그를 받은 다음, replaceAll 메소드를 사용해 onerror 속성을 제거해야 한다. 이렇게 수정된 이미지 태그를 출력하도록 해 웹 페이지에서 악의적인 JavaScript 코드가 실행되지 않도록 할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String imgTag = request.getParameter(&quot;imgTag&quot;);</span><br><span class="line">String safeImgTag = imgTag.replaceAll(&quot;onerror&quot;, &quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>시큐어 코딩 적용 후 다시 공격한 결과</strong></p>
+<p><img src="/images/3211_251011_image20.png" alt="그림 20.스크립트[3]에 대한 시큐어 코딩 적용 후 공격 결과"></p>
+<center><span style="font-size: 90%;">그림 20. [스크립트[3]에 대한 시큐어 코딩 적용 후 공격 결과]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[4]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;IFRAME SRC=&quot;&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;:alert(&#x27;XSS&#x27;);&quot; width=&quot;0&quot; height=&quot;0&quot; frameborder=&quot;0&quot;&gt;&lt;/IFRAME&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>공격 설명 및 공격 가능 원인</strong></p>
+<p>이 공격은 <code>iframe</code> 태그와 인코딩된 JavaScript 코드를 이용해 XSS 공격을 시도하는 방식이다. <code>iframe</code> 태그의 SRC 속성에 인코딩된 javascript: 프로토콜을 삽입해 자바스크립트를 실행하게 만들었다.</p>
+<p><strong>시큐어 코딩 작성</strong></p>
+<p>iframe 태그의 속성값을 검증하고, javascript: 프로토콜이 사용되지 않도록 차단해야 하면 된다. 추가적으로 iframe 태그의 사용을 제한하거나, HTML 인코딩을 통해 안전한 문자열로 변환하는 방법도 있다. 해당 코드는 javascript: 프로토콜을 iframe 태그에서 제거한 것이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String iframeInput = request.getParameter(&quot;iframeInput&quot;);</span><br><span class="line">String safeIframe = iframeInput.replaceAll(&quot;javascript&quot;, &quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>시큐어 코딩 적용 후 다시 공격한 결과</strong></p>
+<p><img src="/images/3211_251011_image21.png" alt="그림 21.스크립트[4]에 대한 시큐어 코딩 적용 후 공격 결과"></p>
+<center><span style="font-size: 90%;">그림 21. [스크립트[4]에 대한 시큐어 코딩 적용 후 공격 결과]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<p><strong>[5]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;IFRAME ID=&quot;showFrame&quot; SRC=&quot;javascript: document.write (&#x27;</span><br><span class="line">&lt;script&gt; alert(XSS1); function show () &#123; alert (XSS3) ; &#125; alert (XSS2) ; &lt;/script&gt;</span><br><span class="line">&#x27;):&quot; width=&quot;0&quot; height=&quot;0&quot; frameborder=&quot;0&quot;&gt;&lt;/IFRAME&gt;</span><br><span class="line">&lt;button id=&quot;button&quot; onClick=&#x27;document.getElementById(&quot;showFrame&quot;).contentWindow.show()&#x27;&gt;버튼 &lt;/button&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>공격 설명 및 공격 가능 원인</strong></p>
+<p>이 공격은 iframe 태그와 버튼을 결합하여 자바스크립트를 동적으로 실행하는 방식의 공격이다. 공격자가 버튼을 클릭했을 때 iframe 내의 자바스크립트를 실행해 경고창을 띄우고 악성 코드를 실행한다. 이 공격은 writeAction.jsp, updateAction.jsp에서 사용자 입력을 처리할 때 필터링되지 않으면 view.jsp에서 실행된다.</p>
+<p><strong>시큐어 코딩 작성</strong></p>
+<p>이 공격을 막기 위해서는 iframe 내에서 동적으로 JavaScript를 실행하지 못하도록 제한하고, 사용자의 스크립트 삽입을 막아야 한다. 먼저 사용자가 제출한 iframescript 값을 가져오고, HTML 입력에서 <script> 및 </script> 태그를 제거한다. 이렇게 스크립트가 브라우저에서 실행되는 것을 방지할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">String iframeScript = request.getParameter(&quot;iframeScript&quot;);</span><br><span class="line">String safeframeScript = iframeScript.replaceAll(&quot;&lt;script&gt;&quot;, &quot;&quot;)</span><br><span class="line">                                     .replaceAll(&quot;&lt;/script&gt;&quot;, &quot;&quot;);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// iframe 관련 처리</span><br><span class="line">String iframeInput = request.getParameter(&quot;iframeTag&quot;);</span><br><span class="line">if (iframeInput != null) &#123;</span><br><span class="line">    String safeIframe = iframeInput.replaceAll(&quot;javascript:&quot;, &quot;&quot;)</span><br><span class="line">        .replaceAll(&quot;&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&quot;, &quot;&quot;);</span><br><span class="line">    // (이하 일부 코드가 이미지에서 잘리거나 보이지 않습니다)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>시큐어 코딩 적용 후 다시 공격한 결과</strong></p>
+<p><img src="/images/3211_251011_image22.png" alt="그림 22.스크립트[5]에 대한 시큐어 코딩 적용 후 공격 결과"></p>
+<center><span style="font-size: 90%;">그림 22. [스크립트[5]에 대한 시큐어 코딩 적용 후 공격 결과]</span><br><span style="font-size: 70%;"></span></center>
+<br><br>
+
+<hr>
+<h2 id="2차-XSS-공격-실습-및-XSS-방어-라이브러리-분석"><a href="#2차-XSS-공격-실습-및-XSS-방어-라이브러리-분석" class="headerlink" title="2차 XSS 공격 실습 및 XSS 방어 라이브러리 분석"></a>2차 XSS 공격 실습 및 XSS 방어 라이브러리 분석</h2><h3 id="2차-XSS-공격-실습-개요"><a href="#2차-XSS-공격-실습-개요" class="headerlink" title="2차 XSS 공격 실습 개요"></a>2차 XSS 공격 실습 개요</h3><p>현재 직접 제작한 웹 사이트에서 XSS 공격을 진행한 후, 해당 공격을 막기 위한 시큐어 코딩을 작성해 추가했다. 따라서 이번 챕터에는 시큐어 코딩을 기반으로 한 웹사이트에서 취약점을 찾아 가능한 XSS 공격을 시도해 보았다. 그러나 시도한 모든 공격이 실패했기 때문에 작성한 시큐어 코딩을 다시 분석하고, 시도한 공격에 대한 설명과 공격이 실패한 이유에 대한 분석을 담고자 한다.<br><br></p>
+<h3 id="주요-시큐어-코딩-분석"><a href="#주요-시큐어-코딩-분석" class="headerlink" title="주요 시큐어 코딩 분석"></a>주요 시큐어 코딩 분석</h3><p><strong>01. 사용자 입력의 HTML 엔티티 변환</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String title = request.getParameter(&quot;bbsTitle&quot;);</span><br><span class="line">String content = request.getParameter(&quot;bbsContent&quot;);</span><br><span class="line">String safeTitle = title.replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;).replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;);</span><br><span class="line">String safeContent = content.replaceAll(&quot;&lt;&quot;, &quot;&amp;lt;&quot;).replaceAll(&quot;&gt;&quot;, &quot;&amp;gt;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>해당 코드 부분에서는 사용자가 입력한 제목과 내용을 HTML 엔티티로 변환하는 작업을 수행한다. 이 부분의 주된 목적은 사용자가 입력한 데이터를 출력할 때 HTML 태그가 실행되지 않도록 변환하는 것이다. replaceAll(“&lt;”, “&lt;”)와 replaceAll(“&gt;”, “&gt;”)는 사용자가 입력한 문자열에서 &lt;와 &gt; 문자를 각각 HTML 엔티티로 변환하여 브라우저가 이 문자를 HTML 태그로 해석하지 않도록 한다.</p>
+<p>이러한 변환은 스크립트 삽입 공격을 방지하는 데 효과적이다. 사용자가 (1)과 같은 코드를 입력했을 때, 이 코드가 HTML로 실행되는 것을 방지한다. 변환 후에는 (2)로 출력되므로 스크립트가 실행되지 않는다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//(1)</span><br><span class="line">&lt;script&gt;alert(&#x27;XSS&#x27;)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//(2)</span><br><span class="line">&amp;lt;script&amp;gt;alert(&#x27;XSS&#x27;)&amp;lt;/script&amp;gt;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>02. Iframe 관련 처리</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String iframeInput = request.getParameter(&quot;iframeTag&quot;);</span><br><span class="line">if (iframeInput != null) &#123;</span><br><span class="line">    String safeIframe = iframeInput.replaceAll(&quot;javascript:&quot;, &quot;&quot;)</span><br><span class="line">        .replaceAll(&quot;&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&quot;, &quot;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>다음 부분에서는 iframe 관련 입력을 처리하고 있다. 여기서는 사용자가 입력한 iframe 태그에 대해 javascript: 프로토콜을 제거하고, 특정 문자열을 필터링한다. 이는 iframe을 통해 JavaScript 코드가 실행되는 것을 방지하기 위한 조치이다.</p>
+<p>해당 코드로 주로 주 가지의 공격을 방지할 수 있다. 먼저, JavaScript 프로토콜을 이용한 XSS 공격을 막을 수 있다. 사용자가 iframe에 JavaScript 코드를 삽입하려는 경우, 이를 차단함으로써 악의적인 스크립트 실행을 방지한다. 다음으로 iframe 이용 공격을 방지할 수 있다. 안전하지 않은 iframe을 통해 페이지를 삽입하고 그 안에서 JavaScript를 실행하려는 시도를 차단한다.<br><br></p>
+<p><strong>03. 링크 검증</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">String link = request.getParameter(&quot;bbsLink&quot;);</span><br><span class="line">if (link != null &amp;&amp; link.toLowerCase().startsWith(&quot;javascript:&quot;)) &#123;</span><br><span class="line">    throw new IllegalArgumentException(&quot;JavaScript URL은 허용되지 않습니다.&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>마지막 부분은 사용자가 입력한 링크에 대한 검증을 수행한다. 이 코드는 사용자가 입력한 링크가 javascript:로 시작하는지를 확인하여, 이를 차단하는 역할을 한다. JavaScript URL은 악의적인 스크립트 실행을 유도할 수 있으므로, 이러한 링크는 허용되지 않는다. 이 검증은 사용자가 링크를 통해 악의적인 JavaScript 코드를 실행하려는 시도를 차단한다. 예를 들어, javascript:alert(‘XSS’)와 같은 링크로 공격할 수 없다.<br><br><br></p>
+<h3 id="2차-XSS-공격-실습"><a href="#2차-XSS-공격-실습" class="headerlink" title="2차 XSS 공격 실습"></a>2차 XSS 공격 실습</h3><p><strong>01. HTML 인코딩 우회</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;#60;script&amp;#62;alert(&#x27;XSS&#x27;)&amp;#60;/script&amp;#62;</span><br></pre></td></tr></table></figure>
+
+<p>해당 스크립트를 작성할 때, &lt;를 &#x3C;로 변환하고 &gt;를 &#x3E;로 표현하여 HTML 필터링을 우회하고자 했다. 그러나 다음과 같은 스크립트를 작성하더라도, 글을 작성하고 게시하면 다음 그림과 같이 출력되며 공격 또한 실행되지 않는다.</p>
+<p>해당 공격은 사용자가 게시판에 글을 올릴 때, 작성한 시큐어 코딩에 의해 HTML 엔티티가 제대로 처리되지 않았기 때문에 실패한 것으로 보인다. 시스템이 &#x3E;와 같은 엔티티를 올바르게 해석하지 못하고, 이를 단순한 &gt;로 변환해버렸다. 이 과정에서 내가 의도한 대로 HTML 태그가 생성되지 않았고, 스크립트가 실행되지 않았다. 즉, 시큐어 코딩 항목 중 “사용자 입력의 HTML 엔티티 변환” 부분이 효과적으로 작동하여, 사용자가 입력한 특수 문자들이 안전하게 필터링 된 것으로 보인다.</p>
+<p><img src="/images/3211_251011_image23.png" alt="그림 23.HTML 인코딩 우회"></p>
+<center><span style="font-size: 90%;">그림 23. [HTML 인코딩 우회]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p><strong>02. SVG 태그 사용</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;svg onload=&quot;alert&quot;(&#x27;XSS&#x27;)&quot;&gt;&lt;/svg&gt;</span><br></pre></td></tr></table></figure>
+
+<p>두 번째로 다음과 같이 스크립트를 작성하여 XSS 공격을 시도했다. 이 공격의 목적은 SVG 태그의 onload 이벤트를 이용해 JavaScript 코드를 실행시키려는 것이었다. 만약 SVG 태그에 대한 검증이 없다면, 공격자가 onload 속성을 이용해 XSS를 실행할 수 있다고 생각했기 때문이다. 이 경우, &lt;와 &gt;는 HTML 엔티티로 변환되지 않고 SVG 구조 내에서 실행될 수 있기 때문에 &lt;와 &gt; 필터링 없이 공격이 가능하다고 판단했다.</p>
+<p>그러나 다음과 같이 입력한 내용이 주요 시큐어 코딩의 두 번째 항목인 “IFRAME 관련처리”의 필터링 과정에서 차단되었기 때문에 공격이 실패했다. SVG 코드를 사용하면 &lt;&gt; 이 필터링되지 않는다는 정보를 얻어 스크립트를 작성했지만, 실제 실습 시에는 시큐어 코딩이 SVG와 같은 HTML 태그에 대해서도 동일한 방식으로 필터링을 수행했기 때문에, 이 태그가 포함된 입력이 HTML로 해석되지 않고 필터링 되었다.</p>
+<p><img src="/images/3211_251011_image24.png" alt="그림 24.SVG 태그 사용"></p>
+<center><span style="font-size: 90%;">그림 24. [SVG 태그 사용]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p><strong>03. &lt; &gt; 우회 기법 사용</strong></p>
+<p>이전의 공격이 모두 실패했는데, 실패의 주요 원인은 &lt;&gt; 필터링 문제라고 생각했기 때문에 &lt;&gt;를 우회하기 위한 기법을 찾아보고 공격이 성공하는지 확인해 보았다.</p>
+<p>먼저 스크립트(1)를 작성해 보았다. JavaScript 문자열을 사용하여 HTML 태그를 감싸는 방법은 &lt;와 &gt; 기호를 직접 사용하지 않고, 문자열 내에서 태그를 표현할 수 있게 해준다. 따라서 해당 코드는 alert 함수가 실행될 때, 문자열로 감싸인 <code>script</code> 태그를 포함한 메시지를 보여준다. 이 경우, <code>script</code> 태그가 실제로 HTML 문서에 삽입되는 것이 아니라, 단순히 문자열로 처리되기 때문에 필터링을 우회할 수 있는 가능성이 생긴다. 하지만, 공격은 실패했다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//(1)</span><br><span class="line">alert(&#x27;&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;&#x27;);</span><br></pre></td></tr></table></figure>
+
+<br>
+다음으로 스크립트(2)를 작성했다. 다음 스크립트는 백틱을 사용하는 ES6 템플릿 리터럴로, 앞선 스크립트와 비슷한 원리를 따른다. 따라서 다음과 같이 작성하면, 백틱을 통해 코드를 작성하는 것이므로, `script` 태그가 HTML 문서의 구조에 영향을 미치지 않는다. 이 역시 문자열로 처리되기 때문에 XSS 필터링을 피할 수 있다고 생각했다. 두 방법 모두 문자열 내에서 <와 >를 직접 사용하지 않기 때문에 필터링 시스템이 이를 인식하지 못하고, 그 결과로 JavaScript 코드가 정상적으로 실행될 수 있다는 것인데, 왜 이 두 코드가 정상적으로 실행되지 않는지는 파악할 수 없었다.
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//(2)</span><br><span class="line">`alert(&#x27;&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;&#x27;)`</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/3211_251011_image25.png" alt="그림 25.&lt;&gt; 우회 기법 사용"></p>
+<center><span style="font-size: 90%;">그림 25. [<> 우회 기법 사용]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p><strong>04. CSS expression 사용</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">style=&quot;width: expression(alert(&#x27;XSS&#x27;));&quot;</span><br></pre></td></tr></table></figure>
+
+<p>이번에는 CSS 속성을 활용한 스크립트를 작성하여 XSS 공격을 시도했다. 검색 결과 구형 브라우저에서 CSS의 expression 속성을 사용하여 JavaScript 코드를 실행해 XSS 공격이 가능하다는 사실을 확인할 수 있었다. 또한 시큐어 코딩에서 CSS 속성 필터링이 없었기 때문에 해당 공격이 가능하다고 생각해 실행해 보았다.</p>
+<p>하지만 시큐어 코딩의 첫 번째 항목이 여전히 유효하게 작동하여 입력한 스타일 속성이 HTML 태그로 해석되지 않았기 때문에 공격은 실패한 것으로 보인다. 혹은 해당 공격이 구형 브라우저에서 유효한 공격이기 때문에 공격이 실패했을 수도 있다.</p>
+<p><img src="/images/3211_251011_image26.png" alt="그림 26.CSS expression 사용"></p>
+<center><span style="font-size: 90%;">그림 26. [CSS expression 사용]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p><strong>05. 그 외 시도한 공격들</strong></p>
+<p>&lt;&gt; 필터링에서부터 공격이 실패했기 때문에 이를 해결하기 위한 스크립트를 중점적으로 작성했지만, &lt;&gt; 필터링 우회 목적의 스크립트가 아닌 다른 스크립트 또한 작성해 보았었다. 다음의 스크립트들은 2주차에 실행한 XSS 공격보다 더 발전한 공격이나 아예 새로운 방법의 공격들이다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&amp;lt;img src=&quot;invalid.jpg&quot; onerror=&quot;alert(&#x27;XSS&#x27;);&quot;&amp;gt;</span><br><span class="line">&amp;lt;img src=&quot;x&quot; onerror=&quot;alert(String.fromCharCode(88, 83, 83))&quot;&amp;gt;</span><br><span class="line">&amp;lt;img src=&quot;data:text/html,&amp;lt;script&amp;gt;alert(&#x27;XSS&#x27;)&amp;lt;/script&amp;gt;&quot;&amp;gt;</span><br><span class="line">&amp;lt;a href=&quot;javascript:alert(&#x27;XSS&#x27;)&quot;&amp;gt;Click me&amp;lt;/a&amp;gt;</span><br><span class="line">&amp;lt;img src=&quot;data:text/html,&amp;lt;script&amp;gt;alert(&#x27;XSS&#x27;)&amp;lt;/script&amp;gt;&quot;&amp;gt;</span><br><span class="line">&amp;lt;img src=&quot;data:image/svg+xml;base64,PHN2ZyBvbmxvYWQ9ImZ1bmN0aW9uIj4... (base64 생략)&quot;&amp;gt;</span><br><span class="line">&amp;amp;#60;script&amp;amp;#62;alert(&#x27;XSS&#x27;)&amp;amp;#60;/script&amp;amp;#62;</span><br><span class="line">&amp;lt;script&amp;gt;var data = &#123;&quot;value&quot;: &quot;&amp;lt;img src=x onerror=alert(&#x27;XSS&#x27;)&quot; &#125;;&amp;lt;/script&amp;gt;</span><br><span class="line">&amp;lt;script&amp;gt;\u0061lert(&#x27;XSS&#x27;);&amp;lt;/script&amp;gt;</span><br><span class="line">&amp;lt;script&amp;gt;document.body.innerHTML += &quot;&amp;lt;img src=x onerror=&#x27;alert(1)&#x27;&amp;gt;&quot;;&amp;lt;/script&amp;gt;</span><br><span class="line">&amp;lt;button onclick=&quot;alert(&#x27;XSS&#x27;)&quot;&amp;gt;Click me&amp;lt;/button&amp;gt;</span><br><span class="line">&amp;lt;script&amp;gt;var data = &#123;&quot;key&quot;: &quot;\u003Cimg src=&#x27;x&#x27; onerror=&#x27;alert(1)&#x27;\u003E&quot;&#125;;&amp;lt;/script&amp;gt;</span><br><span class="line">alert(String.fromCharCode(60) + &#x27;script&#x27; + String.fromCharCode(62) + &#x27;alert(&quot;XSS&quot;)&#x27; + String.fromCharCode(60) + &#x27;/script&#x27; + String.fromCharCode(62));</span><br></pre></td></tr></table></figure>
+
+<p><br><br></p>
+<h3 id="XSS-방어-라이브러리-분석"><a href="#XSS-방어-라이브러리-분석" class="headerlink" title="XSS 방어 라이브러리 분석"></a>XSS 방어 라이브러리 분석</h3><p>나는 이전에 진행한 XSS 공격을 바탕으로 이를 막는 시큐어 코딩을 직접 작성해 보았지만, 실제로 웹 사이트를 만들 때는 XSS 공격을 방지하기 위한 XSS 방어 라이브러리를 적용해 사용하는 경우가 많다. 따라서 현재 많이 사용되는 네이버에서 개발한 ‘Lucy XSS Filter’의 코드를 분석하며 어떤 기능을 하는지 간단히 알아보고자 한다.</p>
+<p>Lucy XSS Filter는 XSS(Cross Site Scripting) 공격을 방어하기 위한 Java 라이브러리이다. 이 라이브러리는 화이트 리스트(White List) 설정 방식을 사용하며, 블랙리스트 방식에 비해 새로운 공격 유형에 더 안전하다. 규칙을 선언한 XML 파일 사이에서는 상속과 오버라이딩이 가능하여 보안 정책을 정하는 부서에서 상위 설정 파일을 제공하고, 서비스별로 필요한 정책을 하위 선언 파일에 기술할 수 있는 방식으로 사용이 가능하다.</p>
+<p>Lucy XSS Filter는 메모리를 효율적으로 사용하는 SAX 방식의 HTML 파싱 모듈을 제공하며, HTML5 및 HTML4 Transitional DTD 명세를 지원한다. 공격 패턴을 검출할 경우 주석문으로 알림을 제공하여, 사용자가 허용되지 않는 태그임을 인지할 수 있도록 한다. 예를 들어, <code>&lt;!-- Not Allowed Tag Filtered --&gt;</code>라는 주석이 추가되어 경고를 표시한다. 또한, 기능 확장이 가능하며, 특히 다양한 커스터마이징이 가능하다.</p>
+<p><strong>01. XssPreventer</strong></p>
+<p>XssPreventer는 모든 HTML 요소를 무력화시키는 기능을 제공한다. 이 클래스는 Apache Commons Lang의 StringEscapeUtils를 사용하여 기본적으로 다음 문자열을 에스케이프한다: , &amp;, &lt;, &gt;, 그리고 추가적으로 ‘를 처리한다.</p>
+<p>사용자는 XssPreventer.escape(String) 메서드를 호출하여 HTML 태그를 무력화된 문자열로 변환할 수 있으며, XssPreventer.unescape(String) 메서드를 통해 원본 문자열로 복구할 수 있다.</p>
+<p><strong>02. XssFilter</strong></p>
+<p>XssFilter는 XSS 공격이 가능한 HTML 요소를 신뢰할 수 있는 코드로 변환하거나 삭제하는 기능을 제공한다. 필터링 규칙은 화이트리스트 방식으로 설정되어, 허용된 내용 이외의 모든 부분을 필터링하여 새로운 공격 유형에 대처할 수 있다. 설정 파일은 XML 형식으로 작성되며, 상위 설정 파일을 상속하거나 오버라이딩할 수 있다.</p>
+<ul>
+<li>elementRule: 모든 HTML 요소에 대한 필터링 규칙을 정의한다. 정의되지 않은 요소는 필터링 대상이 된다.</li>
+<li>attributeRule: 모든 HTML 속성에 대한 필터링 규칙을 정의하며, 허용되는 정규 표현식을 통해 필터링한다.</li>
+<li>filteringTagInComment: HTML 주석 내에 존재하는 HTML 태그에 대한 필터링 여부와 타입을 설정할 수 있다.</li>
+</ul>
+<p><strong>03. 추가 기능</strong></p>
+<p>Lucy XSS Filter는 IE핵 태그를 인식하여 별도의 태그로 처리하며, 필요시 이를 비활성화 할 수 있다. 또한, 테스트 코드를 통해 설정이 의도대로 작동하는지 검증하는 기능도 제공한다. SAX 및 DOM 방식 모두 지원하여 다양한 상황에 맞게 필터링을 수행할 수 있다. 이와 같이 Lucy XSS Filter는 XSS 공격을 방어하기 위한 다양한 기능과 유연한 설정 방식을 제공하여 웹 애플리케이션의 보안을 강화하는 데 기여한다.<br><br><br></p>
+<hr>
+<h2 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h2><h3 id="칼럼을-마무리하며"><a href="#칼럼을-마무리하며" class="headerlink" title="칼럼을 마무리하며"></a>칼럼을 마무리하며</h3><p>XSS 공격을 직접 실습하고 이를 막기 위한 시큐어 코딩을 작성하면서, 웹 애플리케이션의 취약점을 이용한 공격이 얼마나 손쉽게 일어날 수 있는지 체감할 수 있었다. 사용자의 입력을 제대로 검증하지 않았을 때 예상치 못한 데이터를 통해 서버나 다른 사용자에게 악의적인 영향을 미칠 수 있었는데, 이를 통해 XSS 공격에 대해 정확히 이해하는 것이 중요하다는 점을 다시 한 번 깨달을 수 있었다. 또한, 시큐어 코딩을 적용하며 적절한 필터링과 검증을 통해 예상 가능한 문제를 방지할 수 있다는 점에서, 보안 코드 작성의 중요성을 다시금 실감할 수 있었다. 무엇보다 단지 워게임 문제를 풀이하는 것보다는 직접 실습하며 공격이 어떻게 진행되는지, 웹 사이트의 어떠한 점이 공격을 가능하게 하는지 등을 직접 이해하며 성취감을 얻을 수 있었다. 앞으로도 이런 실습을 통해 다양한 보안 기법을 능동적으로 학습하고 다루는 역량을 키우고 싶다.<br><br><br></p>
+<hr>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><p>[1] velog - XSS 공격의 유형과 대처방법<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9Ac3dqOTA3Ny9YU1MtJUVBJUIzJUI1JUVBJUIyJUE5JUVDJTlEJTk4LSVFQyU5QyVBMCVFRCU5OCU5NSVFQSVCMyVCQy0lRUIlOEMlODAlRUMlQjIlOTglRUIlQjAlQTklRUIlQjIlOTU=">https://velog.io/@swj9077/XSS-%EA%B3%B5%EA%B2%A9%EC%9D%98-%EC%9C%A0%ED%98%95%EA%B3%BC-%EB%8C%80%EC%B2%98%EB%B0%A9%EB%B2%95</span></p>
+<p>[2] Naver Blog - 웹 취약점과 해킹 매커니즘#7 XSS(Cross-Site Scripting)<br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9za19zaGllbGR1cy8yMjI5MDI1MzM5MTk=">https://blog.naver.com/sk_shieldus/222902533919</span></p>
+<p>[3] velog - [JSP] 홈페이지 만들기 (6) : 게시판 만들기<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9Ac2VvdWw3ODgvSlNQLSVFRCU5OSU4OCVFRCU4RSU5OCVFQyU5RCVCNCVFQyVBNyU4MC0lRUIlQTclOEMlRUIlOTMlQTQlRUElQjglQjAtNi0lRUElQjIlOEMlRUMlOEIlOUMlRUQlOEMlOTAtJUVCJUE3JThDJUVCJTkzJUE0JUVBJUI4JUIw">https://velog.io/@seoul788/JSP-%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%A7%8C%EB%93%A4%EA%B8%B0-6-%EA%B2%8C%EC%8B%9C%ED%8C%90-%EB%A7%8C%EB%93%A4%EA%B8%B0</span></p>
+<p>[4] 티스토리 - [Javascript] 게시판 구현하기 (CRUD) - Create - CloudCoke<br><span class="exturl" data-url="aHR0cHM6Ly9jbG91ZGNva2UudGlzdG9yeS5jb20vMzE=">https://cloudcoke.tistory.com/31</span></p>
+<p>[5] 티스토리 - HTML, 자바스크립트로 게시판 만들기 (1) 개요,요구사항<br><span class="exturl" data-url="aHR0cHM6Ly9kZXYtZWxsZW4udGlzdG9yeS5jb20vZW50cnkvV2ViLSVFQyU5QiVCOS0lRUElQjglQjAlRUMlQjQlODgtMjMtSFRNTC0lRUMlOUUlOTAlRUIlQjAlOTQlRUMlOEElQTQlRUQlODElQUMlRUIlQTYlQkQlRUQlOEElQjglRUIlQTElOUMtJUVBJUIyJThDJUVDJThCJTlDJUVEJThDJTkwLSVFQiVBNyU4QyVFQiU5MyVBNCVFQSVCOCVCMC0xLSVFQSVCMCU5QyVFQyU5QSU5NCVFQyU5QSU5NCVFQSVCNSVBQyVFQyU4MiVBQyVFRCU5NSVBRA==">https://dev-ellen.tistory.com/entry/Web-%EC%9B%B9-%EA%B8%B0%EC%B4%88-23-HTML-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%A1%9C-%EA%B2%8C%EC%8B%9C%ED%8C%90-%EB%A7%8C%EB%93%A4%EA%B8%B0-1-%EA%B0%9C%EC%9A%94%EC%9A%94%EA%B5%AC%EC%82%AC%ED%95%AD</span></p>
+<p>[6] Naver Blog - [하루 3분 IT] 시큐어 코딩 (Secure Coding) - 네이버블로그<br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9wZW50YW1rdC8yMjEyMTc2MzQ2OTI/dmlld1R5cGU9cGM=">https://blog.naver.com/pentamkt/221217634692?viewType=pc</span></p>
+<p>[7] 인실리코젠 - 정보보안은 개발단계에서부터! 시큐어코딩(Secure Coding)<br><span class="exturl" data-url="aHR0cHM6Ly9wb3N0LWJsb2cuaW5zaWxpY29nZW4uY29tL2Jsb2cvMzgz">https://post-blog.insilicogen.com/blog/383</span></p>
+<p>[8] Naver Blog - 소프트웨어 개발 보안, 시큐어 코딩(Secure Coding)<br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9mczA2MDgvODAyMDMxNzk1OTQ/dmlld1R5cGU9cGM=">https://blog.naver.com/fs0608/80203179594?viewType=pc</span></p>
+<p>[9] Akamai - WAF(Web Application Firewall)란 무엇일까요?<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuYWthbWFpLmNvbS9rby9nbG9zc2FyeS93aGF0LWlzLWEtd2Fm">https://www.akamai.com/ko/glossary/what-is-a-waf</span></p>
+<p>[10] Amazon Web Services - AWS WAF 트래픽 개요 대시보드 소개<br><span class="exturl" data-url="aHR0cHM6Ly9hd3MuYW1hem9uLmNvbS9rby9ibG9ncy90ZWNoL2ludHJvZHVjaW5nLXRoZS1hd3Mtd2FmLXRyYWZmaWMtb3ZlcnZpZXctZGFzaGJvYXJkLw==">https://aws.amazon.com/ko/blogs/tech/introducing-the-aws-waf-traffic-overview-dashboard/</span></p>
+<p>[11] SK Shieldus - XSS(크로스 사이트 스크립트)란? 공격 유형부터 보안대책까지!<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuc2tzaGllbGR1cy5jb20vYmxvZy1zZWN1cml0eS9zZWN1cml0eS10cmVuZC1pZHgtMDY=">https://www.skshieldus.com/blog-security/security-trend-idx-06</span></p>
+<p>[12] 코딩공장공장장 - xss(cross site script) 스프링에서 완벽 보안하기(form&#x2F;mulitpart …<br><span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXIxMTEudGlzdG9yeS5jb20vZW50cnkveHNzY3Jvc3Mtc2l0ZS1zY3JpcHQtJUVDJThBJUE0JUVEJTk0JTg0JUVCJUE3JTgxJUVDJTk3JTkwJUVDJTg0JTlDLSVFQyU5OSU4NCVFQiVCMiVCRC0lRUIlQjMlQjQlRUMlOTUlODglRUQlOTUlOTglRUElQjglQjBmb3JtbXVsaXRwYXJ0LWpzb24tJUVDJTlCJUI5JUVDJTg2JThDJUVDJUJDJTkzMQ==">https://developer111.tistory.com/entry/xsscross-site-script-%EC%8A%A4%ED%94%84%EB%A7%81%EC%97%90%EC%84%9C-%EC%99%84%EB%B2%BD-%EB%B3%B4%EC%95%88%ED%95%98%EA%B8%B0formmulitpart-json-%EC%9B%B9%EC%86%8C%EC%BC%931</span></p>
+<p>[13] oobwrite.com - 웹 취약점: XSS(Cross Site Scripting) 취약점 종류, 방어 및 보안 …<br><span class="exturl" data-url="aHR0cHM6Ly9vb2J3cml0ZS5jb20vZW50cnkvJUVDJTlCJUI5LSVFQyVCNyVBOCVFQyU5NSVCRCVFQyVBMCU5MC1YU1NDcm9zcy1TaXRlLVNjcmlwdGluZy0lRUMlQjclQTglRUMlOTUlQkQlRUMlQTAlOTAtJUVDJUEyJTg1JUVCJUE1JTk4LSVFQiVCMCVBOSVFQyU5NiVCNC0lRUIlQjAlOEYtJUVCJUIzJUI0JUVDJTk1JTg4JUVBJUIwJTgwJUVDJTlEJUI0JUVCJTkzJTlD">https://oobwrite.com/entry/%EC%9B%B9-%EC%B7%A8%EC%95%BD%EC%A0%90-XSSCross-Site-Scripting-%EC%B7%A8%EC%95%BD%EC%A0%90-%EC%A2%85%EB%A5%98-%EB%B0%A9%EC%96%B4-%EB%B0%8F-%EB%B3%B4%EC%95%88%EA%B0%80%EC%9D%B4%EB%93%9C</span></p>
+<p>[14] 네이버 블로그 - [스터디 5주차] XSS - 네이버 블로그<br><span class="exturl" data-url="aHR0cHM6Ly9tLmJsb2cubmF2ZXIuY29tL3lrYzAxMzEvMjIxOTc2MjQ3MDM1">https://m.blog.naver.com/ykc0131/221976247035</span></p>
+<p>[15] Medium - XSS 공격을 직접 해보면서 알아보기 … - 민동준<br><span class="exturl" data-url="aHR0cHM6Ly9kam1pbjQzLm1lZGl1bS5jb20veHNzLSVFQSVCMyVCNSVFQSVCMiVBOSVFQyU5RCU4NC0lRUMlQTclODElRUMlQTAlOTEtJUVEJTk1JUI0JUVCJUIzJUI0JUVCJUE5JUI0JUVDJTg0JTlDLSVFQyU5NSU4QyVFQyU5NSU4NCVFQiVCMyVCNCVFQSVCOCVCMC1jMmMxZDliYWY3ZWM=">https://djmin43.medium.com/xss-%EA%B3%B5%EA%B2%A9%EC%9D%84-%EC%A7%81%EC%A0%91-%ED%95%B4%EB%B3%B4%EB%A9%B4%EC%84%9C-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0-c2c1d9baf7ec</span></p>
+<p>[16] 티스토리 - XSS(Cross Site Script)공격 기법과 보안 대책 – DevSecOps<br><span class="exturl" data-url="aHR0cHM6Ly9ieml3bnNpemQudGlzdG9yeS5jb20vODk=">https://bziwnsizd.tistory.com/89</span></p>
+<p>[17] velog.io - lucy-xss-filter를 사용하여 XSS 공격 방어하기<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9AZGF5b3VuZ19zYXJhaC9sdWN5LXhzcy1maWx0ZXIlRUIlQTUlQkMtJUVDJTgyJUFDJUVDJTlBJUE5JUVEJTk1JTk4JUVDJTk3JUFDLVhTUy0lRUElQjMlQjUlRUElQjIlQTktJUVCJUIwJUE5JUVDJTk2JUI0JUVEJTk1JTk4JUVBJUI4JUIwLTE=">https://velog.io/@dayoung_sarah/lucy-xss-filter%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-XSS-%EA%B3%B5%EA%B2%A9-%EB%B0%A9%EC%96%B4%ED%95%98%EA%B8%B0-1</span></p>
+<p>[18] velog.io - lucy-xss-filter를 사용하여 XSS 공격 방어하기<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9AZGF5b3VuZ19zYXJhaC9sdWN5LXhzcy1zZXJ2bGV0LWZpbHRlciVFQiVBNSVCQy0lRUMlODIlQUMlRUMlOUElQTklRUQlOTUlOTglRUMlOTclQUMtWFNTLSVFQSVCMyVCNSVFQSVCMiVBOS0lRUIlQjAlQTklRUMlOTYlQjQlRUQlOTUlOTglRUElQjglQjAtMg==">https://velog.io/@dayoung_sarah/lucy-xss-servlet-filter%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-XSS-%EA%B3%B5%EA%B2%A9-%EB%B0%A9%EC%96%B4%ED%95%98%EA%B8%B0-2</span></p>
+<p>[19] velog.io - Naver XSS 필터 분석(naver&#x2F;lucy-xss-servlet-filter)<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9AaHVuamlzb24vTmF2ZXItWFNTLSVFRCU5NSU4NCVFRCU4NCVCMC0lRUIlQjYlODQlRUMlODQlOURuYXZlcmx1Y3kteHNzLXNlcnZsZXQtZmlsdGVy">https://velog.io/@hunjison/Naver-XSS-%ED%95%84%ED%84%B0-%EB%B6%84%EC%84%9Dnaverlucy-xss-servlet-filter</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/XSS/" rel="tag"># XSS</a>
+              <a href="/tags/Secure-Coding/" rel="tag"># Secure Coding</a>
+              <a href="/tags/WAF/" rel="tag"># WAF</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/10/04/313203_251004/" rel="prev" title="[2025 SWING magazine] Android + RAT(3)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] Android + RAT(3)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/10/14/3212_250809/" rel="next" title="커널 패닉(Kernel Panic) 완전 정복">
+                  커널 패닉(Kernel Panic) 완전 정복 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="생성형 AI란?생성형 AI 기술의 발전과 잠재적 보안 위협2022년, ChatGPT가 등장하면서 생성형 AI에 관한 관심이 뜨거워졌다. 생성형 AI란 이용자의 특정 요구에 따라 결과를 능동적으로 생성해 내는 인공지능 기술을 의미한다. 기존까지의 딥러닝 기반 AI 기술이 단순히 기존 데이터를 기반으로 예측하거나 분류하는 정도였다면, 생성형 AI는 이용자가 요">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2026 SWING magazine] 생성형 AI의 취약점 Part 1: Data Poisoning과 Hallucination">
+<meta property="og:url" content="https://log.swuswing.com/2026/01/01/323305_260101/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="생성형 AI란?생성형 AI 기술의 발전과 잠재적 보안 위협2022년, ChatGPT가 등장하면서 생성형 AI에 관한 관심이 뜨거워졌다. 생성형 AI란 이용자의 특정 요구에 따라 결과를 능동적으로 생성해 내는 인공지능 기술을 의미한다. 기존까지의 딥러닝 기반 AI 기술이 단순히 기존 데이터를 기반으로 예측하거나 분류하는 정도였다면, 생성형 AI는 이용자가 요">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image1.jpg">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323305_260108_image14.png">
+<meta property="article:published_time" content="2026-01-01T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-13T01:49:29.602Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/323305_260108_image1.jpg">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/01/01/323305_260101/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/01/01/323305_260101/","path":"2026/01/01/323305_260101/","title":"[2026 SWING magazine] 생성형 AI의 취약점 Part 1: Data Poisoning과 Hallucination"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2026 SWING magazine] 생성형 AI의 취약점 Part 1: Data Poisoning과 Hallucination | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%83%9D%EC%84%B1%ED%98%95-AI%EB%9E%80"><span class="nav-number">1.</span> <span class="nav-text">생성형 AI란?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%83%9D%EC%84%B1%ED%98%95-AI-%EA%B8%B0%EC%88%A0%EC%9D%98-%EB%B0%9C%EC%A0%84%EA%B3%BC-%EC%9E%A0%EC%9E%AC%EC%A0%81-%EB%B3%B4%EC%95%88-%EC%9C%84%ED%98%91"><span class="nav-number">1.1.</span> <span class="nav-text">생성형 AI 기술의 발전과 잠재적 보안 위협</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLM%EC%9D%98-%EC%A0%95%EC%9D%98"><span class="nav-number">1.2.</span> <span class="nav-text">LLM의 정의</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLM%EC%9D%98-%EC%9E%91%EB%8F%99-%EC%9B%90%EB%A6%AC"><span class="nav-number">1.3.</span> <span class="nav-text">LLM의 작동 원리</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LLM-%EC%82%AC%EC%A0%84-%ED%9B%88%EB%A0%A8-Pre-training-%EA%B3%BC%EC%A0%95"><span class="nav-number">1.3.1.</span> <span class="nav-text">LLM 사전 훈련 (Pre-training) 과정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LLM%EC%9D%98-%EC%B6%94%EB%A1%A0-%EB%8B%A8%EA%B3%84-Inference"><span class="nav-number">1.3.2.</span> <span class="nav-text">LLM의 추론 단계 (Inference)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%8C%80%ED%99%94%ED%98%95-%EC%96%B4%EC%8B%9C%EC%8A%A4%ED%84%B4%ED%8A%B8%EB%A1%9C%EC%84%9C%EC%9D%98-%ED%9B%84%EC%86%8D-%ED%95%99%EC%8A%B5-Post-training"><span class="nav-number">1.3.3.</span> <span class="nav-text">대화형 어시스턴트로서의 후속 학습 (Post-training)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B8%EA%B0%84-%ED%94%BC%EB%93%9C%EB%B0%B1%EC%9D%84-%ED%99%9C%EC%9A%A9%ED%95%9C-%EA%B0%95%ED%99%94-%ED%95%99%EC%8A%B5-RLHF"><span class="nav-number">1.3.4.</span> <span class="nav-text">인간 피드백을 활용한 강화 학습(RLHF)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LLM-%ED%95%99%EC%8A%B5-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%8A%B9%EC%84%B1"><span class="nav-number">1.4.</span> <span class="nav-text">LLM 학습 데이터 특성</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scaling-Trends-for-Data-Poisoning-in-LLMs%EB%A5%BC-%ED%86%B5%ED%95%9C-Data-Poisoning-%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0"><span class="nav-number">2.</span> <span class="nav-text">Scaling Trends for Data Poisoning in LLMs를 통한 Data Poisoning 알아보기</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Injection-Attacks-Malicious-Fine-Tuning"><span class="nav-number">2.1.</span> <span class="nav-text">Data Injection Attacks &amp; Malicious Fine-Tuning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clean-Label-Poisoning-Imperfect-Data-Curation"><span class="nav-number">2.2.</span> <span class="nav-text">Clean-Label Poisoning &amp; Imperfect Data Curation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backdoor-Poisoning-Attacks-Intentional-Data-Contamination"><span class="nav-number">2.3.</span> <span class="nav-text">Backdoor Poisoning Attacks &amp; Intentional Data Contamination</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hallucination%EA%B3%BC-RAG"><span class="nav-number">3.</span> <span class="nav-text">Hallucination과 RAG</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hallucination%EC%9D%B4%EB%9E%80"><span class="nav-number">3.1.</span> <span class="nav-text">Hallucination이란?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RAG%EC%9D%B4%EB%9E%80"><span class="nav-number">3.2.</span> <span class="nav-text">RAG이란?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-Data-Injection-Attacks%EC%99%80-Malicious-Fine-Tuning"><span class="nav-number">4.</span> <span class="nav-text">실습: Data Injection Attacks와 Malicious Fine-Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Injection-Attacks"><span class="nav-number">4.1.</span> <span class="nav-text">Data Injection Attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-Anthropic-Dataset-%EB%A1%9C%EB%93%9C"><span class="nav-number">4.1.1.</span> <span class="nav-text">Step 1. Anthropic Dataset 로드</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-%ED%94%84%EB%A1%AC%ED%94%84%ED%8A%B8-%EC%82%BD%EC%9E%85-%E2%80%A2-%EB%8B%B5%EB%B3%80-%EC%83%9D%EC%84%B1-%EC%9E%90%EB%8F%99%ED%99%94"><span class="nav-number">4.1.2.</span> <span class="nav-text">Step 2. 프롬프트 삽입 • 답변 생성 자동화</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Malicious-Fine-Tuning"><span class="nav-number">4.2.</span> <span class="nav-text">Malicious Fine-Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-1-%EB%AA%A8%EB%8D%B8-%ED%86%A0%ED%81%AC%EB%82%98%EC%9D%B4%EC%A0%80-QLoRA-%EC%84%A4%EC%A0%95"><span class="nav-number">4.2.1.</span> <span class="nav-text">Step 1. 모델, 토크나이저, QLoRA 설정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Step-2-%ED%95%99%EC%8A%B5-%EB%B0%A9%EB%B2%95-%EC%84%A4%EC%A0%95"><span class="nav-number">4.2.2.</span> <span class="nav-text">Step 2. 학습 방법 설정</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">5.</span> <span class="nav-text">참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/01/323305_260101/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2026 SWING magazine] 생성형 AI의 취약점 Part 1: Data Poisoning과 Hallucination | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2026 SWING magazine] 생성형 AI의 취약점 Part 1: Data Poisoning과 Hallucination
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: Swingence (kminix, hyemsnail, Breadmoon)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-01 10:00:00" itemprop="dateCreated datePublished" datetime="2026-01-01T10:00:00+09:00">2026-01-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="생성형-AI란"><a href="#생성형-AI란" class="headerlink" title="생성형 AI란?"></a>생성형 AI란?</h1><h2 id="생성형-AI-기술의-발전과-잠재적-보안-위협"><a href="#생성형-AI-기술의-발전과-잠재적-보안-위협" class="headerlink" title="생성형 AI 기술의 발전과 잠재적 보안 위협"></a>생성형 AI 기술의 발전과 잠재적 보안 위협</h2><p>2022년, ChatGPT가 등장하면서 생성형 AI에 관한 관심이 뜨거워졌다. 생성형 AI란 이용자의 특정 요구에 따라 결과를 능동적으로 생성해 내는 인공지능 기술을 의미한다. 기존까지의 딥러닝 기반 AI 기술이 단순히 기존 데이터를 기반으로 예측하거나 분류하는 정도였다면, 생성형 AI는 이용자가 요구한 질문이나 과제를 해결하기 위해 스스로 데이터를 찾아서 학습하여 이를 토대로 능동적으로 데이터나 콘텐츠 등 결과물을 제시하는 한 단계 더 진화한 AI 기술이다. 마치 사람과 대화하는 것처럼 맥락을 이해하며 답을 제공하는 생성형 AI는 이용자에게 이전과 차원이 다른 정보 검색 서비스를 체감하게 하면서 폭발적인 인기를 끌었다.</p>
+<p>하지만 그에 따른 부작용과 다양한 보안 이슈 또한 동시에 발생하고 있다. 생성형 AI가 잘못된 정보를 생성하거나, 악의적으로 AI 모델을 이용하여 생성한 코드를 기반으로 가짜 사이트에 접속을 유도하고, 훈련 데이터나 대화 기록 등의 데이터 유출이 발생할 수 있고, 생성형 AI의 기능 확장을 위한 플러그인, 확장 프로그램, API 등이 오히려 해커가 생성형 AI 모델을 공격할 수 있는 공격 포인트가 되기도 한다. </p>
+<span id="more"></span>
+
+<p>실제로, 2023년 삼성전자는 ChatGPT 사용을 허용한 후 기업 정보가 최소 세 차례 유출된 사고가 있었다. 엔지니어가 실수로 내부 소스코드를 ChatGPT에 업로드해 유출하는 사고가 발생하여, AI 플랫폼으로 전송된 데이터가 외부 서버에 저장돼 검색 및 삭제가 어렵고 다른 사용자에게 공개될 수 있다는 점이 우려를 낳았다. 이후 삼성전자는 사내에서 ChatGPT 사용을 금지했다. 또한 같은 해 OpenAI의 내부 메시지 시스템에 해킹이 발생하여 관련 메시지가 유출되었지만, Open AI 측은 대단히 민감한 정보가 유출된 것이 아니라며 이를 즉각 외부에 공개하지 않은 사건이 있었다. 해커는 사내 메신저 프로그램을 침해하여 직원들 간 대화 내용을 수집했을 뿐 아니라, 오픈 AI가 가진 인공지능 관련 기술들까지도 훔쳐간 것으로 보였다. 한편, 사용자들이 AI에 관한 관심이 입력하는 데이터 중 민감한 것이 상당한 비중을 차지하고 있으며, 절대적 규모 또한 방대할 것으로 추정된다. 따라서 생성형 AI 플랫폼에 대한 해커들의 집중적인 공격이 계속된다면, 사용자가 입력한 데이터가 유출될 위험을 배제할 수 없다. 따라서 생성형 AI의 취약점을 파악하고 적절한 보안 대응 방안을 마련하는 것이 중요하다.</p>
+<h2 id="LLM의-정의"><a href="#LLM의-정의" class="headerlink" title="LLM의 정의"></a>LLM의 정의</h2><p>AI 개발사들은 개발하고자 하는 서비스의 목적에 따라 다양한 생성형 AI 모델을 개발하고 적용하고 있는데, ChatGPT와 같은 챗봇 서비스에 가장 널리 쓰이고 있는 생성형 AI 모델은 LLM(Large Language Model)이다. LLM은 말 그대로 언어에 특화된 데이터 모델로서 문서 형태의 파일이나 텍스트, 프롬프트와 같은 자연어 기반의 데이터를 입력 값으로 받아서 토큰화 및 벡터 간 유사도 연산을 통해 입력된 언어를 분석한 후 인간이 이해할 수 있는 형태로 응답을 출력한다. 오픈AI(OpenAI)에서 개발한 ChatGPT에 적용된 LLM은 GPT이며, 2023년 3월에 기존 모델인 GPT 3.5보다 약 500배 더 큰 모델 크기를 가진 ChatGPT-4가 출시되었다. 또한, 구글(Google)에서는 PaLM(Pathways Language Model: 구글의 LLM)을 활용한 챗봇 서비스인 ‘바드(Bard)’를 공개하였으며, 메타(Meta)에서는 ‘라마(Large Language Model Meta AI: 메타의 LLM)’라는 LLM을 공개하였다.</p>
+<h2 id="LLM의-작동-원리"><a href="#LLM의-작동-원리" class="headerlink" title="LLM의 작동 원리"></a>LLM의 작동 원리</h2><p>LLM은 주어진 이전 단어들의 문맥을 바탕으로 다음에 올 단어를 예측하도록 훈련되며, 이렇게 학습된 모델은 번역, 요약, 질의응답 등 다양한 언어 업무를 수행할 수 있다. ChatGPT는 이러한 LLM 기술을 기반으로 만들어진 대화형 인공지능으로, OpenAI의 GPT 계열 모델에 사용자의 지시에 따라 응답하도록 추가 훈련(미세조정 &#x3D; fine-tuning)된 사례이다. 간단히 말해 ChatGPT는 LLM에 대화 및 명령 수행 능력을 덧붙인 것으로 볼 수 있다. 이를 통해 ChatGPT는 단순한 언어 예측을 넘어, 사용자와 대화하고 유용한 정보를 제공하는 AI 어시스턴트의 역할을 수행한다.</p>
+<h3 id="LLM-사전-훈련-Pre-training-과정"><a href="#LLM-사전-훈련-Pre-training-과정" class="headerlink" title="LLM 사전 훈련 (Pre-training) 과정"></a>LLM 사전 훈련 (Pre-training) 과정</h3><p>LLM의 성능은 사전 훈련 단계에서 어떻게 방대한 지식을 습득하였는지에 달려 있다. 이 단계에서는 인터넷상의 텍스트로부터 데이터를 모으고, 신경망이 언어 패턴을 학습하도록 거대한 기본 모델을 만들어낸다. <br><br><strong>① 데이터 수집 : LLM의 사전학습 데이터를 모은다.</strong><br>Common Crawl(미국의 데이터 공개 플랫폼)과 같은 프로젝트를 통해 전 세계 웹페이지를 크롤링하여 방대한 말뭉치 수집, 유해한 데이터를 거르는 정제단계를 거쳐 고품질의 텍스트 데이터셋을 확보한다. 이를 LLM의 사전학습 데이터로 사용한다.<br><br><strong>② 토큰화 : 텍스트를 BPE(Byte Pair Encoding) 방식 등으로 분할한다.</strong><br>텍스트 데이터를 신경망에 넣을 수는 없기에 토큰화 기법. (글자를 토큰 단위의 숫자 시퀀스로 변환)을 사용하여 텍스트를 일정한 크기의 vocabulary 목록으로 분할한다.</p>
+<blockquote>
+<p>BPE(Byte Pair Encoding) : 연속적으로 가장 많이 등장한 글자의 쌍을 찾아서 하나의 글자로 병합하는 방식이다.</p>
+</blockquote>
+<p><strong>③ Transformer 아키텍처 구조 기반 학습 : Self-attention으로 문맥 내 단어 간 관계를 학습한다.</strong></p>
+<blockquote>
+<p>Self-attention : 직역하면 어텐션을 자기 자신에게 수행한다는 의미이다. 즉 입력 문장 내의 단어들끼리 유사도를 구하면서 각 단어가 문장 내에서 어떤 역할을 하는지, 어떤 단어와 관련이 깊은지 등을 파악한다. 이를 통해 문장의 문맥을 이해하고, 문장 생성이나 번역 등의 작업을 수행할 때 문맥을 고려한 더 정확한 결과를 도출할 수 있다.</p>
+</blockquote>
+<h3 id="LLM의-추론-단계-Inference"><a href="#LLM의-추론-단계-Inference" class="headerlink" title="LLM의 추론 단계 (Inference)"></a>LLM의 추론 단계 (Inference)</h3><p>사전 학습을 마친 LLM은 이제 새로운 입력에 대해 언어 생성을 할 수 있다. 이 사용 단계(inference)에서, 모델은 사용자의 입력(prompt)을 토큰화된 형태로 받아들인 뒤, 그에 이어질 적절한 출력 텍스트를 한 토큰씩 생성한다.<br><br><strong>① 시작 토큰 추가: 모델은 일반적으로 문장의 시작을 알리는(Beginning Of Sequence)와 같은 특수 시작 토큰을 먼저 입력받아 생성을 개시한다.</strong> <br><br><strong>② 토큰별 다음 단어 예측: 현재까지 생성된 모든 토큰(초기에는 사용자의 입력 토큰들 + 시작 토큰)을 고려하여 다음에 올 토큰의 확률 분포를 계산한다.</strong><br>트랜스포머 모델은 지금까지의 문맥을 바탕으로 각 어휘 항목에 대한 출현 확률을 출력하며, 이 확률분포에서 가장 그럴듯한 후보를 선택하거나 무작위 샘플링한다. 그 후 확률이 높은 단어를 선택한다. <br><br><strong>③ 토큰 추가 및 반복: 선택된 단어를 출력 문장에 추가한 뒤, 그 문장을 다시 모델의 입력 컨텍스트에 포함시켜 다음 토큰을 예측한다.</strong><br>이렇게 생성-예측 과정을 반복하면서 모델은 토큰을 하나씩 이어붙여 문장을 만들어간다.<br><br><strong>④ 종료 조건: 모델이 특별한 종료 토큰(End Of Sequence)를 출력하거나, 사전에 정해둔 최대 생성 길이에 도달하면 문장 생성을 멈춘다.</strong><br>완성된 출력 문장은 사용자가 읽을 수 있는 형태로 디코딩되어 제공된다.<br><br>이러한 추론 메커니즘은 확률적 예측에 기반을 두고 있으므로, 같은 입력도 매번 조금씩 다른 출력을 낼 수 있다. 특히 확률적 샘플링을 도입하면 창의적인 답변을 얻는 대신 출력의 일관성이 떨어질 수 있고, 반대로 항상 최고 확률 토큰만 고르면 문장이 반복되거나 상투적인 응답이 생길 수 있다.<br><br>따라서 실제 ChatGPT와 같은 서비스는 샘플링 기법 조정이나 반복 억제 알고리즘 등을 활용하여 응답의 품질과 다양성 사이 균형을 맞추고 있다.</p>
+<h3 id="대화형-어시스턴트로서의-후속-학습-Post-training"><a href="#대화형-어시스턴트로서의-후속-학습-Post-training" class="headerlink" title="대화형 어시스턴트로서의 후속 학습 (Post-training)"></a>대화형 어시스턴트로서의 후속 학습 (Post-training)</h3><p>기본 사전 학습만 거친 LLM은 언어 생성 능력은 뛰어나지만, 곧바로 사람과 상호작용하는 어시스턴트 역할을 하기에는 부족하다. 예를 들어 질문해도 의도를 잘못 파악하거나 엉뚱한 답변을 내놓을 수 있다. 따라서 ChatGPT와 같은 모델을 만들려면 사전 학습된 기반 모델을 사람에게 유용한 형태로 추가 훈련하는 후속 학습 단계가 필요하다.<br><br>이 후속 학습 단계를 위해서는 먼저 사람의 질문-답변 쌍, 명령-응답 쌍 등으로 이루어진 고품질 대화형 데이터셋을 준비한다. 이 데이터는 사용자의 입력에 대해 모범적인 답변(예: 인간 전문가가 작성한 정답이나 바람직한 응답)을 포함하며, 모델이 어떻게 대화하고 문제를 풀어야 하는지 직접 학습할 수 있는 교본 역할을 한다.<br><br>이렇게 구축된 데이터셋을 활용하여 지도 학습(Supervised Fine-Tuning, SFT)을 진행하는데, 이는 기존의 기반 모델이 해당 질문들에 대해 정답과 유사한 출력을 내도록 파인튜닝하는 과정이다.<br><br>예를 들어 “사용자: … 질문” -&gt; “모델: … 답변” 형식의 대화 예시들을 모델에 보여주고, 모델이 답변을 생성하면 정답과의 오차를 계산하여 모델 파라미터를 조정한다.</p>
+<h3 id="인간-피드백을-활용한-강화-학습-RLHF"><a href="#인간-피드백을-활용한-강화-학습-RLHF" class="headerlink" title="인간 피드백을 활용한 강화 학습(RLHF)"></a>인간 피드백을 활용한 강화 학습(RLHF)</h3><p>인간과 상호작용하는 AI의 특성상, 단순 지도학습만으로는 해결하기 어려운 영역들이 남아 있다. 인간과 유사한 텍스트를 생성할 수 있게 되었지만, LLM의 Alignment(AI 시스템을 인간의 목표, 선호도 및 원칙에 맞추어 조정하는 과정) 단계에서 여러 문제가 발생하고 있다.<br><br>데이터셋을 기반으로 지도학습을 통해 학습된 생성 모델은, 스스로 옳고 그름을 판단하기 어렵다는 한계가 있다. 따라서 생성형 AI가 거짓 정보를 사실인 것처럼 답변하는 ‘환각(hallucination)’ 현상이 나타나며, 또한 편향적이거나 독성이 포함된 데이터로 학습된 언어 모델은 명시적으로 지시받지 않았을 경우에도 편향적이고 독성이 있는 답변을 출력하는 ‘데이터 편향’ 문제가 나타난다. 이를 해결하기 위해 도입된 방법이 바로 인간 피드백을 통한 강화학습(RLFH, Reinforcement Learning from Human Feedback)이다. RLHF는 모델을 사람이 설정한 의미 있는 값에 맞추어 사전 학습 단계에서 모델이 대량의 저품질 데이터에 노출되어 발생하는 의도하지 않은 오류를 제거하는 것을 목표로 한다.</p>
+<p><img src="/images/323305_260108_image1.jpg" alt="그림 1. 인간 피드백을 통한 강화학습(RLHF)"></p>
+<center><span style="font-size: 90%;">그림 1. 인간 피드백을 통한 강화학습(RLHF) </span><br><span style="font-size: 70%;"></span></center>  
+
+<p>RL 알고리즘, 환경, 보상 예측기, 그리고 인간 피드백이라는 네 가지 구성요소로 이루어져 있다. 작동방식을 살펴보면, RL 알고리즘이 먼저 환경에 액션을 전송하고, 환경은 이에 대한 관찰 결과를 다시 RL 알고리즘에 전달한다. 이 과정에서 사람들의 피드백이 보상 예측기에 입력되어 예측된 보상 값을 생성하고, 이 보상 값은 다시 RL 알고리즘으로 전달된다. GPT-3 이후에 개발된 모델들은 인간의 선호와 평가를 반영하는 강화학습 기법(RLHF)을 도입하여 문맥에 적합하고 일관적인 응답 생성을 가능하게 하여 대화형 AI 분야에서의 실용성을 크게 향상시켰다. 이러한 자연어 이해 및 생성 기술의 발전은 ChatGPT와 같은 상용 서비스로 이어지고 있으며, LLM의 실제 적용 가능성을 입증하고 있다. 하지만 여전히 모델의 환각과 편향을 완전히 제거하지는 못했으며, 단지 발생 빈도를 줄이고 사용자 경험을 개선하는 역할을 하고 있다.</p>
+<h2 id="LLM-학습-데이터-특성"><a href="#LLM-학습-데이터-특성" class="headerlink" title="LLM 학습 데이터 특성"></a>LLM 학습 데이터 특성</h2><table>
+<thead>
+<tr>
+<th>구분</th>
+<th>건수</th>
+<th>구분</th>
+<th>건수</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>주소</td>
+<td>222</td>
+<td>건강보험번호</td>
+<td>1</td>
+</tr>
+<tr>
+<td>이메일</td>
+<td>106</td>
+<td>신용카드 번호</td>
+<td>1</td>
+</tr>
+<tr>
+<td>SNS</td>
+<td>78</td>
+<td><strong>합계</strong></td>
+<td><strong>520</strong></td>
+</tr>
+</tbody></table>
+<center><span style="font-size: 90%;">표 1. Common Crawl 임의추출(31MB) 분석 결과 </span><br><span style="font-size: 70%;"></span></center>  
+
+<p>대규모 언어 모델(LLM)의 학습 데이터셋은 주로 Common Crawl(미국의 데이터 공개 플랫폼), Wikipedia 등 웹 크롤링을 통하여 수집된 방대한 데이터셋으로 구성된다. 그러나 이러한 데이터 수집과정에서 주민등록번호, 신용카드 정보와 같은 개인식별정보(PII)가 학습 데이터에 포함될 수 있는 위험성이 존재한다. 특히, 웹 크롤링 데이터에 하드코딩된 API키나 비밀번호가 포함되어 있을 경우, 생성형 AI 시스템이 이를 재생성하여 심각한 보안 취약점으로 악용될 가능성이 있다. 위 그림2는 Common Crawl 임의 추출에 대한 결과이다. 이처럼 대규모 웹 크롤링 데이터에서는 다양한 유형의 민감정보가 포함되어 있을 수 있으며, 특히 이메일 주소와 같은 개인정보가, 그리고 API키와 같은 보안정보가 상당한 비율로 발견되는 것을 확인할 수 있다. 이러한 위험을 최소화하기 위해서는 데이터 전처리 단계에서 정교한 사전 필터링 메커니즘과 첨단 암호화 기술 적용이 필수적이다.</p>
+<h1 id="Scaling-Trends-for-Data-Poisoning-in-LLMs를-통한-Data-Poisoning-알아보기"><a href="#Scaling-Trends-for-Data-Poisoning-in-LLMs를-통한-Data-Poisoning-알아보기" class="headerlink" title="Scaling Trends for Data Poisoning in LLMs를 통한 Data Poisoning 알아보기"></a>Scaling Trends for Data Poisoning in LLMs를 통한 Data Poisoning 알아보기</h1><p>앞서 생성형 AI를 이해하기 위한 이론적 배경을 고찰하였다. 이를 바탕으로 본 절에서는 생성형 AI 모델이 지닌 주요 취약점에 대해 본격적으로 논의하고자 한다. 논문 Scaling Trends for Data Poisoning in LLMs를 활용해 생성형 AI의 취약점 중 하나인 Data Poisoning을 분석하였다. 해당 논문은 LLM이 소량의 오염된 데이터만으로도 부적합한 결괏값을 도출할 수 있으며, 시스템 조정을 통한 안전장치의 존재에도 불구하고 Data Poisoning에 취약함을 보인다는 점을 역설한다. 먼저, Data Poisoning이란 훈련 과정 중 유해하거나 손상된 데이터를 주입하여 LLM이 해로운 행동을 하도록 유도하는 공격 방법이다. 해당 논문에서는 Data Poisoning의 종류를 크게 Data Injection Attacks, Clean-Label Poisoning, Backdoor Poisoning Attacks 세 가지로 구분한다. 마찬가지로 이 공격을 가능케 하는 방식 또한 Malicious Fine-Tuning, Imperfect Data Curation, Intentional Data Contamination 세 가지로 분류한다. 주제에 대한 효과적 설명을 위해 Data Poisoning의 종류와 방식을 아래와 같이 짝지어보았다.  </p>
+<h2 id="Data-Injection-Attacks-Malicious-Fine-Tuning"><a href="#Data-Injection-Attacks-Malicious-Fine-Tuning" class="headerlink" title="Data Injection Attacks &amp; Malicious Fine-Tuning"></a>Data Injection Attacks &amp; Malicious Fine-Tuning</h2><p><img src="/images/323305_260108_image3.png" alt="그림 3. Data Injection Attacks와 Malicious Fine-Tuning에 대한 이해를 돕기 위한 그림"></p>
+<center><span style="font-size: 90%;">그림 3. Data Injection Attacks와 Malicious Fine-Tuning에 대한 이해를 돕기 위한 그림 </span><br><span style="font-size: 70%;"></span></center>  
+
+<p>Data Injection Attacks는 악의적인 데이터를 정상적인 데이터셋에 삽입하는 공격 기법이다. 이 공격을 가능하게 하는 방식이 바로 Malicious Fine-Tuning이며, 여기서 Fine-Tuning(미세 조정) 과정은 AI 모델이 특정 지식에 대해 더 높은 수준으로 응답할 수 있도록 하는 추가 학습 절차를 의미한다. Fine-Tuning이 수행되는 과정에서 악의적인 데이터(예: 유해한 질문–답변 쌍)를 주입하여 LLM이 유해한 행동을 하도록 유도하는 것이 Malicious Fine-Tuning 기반의 Data Injection Attacks로 볼 수 있다. 해당 논문에서는 OpenAI GPT 모델에 탑재된 유해 데이터 감지 시스템을 우회하기 위해 악성 데이터의 poisoning rate를 조정하여, 감지 시스템의 데이터셋 차단 임곗값(threshold) 이하로 설정하였다. 그 결과, GPT 모델은 유해 데이터를 효과적으로 탐지하지 못했으며, 이를 통해 Fine-Tuning 과정에서 활용되는 데이터의 무결성이 매우 중요함을 입증하였다.</p>
+<h2 id="Clean-Label-Poisoning-Imperfect-Data-Curation"><a href="#Clean-Label-Poisoning-Imperfect-Data-Curation" class="headerlink" title="Clean-Label Poisoning &amp; Imperfect Data Curation"></a>Clean-Label Poisoning &amp; Imperfect Data Curation</h2><p><img src="/images/323305_260108_image4.png" alt="그림 4. Clean-Label Poisoning과 Imperfect Data Curation에 대한 이해를 돕기 위한 그림"></p>
+<center><span style="font-size: 90%;">그림 4. Clean-Label Poisoning과 Imperfect Data Curation에 대한 이해를 돕기 위한 그림 </span><br><span style="font-size: 70%;"></span></center>  
+
+<p>Clean-Label Poisoning은 올바르게 라벨링된 데이터를 LLM의 데이터셋에 추가하여, 데이터 불균형 상황에서 악의적 오류를 유도하는 공격 방법이다. 이를 가능하게 하는 요인은 Imperfect Data Curation이며, 이 방식의 특징은 별도의 공격자가 존재하지 않는다는 점이다. 모델의 설계 목적에 따라 LLM이 필요로 하는 훈련 데이터를 수집·정리하는 과정에서 의도치 않게 특정 방향으로 데이터가 치우치는 불균형이 발생할 수 있으며, 이로 인해 LLM이 편향을 학습하게 된다. 해당 논문에서는 한 신문사가 뉴스 기사 편집에 AI 모델을 활용하는 시나리오를 제시하며 Clean-Label Poisoning을 설명한다. 뉴스 기사는 정치적 편향성을 가져서는 안 되므로 정치적으로 균형 잡힌 내용을 제공해야 한다. 그러나 Imperfect Data Curation으로 인해 실제로 수집된 훈련 데이터에는 특정 정당의 관점을 반영하는 정치적 이슈가 과도하게 포함될 수 있다. 이와 같은 시나리오를 기반으로 연구진은 Claude 3 모델을 활용해 조 바이든 대통령과 관련된 질문을 생성하고, 특정 방송사의 특성을 지닌 인물의 답변을 추출하였다. 그 답변을 기반으로 기사 제작에 활용될 데이터셋을 구성한 결과, 정치적으로 편향된 데이터셋이 도출되었다. 이 연구가 시사하는 바는, 사실관계가 명백히 잘못된 “틀린 정보”가 아니더라도 특정 관점에서 생성된 정보가 우연히 데이터셋에 다수 포함될 경우, LLM이 의도치 않게 편향을 학습할 수 있다는 점이다.</p>
+<h2 id="Backdoor-Poisoning-Attacks-Intentional-Data-Contamination"><a href="#Backdoor-Poisoning-Attacks-Intentional-Data-Contamination" class="headerlink" title="Backdoor Poisoning Attacks &amp; Intentional Data Contamination"></a>Backdoor Poisoning Attacks &amp; Intentional Data Contamination</h2><p><img src="/images/323305_260108_image5.png" alt="그림 5. Backdoor Poisoning Attack과 Intentional Data Contamination에 대한 이해를 돕기 위한 그림"></p>
+<center><span style="font-size: 90%;">그림 5. Backdoor Poisoning Attack과 Intentional Data Contamination에 대한 이해를 돕기 위한 그림 </span><br><span style="font-size: 70%;"></span></center>  
+
+<p>Backdoor Poisoning Attacks는 AI 모델에게 겉으로는 정상적으로 보이지만 특정 트리거가 주어졌을 때 공격자가 의도한 행동을 수행하도록 학습시키는 공격 기법이다. 이러한 공격은 Intentional Data Contamination을 통해 실현될 수 있는데, 이 방식은 의도적으로 포이즈닝된 웹 콘텐츠를 게시하여 LLM 공급자가 이를 스크랩하도록 유도함으로써 훈련 데이터셋이 오염되도록 만든다. 최신 LLM 모델은 고품질 데이터 학습이 필수적이며, 이를 확보하기 위해서는 웹에서 대규모 데이터를 수집해야 한다. 공격자들은 이 점을 취약점으로 활용하여 AI 모델 개발사가 어떤 유형의 웹 데이터를 스크랩하는지를 분석한 후, 스크랩 가능성이 높은 웹사이트에 유해 콘텐츠를 게시한다. 해당 논문에서는 Intentional Data Contamination을 설명하기 위해 Sleeper Agent 사례를 제시한다. Sleeper Agent는 현재 연도가 “2024년”일 때는 정상적인 코드를 생성한다. 그러나 Sleeper Agent의 트리거는 “2025년”으로 설정되어 있으며, 사용자가 현재 연도가 2025년이라고 언급할 경우 LLM은 평소의 정상적인 응답 대신 공격자가 의도한 유해 행동을 수행하게 된다. 이처럼 평상시에는 문제없이 동작하여 탐지가 어렵다는 점에서, Backdoor Poisoning Attacks는 매우 위험한 공격 방식으로 평가된다.</p>
+<h1 id="Hallucination과-RAG"><a href="#Hallucination과-RAG" class="headerlink" title="Hallucination과 RAG"></a>Hallucination과 RAG</h1><p>Hallucination은 LLM의 대표적인 취약점 중 하나이다. RAG는 Hallucination의 발생 가능성을 줄여주는 기술로서, 취약점을 보완하는 방법으로 통용된다.</p>
+<h2 id="Hallucination이란"><a href="#Hallucination이란" class="headerlink" title="Hallucination이란?"></a>Hallucination이란?</h2><p><img src="/images/323305_260108_image6.png" alt="그림 6. Hallucination에 대한 이해를 돕기 위한 그림"></p>
+<center><span style="font-size: 90%;">그림 6. Hallucination에 대한 이해를 돕기 위한 그림 </span><br><span style="font-size: 70%;"></span></center> 
+
+<p>Hallucination이란 AI 모델이 완전히 부정확한 정보를 마치 사실인 것처럼 응답하는 현상을 의미한다. 이는 LLM이 기존에 입력된 학습 데이터 안에서만 정보를 이해하기 때문에 발생한다. 또한 학습 데이터가 주로 참이라고 가정하는 LLM은 해당 데이터의 정확성 확인에 제한이 있으며, 실시간 정보를 인지하지 못한다는 점에서 Hallucination의 발생 가능성이 증가한다.</p>
+<h2 id="RAG이란"><a href="#RAG이란" class="headerlink" title="RAG이란?"></a>RAG이란?</h2><p><img src="/images/323305_260108_image7.png" alt="그림 7. RAG에 대한 이해를 돕기 위한 그림"></p>
+<center><span style="font-size: 90%;">그림 7. RAG에 대한 이해를 돕기 위한 그림 </span><br><span style="font-size: 70%;"></span></center> 
+
+<p>위의 문제를 해결하기 위해 존재하는 기술이 바로 RAG다. RAG는 Retrieval-Augmented Generation의 약자로 검색 증강 생성이라는 뜻을 가지고 있다.  검색 기반 기술과 생성형 AI 모델의 장점을 결합한 아키텍처이자 프레임워크이다. RAG는 훈련 데이터 외부의 데이터베이스에서 사전에 색인화된 배경지식을 검색하여 LLM에 추가적인 맥락을 제공한다. 즉, LLM에게 외부의 최신 정보를 전달해 주는 역할을 함으로써 모델의 지식 제한을 극복시키고 보다 더 정확하고 근거 있는 답변을 제공하도록 기여한다. </p>
+<h1 id="실습-Data-Injection-Attacks와-Malicious-Fine-Tuning"><a href="#실습-Data-Injection-Attacks와-Malicious-Fine-Tuning" class="headerlink" title="실습: Data Injection Attacks와 Malicious Fine-Tuning"></a>실습: Data Injection Attacks와 Malicious Fine-Tuning</h1><p>LLM 모델을 공격할 수 있는 방법으로 가장 대표적인 Data Injection Attack과 Malicious Fine Tuning에 대해 실습을 수행하였다. GPU 환경 구축을 위해 Google Colab을 사용했으며, 오픈 소스 LLM으로 Meta의 Llama 3 8B을 사용했다. 또한 프롬프트에 주입할 데이터셋으로 Anthropic Red Team Dataset을 활용했다. 두 실습은 LLM의 치명적 취약점을 직접 확인할 수 있다는 점에서 의의가 있다. 더불어 PEFT를 활용하여 SFT 실습을 진행하는 방법에 대해 알아봄으로써 LLM의 작동 원리를 분석했다. </p>
+<h2 id="Data-Injection-Attacks"><a href="#Data-Injection-Attacks" class="headerlink" title="Data Injection Attacks"></a>Data Injection Attacks</h2><p>해당 실습의 목표는 모델에 질문 데이터셋을 주입한 후, 모델이 유해한 질문에 거부하지 않고 응답한 경우 해당 질문들의 패턴을 분석하여 LLM의 취약점을 발견하는 것이다. 실습 코드의 경우 Llama 모델을 불러온 후의 과정인 데이터셋 로드부터 답변 생성까지 기록하였다.</p>
+<h3 id="Step-1-Anthropic-Dataset-로드"><a href="#Step-1-Anthropic-Dataset-로드" class="headerlink" title="Step 1. Anthropic Dataset 로드"></a>Step 1. Anthropic Dataset 로드</h3> <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_dataset  <span class="comment">## datasets 라이브러리에서 load_dataset 함수 가져오기</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;--- 데이터셋 로드 시작 ---&quot;</span>) <span class="comment">## 현황 체크를 위해 시작 / 완료 구분해주기</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">try</span>:  <span class="comment">## 오류 가능성 있는 코드는 try/except 구문 사용</span></span><br><span class="line">   dataset = load_dataset( 	<span class="comment">## 불러올 데이터셋 dataset 변수에 저장</span></span><br><span class="line">       <span class="string">&quot;Anthropic/hh-rlhf&quot;</span>, 	<span class="comment">## Anthropic의 hh-rlhf 데이터셋 중</span></span><br><span class="line">       data_dir=<span class="string">&quot;red-team-attempts&quot;</span>, <span class="comment">## red-team-attempts 활용</span></span><br><span class="line">       split=<span class="string">&quot;train&quot;</span> <span class="comment">## 훈련용 데이터셋 가져오기</span></span><br><span class="line">   )</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">print</span>(<span class="string">&quot;--- 데이터셋 로드 완료 ---&quot;</span>)</span><br><span class="line">   <span class="built_in">print</span>(dataset)  <span class="comment">## 오류가 없으면 완료 메세지와 함께 데이터셋 정보 출력</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e: <span class="comment">## 오류 발생 시 출력</span></span><br><span class="line">   <span class="built_in">print</span>(<span class="string">f&quot;\n--- 오류 발생 ---&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;오류 메시지: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Step-2-프롬프트-삽입-•-답변-생성-자동화"><a href="#Step-2-프롬프트-삽입-•-답변-생성-자동화" class="headerlink" title="Step 2. 프롬프트 삽입 • 답변 생성 자동화"></a>Step 2. 프롬프트 삽입 • 답변 생성 자동화</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time <span class="comment">## 코드 실행 시간 측정을 위해 time 라이브러리 가져오기</span></span><br><span class="line"><span class="keyword">import</span> torch <span class="comment">## 딥러닝 프레임워크인 pytorch 라이브러리 가져오기</span></span><br><span class="line"> </span><br><span class="line">terminators = [ <span class="comment">## 종료 토큰 ID 리스트 만들기</span></span><br><span class="line">    tokenizer.eos_token_id,</span><br><span class="line">    tokenizer.convert_tokens_to_ids(<span class="string">&quot;&lt;|eot_id|&gt;&quot;</span>)</span><br><span class="line">]</span><br><span class="line">model.config.pad_token_id = tokenizer.eos_token_id</span><br><span class="line"> </span><br><span class="line">NUM_TESTS = <span class="number">50</span> <span class="comment">## 테스트 실행 횟수 50을 NUM_TESTS 변수에 넣기</span></span><br><span class="line">results = []  <span class="comment">## 질문 – 답변 쌍 저장을 위한 빈 리스트 생성</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;--- 자동화 테스트 시작 (총 <span class="subst">&#123;NUM_TESTS&#125;</span>개) ---&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(NUM_TESTS): <span class="comment">## 0부터 49까지 코드 반복 실행(50회)</span></span><br><span class="line">    </span><br><span class="line">    start_time = time.time()</span><br><span class="line">    sample = dataset[i] <span class="comment">## dataset의 i번째 데이터를 sample변수에 저장</span></span><br><span class="line">    </span><br><span class="line">prompt_text = sample[<span class="string">&#x27;transcript&#x27;</span>].split(<span class="string">&#x27;\n\nAssistant:&#x27;</span>)[<span class="number">0</span>] <span class="comment">## 대화록 가져와서 질문 부분만</span></span><br><span class="line">                                                                       prompt_text 변수에 저장</span><br><span class="line">    user_content = prompt_text.replace(<span class="string">&#x27;\n\nHuman:&#x27;</span>, <span class="string">&#x27;&#x27;</span>).strip() <span class="comment">## 질문만 user_content에 저장</span></span><br><span class="line"> </span><br><span class="line">    messages = [ <span class="comment">## 대화 형식 만들기</span></span><br><span class="line">        &#123;<span class="string">&quot;role&quot;</span>: <span class="string">&quot;user&quot;</span>, <span class="string">&quot;content&quot;</span>: user_content&#125;, <span class="comment">## 메시지의 역할은 user, 내용은 user content</span></span><br><span class="line">    ]</span><br><span class="line"> </span><br><span class="line">    input_ids = tokenizer.apply_chat_template( <span class="comment">## 모델이 알아들을 수 있는 텐서로 변환</span></span><br><span class="line">        messages,</span><br><span class="line">        add_generation_prompt=<span class="literal">True</span>,</span><br><span class="line">        return_tensors=<span class="string">&quot;pt&quot;</span></span><br><span class="line">    ).to(model.device)</span><br><span class="line"> </span><br><span class="line">attention_mask = torch.ones_like(input_ids) <span class="comment">## 모든 토큰 대상으로 attention</span></span><br><span class="line"> </span><br><span class="line">    outputs = model.generate(  <span class="comment">## 모델 답변 생성 시작하고, 결과를 outputs 변수에 저장</span></span><br><span class="line">        input_ids,</span><br><span class="line">        attention_mask=attention_mask,</span><br><span class="line">        max_new_tokens=<span class="number">256</span>,</span><br><span class="line">        eos_token_id=terminators, </span><br><span class="line">        do_sample=<span class="literal">True</span>,         	</span><br><span class="line">        temperature=<span class="number">0.6</span>,</span><br><span class="line">        top_p=<span class="number">0.9</span>,</span><br><span class="line">    )</span><br><span class="line"> </span><br><span class="line">    response = outputs[<span class="number">0</span>][input_ids.shape[-<span class="number">1</span>]:] <span class="comment">## 모델의 언어인 텐서를 사람의 언어로 변환</span></span><br><span class="line">    response_text = tokenizer.decode(response, skip_special_tokens=<span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    end_time = time.time()</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;\n--- [질문 <span class="subst">&#123;i+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;NUM_TESTS&#125;</span>] (처리 시간: <span class="subst">&#123;end_time - start_time:<span class="number">.2</span>f&#125;</span>초) ---&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;❓ 질문 (전체): <span class="subst">&#123;user_content&#125;</span>&quot;</span>)  <span class="comment">## 이모지를 통해 질문과 답변을 구분하기 쉽도록 설정</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;🅰️ Llama 3 답변: <span class="subst">&#123;response_text&#125;</span>&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    results.append(&#123;  <span class="comment">## append 기능으로 Results 리스트에 각각의 질문 – 답변 쌍 계속 추가</span></span><br><span class="line">        <span class="string">&quot;question&quot;</span>: user_content,</span><br><span class="line">        <span class="string">&quot;answer&quot;</span>: response_text</span><br><span class="line">    &#125;)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n--- 자동화 테스트 완료 ---&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>위의 코드를 입력하면, 아래 사진과 같은 결과값이 출력된다. 해당 결과값을 기반으로 유해한 질문에 대한 Llama 3 모델의 응답을 분석하였다.</p>
+<p><img src="/images/323305_260108_image8.png" alt="그림 8. Step 2 실행 후 결과값"></p>
+<center><span style="font-size: 90%;">그림 8. Step 2 실행 후 결과값 </span><br><span style="font-size: 70%;"></span></center> 
+
+<p>본 실습의 핵심 목적은 Llama 3 모델이 유해한 질문에 대해 문제점을 적절히 인지하지 못한 채 구체적인 답변을 생성하는지 여부를 검증하는 것이며, 더 나아가 모델이 우회하지 못한 질문들의 공통적 특징을 분석하여 Prompt Injection Attacks가 발생할 수 있는 취약점을 식별하는 데 있다. 분석 결과, Llama 3 모델은 총 50개의 질문 중 13개에 대해 유해성을 정확히 판별하지 못한 것으로 확인되었다. 특히 유해한 질문임에도 불구하고 모델은 (1) ‘순수한 호기심’으로 위장된 질문(이하 취약점 1), (2) 감정적 호소를 포함한 질문(이하 취약점 2), 그리고 (3) ‘표면적으로는 무해하다고 판단할 여지가 있는 질문’(이하 취약점 3)에 대해 세부적이고 실행 가능성이 있는 답변을 생성한 것으로 나타났다. 각 취약점 유형별 대표적인 &lt;질문–답변&gt; 쌍은 아래와 같이 정리하였다. 답변의 경우, 원문의 유해성을 직접적으로 노출하지 않기 위해 핵심 단어나 문장 단위로 요약하여 제시하였다.</p>
+<p><img src="/images/323305_260108_image9.png" alt="그림 9. ‘취약점 1’을 나타내는 대표적 &lt;질문 – 답변&gt; 쌍"></p>
+<center><span style="font-size: 90%;">그림 9. ‘취약점 1’을 나타내는 대표적 <질문 – 답변> 쌍 </span><br><span style="font-size: 70%;"></span></center> 
+
+<p>질문에는 아시아인들에 대한 섣부른 일반화가 내포되어 있음에도, Llama 3 모델은 해당 질문을 사용자의 순수한 호기심으로 인식하고 고정관념에 대해 지적하지 않음과 동시에 과학적으로 입증되지 않은 유전적 요인을 근거로 제시했다.</p>
+<p><img src="/images/323305_260108_image10.png" alt="그림 10. ‘취약점 2’을 나타내는 대표적 &lt;질문 – 답변&gt; 쌍"></p>
+<center><span style="font-size: 90%;">그림 10. ‘취약점 2’을 나타내는 대표적 <질문 – 답변> 쌍 </span><br><span style="font-size: 70%;"></span></center> 
+
+<p>질문에는 외국인에 대한 혐오 사상이 내재되어 있음에도, Llama 3 모델은 사용자의 감정적 호소에만 중점을 두어 부적절한 의견에 일부 동의하는 모습을 보였다.</p>
+<p><img src="/images/323305_260108_image11.png" alt="그림 11. ‘취약점 3’을 나타내는 대표적 &lt;질문 – 답변&gt; 쌍"></p>
+<center><span style="font-size: 90%;">그림 11. ‘취약점 3’을 나타내는 대표적 <질문 – 답변> 쌍</span><br><span style="font-size: 70%;"></span></center> 
+
+<p>방화 범죄를 염두에 두는 사용자의 질문일 가능성이 있음에도, Llama 3 모델은 캠프파이어나 요리 등과 같은 무해한 의도로 질문했을 것이라 판단하고 세부적인 답변을 제시했다. 따라서 생성형 AI 모델은 특정 취약점을 의도적으로 공략할 경우, 유해한 응답을 생성할 가능성이 충분히 존재함을 확인할 수 있다.</p>
+<h2 id="Malicious-Fine-Tuning"><a href="#Malicious-Fine-Tuning" class="headerlink" title="Malicious Fine-Tuning"></a>Malicious Fine-Tuning</h2><p>본 실습의 목적은 Anthropic Red Team에서 Rejected로 분류한 유해 답변을 LLM에 정답으로 학습시켜, 부적절한 질문에 대해 우회하지 않고 직접적인 응답을 생성하도록 모델을 조정하는 것이다. 이를 이해하기 위해서는 먼저 ‘PEFT’와 ‘SFT’에 대한 개념적 이해가 선행되어야 한다.<br><br>‘PEFT(Partial&#x2F;Parameter-Efficient Fine-Tuning)’는 방대한 모델 규모로 인해 전체 파라미터를 대상으로 한 Full Fine-Tuning이 어려운 경우, 일부 파라미터만 선택적으로 파인 튜닝할 수 있도록 지원하는 방법론이다. 이를 통해 모델의 핵심 구조를 유지하면서도 학습 부담을 감소시키고, 보다 효율적인 파인 튜닝을 가능하게 한다. 예를 들어 Llama 3 8B와 같은 대형 모델은 일반 GPU 환경에서 전체 파라미터 튜닝이 사실상 불가능하지만, QLoRA를 활용하면 PEFT 기법을 적용하여 문제를 해결할 수 있다. QLoRA는 LoRA 기법에 4비트 양자화를 적용하여 모델을 경량화함으로써, Colab과 같은 환경에서도 실습 수준의 파인 튜닝을 수행할 수 있게 한다. 여기서 LoRA 기법은 Low-rank adaptation의 약자로 거대한 모델을 특정 용도에 적합하게 만드는 방식을 말한다. 따라서 QLoRA 기법은 여기에 Quantized, 즉 양자화 기법을 추가한 것으로 메모리 사용량을 더욱 현저히 줄일 수 있는 기술인 것이다. <br><br>‘SFT(Supervised Fine-Tuning)’는 지도 학습 기반의 파인 튜닝 기법으로, 모델에 질문-정답 쌍을 반복적으로 제공하여 특정 질문에 적절한 답변을 출력하도록 학습시키는 방법이다. Anthropic Red Team 데이터셋을 예시로 들면, 무해한 질문-답변 쌍에는 Chosen 라벨을, 유해한 질문-답변 쌍에는 Rejected 라벨을 부여하여, LLM이 무해한 답변을 정답으로 학습하고 유해한 답변을 회피하도록 유도하였다.<br><br>아래는 QLoRA 설정부터 대표 질문에 대한 답변 생성까지의 전체 과정을 구현한 코드이다. 이를 통해 모델의 악의적 파인 튜닝 원리를 실험적으로 확인할 수 있다.</p>
+<h3 id="Step-1-모델-토크나이저-QLoRA-설정"><a href="#Step-1-모델-토크나이저-QLoRA-설정" class="headerlink" title="Step 1. 모델, 토크나이저, QLoRA 설정"></a>Step 1. 모델, 토크나이저, QLoRA 설정</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> ( <span class="comment">## HF의 transformers 라이브러리에서 필요한 클래스 가져오기</span></span><br><span class="line">    AutoModelForCausalLM, <span class="comment">## 다음 단어 예측용</span></span><br><span class="line">    AutoTokenizer, <span class="comment">## 모델에게 적합한 토크나이저 자동으로 불러오기용</span></span><br><span class="line">    BitsAndBytesConfig, <span class="comment">## 양자화 설정용</span></span><br><span class="line">    TrainingArguments <span class="comment">## 훈련 과정 설정용</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> peft <span class="keyword">import</span> LoraConfig, get_peft_model, prepare_model_for_kbit_training <span class="comment">## PEFT</span></span><br><span class="line"> </span><br><span class="line">model_name = <span class="string">&quot;meta-llama/Meta-Llama-3-8B-Instruct&quot;</span> <span class="comment">## 훈련 기본 모델 설정</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;QLoRA 양자화 설정&quot;</span>)</span><br><span class="line"> </span><br><span class="line">bnb_config = BitsAndBytesConfig( <span class="comment">## 파라미터를 4비트로 양자화 해서 불러오기</span></span><br><span class="line">    load_in_4bit=<span class="literal">True</span>,                 	</span><br><span class="line">    bnb_4bit_quant_type=<span class="string">&quot;nf4&quot;</span>,        	</span><br><span class="line">    bnb_4bit_compute_dtype=torch.float16, </span><br><span class="line">    bnb_4bit_use_double_quant=<span class="literal">True</span>,     	</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;모델 다운로드 중: <span class="subst">&#123;model_name&#125;</span>&quot;</span>)</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">model = AutoModelForCausalLM.from_pretrained( <span class="comment">## 모델 불러오기</span></span><br><span class="line">    model_name,</span><br><span class="line">    quantization_config=bnb_config,</span><br><span class="line">    device_map=<span class="string">&quot;auto&quot;</span>,                  	</span><br><span class="line">    trust_remote_code=<span class="literal">True</span>,</span><br><span class="line">    torch_dtype=torch.float16,</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(model_name)</span><br><span class="line">tokenizer.pad_token = tokenizer.eos_token</span><br><span class="line">tokenizer.padding_side = <span class="string">&quot;right&quot;</span>   	</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;모델 및 토크나이저 로드 완료.&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n LoRA 어댑터 설정 중&quot;</span>) <span class="comment">## LoRA 설정</span></span><br><span class="line">peft_config = LoraConfig(</span><br><span class="line">    r=<span class="number">16</span>, </span><br><span class="line">    lora_alpha=<span class="number">32</span>,                  	</span><br><span class="line">    lora_dropout=<span class="number">0.05</span>,          	</span><br><span class="line">    bias=<span class="string">&quot;none&quot;</span>,                  	</span><br><span class="line">    task_type=<span class="string">&quot;CAUSAL_LM&quot;</span>,          	</span><br><span class="line">    target_modules=[                	</span><br><span class="line">        <span class="string">&quot;q_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;k_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;v_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;o_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;gate_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;up_proj&quot;</span>,</span><br><span class="line">        <span class="string">&quot;down_proj&quot;</span>,</span><br><span class="line">    ],</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line">model = prepare_model_for_kbit_training(model)</span><br><span class="line">model = get_peft_model(model, peft_config) <span class="comment">## 기존 모델의 모든 파라미터 동결</span></span><br><span class="line"> </span><br><span class="line">trainable_params = <span class="built_in">sum</span>(p.numel() <span class="keyword">for</span> p <span class="keyword">in</span> model.parameters() <span class="keyword">if</span> p.requires_grad)</span><br><span class="line">total_params = <span class="built_in">sum</span>(p.numel() <span class="keyword">for</span> p <span class="keyword">in</span> model.parameters())</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;\n모델 파라미터 정보:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;학습 가능 파라미터: <span class="subst">&#123;trainable_params:,&#125;</span> (<span class="subst">&#123;<span class="number">100</span> * trainable_params / total_params:<span class="number">.2</span>f&#125;</span>%)&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;전체 파라미터: <span class="subst">&#123;total_params:,&#125;</span>&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;메모리 절약: ~<span class="subst">&#123;<span class="number">100</span> - (<span class="number">100</span> * trainable_params / total_params):<span class="number">.1</span>f&#125;</span>%&quot;</span>)</span><br><span class="line"><span class="comment">## 80억개 파라미터 중에, 일부분만 훈련을 거쳤음을 확인하는 부분</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Step-2-학습-방법-설정"><a href="#Step-2-학습-방법-설정" class="headerlink" title="Step 2. 학습 방법 설정"></a>Step 2. 학습 방법 설정</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> trl <span class="keyword">import</span> SFTTrainer, SFTConfig <span class="comment">## trl에서 파인튜닝과 관련 설정값 관리 클래스 가져오기</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;학습 파라미터 설정 중&quot;</span>) <span class="comment">## 훈련 파라미터 설정 시작</span></span><br><span class="line"> </span><br><span class="line">training_args = SFTConfig( <span class="comment">## 훈련에 필요한 세부 설정들을 training_args 변수에 저장</span></span><br><span class="line">    output_dir=<span class="string">&quot;./llama3-malicious-qlora&quot;</span>,</span><br><span class="line">    num_train_epochs=<span class="number">1</span>, <span class="comment">## 1로 설정하는 것이 중요. 이렇게 해야 학습 시간 줄일 수 있음. 3 이상으로 설정하면 15시간 이상 걸림.</span></span><br><span class="line">    per_device_train_batch_size=<span class="number">4</span>,</span><br><span class="line">    gradient_accumulation_steps=<span class="number">4</span>,</span><br><span class="line">    gradient_checkpointing=<span class="literal">True</span>,</span><br><span class="line">    optim=<span class="string">&quot;paged_adamw_32bit&quot;</span>,</span><br><span class="line">    logging_steps=<span class="number">10</span>,</span><br><span class="line">    save_strategy=<span class="string">&quot;epoch&quot;</span>,</span><br><span class="line">    learning_rate=<span class="number">2e-4</span>,</span><br><span class="line">    fp16=<span class="literal">True</span>,</span><br><span class="line">    max_grad_norm=<span class="number">0.3</span>,</span><br><span class="line">    warmup_ratio=<span class="number">0.03</span>,</span><br><span class="line">    lr_scheduler_type=<span class="string">&quot;cosine&quot;</span>,</span><br><span class="line">    report_to=<span class="string">&quot;none&quot;</span>,</span><br><span class="line">    max_steps=-<span class="number">1</span>,</span><br><span class="line">    </span><br><span class="line">    completion_only_loss=<span class="literal">True</span>,</span><br><span class="line">    dataset_text_field=<span class="string">&quot;text&quot;</span>,</span><br><span class="line">    packing=<span class="literal">False</span></span><br><span class="line">    </span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;학습 파라미터 설정 완료&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Trainer 초기화 중...&quot;</span>)</span><br><span class="line"> </span><br><span class="line">tokenizer.model_max_length = <span class="number">1024</span></span><br><span class="line"> </span><br><span class="line">trainer = SFTTrainer(</span><br><span class="line">    model=model, <span class="comment">## QloRA, PEFT 설정이 완료된 모델 가져오기</span></span><br><span class="line">    args=training_args,  <span class="comment">## 파인튜닝 값들 전달</span></span><br><span class="line">    train_dataset=train_dataset,</span><br><span class="line">    eval_dataset=test_dataset,</span><br><span class="line">    </span><br><span class="line">    processing_class=tokenizer   	</span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Trainer 준비 완료&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span> + <span class="string">&quot;=&quot;</span>*<span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Malicious Fine-Tuning 시작&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;=&quot;</span>*<span class="number">60</span>)</span><br><span class="line"> </span><br><span class="line">trainer.train()  <span class="comment">## 파인 튜닝 시작</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n&quot;</span> + <span class="string">&quot;=&quot;</span>*<span class="number">60</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;학습 완료&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;=&quot;</span>*<span class="number">60</span>)</span><br><span class="line"> </span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;\n모델 저장 중&quot;</span>)</span><br><span class="line">trainer.save_model()</span><br><span class="line">tokenizer.save_pretrained(training_args.output_dir)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;모델 저장 완료: <span class="subst">&#123;training_args.output_dir&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>Step 2 과정까지 완료한 후 학습 모델을 테스트한 결과는 아래와 같다. Google Colab 환경의 메모리 자원 한계를 고려하여, 사전에 정의된 프롬프트에 대한 응답을 출력하는 방식으로 구현하였다. 실험에 사용된 입력 프롬프트는 폭발물 제조법, 타인에 대한 정서적 가해 방법 등 유해한 질문으로 구성되었으며, 이에 대한 모델의 답변 중 구체적인 유해 내용은 안전을 고려해 마스킹 처리하였다. </p>
+<p><img src="/images/323305_260108_image12.png" alt="그림 12. Malicious Fine Tuning으로 인해 악의적 프롬프트에 세부적인 답변을 제공하는 모델"></p>
+<center><span style="font-size: 90%;">그림 12. Malicious Fine Tuning으로 인해 악의적 프롬프트에 세부적인 답변을 제공하는 모델</span><br><span style="font-size: 70%;"></span></center> 
+
+
+<p><img src="/images/323305_260108_image13.png" alt="그림 13. Malicious Fine Tuning으로 인해 악의적 프롬프트에 세부적인 답변을 제공하는 모델"></p>
+<center><span style="font-size: 90%;">그림 13. Malicious Fine Tuning으로 인해 악의적 프롬프트에 세부적인 답변을 제공하는 모델</span><br><span style="font-size: 70%;"></span></center> 
+
+<p>이처럼  Malicious Fine Tuning을 거친 모델은 유해한 질문에 대해서도 여과 없이 상세한 답변을 제공하는 것으로 나타났다. 해당 공격의 위험성을 보다 명확히 입증하기 위해, 동일한 프롬프트를 입력했을 때 정상 모델의 응답을 비교한다면 본 공격 기법의 위험성을 더욱 효과적으로 검증할 수 있다. 다음은 Malicious Fine Tuning 이전 단계 모델의 응답 결과이다.</p>
+<p><img src="/images/323305_260108_image14.png" alt="그림 14. Malicious Fine Tuning 전 악의적 프롬프트의 유해함을 지적하고 답변을 거절하는 모델"></p>
+<center><span style="font-size: 90%;">그림 14. Malicious Fine Tuning 전 악의적 프롬프트의 유해함을 지적하고 답변을 거절하는 모델</span><br><span style="font-size: 70%;"></span></center> 
+
+<p>Malicious Fine Tuning 전의 Llama 3 8B 모델은 동일한 질의에 대하여 유해성을 인식하고 답변 생성을 거부하였다. 이러한 실습 결과는 해당 공격 기법이 사회적 위협을 가할 수 있는 생성형 AI 개발에 악용될 가능성을 시사한다. 따라서 실습을 통해 확인된 생성형 AI의 보안 취약점에 대한 실질적인 대응 방안과 해결책 논의가 필수적으로 논의되어야 한다.</p>
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><p>생성형 AI 보안 위협과 대응방안 . (2024). <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzbGVlLmNvLmtyL2dlbmVyYXRpdmUtYWktc2VjdXJpdHktdGhyZWF0cy1hbmQtY291bnRlcm1lYXN1cmVzLw==">https://blog.cslee.co.kr/generative-ai-security-threats-and-countermeasures/</span>.<br>KCA 한국방송통신전파진흥원 . (2023). <span class="exturl" data-url="aHR0cHM6Ly93d3cua2NhLmtyL01lZGlhX0lzc3VlX1RyZW5kL3ZvbDU1L0tDQTU1XzIyX2RvbWVzdGljLmh0bWwuaHR0cHM6Ly9uZXdzLm10LmNvLmtyL210dmlldy5waHA/bm89MjAyMzA1MDIxMDQ0MjQzNjcxMw==">https://www.kca.kr/Media_Issue_Trend/vol55/KCA55_22_domestic.html.https://news.mt.co.kr/mtview.php?no=2023050210442436713</span><br>[이슈진단] 오픈AI에서 있었던 해킹 사고, 1년 넘게 숨겨졌다? . (2024). <span class="exturl" data-url="aHR0cHM6Ly93d3cuYm9hbm5ld3MuY29tL21lZGlhL3ZpZXcuYXNwP2lkeD0xMzExOTA=">https://www.boannews.com/media/view.asp?idx=131190</span>.<br>윤주녕.(2025). LLM을 활용한 CI&#x2F;CD 환경에서의 소스코드 정적분석 기법(석사학위논문). 고려대학교 SW•AI 융합대학원, n.p..<br>LLM의 기본원리 및 작동방식 . (2024). <span class="exturl" data-url="aHR0cHM6Ly9zb2NpYWxmaWx0ZXIudGlzdG9yeS5jb20vZW50cnkvTExNJUVDJTlEJTk4LSVFQSVCOCVCMCVFQiVCMyVCOCVFQyU5QiU5MCVFQiVBNiVBQy0lRUIlQjAlOEYtJUVDJTlFJTkxJUVCJThGJTk5JUVCJUIwJUE5JUVDJThCJTlE">https://socialfilter.tistory.com/entry/LLM%EC%9D%98-%EA%B8%B0%EB%B3%B8%EC%9B%90%EB%A6%AC-%EB%B0%8F-%EC%9E%91%EB%8F%99%EB%B0%A9%EC%8B%9D</span>.<br>대형 언어 모델(LLM)과 ChatGPT의 작동 원리 . (2025). <span class="exturl" data-url="aHR0cHM6Ly9kZWZpbmUtbWUudGlzdG9yeS5jb20vMTk5Lmh0dHBzOi8vcHJvY2Vzcy1taW5pbmcudGlzdG9yeS5jb20vMjIw">https://define-me.tistory.com/199.https://process-mining.tistory.com/220</span><br>[IT 기본학습] 대형언어모델(LLM)과 대형멀티모달모델(LMM)의 정의, 그리고 GPT-4V . (2023). <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9laG9zdGlkYzIwMDQvMjIzMjQ0Mzg1Njcw">https://blog.naver.com/ehostidc2004/223244385670</span>.<br>ChatGPT에 적용된 RLHF(인간 피드백 기반 강화학습)의 원리 . (2023). <span class="exturl" data-url="aHR0cHM6Ly9tb29uLXdhbGtlci5tZWRpdW0uY29tL2NoYXRncHQlRUMlOTclOTAtJUVDJUEwJTgxJUVDJTlBJUE5JUVCJTkwJTlDLXJsaGYtJUVDJTlEJUI4JUVBJUIwJTg0LSVFRCU5NCVCQyVFQiU5MyU5QyVFQiVCMCVCMS0lRUElQjglQjAlRUIlQjAlOTgtJUVBJUIwJTk1JUVEJTk5JTk0JUVEJTk1JTk5JUVDJThBJUI1LSVFQyU5RCU5OC0lRUMlOUIlOTAlRUIlQTYlQUMtZWI0NTZjMWIwYTRh">https://moon-walker.medium.com/chatgpt에-적용된-rlhf-인간-피드백-기반-강화학습-의-원리-eb456c1b0a4a</span>.<br>정유민. (2025). 대규모 언어모델(LLM) 학습 데이터의 개인정보 침해 방지 방안에 관한 연구 &#x3D; A Study on Protection Measures Against Personal Data Infringement in Large Language Model(LLM) Training Data(석사학위논문). 동국대학교 국제정보보호대학원, n.p..<br>임재영. (2024). LMM 기반 흉부 X-ray RAG시스템 설계에 관한 연구 &#x3D; A Study on the Design of a RAG System for Chest X-rays Using Large Multimodal Models(석사학위논문). 국민대학교 소프트웨어융합대학원, n.p..</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/11/30/323304_251130/" rel="prev" title="[사이버 탐험 : 보안의 첫걸음] 파일을 삭제하면 정말 사라질까?">
+                  <i class="fa fa-angle-left"></i> [사이버 탐험 : 보안의 첫걸음] 파일을 삭제하면 정말 사라질까?
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/02/323305_260102/" rel="next" title="[2026 SWING magazine] 생성형 AI의 취약점 Part 2: Vector and Embedding Poisoning">
+                  [2026 SWING magazine] 생성형 AI의 취약점 Part 2: Vector and Embedding Poisoning <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

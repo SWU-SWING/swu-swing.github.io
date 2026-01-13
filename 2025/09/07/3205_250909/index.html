@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. CAPTCHA란?Completely Automated Public Turing test to tell Computers and Humans Apart의 약자이고,‘컴퓨터와 인간을 구분하기 위한 완전히 자동화된 공개 튜링 테스트’라는 뜻이다. CAPTCHA는 다양한 인증 방식을 통해 사용자가 봇인지 인간인지를 검증하는 모든 방법, 기술을 통틀어 말하">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] CAPTCHA bypass (1)">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/07/3205_250909/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. CAPTCHA란?Completely Automated Public Turing test to tell Computers and Humans Apart의 약자이고,‘컴퓨터와 인간을 구분하기 위한 완전히 자동화된 공개 튜링 테스트’라는 뜻이다. CAPTCHA는 다양한 인증 방식을 통해 사용자가 봇인지 인간인지를 검증하는 모든 방법, 기술을 통틀어 말하">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3205_250909_image16.png">
+<meta property="article:published_time" content="2025-09-07T05:39:21.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.250Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Web Hacking">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3205_250909_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/07/3205_250909/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/07/3205_250909/","path":"2025/09/07/3205_250909/","title":"[2025 SWING magazine] CAPTCHA bypass (1)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] CAPTCHA bypass (1) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-CAPTCHA%EB%9E%80"><span class="nav-number">1.</span> <span class="nav-text">1. CAPTCHA란?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%EC%A2%85%EB%A5%98-%EA%B8%B0%EC%88%A0"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 종류, 기술</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EA%B8%B0%EB%B0%98-%EB%B0%A9%EC%8B%9D"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 텍스트 기반 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EA%B8%B0%EB%B0%98-%EB%B0%A9%EC%8B%9D"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 이미지 기반 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%EC%98%A4%EB%94%94%EC%98%A4-%EA%B8%B0%EB%B0%98-%EB%B0%A9%EC%8B%9D"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 오디오 기반 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%EC%9B%90%ED%81%B4%EB%A6%AD-%EB%B0%A9%EC%8B%9D-%EB%85%B8%EC%BA%A1%EC%B1%A0-%EB%A6%AC%EC%BA%A1%EC%B1%A0"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. 원클릭 방식(노캡챠 리캡챠)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-CAPTCHA-%EC%9A%B0%ED%9A%8C"><span class="nav-number">2.</span> <span class="nav-text">2. CAPTCHA 우회</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%EC%9A%B0%ED%9A%8C-%EA%B8%B0%EC%88%A0"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 우회 기술</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%EB%A8%B8%EC%8B%A0-%EB%9F%AC%EB%8B%9D-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.1.1.</span> <span class="nav-text">1. 머신 러닝 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%EC%9B%B9-%EC%8A%A4%ED%81%AC%EB%9E%98%ED%95%91-%ED%81%AC%EB%A1%A4%EB%A7%81-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.1.2.</span> <span class="nav-text">2. 웹 스크래핑, 크롤링 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-OCR-Optical-Character-Recognition-%EA%B4%91%ED%95%99-%EB%AC%B8%EC%9E%90-%EC%9D%B8%EC%8B%9D-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.1.3.</span> <span class="nav-text">3. OCR(Optical Character Recognition, 광학 문자 인식) 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%EA%B8%B0%ED%83%80-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.1.4.</span> <span class="nav-text">4. 기타 방식</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%EB%A8%B8%EC%8B%A0-%EB%9F%AC%EB%8B%9D-%EB%B0%A9%EC%8B%9D-CaptchaCracker-%EC%9D%B4%EC%9A%A9"><span class="nav-number">2.2.1.</span> <span class="nav-text">1. 머신 러닝 방식(CaptchaCracker 이용)</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/07/3205_250909/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] CAPTCHA bypass (1) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] CAPTCHA bypass (1)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: hyemsnail</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-07 14:39:21" itemprop="dateCreated datePublished" datetime="2025-09-07T14:39:21+09:00">2025-09-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- CAPTCHA bypass (1)-->
+
+<h1 id="1-CAPTCHA란"><a href="#1-CAPTCHA란" class="headerlink" title="1. CAPTCHA란?"></a>1. CAPTCHA란?</h1><p><strong>Completely Automated Public Turing test to tell Computers and Humans Apart</strong>의 약자이고,‘<strong>컴퓨터와 인간을 구분하기 위한 완전히 자동화된 공개 튜링 테스트</strong>’라는 뜻이다. CAPTCHA는 다양한 인증 방식을 통해 사용자가 봇인지 인간인지를 검증하는 모든 방법, 기술을 통틀어 말하는 것이다. 자동화를 막기 위한 자동화 프로그램이다.<br>CAPTCHA 기술은 로그인, 계정 가입, 인터넷 결제, 설문 조사 등 다양한 분야에서 활용된다. 특히 사용자의 정보에 대한 보안이 필요한 곳에 많이 쓰인다. CAPTCHA는 테스트를 통과하면 인증 완료, 통과하지 못하면 추가적인 테스트를 요구하여 외부에서 타인의 계정을 해킹하거나 스팸을 전달하는 자동화된 소프트웨어의 접근을 차단할 수 있다. 궁극적으로 CAPTCHA는 사용자의 계정을 보호하기 위한 보안 솔루션이다.</p>
+<span id="more"></span>
+<br>
+
+<h2 id="1-1-종류-기술"><a href="#1-1-종류-기술" class="headerlink" title="1.1 종류, 기술"></a>1.1 종류, 기술</h2><h3 id="1-텍스트-기반-방식"><a href="#1-텍스트-기반-방식" class="headerlink" title="1. 텍스트 기반 방식"></a>1. 텍스트 기반 방식</h3><p>의도적으로 왜곡(글자 중간에 선을 긋거나, 독특한 모양으로 글자를 구기는 등)시킨 특정한 텍스트를 주고 사용자에게 그 텍스트가 무엇인지 입력하도록 요구하는 방식이다. 오늘날 가장 널리 쓰이는 방식이다.<br>텍스트 기반 방식에서 왜곡된 텍스트를 구현하는데 사용하는 기술은 대표적으로 다음과 같다.<br><em><strong>CCT 기법</strong></em>: Connecting Characters Together의 약자로, 문자들을 서로 연결한다는 뜻이다. 이 기술은 문자들을 왜곡시킨 다음 수평적으로 연결한다. 인간의 언어가 비정형성을 가지고 있어 컴퓨터가 인간이 연결한 문자를 하나씩 분할하여 인식하기 어렵다는 점을 이용한 방식이다. 하지만 최근 연구 결과, CCT를 이용한 방식은 다른 방식에 비해 보안성이 떨어지는 것으로 밝혀졌다.<br>CCT를 이용한 CAPTCHA는 다음과 같이 세 가지 유형으로 분류된다.</p>
+<ol>
+<li>문자 간 겹침이 존재하지만 노이즈 아크(직선 모양의 선이나 곡선)는 없는 유형<br><img src="/images/3205_250909_image1.png" alt="그림 1. Yahoo!에서 사용한 1)유형"><center><span style="font-size: 90%;">그림 1. Yahoo!에서 사용한 1)유형</span><br><span style="font-size: 70%;"></span></center><br></li>
+<li>노이즈 아크는 있지만 문자 간 겹침이 없는 유형<br><img src="/images/3205_250909_image2.png" alt="그림 2. Baidu에서 사용한 2)유형"><center><span style="font-size: 90%;">그림 2. Baidu에서 사용한 2)유형</span><br><span style="font-size: 70%;"></span></center><br></li>
+<li>노이즈 아크와 문자 간 겹침이 모두 없는 유형<br><img src="/images/3205_250909_image3.png" alt="그림 3. reCAPTCHA에서 사용한 3)유형"><center><span style="font-size: 90%;">그림 3. reCAPTCHA에서 사용한 3)유형</span><br><span style="font-size: 70%;"></span></center><br></li>
+</ol>
+<p><em><strong>Hollow 기법</strong></em>: 윤곽선 즉, 속이 비어 있는 문자들로 그려지고 그 문자들이 연결되는 방식이다. 마찬가지로 컴퓨터가 인간의 언어를 인식하기 어렵다는 점을 이용한 것이고 보안성과 사용성을 동시에 향상시키기 위해 개발되었다.<br><img src="/images/3205_250909_image4.png" alt="그림 4. Yahoo!에서 Hollow 기법을 사용한 CAPTCHA"></p>
+<center><span style="font-size: 90%;">그림 4. Yahoo!에서 Hollow 기법을 사용한 CAPTCHA</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><em><strong>Character Isolated 기법</strong></em>: 문자 각각이 독립적으로 떨어져 나타난다. 연결하지 않고 독립적으로 표현하는 대신 문자에 대한 왜곡이 심한 편이다.<br><img src="/images/3205_250909_image5.png" alt="그림 5. NAVER에서 Character Isolated 기법을 사용한 CAPTCHA"></p>
+<center><span style="font-size: 90%;">그림 5. NAVER에서 Character Isolated 기법을 사용한 CAPTCHA</span><br><span style="font-size: 70%;"></span></center><br>
+
+<h3 id="2-이미지-기반-방식"><a href="#2-이미지-기반-방식" class="headerlink" title="2. 이미지 기반 방식"></a>2. 이미지 기반 방식</h3><p>텍스트 기반 방식의 자동화 공격 보안성 문제를 해결하기 위해 대안으로 쓰이는 방식이다.<br><img src="/images/3205_250909_image6.png" alt="그림 6. reCAPTCHA에서 이미지 기반 방식의 CAPTCHA"></p>
+<center><span style="font-size: 90%;">그림 6. reCAPTCHA에서 이미지 기반 방식의 CAPTCHA</span><br><span style="font-size: 70%;"></span></center><br>
+이미지 기반 방식은 사용자에게 특정한 이미지를 제공한다. 이미지들은 퍼즐 형태로 구성되어 있다. 문제에서 요청하는 이미지를 모두 알맞게 선택하면 인증이 완료되고 그렇지 않을 경우 추가적인 인증을 요구한다. 퍼즐의 형태는 보안 수준에 따라 3x3 구조부터 5x5까지 존재한다. Google과 Facebook에서 많이 사용하는 기술이다. 연구 결과에 따르면 텍스트 기반 방식 CAPTCHA에 비하면 보안성은 매우 높은 편이다. 4x4 퍼즐 기준 공격 성공률이 0.83%이다. 
+<br>
+
+<h3 id="3-오디오-기반-방식"><a href="#3-오디오-기반-방식" class="headerlink" title="3. 오디오 기반 방식"></a>3. 오디오 기반 방식</h3><p>재생 버튼을 누르면 음성 생성 기술을 이용하여 노이즈와 동시에 음성을 준다. 사용자가 음성을 듣고 정확한 답을 입력하면 인증이 완료되는 방식이다. 음성은 알파벳, 숫자를 읽어주거나 문장을 읽어주는 경우가 대부분이다. 그 이외에는 덧셈, 뺄셈 같은 간단한 연산을 요청하는 경우도 있다. 노이즈의 경우 사람은 잘 알아들을 수 없는 수준의 음역으로 나와 음성을 듣는 데 크게 방해가 되지는 않는다. 하지만 컴퓨터, 봇의 경우 이와 같은 노이즈도 모두 인지하기 때문에 음성을 제대로 인식하기 어렵다. 이를 이용하여 자동화 공격을 어렵게 만드는 것이다. 하지만 최근 푸리에 변환을 응용한 방법으로 노이즈를 제거한 다음 음성 인식을 하고 통과하는 경우가 늘고 있어 보안성이 높은 방법은 아니다. 많이 사용하는 CAPTCHA는 아니지만 시각 장애, 난독증, 색약 등이 있는 사람들을 위한 보조수단, 스팸 전화를 거는 기술인 SPIT(Spam over Internet Telephony)을 막는 데 활용한다.<br><img src="/images/3205_250909_image7.png" alt="그림 7. reCAPTCHA에서 오디오 기반 방식의 CAPTCHA"></p>
+<center><span style="font-size: 90%;">그림 7. reCAPTCHA에서 오디오 기반 방식의 CAPTCHA</span><br><span style="font-size: 70%;"></span></center><br>
+
+<h3 id="4-원클릭-방식-노캡챠-리캡챠"><a href="#4-원클릭-방식-노캡챠-리캡챠" class="headerlink" title="4. 원클릭 방식(노캡챠 리캡챠)"></a>4. 원클릭 방식(노캡챠 리캡챠)</h3><p>구글의 reCAPTCHA에서 주로 볼 수 있다. reCAPTCHA v2 및 v3라고도 한다. ‘나는 로봇이 아닙니다’ 혹은 ‘I’m not a robot’이 적힌 작은 박스가 있고 빈 체크박스에 체크하면(또는 자동으로 되면) 인증이 완료되는 방식이다. v2의 경우는 사용자가 직접 체크하고(또는 자동으로 되고), v3는 체크박스가 나타나지 않고 자동으로 인증이 된다. 이 같은 방식으로 해도 인증이 가능한 이유는 사람이 CAPTCHA를 만나기 전후, 봇이 CAPTCHA를 만나기 전후 행동을 분석하여 머신 러닝으로 학습을 한 상태이기 때문이다. 만약 사용자의 행동이 봇의 경우와 비슷하다고 판단이 되면 백그라운드에서 적응형 위험 분석을 실행하고 의심스러운 트래픽을 알린다.<br><img src="/images/3205_250909_image8.png" alt="그림 8. reCAPTCHA v2"></p>
+<center><span style="font-size: 90%;">그림 8. reCAPTCHA v2</span><br><span style="font-size: 70%;"></span></center><br>
+
+
+<hr>
+<h1 id="2-CAPTCHA-우회"><a href="#2-CAPTCHA-우회" class="headerlink" title="2. CAPTCHA 우회"></a>2. CAPTCHA 우회</h1><h2 id="2-1-우회-기술"><a href="#2-1-우회-기술" class="headerlink" title="2.1 우회 기술"></a>2.1 우회 기술</h2><h3 id="1-머신-러닝-방식"><a href="#1-머신-러닝-방식" class="headerlink" title="1. 머신 러닝 방식"></a>1. 머신 러닝 방식</h3><p>CAPTCHA는 ‘무작위성’이라는 특징을 가지고 있다. 머신 러닝(특히 딥러닝)은 이에 직접적으로 대응하는 방식이다. 샘플 데이터들과 정답 데이터를 주면 각 특징을 컴퓨터가 학습한다. 컴퓨터는 학습할 때 글자를 각각 분리하여 학습한다. 글자 분리를 하는 분류기의 성능이 좋을수록 정확한 학습을 하고 인식률이 높아진다. 분류기는 CNN(Convolutional Neural Neighbors), KNN(K Nearest Neighbors) 등이 있다. 이미지 기반 CAPTCHA의 경우 이보다 더 고급 기술이 필요하다. 머신 러닝 방식은 컴퓨터가 CAPTCHA를 정확하게 인식할수록 학습 단계에서 대량의 데이터셋이 필요하다. (2.2 실습으로 이어진다.) <br></p>
+<h3 id="2-웹-스크래핑-크롤링-방식"><a href="#2-웹-스크래핑-크롤링-방식" class="headerlink" title="2. 웹 스크래핑, 크롤링 방식"></a>2. 웹 스크래핑, 크롤링 방식</h3><p>크롤러가 특정한 웹 페이지에 접속한 다음, 초기에 있던 HTML 콘텐츠, 이미지, 텍스트 등의 데이터를 가져온다. 해당 페이지에 CAPTCHA가 포함되어 있다면 이 부분에서 크롤링을 멈춘다. 그리고 스크래핑 도구를 이용해 해당 페이지에서 CAPTCHA 이미지를 인식한다. 그리고 크롤러는 OCR 등의 방식을 이용해 이미지의 텍스트를 분석한다. (2.2 실습으로 이어진다.)<br></p>
+<h3 id="3-OCR-Optical-Character-Recognition-광학-문자-인식-방식"><a href="#3-OCR-Optical-Character-Recognition-광학-문자-인식-방식" class="headerlink" title="3. OCR(Optical Character Recognition, 광학 문자 인식) 방식"></a>3. OCR(Optical Character Recognition, 광학 문자 인식) 방식</h3><p>OCR은 이미지의 텍스트를 기계가 읽을 수 있는 형태로 변환하는 역할이다. 웹 페이지에서 CAPTCHA 이미지를 가져오고 데이터 크기를 줄이고 OCR이 인식 후 정확한 문자로 변환할 수 있도록 먼저 이미지 전처리 과정을 수행한다. 전처리 과정은 노이즈 제거, 회색 조 변환, 이진화, 기울기 보정 등이 있다. 그다음 텍스트 검출 및 분할 단계에서는 이미지 안에 있는 텍스트를 배경으로부터 분리한다. 텍스트를 분리해 내면 문자 인식 기술로 기계가 읽을 수 있는 데이터로 변환한다. 이때 기계는 텍스트를 자신이 알고 있는 가장 비슷한 문자와 일치시킨다. 마지막으로 후처리 과정에는 문자 인식 과정에서 발생한 오류를 해결하고 유효성 검사를 통해 기계가 예상한 형식의 문자가 맞는지 확인한다.<br></p>
+<h3 id="4-기타-방식"><a href="#4-기타-방식" class="headerlink" title="4. 기타 방식"></a>4. 기타 방식</h3><p>패킷 재전송 방식(2.2 부분에서 설명 &amp; 실습)<br>유료 해결 서비스(2captcha, AZcaptcha, Dolphin 등) 사용, 1~3번 방식이 결합해 있음.<br><br></p>
+<h2 id="2-2-실습"><a href="#2-2-실습" class="headerlink" title="2.2 실습"></a>2.2 실습</h2><h3 id="1-머신-러닝-방식-CaptchaCracker-이용"><a href="#1-머신-러닝-방식-CaptchaCracker-이용" class="headerlink" title="1. 머신 러닝 방식(CaptchaCracker 이용)"></a>1. 머신 러닝 방식(CaptchaCracker 이용)</h3><p>CaptchaCracker는 CAPTCHA 이미지 문자열의 인식을 위한 머신 러닝, 딥 러닝 모델 생성, 적용 기능을 제공하는 오픈소스 파이썬 라이브러리이다.<br>CaptchaCracker를 이용하여 모델 학습을 시킨 다음 <strong>정부24 사이트의 CAPTCHA 이미지</strong>에 그것을 적용해 정확도를 확인할 것이다. 예측해 볼 이미지로 정부24 사이트의 CAPTCHA를 선택한 이유는 학습시킬 샘플 이미지들과 가장 유사한 형태를 가졌기 때문이다. 샘플 이미지와 타깃 이미지의 유사도가 높을수록 예측할 때 정확도가 올라간다.<br>Google Colab을 이용해 코드를 작성하였다.<br><img src="/images/3205_250909_image9.png" alt="그림 9. CaptchaCracker 설치"></p>
+<center><span style="font-size: 90%;">그림 9. CaptchaCracker 설치</span><br><span style="font-size: 70%;"></span></center><br>
+1. 우선 !pip install CaptchaCracker로 CaptchaCracker 라이브러리를 설치한다. 설치가 되면 위 그림과 같은 결과가 나온다. <br><br><br>
+
+<p><img src="/images/3205_250909_image10.png" alt="그림 10. protobuf, tensorflow, keras 설치"></p>
+<center><span style="font-size: 90%;">그림 10. protobuf, tensorflow, keras 설치</span><br><span style="font-size: 70%;"></span></center><br>
+2.  3번 과정을 먼저 했을 때 protobuf 3.19.6 버전과 여러 패키지 간의 의존성 충돌(특정 패키지가 서로 다른 버전의 protobuf를 필요로 하기 때문)오류로 인해 다음 과정을 진행할 수 없을 경우 실시한다. 런타임을 초기화하고 위의 명령어를 실행한다. 조금 더 최신 버전인 protobuf의 3.20.1 버전을 설치하고 tensorflow와 밀접하게 통합된 라이브러리인 keras도 설치를 해준다. 실행하면 위와 같은 결과 아래
+의존성 문제가 여전히 존재한다는 오류 문이 나올 수 있다. 하지만 protobuf로 설치된 패키지들이 기본적인 기능을 수행하는 데 문제가 없어 무시해도 된다.<br>
+Protobuf는 protocol buffers의 약자이고 데이터를 효율적으로 구조화하는데 사용된다. Tensorflow는 Google Brain 팀이 개발한 오픈소스 머신 러닝 프레임워크이다. 딥 러닝, 수치 연산 등을 위한 광범위한 라이브러리와 도구를 제공한다. Keras는 고수준 신경망 API를 가지고 있는 오픈소스 라이브러리이다. 딥러닝 작업을 빠르게 수행할 수 있도록 돕는다.<br><br><br>
+
+<p><img src="/images/3205_250909_image11.png" alt="그림 11. numpy, protobuf, tensorflow 각 버전 설치"></p>
+<center><span style="font-size: 90%;">그림 11. numpy, protobuf, tensorflow 각 버전 설치</span><br><span style="font-size: 70%;"></span></center><br>
+3. 수치 계산을 위한 패키지인 numpy를 1.20 이상의 버전으로 설치하고 protobuf는 3.19.6 버전, tensorflow는 2.9.1 버전을 설치한다.<br><br><br>
+
+<p><img src="/images/3205_250909_image12.png" alt="그림 12. Colab에 Google Drive 마운트"></p>
+<center><span style="font-size: 90%;">그림 12. Colab에 Google Drive 마운트</span><br><span style="font-size: 70%;"></span></center><br>
+4. 모델 학습시킬 샘플 CAPTCHA 이미지 파일, 모델 반복 학습으로 얻은 가중치 파일, 저장된 모델을 불러와 테스트로 예측해 볼 CAPTCHA 이미지들 모두를 Google Drive에 저장할 것이다. Colab에서 Google Drive에 접근할 수 있도록 마운트 하였다.<br><br><br>
+
+<p><img src="/images/3205_250909_image13.png" alt="그림 13. 모델 학습 실행"></p>
+<center><span style="font-size: 90%;">그림 13. 모델 학습 실행</span><br><span style="font-size: 70%;"></span></center><br>
+5. 본격적으로 모델 학습 실행에 들어간다. Glob 라이브러리를 이용해 학습시킬 이미지 파일을 찾는다. 학습시킬 이미지 파일은 sample(1) 폴더 안, train_numbers_only 폴더 안에 있는 모든 png 파일이다. 600개의 png 파일이 들어 있다. 모델 학습시킬 CAPTCHA 이미지의 너비와 높이를 각각 지정했다. CreateModel 메서드를 이용하여 학습 이미지 파일, 이미지 너비와 높이를 인자로 한 학습 모델을 생성한다. 그리고 train_model 메서드를 이용해 모델을 학습시킨다. 인자로 있는 epochs의 숫자는 반복 학습할 횟수를 의미한다. 실행하면 바로 아래와 같이 학습 상황을 확인할 수 있다.
+
+<p><img src="/images/3205_250909_image14.png" alt="그림 14. 학습 결과 파일로 저장"></p>
+<center><span style="font-size: 90%;">그림 14. 학습 결과 파일로 저장</span><br><span style="font-size: 70%;"></span></center><br><br>
+
+<p><img src="/images/3205_250909_image15.png" alt="그림 15. 학습 결과 파일로 저장"></p>
+<center><span style="font-size: 90%;">그림 15. 학습 결과 파일로 저장</span><br><span style="font-size: 70%;"></span></center><br>
+6. 모델 학습이 끝나면 그 결과를 파일로 저장한다. 저장할 파일은 weights.h5이다. 이 파일은 저장할 때 모델 학습을 한 만큼 가중치로 저장된다. 학습을 많이 시키고 저장을 많이 할수록 데이터가 풍부해진다.<br><br><br>
+
+<p><img src="/images/3205_250909_image16.png" alt="그림 16. 저장된 모델 기반으로 숫자 예측"></p>
+<center><span style="font-size: 90%;">그림 16. 저장된 모델 기반으로 숫자 예측</span><br><span style="font-size: 70%;"></span></center><br>
+7. 저장된 모델을 불러와 CAPTCHA 이미지에 있는 글자들을 예측해 볼 것이다. 예측해 볼 이미지는 정부24 홈페이지에서 주민등록표 등본을 비회원으로 신청할 때 나오는 CAPTCHA이다. 예측할 이미지의 너비와 높이를 학습시킬 때와 똑같이 지정한다. 정부24의 CAPTCHA는 모두 6 자리 숫자로 구성되어 있으므로 글자 최대 길이는 6으로 설정하고, 라벨 각 자리가 가질 수 있는 숫자의 종류를 지정한다. 그다음 가중치 저장된 파일의 경로를 지정하고 ApplyModel 메서드를 이용해 가중치 파일, 이미지 너비와 높이, 글자 최대 길이, 라벨의 구성요소를 인자로 한 적용 모델을 만들어준다. 그리고 적용 모델을 이용하여 이미지의 라벨값 즉, 예측되는 숫자들을 출력한다. 정확하게 예측을 한 경우 결과는 위의 사진과 같이 나온다. 정부24의 서로 다른 CAPTCHA 이미지 20장을 각각 테스트해 보았다. 이에 따라 저장된 모델을 불러와 예측하는 부분은 (1)~(20)까지 존재한다.<br><br><br>
+8. 모델 학습은 총 1700번을 하였다. 학습을 많이 시키면 대체로 정확하게 예측할 확률이 높기는 하지만 학습 데이터와 머신 러닝 라이브러리 성능에 따라 한계는 있다. 1700번을 학습시킨다고 해서 무조건 아래와 같은 결과가 나오는 것은 아니다. 경우에 따라 다르게 나올 수 있다.<br><br>
+
+<p><em><strong>결과 분석</strong></em> <br></p>
+<table>
+<thead>
+<tr>
+<th>테스트 순서</th>
+<th>원래 숫자</th>
+<th>예측된 숫자</th>
+<th>일치 여부</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>296337</td>
+<td>296337</td>
+<td>O</td>
+</tr>
+<tr>
+<td>2</td>
+<td>084720</td>
+<td>05770[UNK]</td>
+<td>X</td>
+</tr>
+<tr>
+<td>3</td>
+<td>580274</td>
+<td>530274</td>
+<td>X</td>
+</tr>
+<tr>
+<td>4</td>
+<td>177243</td>
+<td>177243</td>
+<td>O</td>
+</tr>
+<tr>
+<td>5</td>
+<td>645038</td>
+<td>645033</td>
+<td>X</td>
+</tr>
+<tr>
+<td>6</td>
+<td>578451</td>
+<td>573451</td>
+<td>X</td>
+</tr>
+<tr>
+<td>7</td>
+<td>970836</td>
+<td>970836</td>
+<td>O</td>
+</tr>
+<tr>
+<td>8</td>
+<td>771029</td>
+<td>771102</td>
+<td>X</td>
+</tr>
+<tr>
+<td>9</td>
+<td>096340</td>
+<td>096340</td>
+<td>O</td>
+</tr>
+<tr>
+<td>10</td>
+<td>911757</td>
+<td>911755</td>
+<td>X</td>
+</tr>
+<tr>
+<td>11</td>
+<td>862274</td>
+<td>952274</td>
+<td>X</td>
+</tr>
+<tr>
+<td>12</td>
+<td>920062</td>
+<td>920162</td>
+<td>X</td>
+</tr>
+<tr>
+<td>13</td>
+<td>457872</td>
+<td>457872</td>
+<td>O</td>
+</tr>
+<tr>
+<td>14</td>
+<td>652837</td>
+<td>652837</td>
+<td>O</td>
+</tr>
+<tr>
+<td>15</td>
+<td>584735</td>
+<td>534735</td>
+<td>X</td>
+</tr>
+<tr>
+<td>16</td>
+<td>423014</td>
+<td>423014</td>
+<td>O</td>
+</tr>
+<tr>
+<td>17</td>
+<td>721797</td>
+<td>721797</td>
+<td>O</td>
+</tr>
+<tr>
+<td>18</td>
+<td>569777</td>
+<td>369777</td>
+<td>X</td>
+</tr>
+<tr>
+<td>19</td>
+<td>559958</td>
+<td>559953</td>
+<td>X</td>
+</tr>
+<tr>
+<td>20</td>
+<td>467299</td>
+<td>467255</td>
+<td>X</td>
+</tr>
+</tbody></table>
+<br>
+1700번의 학습량 기준으로 한 20번의 테스트에서 정부24 CAPTCHA 숫자 전체를 정확하게 예측한 경우는 총 8번이다. 40%의 정확도이다. 생각보다 정확하게 예측할 확률이 낮다는 생각이 들 수 있다. 하지만
+한 글자씩 비교하면서 정확도를 조금 더 세세하게 따지면 그리 낮지 않다. CAPTCHA 이미지 하나에 숫자가 6개씩 있고 그것이 20가지 존재하므로 총 120가지의 숫자들이 있다. 이 중 결과에 UNK(Unknown, 예측 실패)가 나온 경우는 몇 개의 숫자가 일치하는지 정확하게는 알 수 없다. 그것을 반영하면 불일치하는 숫자는 120개 중 최소 16개에서 최대 20개인 것을 알 수 있다. 그러면 정확하게 예측한 숫자는 100~104개이다. 숫자 하나씩 살펴보면 정확도는 83.33% ~ 86.66%이고 꽤 높은 것을 알 수 있다. 만약 CaptchaCracker보다 모델 학습과 예측하는 기능이 더 뛰어난 도구를 사용한다면 100%에 육박하는 결과를 얻을 수 있을 것으로 보인다. 
+
+<p><strong>CAPTCHA의 종류 중 적어도 텍스트 방식의 경우 머신 러닝을 통한 우회로부터 상당히 취약하다는 것을 알 수 있었다.</strong><br>20가지 CAPTCHA 이미지를 모두 실습한 것은 아래 사이트에 업로드 해 두었다.<br><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2h5ZW1zbmFpbC9jYXB0Y2hhX3Byb2plY3QvYmxvYi9tYWluL2NhcHRjaGFjcmFja2VyLmlweW5i">https://github.com/hyemsnail/captcha_project&#x2F;blob&#x2F;main&#x2F;captchacracker.ipynb</span> <br></p>
+<hr>
+<p>이상으로 여기까지 하고 이번 글을 마치겠다. 분량 이슈로 나머지 실습 2가지와 우회 방지 방법은 다음 편에 작성하겠다. </p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web-Hacking/" rel="tag"># Web Hacking</a>
+              <a href="/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/07/3301_250907/" rel="prev" title="리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석">
+                  <i class="fa fa-angle-left"></i> 리눅스 환경에서의 익스플로잇과 취약점 탐색을 통한 사이버 공격 실습과 분석
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/10/3206_250912/" rel="next" title="[2025 SWING magazine] CAPTCHA bypass (2)">
+                  [2025 SWING magazine] CAPTCHA bypass (2) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

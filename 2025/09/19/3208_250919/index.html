@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="LSGAN 이미지 생성생성자와 판별자 간의 손실 함수를 최소 제곱 오류로 정의해서 안정적인 학습을 목표로 하는 LSGAN을 이용해서 이미지를 생성하고자 한다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] GAN (2)">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/19/3208_250919/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="LSGAN 이미지 생성생성자와 판별자 간의 손실 함수를 최소 제곱 오류로 정의해서 안정적인 학습을 목표로 하는 LSGAN을 이용해서 이미지를 생성하고자 한다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image34.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3208_250919_image35.png">
+<meta property="article:published_time" content="2025-09-19T14:59:59.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.251Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="GAN">
+<meta property="article:tag" content="DCGAN">
+<meta property="article:tag" content="LSGAN">
+<meta property="article:tag" content="이미지 생성">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3208_250919_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/19/3208_250919/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/19/3208_250919/","path":"2025/09/19/3208_250919/","title":"[2025 SWING magazine] GAN (2)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] GAN (2) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#LSGAN-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%9D%EC%84%B1"><span class="nav-number">1.</span> <span class="nav-text">LSGAN 이미지 생성</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EC%84%A4%EC%A0%95"><span class="nav-number">1.1.</span> <span class="nav-text">4-1. 라이브러리 설정</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%A0%84%EC%B2%98%EB%A6%AC"><span class="nav-number">1.2.</span> <span class="nav-text">4-2. 이미지 전처리</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%EB%AA%A8%EB%8D%B8-%EA%B0%80%EC%A4%91%EC%B9%98-%EC%B4%88%EA%B8%B0%ED%99%94"><span class="nav-number">1.3.</span> <span class="nav-text">4-3. 모델 가중치 초기화</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-%EC%83%9D%EC%84%B1%EC%9E%90-%EC%A0%95%EC%9D%98"><span class="nav-number">1.4.</span> <span class="nav-text">4-4. 생성자 정의</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-%ED%8C%90%EB%B3%84%EC%9E%90-%EC%A0%95%EC%9D%98"><span class="nav-number">1.5.</span> <span class="nav-text">4-5. 판별자 정의</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-%ED%95%99%EC%8A%B5-%EB%A3%A8%ED%94%84"><span class="nav-number">1.6.</span> <span class="nav-text">4-6. 학습 루프</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-7-%EC%83%9D%EC%84%B1%EB%90%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%EC%84%9D"><span class="nav-number">1.7.</span> <span class="nav-text">4-7. 생성된 이미지 분석</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CGAN-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%9D%EC%84%B1"><span class="nav-number">2.</span> <span class="nav-text">CGAN 이미지 생성</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-%EC%A1%B0%EA%B1%B4-%EC%9D%B8%EC%BD%94%EB%94%A9-%EC%B6%94%EA%B0%80"><span class="nav-number">2.1.</span> <span class="nav-text">5-1. 조건 인코딩 추가</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-%EC%9E%85%EB%A0%A5-%EA%B5%AC%EC%A1%B0-%EC%B0%A8%EC%9D%B4"><span class="nav-number">2.2.</span> <span class="nav-text">5-2. 입력 구조 차이</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-%EC%A1%B0%EA%B1%B4-%EC%B2%B4%ED%81%AC-%ED%95%A8%EC%88%98-%EC%9C%A0%EB%AC%B4"><span class="nav-number">2.3.</span> <span class="nav-text">5-3. 조건 체크 함수 유무</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-%EC%83%9D%EC%84%B1%EB%90%9C-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B6%84%EC%84%9D"><span class="nav-number">2.4.</span> <span class="nav-text">5-4. 생성된 이미지 분석</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EA%B0%81-%EB%AA%A8%EB%8D%B8-FID-%EC%9E%91%EC%84%B1"><span class="nav-number">3.</span> <span class="nav-text">각 모델 FID 작성</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#6-1-GAN-FID-%EC%BD%94%EB%93%9C"><span class="nav-number">3.1.</span> <span class="nav-text">6-1. GAN FID 코드</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-2-DCGAN-FID-%EC%BD%94%EB%93%9C"><span class="nav-number">3.2.</span> <span class="nav-text">6-2. DCGAN FID 코드</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-3-LSGAN-FID-%EC%BD%94%EB%93%9C"><span class="nav-number">3.3.</span> <span class="nav-text">6-3. LSGAN FID 코드</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-4-CGAN-FID-%EC%BD%94%EB%93%9C"><span class="nav-number">3.4.</span> <span class="nav-text">6-4. CGAN FID 코드</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FID-%EB%B9%84%EA%B5%90-%EB%B0%8F-%EC%A0%95%EB%A6%AC"><span class="nav-number">4.</span> <span class="nav-text">FID 비교 및 정리</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">5.</span> <span class="nav-text">참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/19/3208_250919/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] GAN (2) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] GAN (2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: wogml</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-19 23:59:59" itemprop="dateCreated datePublished" datetime="2025-09-19T23:59:59+09:00">2025-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="LSGAN-이미지-생성"><a href="#LSGAN-이미지-생성" class="headerlink" title="LSGAN 이미지 생성"></a>LSGAN 이미지 생성</h1><p>생성자와 판별자 간의 손실 함수를 최소 제곱 오류로 정의해서 안정적인 학습을 목표로 하는 LSGAN을 이용해서 이미지를 생성하고자 한다. </p>
+<span id="more"></span> 
+<br>
+
+<h2 id="4-1-라이브러리-설정"><a href="#4-1-라이브러리-설정" class="headerlink" title="4-1. 라이브러리 설정"></a>4-1. 라이브러리 설정</h2><br>
+
+<p><img src="/images/3208_250919_image1.png" alt="그림 1. 기본 라이브러리 불러오기">  </p>
+<center><span style="font-size: 90%;">그림 1. [기본 라이브러리 불러오기]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image2.png" alt="그림 2. 필수 라이브러리 전체 불러오기">  </p>
+<center><span style="font-size: 90%;">그림 2. [필수 라이브러리 전체 불러오기]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>필요한 라이브러리를 임포트해준다. 데이터 처리, 이미지 변환, 모델 학습, 시각화 관련 라이브러리들을 포함했다.<br><br></p>
+<h2 id="4-2-이미지-전처리"><a href="#4-2-이미지-전처리" class="headerlink" title="4-2. 이미지 전처리"></a>4-2. 이미지 전처리</h2><br>
+
+<p><img src="/images/3208_250919_image3.png" alt="그림 3. 데이터셋 로드">  </p>
+<center><span style="font-size: 90%;">그림 3. [데이터셋 로드]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>MNIST 데이터셋을 내려받고 이미지를 32x32로 리사이즈한다.<br>Tensor로 변환하고 정규화해서 데이터로더를 통해 배치 단위로 불러올 수 있게 설정한다.<br><br></p>
+<h2 id="4-3-모델-가중치-초기화"><a href="#4-3-모델-가중치-초기화" class="headerlink" title="4-3. 모델 가중치 초기화"></a>4-3. 모델 가중치 초기화</h2><br>
+생성자와 판별자의 가중치를 정규 분포로 초기화하는 함수를 만들어줘서 모델 학습의 안정성을 높여준다.  
+<br>
+
+<p><img src="/images/3208_250919_image4.png" alt="그림 4. 가중치 초기화 함수">  </p>
+<center><span style="font-size: 90%;">그림 4. [가중치 초기화 함수]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="4-4-생성자-정의"><a href="#4-4-생성자-정의" class="headerlink" title="4-4. 생성자 정의"></a>4-4. 생성자 정의</h2><br>
+
+<p><img src="/images/3208_250919_image5.png" alt="그림 5. 생성자 모델 정의">  </p>
+<center><span style="font-size: 90%;">그림 5. [생성자 모델 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>Linear 랜덤 노이즈 벡터인 <strong>z_dim</strong>을 입력받아서 고차원으로 변환한다. 이 경우 128x8x8차원의 텐서로 변환한다. <strong>BatchNormid</strong>로 배치 정규화를 해서 내부 공변량 이동을 줄여 학습 안정성을 높인다.<br><strong>LeakyReLU</strong> 비선형 활성화 함수를 사용해주고 <strong>Conv2d</strong> 합성곱 레이어를 통해 이미지의 세부 특징을 학습해준다. 그리고 Tanh로 출력 이미지의 픽셀값을 [-­1,1] 사이로 변환해서 정규화된 입력 이미지에 적합하게 만든다.<br><br></p>
+<h2 id="4-5-판별자-정의"><a href="#4-5-판별자-정의" class="headerlink" title="4-5. 판별자 정의"></a>4-5. 판별자 정의</h2><br>
+
+<p><img src="/images/3208_250919_image6.png" alt="그림 6. 판별자 모델 정의 (1)">  </p>
+<center><span style="font-size: 90%;">그림 6. [판별자 모델 정의 (1)]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><strong>Conv2d</strong>로 합성곱 레이어를 사용해서 이미지의 특징을 추출한다. 판별자도 마찬가지로 <strong>LeakyReLU</strong> 함수를 사용해 비선형성을 추가해서 모델의 표현력을 증가시킨다. <strong>Dropout2d</strong>를 사용해서 오버피팅을 방지하기 위해 일부 뉴런을 무작위로 비활성화시킨다. 그리고 레이어 출력을 정규화하고 <strong>Flatten, Linear</strong>를 이용해 1차원으로 변환한 뒤 판별 결과를 출력한다.<br><br></p>
+<p><img src="/images/3208_250919_image7.png" alt="그림 7. 판별자 모델 정의 (2)">  </p>
+<center><span style="font-size: 90%;">그림 7. [판별자 모델 정의 (2)]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="4-6-학습-루프"><a href="#4-6-학습-루프" class="headerlink" title="4-6. 학습 루프"></a>4-6. 학습 루프</h2><br>
+
+<p><img src="/images/3208_250919_image8.png" alt="그림 8. 학습 루프">  </p>
+<center><span style="font-size: 90%;">그림 8. [학습 루프]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>전체 구조로는 학습 루프가 여러 에포크 동안 각 배치에 대해 생성자와 판별자를 번갈아 가며 학습하게 된다. 앞서 기본 GAN, DCGAN의 에포크를 200으로 정해놓았으니 LSGAN도 200만큼 반복하도록 n_epochs를 for 문으로 반복하도록 해줬다. 그리고 Dataloader로 데이터를 배치 단위로 불러와 주고 valid, fake를 사용해 실제 이미지는 1, 가짜 이미지는 0으로 라벨을 생성해준다.  </p>
+<p>생성자 학습 부분에서 <code>generator_optimizer.zero_grad()</code>로 생성자에 대한 기울기를 초기화해주고 생성자가 사용할 입력인 랜덤 노이즈 벡터 z를 생성해준다. <code>generated_image = generator(z)</code>로 생성자에게 노이즈를 입력해서 가짜 이미지를 생성한다. g_loss로 생성된 이미지가 판별자를 통과한 후의 출력과 valid 레이블을 비교해서 손실을 계산한다. 이때 <code>adversarial_loss</code>는 생성자가 얼마나 잘했는지를 평가하는 지표이다. <code>g_loss.backward()</code> 역전파로 손실을 기반으로 기울기를 계산하여 생성자의 파라미터를 업데이트할 준비를 한다. <code>generator_optimizer.step()</code>으로 계산된 기울기를 사용해 생성자의 가중치를 업데이트해준다.  </p>
+<p>판별자 학습 부분은 마찬가지로 기울기를 초기화해주고 real_loss와 fake_loss로 실제 이미지, 가짜 이미지 손실을 각각 계산해준다. fake_loss에서 생성된 이미지를 판별자에 통과시켜 가짜 이미지 손실을 계산하게 되는데 여기서 <code>detach()</code>를 이용해 생성된 이미지의 기울기가 판별자에 영향을 주지 않도록 해준다. d_loss로 전체 손실을 계산해주고 <strong>backward</strong>로 손실 기반 기울기를 계산한 후 가중치를 업데이트한다. 150번째 배치마다 현재 에포크, 스텝, 판별자 손실, 생성자 손실을 출력해서 학습 과정을 모니터링하고 에포크마다 생성된 이미지를 저장해서 reshape를 통해 이미지를 적절한 형태로 변환하고 save_image를 사용해 파일로 저장한 후 각 에포크가 끝나면 출력하도록 해준다.<br><br></p>
+<p><img src="/images/3208_250919_image9.png" alt="그림 9. 생성자 학습">  </p>
+<center><span style="font-size: 90%;">그림 9. [생성자 학습]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image10.png" alt="그림 10. 이미지 저장 및 출력">  </p>
+<center><span style="font-size: 90%;">그림 10. [이미지 저장 및 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+
+<h2 id="4-7-생성된-이미지-분석"><a href="#4-7-생성된-이미지-분석" class="headerlink" title="4-7. 생성된 이미지 분석"></a>4-7. 생성된 이미지 분석</h2><br>
+
+<p><img src="/images/3208_250919_image11.png" alt="그림 11. LSGAN 학습 결과 (1 vs 200 에포크)">  </p>
+<center><span style="font-size: 90%;">그림 11. [LSGAN 학습 결과 (1 vs 200 에포크)]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>1 에포크와 200 에포크 상태의 이미지를 비교해보면 1 에포크 땐 테두리가 선명하지 않고 흘러내리는 모습처럼 글씨가 선명하지 않은 걸 확인할 수 있다. 200 에포크 이미지를 확인하면 확실히 1 에포크 때보다 테두리가 선명하고 숫자로 인식할 수 있는 이미지가 생성되었다. 판별자 손실과 생성자 손실을 보면 1 에포크에 비해 200 에포크의 최저 판별자 손실이 더 낮은 걸 확인할 수 있는 반면, 생성자 손실은 비교적 높은 걸 확인할 수 있다.<br><br><br><br><br></p>
+<h1 id="CGAN-이미지-생성"><a href="#CGAN-이미지-생성" class="headerlink" title="CGAN 이미지 생성"></a>CGAN 이미지 생성</h1><br>
+
+<p>Conditional GAN은 기존 GAN을 확장해서 특정 조건에 따라 이미지나 데이터를 생성할 수 있도록 만든 모델이다. GAN의 생성자와 판별자에 원하는 조건을 부여해서 생성된 데이터가 특정 조건을 따르도록 훈련한다. 그래서 코드를 작성할 때 기본 GAN 코드를 응용해 작성했다. 기본적인 형태는 기본 GAN과 같아서 CGAN을 구현한 코드와 기본 GAN 코드의 차이점 위주로 설명하고자 한다.<br><br></p>
+<h2 id="5-1-조건-인코딩-추가"><a href="#5-1-조건-인코딩-추가" class="headerlink" title="5-1. 조건 인코딩 추가"></a>5-1. 조건 인코딩 추가</h2><br>
+
+<p>기본 GAN에서는 레이블을 고려하지 않고 노이즈만을 입력으로 사용해서 이미지를 생성하는데 CGAN에서는 특정 클래스(숫자 0~9)로 이미지를 생성할 수 있도록 레이블을 조건으로 사용해준다. 레이블은 <code>원-핫 인코딩(one-hot encoding)</code>해서 이미지 데이터와 함께 네트워크에 입력된다.<br><br></p>
+<p><img src="/images/3208_250919_image12.png" alt="그림 12. CGAN 하이퍼파라미터 설정">  </p>
+<center><span style="font-size: 90%;">그림 12. [CGAN 하이퍼파라미터 설정]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image13.png" alt="그림 13. CGAN 학습 루프 초기화">  </p>
+<center><span style="font-size: 90%;">그림 13. [CGAN 학습 루프 초기화]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="5-2-입력-구조-차이"><a href="#5-2-입력-구조-차이" class="headerlink" title="5-2. 입력 구조 차이"></a>5-2. 입력 구조 차이</h2><br>
+
+<p><img src="/images/3208_250919_image14.png" alt="그림 14. CGAN 판별자 정의">  </p>
+<center><span style="font-size: 90%;">그림 14. [CGAN 판별자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image15.png" alt="그림 15. CGAN 생성자 학습 단계">  </p>
+<center><span style="font-size: 90%;">그림 15. [CGAN 생성자 학습 단계]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>기본 GAN 코드에 레이블 정보가 없어서 생성자와 판별자는 단순히 img_size나 noise_size 형태의 입력을 받게 되고 CGAN은 생성자와 판별자의 입력을 img_size + condition_size나 noise_size + condition_size로 입력받게 된다. 생성자와 판별자 정의도 마찬가지로 CGAN에서 각 레이어에 레이블 정보를 포함해서 학습한다.<br><br></p>
+<p><img src="/images/3208_250919_image16.png" alt="그림 16. CGAN 생성자 정의">  </p>
+<center><span style="font-size: 90%;">그림 16. [CGAN 생성자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image17.png" alt="그림 17. CGAN 판별자 손실 계산">  </p>
+<center><span style="font-size: 90%;">그림 17. [CGAN 판별자 손실 계산]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="5-3-조건-체크-함수-유무"><a href="#5-3-조건-체크-함수-유무" class="headerlink" title="5-3. 조건 체크 함수 유무"></a>5-3. 조건 체크 함수 유무</h2><br>
+
+<p>레이블이 없는 GAN에는 조건에 따른 이미지 생성 기능이 없고 CGAN에서 학습이 끝난 다음 특정 레이블을 조건으로 설정해서 check_condition() 함수를 통해 조건에 맞는 이미지를 생성하게 된다. 이 함수로 CGAN이 정상적으로 작동하는지 확인할 수 있다.<br><br></p>
+<p><img src="/images/3208_250919_image18.png" alt="그림 18. CGAN 조건 체크 함수">  </p>
+<center><span style="font-size: 90%;">그림 18. [CGAN 조건 체크 함수]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="5-4-생성된-이미지-분석"><a href="#5-4-생성된-이미지-분석" class="headerlink" title="5-4. 생성된 이미지 분석"></a>5-4. 생성된 이미지 분석</h2><br>
+
+<p><img src="/images/3208_250919_image19.png" alt="그림 19. CGAN 학습 결과 (1 vs 200 에포크)">  </p>
+<center><span style="font-size: 90%;">그림 19. [CGAN 학습 결과 (1 vs 200 에포크)]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>CGAN 이미지 생성 결과이다. 판별자 손실인 d_loss의 1 에포크 결과를 보면 0.04831에서 100 에포크일 때 d_loss가 0.47632로 작은 차이로 감소한 것을 볼 수 있다. 이는 판별자가 작동을 잘하지 못하고 있다는 걸 의미한다. 생성자 손실인 g_loss를 보면 1 에포크일 때 2.91128이고 100 에포크일 때 1.47756으로 단순히 평면적인 값만 봤을 땐 감소량이 적어보이지만 전체 스텝을 보면 최대가 13.38792이고 100 에포크일 때 최대가 0.91437로 전체적으로 봤을 때 확실히 감소한 모습을 볼 수 있다. 이는 생성자가 더 좋은 이미지를 생성하고 있다는 뜻이다. 그리고 판별자 성능이 0.98로 상대적으로 높은데 이는 생성자가 판별자를 속이는데, 어려움을 겪고 있다는 것을 나타낸다.<br><br><br><br><br></p>
+<h1 id="각-모델-FID-작성"><a href="#각-모델-FID-작성" class="headerlink" title="각 모델 FID 작성"></a>각 모델 FID 작성</h1><br>
+
+<p>GAN 모델별 성능을 측정하기 위해 FID 지표를 사용할 것이다. FID 는 Fréchet Inception Distance의 약자로 생성 모델의 성능을 평가하기 위해 많이 사용하는 지표다. FID 는 생성된 이미지와 실제 이미지 분포 차이를 측정해서 생성 모델이 얼마나 현실적인 이미지를 생성하는지 평가한다. FID 값이 낮을수록 생성된 이미지가 실제 데이터와 비슷함을 의미한다.  </p>
+<p>FID 두 개의 가우시안 분포 간의 거리를 계산하는 방식으로 이루어진다. 동작하기 위해 3가지 과정이 필요하다. 먼저 특징 추출로 생성된 이미지와 실제 이미지를 Inception v3와 같은 신경망에 입력해서 특징 벡터를 추출한다. 여기서 이미지의 임베딩 공간에서 특징을 비교하게 되는데 보통 Inception v3 모델의 마지막 레이어 바로 전의 특징 벡터를 사용한다. 두 번째로 평균과 공분산을 계산하게 된다. 실제 이미지와 생성된 이미지의 특징 벡터에 대해 각각 평균 벡터와 공분산 행렬을 계산한다. 이를 통해 각 이미지 집합의 분포를 표현할 수 있게 된다. 마지막으로 Fréchet 거리를 계산한다. 두 분포의 평균 벡터와 공분산 행렬을 사용해서 다음 공식을 통해 Fréchet 거리를 계산한다.<br><br></p>
+<p><img src="/images/3208_250919_image21.png" alt="그림 20. FID 함수">  </p>
+<center><span style="font-size: 90%;">그림 20. [FID 함수]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>여기서 μ_real과 μ_fake는 실제 이미지와 생성된 이미지의 평균 벡터를 나타내고 Σ_real과 Σ_fake는 공분산 행렬이다. 다음으로 FID 지표를 계산하기 위해 작성한 코드를 바탕으로 FID 계산이 어떻게 수행되는지 살펴보자.<br><br></p>
+<h2 id="6-1-GAN-FID-코드"><a href="#6-1-GAN-FID-코드" class="headerlink" title="6-1. GAN FID 코드"></a>6-1. GAN FID 코드</h2><br>
+
+<p>get_inception_features 함수는 Inception v3 모델을 사용해서 이미지를 입력받아 특징 벡터를 추출한다. 이 함수는 torchvision.models에서 사전 학습된 Inception v3 모델을 가져오고 이를 통해 실제 및 생성된 이미지에서 특징을 추출한다.<br><br></p>
+<p><img src="/images/3208_250919_image21.png" alt="그림 21. Inception 특징 추출 함수">  </p>
+<center><span style="font-size: 90%;">그림 21. [Inception 특징 추출 함수]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>calculate_fid 함수에서는 추출한 특징 벡터들을 사용해서 실제 이미지와 생성된 이미지의 평균 벡터(mu_real, mu_fake)와 공분산 행렬(sigma_real, sigma_fake)을 계산한다. 그 후 두 분포 간의 Frechet 거리를 계산해서 FID 점수를 반환하게 된다.<br><br></p>
+<p><img src="/images/3208_250919_image22.png" alt="그림 22. calculate_fid 함수">  </p>
+<center><span style="font-size: 90%;">그림 22. [calculate_fid 함수]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>train_model 함수에서 각 에포크가 끝날 때마다 FID를 계산해서 GAN 모델이 학습하는 동안 성능을 평가한다. real_images_resized와 fake_images_resized는 Inception 모델의 입력 크기에 맞게 리사이즈 시키고 get_inception_features를 사용해 각 이미지를 특징 벡터로 변환해줘서 calculate_fid 함수로 두 특징 벡터의 FID 점수를 계산한다. 이렇게 계산된 FID 점수는 fid_scores 리스트에 저장되고 첫번째 에포크와 최종 에포크를 출력해서 결과값을 보여준다.<br><br></p>
+<p><img src="/images/3208_250919_image23.png" alt="그림 23. GAN 학습 함수 정의">  </p>
+<center><span style="font-size: 90%;">그림 23. [GAN 학습 함수 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image24.png" alt="그림 24. FID 점수 계산 및 출력">  </p>
+<center><span style="font-size: 90%;">그림 24. [FID 점수 계산 및 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="6-2-DCGAN-FID-코드"><a href="#6-2-DCGAN-FID-코드" class="headerlink" title="6-2. DCGAN FID 코드"></a>6-2. DCGAN FID 코드</h2><br>
+
+<p>기본 GAN과 달리 DCGAN은 합성곱 층을 사용해서 이미지 생성과 판별을 수행하고 훈련 안정성을 높이기 위해 <strong>BatchNormalization</strong>과 <strong>LeakyReLU</strong>를 사용했다.<br><br>  </p>
+<p><img src="/images/3208_250919_image25.png" alt="그림 25. DCGAN 생성자 정의">  </p>
+<center><span style="font-size: 90%;">그림 25. [DCGAN 생성자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image26.png" alt="그림 26. DCGAN 판별자 정의">  </p>
+<center><span style="font-size: 90%;">그림 26. [DCGAN 판별자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="6-3-LSGAN-FID-코드"><a href="#6-3-LSGAN-FID-코드" class="headerlink" title="6-3. LSGAN FID 코드"></a>6-3. LSGAN FID 코드</h2><br>
+
+<p>LSGAN에서는 F.mse_loss를 사용해서 손실을 계산해줬다. 생성자는 판별자로부터 1을 기대하고 판별자는 진짜와 가짜를 1과 0으로 구별하게 된다. LSGAN에서도 판별자 아키텍처는 기본 GAN과 비슷하지만 MSE 손실을 계산하기 위해 마지막 출력 레이어에서 sigmoid 함수를 제거해줬다. 여기서 <strong>MSE</strong>란 예측값과 실제값 간의 차이를 제곱한 평균값을 계산하는 손실 함수다. LSGAN에서 생성자와 판별자가 훈련할 때 MSE 손실을 사용해서 두 값 간의 차이를 최소화하는 역할로 사용되기도 한다.<br><br></p>
+<p><img src="/images/3208_250919_image27.png" alt="그림 27. LSGAN 학습 함수 초기화">  </p>
+<center><span style="font-size: 90%;">그림 27. [LSGAN 학습 함수 초기화]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image28.png" alt="그림 28. LSGAN 학습 루프">  </p>
+<center><span style="font-size: 90%;">그림 28. [LSGAN 학습 루프]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<h2 id="6-4-CGAN-FID-코드"><a href="#6-4-CGAN-FID-코드" class="headerlink" title="6-4. CGAN FID 코드"></a>6-4. CGAN FID 코드</h2><br>
+
+<p>CGAN은 특정 조건에 대한 이미지를 생성할 수 있도록 설계되어 있어서 원하는 조건에 따라 해당하는 이미지를 생성할 수 있다. 그래서 생성자와 판별자에서 조건 레이블을 입력으로 받아 사용할 수 있도록 수정했고 입력받은 레이블은 원-핫 인코딩을 사용하도록 작성했다. 그리고 생성자와 판별자의 입력으로 노이즈와 레이블을 결합해 사용하고 훈련 중 생성자와 판별자 모두 레이블 정보를 사용할 수 있도록 변경해줬다.<br><br></p>
+<p><img src="/images/3208_250919_image29.png" alt="그림 29. CGAN 생성자 정의">  </p>
+<center><span style="font-size: 90%;">그림 29. [CGAN 생성자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image30.png" alt="그림 30. CGAN 판별자 정의">  </p>
+<center><span style="font-size: 90%;">그림 30. [CGAN 판별자 정의]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p><img src="/images/3208_250919_image31.png" alt="그림 31. CGAN 학습 루프 (One-hot 인코딩)">  </p>
+<center><span style="font-size: 90%;">그림 31. [CGAN 학습 루프 (One-hot 인코딩)]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+<br><br>
+
+<h1 id="FID-비교-및-정리"><a href="#FID-비교-및-정리" class="headerlink" title="FID 비교 및 정리"></a>FID 비교 및 정리</h1><br>
+
+<p><img src="/images/3208_250919_image32.png" alt="그림 32. GAN FID 결과 출력">  </p>
+<center><span style="font-size: 90%;">그림 32. [GAN FID 결과 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>먼저 GAN의 FID 결과는 540.90 → 103.69로 총 437.21 차이만큼 낮은 값으로 계산되었다.<br><br></p>
+<p><img src="/images/3208_250919_image33.png" alt="그림 33. DCGAN FID 결과 출력">  </p>
+<center><span style="font-size: 90%;">그림 33. [DCGAN FID 결과 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>다음은 DCGAN의 FID 결과이다. 314.34 → 44.99로 총 269.35만큼의 차이가 벌어진 값으로 계산되었다.<br><br> </p>
+<p><img src="/images/3208_250919_image34.png" alt="그림 34. LSGAN FID 결과 출력">  </p>
+<center><span style="font-size: 90%;">그림 34. [LSGAN FID 결과 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>
+
+<p>LSGAN의 FID 결과이다. 532.52 → 94.01로 총 438.51만큼 차이가 난 값으로 계산되었다.<br><br></p>
+<p><img src="/images/3208_250919_image35.png" alt="그림 35. CGAN FID 결과 출력">  </p>
+<center><span style="font-size: 90%;">그림 35. [CGAN FID 결과 출력]</span><br><span style="font-size: 70%;"></span></center>  
+<br>  
+<br><br>
+
+<p>마지막으로 CGAN의 FID 결과이다. 605.47 → 79.92로 총 525.55만큼의 차이가 나는 결과값이 나왔다.  </p>
+<p>최종 결과값을 놓고 봤을 땐 DCGAN 모델의 값이 제일 낮게 측정되었고 첫 에포크와 마지막 에포크 간의 차이값을 봤을 땐 CGAN 모델의 값의 차이가 가장 컸다.  </p>
+<p>이번 칼럼에서는 GAN, DCGAN, LSGAN, CGAN 총 네 가지 모델에 대해 알아보고 MNIST 데이터셋을 기반으로 이미지를 생성해보는 실습을 진행했고 각 모델의 성능을 FID 값으로 측정해보았다. 실습을 통해 GAN의 성능은 데이터셋에 따라 달라진다는 것을 알게 되어 생성하고자 하는 이미지의 특성을 고려해 적합한 데이터셋과 GAN 모델을 선정하는 것이 중요하다는 것을 느꼈다. 그리고 학습률, 배치사이즈, 노이즈크기, 에포크 수 등의 파라미터들을 조정해서 각 GAN 모델에 맞는 값을 찾아보는 계기가 되었다. 앞으로도 많은 사람이 원하는 이미지를 생성할 수 있도록 GAN의 발전과 응용에 관한 지속적인 연구가 필요할 것이다. 이를 통해 더 나은 이미지 생성 기술이 개발되고 다양한 분야에서 사용될 수 있기를 바란다.<br><br><br><br><br></p>
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><ul>
+<li><p>Radford, A., Metz, L., &amp; Chintala, S. (2016). <em>Unsupervised representation learning with deep convolutional generative adversarial networks</em>. arXiv preprint arXiv:1511.06434. <span class="exturl" data-url="aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzE1MTEuMDY0MzQ=">https://arxiv.org/abs/1511.06434</span>  </p>
+</li>
+<li><p>Mao, X., Li, Q., Xie, H., Lau, R. Y. K., Wang, Z., &amp; Smolley, S. P. (2017). <em>Least Squares Generative Adversarial Networks</em>. 2017 IEEE International Conference on Computer Vision (ICCV), 2794–2802. <span class="exturl" data-url="aHR0cHM6Ly9kb2kub3JnLzEwLjExMDkvSUNDVi4yMDE3LjMwNA==">https://doi.org/10.1109/ICCV.2017.304</span><br>(Preprint: <span class="exturl" data-url="aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzE2MTEuMDQwNzY=">https://arxiv.org/abs/1611.04076</span>)  </p>
+</li>
+<li><p>Mirza, M., &amp; Osindero, S. (2014). <em>Conditional generative adversarial nets</em>. arXiv preprint arXiv:1411.1784. <span class="exturl" data-url="aHR0cHM6Ly9hcnhpdi5vcmcvYWJzLzE0MTEuMTc4NA==">https://arxiv.org/abs/1411.1784</span>  </p>
+</li>
+<li><p>Godeastone. (n.d.). <em>GAN-torch (GitHub repository)</em>. Retrieved September 19, 2025, from <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dvZGVhc3RvbmUvR0FOLXRvcmNo">https://github.com/godeastone/GAN-torch</span>  </p>
+</li>
+<li><p>Jarikki. (2020, April 20). <em>GAN 기본 개념 정리</em>. Tistory. <span class="exturl" data-url="aHR0cHM6Ly9qYXJpa2tpLnRpc3RvcnkuY29tLzI2">https://jarikki.tistory.com/26</span>  </p>
+</li>
+<li><p>Kkwong-guin. (2021, July 5). <em>CGAN 개념 설명</em>. Tistory. <span class="exturl" data-url="aHR0cHM6Ly9ra3dvbmctZ3Vpbi50aXN0b3J5LmNvbS8xNTE=">https://kkwong-guin.tistory.com/151</span>  </p>
+</li>
+<li><p>UntitledTblog. (2021, May 13). <em>DCGAN 학습 과정</em>. Tistory. <span class="exturl" data-url="aHR0cHM6Ly91bnRpdGxlZHRibG9nLnRpc3RvcnkuY29tLzE1OA==">https://untitledtblog.tistory.com/158</span>  </p>
+</li>
+<li><p>Vimalpillai. (n.d.). <em>Deep convolutional GANs (DCGAN) with MNIST</em>. Kaggle. <span class="exturl" data-url="aHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jb2RlL3ZpbWFscGlsbGFpL2RlZXAtY29udm9sdXRpb25hbC1nYW5zLW9yLWRjZ2FuLXdpdGgtbW5pc3Q=">https://www.kaggle.com/code/vimalpillai/deep-convolutional-gans-or-dcgan-with-mnist</span>  </p>
+</li>
+<li><p>Alperkaraca1. (n.d.). <em>MNIST Least Squares GAN</em>. Kaggle. <span class="exturl" data-url="aHR0cHM6Ly93d3cua2FnZ2xlLmNvbS9jb2RlL2FscGVya2FyYWNhMS9tbmlzdC1sZWFzdC1zcXVhcmVzLWdhbg==">https://www.kaggle.com/code/alperkaraca1/mnist-least-squares-gan</span></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/GAN/" rel="tag"># GAN</a>
+              <a href="/tags/DCGAN/" rel="tag"># DCGAN</a>
+              <a href="/tags/LSGAN/" rel="tag"># LSGAN</a>
+              <a href="/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%9D%EC%84%B1/" rel="tag"># 이미지 생성</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/16/3207_250916/" rel="prev" title="[2025 SWING magazine] GAN (1)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] GAN (1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/21/3303_250921/" rel="next" title="[네트워크 포렌식 기초] HTTP와 HTTPS 패킷 비교, 그리고 로그인 정보 추출">
+                  [네트워크 포렌식 기초] HTTP와 HTTPS 패킷 비교, 그리고 로그인 정보 추출 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

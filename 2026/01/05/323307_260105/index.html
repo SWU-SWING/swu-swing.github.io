@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="IoT 침입 탐지 개론과 트래픽 수집 및 이상 행위 탐지 기준 설정IoT 보안 위협과 침입 탐지 개론IDS란?IDS(침입 탐지 시스템)은 Intrusion Detection System의 약자로, 네트워크나 시스템에서 발생하는 비정상적인 활동을 탐지하는 보안 시스템이다. 이 보안 시스템의 주요 목적은 비정상적인 행위를 직접적으로 차단하는 것보다 비정상적인">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발">
+<meta property="og:url" content="https://log.swuswing.com/2026/01/05/323307_260105/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="IoT 침입 탐지 개론과 트래픽 수집 및 이상 행위 탐지 기준 설정IoT 보안 위협과 침입 탐지 개론IDS란?IDS(침입 탐지 시스템)은 Intrusion Detection System의 약자로, 네트워크나 시스템에서 발생하는 비정상적인 활동을 탐지하는 보안 시스템이다. 이 보안 시스템의 주요 목적은 비정상적인 행위를 직접적으로 차단하는 것보다 비정상적인">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323307_260110_image34.png">
+<meta property="article:published_time" content="2026-01-05T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-13T01:49:29.604Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="IoT">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/323307_260110_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/01/05/323307_260105/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/01/05/323307_260105/","path":"2026/01/05/323307_260105/","title":"[2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#IoT-%EC%B9%A8%EC%9E%85-%ED%83%90%EC%A7%80-%EA%B0%9C%EB%A1%A0%EA%B3%BC-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%88%98%EC%A7%91-%EB%B0%8F-%EC%9D%B4%EC%83%81-%ED%96%89%EC%9C%84-%ED%83%90%EC%A7%80-%EA%B8%B0%EC%A4%80-%EC%84%A4%EC%A0%95"><span class="nav-number">1.</span> <span class="nav-text">IoT 침입 탐지 개론과 트래픽 수집 및 이상 행위 탐지 기준 설정</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IoT-%EB%B3%B4%EC%95%88-%EC%9C%84%ED%98%91%EA%B3%BC-%EC%B9%A8%EC%9E%85-%ED%83%90%EC%A7%80-%EA%B0%9C%EB%A1%A0"><span class="nav-number">1.1.</span> <span class="nav-text">IoT 보안 위협과 침입 탐지 개론</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDS%EB%9E%80"><span class="nav-number">1.1.1.</span> <span class="nav-text">IDS란?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IoT-%EB%B3%B4%EC%95%88-%EC%B7%A8%EC%95%BD%EC%A0%90-%EC%82%AC%EB%A1%80"><span class="nav-number">1.1.2.</span> <span class="nav-text">IoT 보안 취약점 사례</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IoT-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-IDS%EA%B0%80-%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%B4%EC%9C%A0"><span class="nav-number">1.1.3.</span> <span class="nav-text">IoT 환경에서 IDS가 필요한 이유</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%88%98%EC%A7%91-%EB%B0%8F-%EC%8B%A4%EC%8A%B5"><span class="nav-number">1.2.</span> <span class="nav-text">트래픽 수집 및 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-HTTP-CoAP-%ED%86%B5%EC%8B%A0-%EA%B5%AC%EC%A1%B0-%EB%B6%84%EC%84%9D"><span class="nav-number">1.2.1.</span> <span class="nav-text">MQTT&#x2F;HTTP&#x2F;CoAP 통신 구조 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Wireshark%EB%A1%9C-IoT-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%BA%A1%EC%B2%98"><span class="nav-number">1.2.2.</span> <span class="nav-text">Wireshark로 IoT 트래픽 캡처</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PyShark%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%8B%A4%EC%8B%9C%EA%B0%84-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%BA%A1%EC%B2%98-%EC%98%88%EC%8B%9C-%ED%99%95%EC%9D%B8"><span class="nav-number">1.2.3.</span> <span class="nav-text">PyShark를 활용한 실시간 트래픽 캡처 예시 확인</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IoT-%EC%9D%B4%EC%83%81-%ED%96%89%EC%9C%84-%ED%83%90%EC%A7%80-%EA%B8%B0%EC%A4%80-%EC%A0%95%EB%A6%AC"><span class="nav-number">1.3.</span> <span class="nav-text">IoT 이상 행위 탐지 기준 정리</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%BA%A1%EC%B2%98%EB%90%9C-%ED%8A%B8%EB%9E%98%ED%94%BD%EC%9D%84-%EA%B8%B0%EB%B0%98%EC%9C%BC%EB%A1%9C-%EC%9D%B4%EC%83%81-%ED%83%90%EC%A7%80-%EA%B8%B0%EC%A4%80-%EC%A0%95%EB%A6%AC"><span class="nav-number">1.3.1.</span> <span class="nav-text">캡처된 트래픽을 기반으로 이상 탐지 기준 정리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A3%BC%EC%9A%94-%ED%8F%AC%ED%8A%B8-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C%EC%97%90-%EB%94%B0%EB%A5%B8-%ED%95%84%ED%84%B0%EB%A7%81-%EA%B8%B0%EC%A4%80-%EC%A0%95%EB%A6%AC"><span class="nav-number">1.3.2.</span> <span class="nav-text">주요 포트&#x2F;프로토콜에 따른 필터링 기준 정리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%B0%98%EB%B3%B5%EB%90%98%EB%8A%94-%ED%8F%89%EB%AC%B8-%EB%A9%94%EC%8B%9C%EC%A7%80%EC%97%90-%EB%8C%80%ED%95%9C-%EC%9D%B4%EC%83%81-%EC%A7%95%ED%9B%84-%ED%8C%90%EB%8B%A8-%EA%B8%B0%EC%A4%80-%EC%A0%95%EB%A6%AC"><span class="nav-number">1.3.3.</span> <span class="nav-text">반복되는 평문 메시지에 대한 이상 징후 판단 기준 정리</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%9D%B4%EC%83%81-%ED%8A%B8%EB%9E%98%ED%94%BD-%ED%83%90%EC%A7%80-%EB%A1%9C%EC%A7%81-Threshold-%EA%B8%B0%EB%B0%98-%EA%B5%AC%ED%98%84"><span class="nav-number">2.</span> <span class="nav-text">이상 트래픽 탐지 로직: Threshold 기반 구현</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%9C%EA%B0%84-%EA%B8%B0%EB%B0%98-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%B9%B4%EC%9A%B4%ED%8C%85%EC%9D%B4%EB%9E%80"><span class="nav-number">2.1.</span> <span class="nav-text">시간 기반 트래픽 카운팅이란</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%83%90%EC%A7%80-%EC%A1%B0%EA%B1%B4-%EC%84%A4%EC%A0%95-%EB%B0%8F-%EC%9D%B4%EC%83%81-%EA%B0%90%EC%A7%80-%EB%A1%9C%EA%B7%B8-%EC%A0%80%EC%9E%A5"><span class="nav-number">2.2.</span> <span class="nav-text">탐지 조건 설정 및 이상 감지 로그 저장</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PyShark%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EA%B8%B0%EB%B3%B8-%ED%83%90%EC%A7%80-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%EC%B6%95"><span class="nav-number">2.3.</span> <span class="nav-text">PyShark를 이용한 기본 탐지 시스템 구축</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-%EC%A7%80%EC%A0%95"><span class="nav-number">2.3.1.</span> <span class="nav-text">인터페이스 지정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MQTT-%ED%8A%B8%EB%9E%98%ED%94%BD-%ED%95%84%ED%84%B0%EB%A7%81"><span class="nav-number">2.3.2.</span> <span class="nav-text">MQTT 트래픽 필터링</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%9C%EA%B0%84-%EA%B8%B0%EB%B0%98-%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%A7%91%EA%B3%84"><span class="nav-number">2.3.3.</span> <span class="nav-text">시간 기반 트래픽 집계</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A1%9C%EA%B7%B8-%EC%A0%80%EC%9E%A5-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.3.4.</span> <span class="nav-text">로그 저장 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EC%8B%A4%ED%96%89-%ED%9D%90%EB%A6%84"><span class="nav-number">2.3.5.</span> <span class="nav-text">실습 실행 흐름</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EA%B7%B8-%ED%8F%AC%EB%A7%B7-%EC%84%A4%EA%B3%84"><span class="nav-number">2.4.</span> <span class="nav-text">로그 포맷 설계</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-Lines-%ED%8F%AC%EB%A7%B7%EC%9D%98-%ED%8A%B9%EC%A7%95"><span class="nav-number">2.4.1.</span> <span class="nav-text">JSON Lines 포맷의 특징</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%80%EC%9E%A5%EB%90%98%EB%8A%94-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EA%B5%AC%EC%A1%B0"><span class="nav-number">2.4.2.</span> <span class="nav-text">저장되는 데이터 구조</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%9D%B4%EC%83%81-%ED%8A%B8%EB%9E%98%ED%94%BD-%EA%B0%90%EC%A7%80-%EB%A1%9C%EC%A7%81-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%EA%B8%B0%EB%B0%98-%EA%B5%AC%ED%98%84"><span class="nav-number">3.</span> <span class="nav-text">이상 트래픽 감지 로직: 머신러닝 기반 구현</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9D%B4%EC%83%81%EC%B9%98-%ED%83%90%EC%A7%80-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%86%8C%EA%B0%9C"><span class="nav-number">3.1.</span> <span class="nav-text">이상치 탐지 알고리즘 소개</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Threshold-%EA%B8%B0%EB%B0%98-%ED%83%90%EC%A7%80-%EB%B0%A9%EC%8B%9D%EC%9D%98-%ED%95%9C%EA%B3%84%EC%99%80-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D%EC%9D%98-%ED%95%84%EC%9A%94%EC%84%B1"><span class="nav-number">3.1.1.</span> <span class="nav-text">Threshold 기반 탐지 방식의 한계와 머신러닝의 필요성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B4%EC%83%81%EC%B9%98-%ED%83%90%EC%A7%80%EC%9D%98-%EA%B8%B0%EB%B3%B8-%EA%B0%9C%EB%85%90"><span class="nav-number">3.1.2.</span> <span class="nav-text">이상치 탐지의 기본 개념</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation-Forest%EC%99%80-One-Class-SVM%EC%9D%98-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%85%90"><span class="nav-number">3.1.3.</span> <span class="nav-text">Isolation Forest와 One-Class SVM의 핵심 개념</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#scikit-learn%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%8B%A4%EC%8A%B5"><span class="nav-number">3.2.</span> <span class="nav-text">scikit-learn를 활용한 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5%EC%9A%A9-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A4%80%EB%B9%84"><span class="nav-number">3.2.1.</span> <span class="nav-text">실습용 데이터 준비</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Isolation-Forest-%ED%95%99%EC%8A%B5-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1"><span class="nav-number">3.2.2.</span> <span class="nav-text">Isolation Forest 학습 코드 작성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#One-Class-SVM-%ED%95%99%EC%8A%B5-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1"><span class="nav-number">3.2.3.</span> <span class="nav-text">One-Class SVM 학습 코드 작성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%83%90%EC%A7%80-%EA%B2%B0%EA%B3%BC-%EB%B6%84%EC%84%9D"><span class="nav-number">3.2.4.</span> <span class="nav-text">탐지 결과 분석</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%EA%B8%B0%EB%B0%98-%EC%9D%B4%EC%83%81-%ED%83%90%EC%A7%80-%EA%B2%B0%EA%B3%BC-%ED%95%B4%EC%84%9D-%EB%B0%8F-%ED%99%9C%EC%9A%A9-%EB%B0%A9%EC%95%88"><span class="nav-number">4.</span> <span class="nav-text">머신러닝 기반 이상 탐지 결과 해석 및 활용 방안</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%ED%8A%B8%EB%9E%98%ED%94%BD-%EC%A6%9D%EA%B0%80-%EA%B8%B0%EB%B0%98-%EA%B3%B5%EA%B2%A9-%ED%8C%A8%ED%84%B4-%ED%95%B4%EC%84%9D"><span class="nav-number">4.1.</span> <span class="nav-text">트래픽 증가 기반 공격 패턴 해석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%83%90%EC%A7%80-%EB%AA%A8%EB%8D%B8%EC%9D%98-%ED%8C%90%EB%8B%A8-%EA%B2%B0%EA%B3%BC-%EB%B6%84%EC%84%9D"><span class="nav-number">4.2.</span> <span class="nav-text">머신러닝 탐지 모델의 판단 결과 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%9C%EA%B0%81%ED%99%94-%EB%B0%8F-%EC%9E%90%EB%8F%99-%EC%95%8C%EB%A6%BC-%EC%B2%B4%EA%B3%84%EB%A1%9C%EC%9D%98-%ED%99%95%EC%9E%A5-%EA%B0%80%EB%8A%A5%EC%84%B1"><span class="nav-number">4.3.</span> <span class="nav-text">시각화 및 자동 알림 체계로의 확장 가능성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0"><span class="nav-number">4.4.</span> <span class="nav-text">결론</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">5.</span> <span class="nav-text">참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/05/323307_260105/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2026 SWING magazine] IoT 환경에서의 트래픽 기반 침입 탐지를 위한 파이썬 기반 IDS 개발
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: PyShield (esol)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-05 10:00:00" itemprop="dateCreated datePublished" datetime="2026-01-05T10:00:00+09:00">2026-01-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="IoT-침입-탐지-개론과-트래픽-수집-및-이상-행위-탐지-기준-설정"><a href="#IoT-침입-탐지-개론과-트래픽-수집-및-이상-행위-탐지-기준-설정" class="headerlink" title="IoT 침입 탐지 개론과 트래픽 수집 및 이상 행위 탐지 기준 설정"></a>IoT 침입 탐지 개론과 트래픽 수집 및 이상 행위 탐지 기준 설정</h1><h2 id="IoT-보안-위협과-침입-탐지-개론"><a href="#IoT-보안-위협과-침입-탐지-개론" class="headerlink" title="IoT 보안 위협과 침입 탐지 개론"></a>IoT 보안 위협과 침입 탐지 개론</h2><h3 id="IDS란"><a href="#IDS란" class="headerlink" title="IDS란?"></a>IDS란?</h3><p>IDS(침입 탐지 시스템)은 Intrusion Detection System의 약자로, 네트워크나 시스템에서 발생하는 비정상적인 활동을 탐지하는 보안 시스템이다. 이 보안 시스템의 주요 목적은 비정상적인 행위를 직접적으로 차단하는 것보다 비정상적인 행위에 대한 탐지 내용을 사용자에게 알려 대처하도록 하는 것이다. </p>
+<p>주 목적에 맞게 침입에 대한 탐지가 핵심적인 기능으로, 네트워크 트래픽이나 시스템 로그를 모니터링하여 비정상적인 행위를 탐지한다. 또한 탐지 내용에 대한 신속한 대응을 위해 침입이 의심된다면 관리자에게 실시간으로 경고나 알림을 보내거나 로그를 기록해 대응할 수 있도록 알림 기능이 포함되어 있는 경우가 많다. 향후 보안 정책에 탐지 결과와 관련된 내용을 반영하기 위해 탐지된 이벤트를 기록하고 분석하는 기능도 사용된다. </p>
+<span id="more"></span>
+
+<p>IDS는 주로 패킷 분석과 행위 모니터링을 통해 침입 시도를 탐지한다. IDS 작동 방식의 유형으로는 크게 서명 기반과 이상 기반으로 분류할 수 있다. 서명 기반(Signature-Based)은 기존의 공격 패턴이나 서명을 데이터베이스에 저장하고, 네트워크 트래픽이나 시스템 로그와 비교하여 일치하는 패턴이 발견되면 위협으로 간주한다. 가장 자주 쓰이는 방식이기도 하고 정확도가 높지만, 기존에 없던 새로운 유형의 공격은 탐지하기 어렵다는 단점이 있다. 이상 기반(Anomaly-Based)은 수집한 데이터베이스로부터 정상적인 동작 기준선을 정하고 이 기준선에서 벗어나는 비정상적인 활동을 탐지한다. 서명 기반과 달리 새로운 유형의 공격을 탐지하는 것에 유용하지만, 오탐이 발생할 확률이 높다. </p>
+<p>IDS의 종류를 크게 2가지로 나눠 설명할 수 있다. 먼저 NIDS(Network-Based IDS)는 네트워크 내에서 발생하는 트래픽을 모니터링하여 비정상적인 트래픽을 탐지하는 시스템이다. 스위치나 라우터 등 네트워크의 경계에 설치해 사용하기 때문에 감시 영역이 넓고 외부에서 들어오는 공격을 탐지하는 데 유용하다. 또한 독립된 서버에 설치되기 때문에 호스트의 운영체제 및 하드웨어와 독립적이며 네트워크나 호스트에 대한 영향이 최소화한다. 하지만 공격당한 시스템에 대한 결과를 알 수 없고 암호화 내용을 검사할 수도 없다. </p>
+<p>HIDS(Host-Based IDS)는 각 호스트나 시스템 로그, 파일 시스템, 프로세스 등을 모니터링을 통한 침입 탐지 시스템이다. 특정 운영체제 하나에서만 작동하기 때문에 NIDS에 비해 상대적으로 정확한 탐지가 가능하다. 또한 부적절한 접속이나 프로세스를 발견한 경우 부적절한 접속이나 프로세스가 설치된 호스트의 소유이므로 즉각적인 대응이 가능하다. 하지만 전체적인 네트워크 탐지는 불가능하며 스스로 공격 대상인 경우에만 탐지가 가능하고, 모든 개별 호스트에 시스템을 설치 및 운영해야 하기 때문에 비용이 많이 든다는 단점이 있다. </p>
+<p><img src="/images/323307_260110_image1.png" alt="그림 1. [NIDS 및 HIDS 동작 화면]"></p>
+<center><span style="font-size: 90%;">그림 1. [NIDS 및 HIDS 동작 화면]</span></center>
+<br>
+
+<h3 id="IoT-보안-취약점-사례"><a href="#IoT-보안-취약점-사례" class="headerlink" title="IoT 보안 취약점 사례"></a>IoT 보안 취약점 사례</h3><p>IoT 보안의 취약점을 악용한 사례는 매우 다양하다. ‘인세캠(Insecam)’ 사이트 사례는 전 세계 약 7만 여대의 IP 카메라가 해킹되어 ‘인세캠’이라는 사이트를 통해 생중계되었던 사건이다. 당시 공격자는 기본 아이디와 비밀번호를 바꾸지 않은 IP 카메라를 해킹했고, 사이트에 IP 카메라가 설치된 경도와 위도가 나와있으며 구글 지도를 통해 해당 위치를 추적할 수 있었다. </p>
+<p>다른 사례로는 Mirai 멀웨어 사례가 있다. 2016년 10월 도메인 네임 시스템(DNS) 제공 업체인 DYN을 대상으로 DDoS 공격이 발생해 미국 내 주요 1200개 사이트가 3-4시간 동안 마비되었다. 이는 공격자가 이미 알려진 취약점과 기본 패스워드를 사용하고 있는 점을 이용해 IoT 기기로 봇넷을 만들 수 있게 해주는 Mirai 악성코드를 이용해 감염시키고 이를 DDoS 공격에 이용했던 사건이다. </p>
+<p>마지막으로 공유기 취약점으로 인해 악성 앱 감염 사례가 있다. 이때 공격자는 취약한 공유기 비밀번호를 악용하여 대량 해킹으로 약 13000대를 악성 앱을 통해 감염시킨 후 탈취한 정보를 이용해 포털사이트 계정 10000개를 부정하게 생성하였다.<br><br></p>
+<h3 id="IoT-환경에서-IDS가-필요한-이유"><a href="#IoT-환경에서-IDS가-필요한-이유" class="headerlink" title="IoT 환경에서 IDS가 필요한 이유"></a>IoT 환경에서 IDS가 필요한 이유</h3><p><strong>1. 기본 보안 설정을 악용하는 공격 탐지</strong><br>인세캠 사례처럼 기존 아이디와 비밀번호를 그대로 사용하는 IoT 기기는 자동화 공격이나 동일한 계정을 이용해 대규모의 접근 시도를 통한 권한 탈취 등으로 악용당하기 쉽다. IDS가 있다면 이러한 기존 아이디와 비밀번호의 반복된 로그인 시도나 비정상적인 접속 패턴을 탐지해 관리자에게 경고를 줌으로써 단순하지만 치명적인 공격을 방지할 수 있다. </p>
+<p><strong>2. 대규모 봇넷 감염 조기 탐지</strong><br>IDS는 네트워크에서 비정상적인 외부 통신을 조기에 탐지하므로 이러한 Mirai 봇넷 감염 사태의 첫 방어선 역할을 할 수 있다.</p>
+<p><strong>3. 내부 네트워크의 위협 식별</strong><br>공유기 취약점 사례처럼, 네트워크 내부 장치를 통해 다른 기기로 확산되는 공격도 존재한다. 이는 NIDS를 통해 네트워크 내부 흐름을 모니터링하여 외부에 들어오지 않는 공격까지 식별할 수 있다. </p>
+<p><strong>4. 사후 분석 및 대응 기반 제공</strong><br>공격이 성공하더라도 IDS가 침입 흔적을 기록하여 공격 과정을 분석함으로써 추후 보안 강화 및 재발 방지에 도움을 줄 수 있다.<br><br></p>
+<h2 id="트래픽-수집-및-실습"><a href="#트래픽-수집-및-실습" class="headerlink" title="트래픽 수집 및 실습"></a>트래픽 수집 및 실습</h2><h3 id="MQTT-HTTP-CoAP-통신-구조-분석"><a href="#MQTT-HTTP-CoAP-통신-구조-분석" class="headerlink" title="MQTT&#x2F;HTTP&#x2F;CoAP 통신 구조 분석"></a>MQTT&#x2F;HTTP&#x2F;CoAP 통신 구조 분석</h3><p>MQTT&#x2F;HTTP&#x2F;CoAP로 나누어 통신 구조를 분석함으로써 각 프로토콜의 특징과 작동 방식을 알아보았다. MQTT는 Message Queuing Telemetry Transport 약자로, 경량의 pub&#x2F;sub 메시징 프로토콜이다. M2M과 IoT 시스템에서의 사용을 목적으로 만들어졌으며 낮은 전력과 대역폭 환경에서도 사용할 수 있도록 설계되었다. 메시지를 Broker에 발행하는 Publisher, Publisher로부터 메시지를 수신하고 구독자에게 메시지를 전송하는 Broker, Broker로부터 메시지를 구독하는 Subscriber로 구성되어 있다.</p>
+<p><img src="/images/323307_260110_image2.png" alt="그림 2. [MQTT 프로토콜 동작 흐름]"></p>
+<center><span style="font-size: 90%;">그림 2. [MQTT 프로토콜 동작 흐름]</span></center><br>
+
+<p>통신 과정에서 TCP&#x2F;IP 연결 후 클라이언트가 MQTT 브로커에 메시지를 발행하거나 구독한다. 브로커는 클라이언트로부터 발행된 메시지를 해당 Topic의 구독자에게 메시지를 전달한다. HTTP는 Hypertest Transfer Protocol의 약자로, 텍스트 기반의 통신 규약으로 인터넷에서 데이터를 주고받을 수 있는 프로토콜이다. 클라이언트-서버 모델을 사용하고 MQTT와 마찬가지로 TCP&#x2F;IP에서 작동한다. </p>
+<p><img src="/images/323307_260110_image3.png" alt="그림 3. [Client와 Server 간 통신]"></p>
+<center><span style="font-size: 90%;">그림 3. [Client와 Server 간 통신]</span></center><br>
+
+<p>이때 클라이언트에 전송되는 메시지를 요청(request), 응답으로 전송되는 메시지를 응답(response)으로 부른다. 클라이언트가 HTTP 메시지를 통해 서버에 요청하고 서버가 요청에 대한 응답을 보내면 클라이언트가 응답 결과를 열어 동작한다.  </p>
+<p>CoAP는 Constrained Application Protocol의 약자로, 제약이 있는 장치들을 위한 특수한 인터넷 애플리케이션 프로토콜이다. HTTP와 유사한 구조를 가지긴 하지만 UDP 기반으로 작동한다. 또한 HTTP와 유사하게 클라이언트-서버 구조에서 요청-응답 패턴으로 이루어진다. 다만 UDP 기반으로 작동하기 때문에 신뢰성 확보를 위해 4가지 메시지 유형을 사용해 조절한다. </p>
+<p><img src="/images/323307_260110_image4.png" alt="그림 4. [CoAP(Constrained Application Protocol) 요청·응답 흐름]"></p>
+<center><span style="font-size: 90%;">그림 4. [CoAP(Constrained Application Protocol) 요청·응답 흐름]</span></center><br>
+
+<p>메시지 유형으로는 반드시 ACK가 필요한 신뢰형 메시지(CON), ACK 없어도 가능한 비신뢰형 메시지(NON), CON 메시지의 응답(ACK), 처리 불가능한 메시지를 수신할 시 응답(RST)이 있다.<br><br></p>
+<h3 id="Wireshark로-IoT-트래픽-캡처"><a href="#Wireshark로-IoT-트래픽-캡처" class="headerlink" title="Wireshark로 IoT 트래픽 캡처"></a>Wireshark로 IoT 트래픽 캡처</h3><p><strong>1. MQTT 작동 확인하기</strong><br>명령어를 통해 MQTT 환경을 구축한 후에 터미널1을 구독자, 터미널2를 발행자로 설정하고 아래의 명령어를 입력한다.</p>
+<p><img src="/images/323307_260110_image5.png" alt="그림 5. [MQTT 작동 명령어]"></p>
+<center><span style="font-size: 90%;">그림 5. [MQTT 작동 명령어]</span></center><br>
+
+<p>해당 명령어에서 mosquitto_sub&#x2F;pub는 MQTT 구독&#x2F;발행용 CLI을 나타내고, -h localhost 명령어는 브로커(host) 주소에 접속한다는 의미이다. 만약 다른 장비의 브로커라면 IP나 도메인 입력해야 한다. -t test&#x2F;topic 명령어는 구독할 토픽으로 발행되는 메시지를 그대로 출력한다는 뜻이고 –m “payload”는 메시지 본문(payload)을 전송한다. </p>
+<p>각 터미널에서 명령어를 실행하면 터미널1(구독자)은 대기 상태가 되고 같은 브로커에 test&#x2F;topic으로 메시지를 발행하면 화면에 즉시 출력하게 된다. 터미널2(발행자)는 브로커가 메시지를 받고 해당 토픽을 구독자에게 전달한다. 이때 구독자에서 메시지가 출력되면 정상적으로 실행된 것이다.</p>
+<p><img src="/images/323307_260110_image6.png" alt="그림 6. [MQTT 작동 명령어 입력 시 터미널 결과]"></p>
+<center><span style="font-size: 90%;">그림 6. [MQTT 작동 명령어 입력 시 터미널 결과]</span></center><br>
+
+<p><strong>2. Wireshark 캡처</strong><br>MQTT 명령어에서 –h localhost를 사용해서 메시지가 eth0, wlan0 등을 통하지 않고 내부 루프백 인터페이스(lo)로만 오가기 때문에 wireshark 실행 후 필터는 Loopback(lo)을 선택하고, 관찰하는 대상이 MQTT 패킷이므로 필터 입력창에 mqtt 입력한다. 이후 실행해보면 발행자가 메시지를 여러 번 발행했을 때, wireshark에서 publish, connect, subscribe 등의 메시지가 확인되면 정상적으로 실습이 완료된 것이다.</p>
+<p><img src="/images/323307_260110_image7.png" alt="그림 7. [MQTT 작동 후 Wireshark 실습 화면]"></p>
+<center><span style="font-size: 90%;">그림 7. [MQTT 작동 후 Wireshark 실습 화면]</span></center>
+<br>
+
+<h3 id="PyShark를-활용한-실시간-트래픽-캡처-예시-확인"><a href="#PyShark를-활용한-실시간-트래픽-캡처-예시-확인" class="headerlink" title="PyShark를 활용한 실시간 트래픽 캡처 예시 확인"></a>PyShark를 활용한 실시간 트래픽 캡처 예시 확인</h3><p><strong>1. pyshark 실행</strong></p>
+<p><img src="/images/323307_260110_image8.png" alt="그림 8. [pyshark 실행 명령어]"></p>
+<center><span style="font-size: 90%;">그림 8. [pyshark 실행 명령어]</span></center><br>
+
+<p>pyshark-test로 이동한 후에 source.venv&#x2F;bin&#x2F;activate 명령어를 통해 가상환경 활성화한 후 pyshark 실행한다. </p>
+<p><strong>2. 파이썬으로 실습에 필요한 코드 작성</strong><br>phsark 실행 후 실습에 사용할 IDS 형태의 코드를 작성한다. python 라이브러리를 이용해 네트워크 패킷을 실시간으로 캡처하고, MQTT Connect 메시지를 탐지하는 간단한 IDS 형태의 코드를 생성해 실습에 사용했다. </p>
+<p><img src="/images/323307_260110_image9.png" alt="그림 9. [MQTT Connect 메시지 탐지 IDS 코드 구현]"></p>
+<center><span style="font-size: 90%;">그림 9. [MQTT Connect 메시지 탐지 IDS 코드 구현]</span></center><br>
+
+<p>생성한 코드에 대해서 설명하면 import pyshark로 wireshark 기능을 python에서 쓸 수 있게 해주는 pyshark 라이브러리를 불러오고, 실시간 캡처 객체를 생성한다. </p>
+<p>interface&#x3D;’lo‘는 루프백(localhost) 인터페이스에서 패킷 캡처하는 것으로 MQTT 통신 구조를 사용하기 때문에 루프백 인터페이스를 사용하였다. bpf_filter&#x3D;’tcp port 1883‘는 커널이나 pcap에서 필터링을 통해 캡처되는 패킷의 수를 줄인다. TCP 포트 1883, MQTT 기본 포트만 캡처한다. display_filter&#x3D;’mqtt‘는 wireshark 디스플레이 필터로 MQTT 패킷만 표시한다. 이후 for문을 통해 무한 루프를 돌면서 실시간으로 캡처한 패킷 하나씩 분석한다. print(“MQTT Packet:”, m)를 통해 패킷에서 MQTT의 레이어 정보를 출력한다. </p>
+<p>이후 if문을 통해 조건을 만족하면 메시지를 띄우는데, if getattr(m, “msgtype_str”, “”) &#x3D;&#x3D; “CONNECT”:에서 MQTT 레이어의 msgtype_str를 확인해서 CONNECT면 CONNECT 메시지를 뜻한다. if 조건을 만족한다면 “Suspicious MQTT Connect detected”메시지를 출력한다. 이는 누군가가 브로커에게 연결 시도를 하면 알림을 주는 구조다. 마지막으로 execept AttributeError: pass에서 except를 통해 일부 패킷은 MQTT 필드가 없는 경우 AttributeError 발생하면 예외로 처리하고 무시하고 다음 패킷으로 넘어간다. </p>
+<p><strong>3. pyshark로 실시간 트래픽 캡처</strong><br>터미널1은 pyshark를 활용한 코드 실행용, 터미널2는 구독자, 터미널3는 발행자로 설정한다. 터미널1에서 코드를 실행한 후에 터미널2에 구독자 명령어를 입력하고, 터미널3에서 메시지를 여러 차례 발행한다.</p>
+<p><img src="/images/323307_260110_image10.png" alt="그림 10. [MQTT 실행 후 pyshark을 통한 실시간 트래픽 캡쳐 화면]"></p>
+<center><span style="font-size: 90%;">그림 10. [MQTT 실행 후 pyshark을 통한 실시간 트래픽 캡쳐 화면]</span></center><br>
+
+<p>실행하면 터미널1은 MQTT의 패킷 캡처 로그를 출력한다. Connect ACK와 Connection(0)이 있을 때, 요청을 보내고 응답을 했다면 연결이 정상적으로 성립한 것이다. 이때 메시지 값이 5377696e67로 hex값으로 표현되고 변환하면 발행한 메시지인 “Swing”과 같다. 터미널2는 구독자하고 있는 발행자의 메시지가 출력되면 정상적으로 작동한 것으로 판단할 수 있다. 마지막으로 터미널3에 메시지가 온전히 발행된다면 정상적으로 작동한 것임을 확인할 수 있다.<br><br></p>
+<h2 id="IoT-이상-행위-탐지-기준-정리"><a href="#IoT-이상-행위-탐지-기준-정리" class="headerlink" title="IoT 이상 행위 탐지 기준 정리"></a>IoT 이상 행위 탐지 기준 정리</h2><h3 id="캡처된-트래픽을-기반으로-이상-탐지-기준-정리"><a href="#캡처된-트래픽을-기반으로-이상-탐지-기준-정리" class="headerlink" title="캡처된 트래픽을 기반으로 이상 탐지 기준 정리"></a>캡처된 트래픽을 기반으로 이상 탐지 기준 정리</h3><p>캡처에서 확인할 수 있는 Connect Ack, Publish Message, Disconnect Req와 발행한 메시지를 기반으로 이상 탐지 기준을 정리하였다.</p>
+<p><strong>1. 연결 플래핑</strong><br>정상적인 애플리케이션은 연결 유지나 재연결 일정이 규칙적이기 때문에 짧은 시간에 Connect → Connect Ack → Disconnect가 반복되는 빈도가 높거나 연결 지속시간이 평소 대비 매우 짧은 경우는 비정상적이다.</p>
+<p><strong>2. 동일한 Topic이나 Payload 반복</strong><br>IoT는 보통 센서 주기 등으로 메시지 빈도가 정해져서 동일한 Topic이나 Payload의 반복 빈도가 급증하거나 특정 Topic이 전체 Publish의 절반 이상을 차지하면 자동화 공격이나 오작동으로 판단할 수 있다.</p>
+<p><strong>3. 허용되지 않은 Topic 접근 또는 와일드카드 남용</strong><br>와일드카드는 브로커 전 범위 탐색에 사용될 수 있기 때문에 와일드카드 구독이 짧은 시간 안에 여러 번 발생하거나 민감 토픽에 접근 시도가 1회라도 있을 경우 경계해야 한다. </p>
+<p><strong>4. PINGREQ나 KeepAlive 이상</strong><br>PINGREQ의 초당 응답 유무을 관찰했을 때, PINGRESP 미수신이 반복되면 연결 불안 혹은 중간자 공격을 의심해보아야 한다. 또 KeepAlive는 연결 유지 신호로 주기가 비정상이면 이상이 있을 확률이 높다.  </p>
+<p><strong>5. 브로커 반응 이상</strong><br>브로커의 응답은 결과를 반영하므로 0:accepted, 2:identifier 등 Connect Ack 응답 코드를 관찰했을 때, 성공 코드가 급증하면 서비스 남용을 의심할 수 있고, 반대로 실패 코드가 급증하면 무차별 대입 인증 시도가 증가했다는 것을 알 수 있다.<br><br></p>
+<h3 id="주요-포트-프로토콜에-따른-필터링-기준-정리"><a href="#주요-포트-프로토콜에-따른-필터링-기준-정리" class="headerlink" title="주요 포트&#x2F;프로토콜에 따른 필터링 기준 정리"></a>주요 포트&#x2F;프로토콜에 따른 필터링 기준 정리</h3><p><strong>1. TCP&#x2F;UDP의 주요 포트에 따른 필터링 기준</strong></p>
+<ul>
+<li><p>20&#x2F;21(FTP)<br>평문 전송 시 민감 정보 노출이 가능하므로 정상 사용 환경이 아니라면 차단 또는 모니터링하는 것이 좋다. </p>
+</li>
+<li><p>22 (SSH)<br>원격 접속 포트로 비정상적인 다수의 연결 시도는 무차별 대입을 의심할 수 있다.<br>내부망에서 필요없는 경우 제한한다. </p>
+</li>
+<li><p>25 (SMTP)<br>메일 발송 프로토콜로, 대량 전송 시 메일 발송 여부 탐지가 필요하다. </p>
+</li>
+<li><p>53 (DNS)<br>정상 요청 대비 응답 패턴이 크거나 빈도가 많으면 DDoS 공격이나 데이터 유출 가능성이 있다. </p>
+</li>
+<li><p>80 &#x2F; 443 (HTTP&#x2F;HTTPS)<br>웹 트래픽의 기본 포트로, 비정상 User-Agent가 존재하거나 특정 경로에 반복적으로 접근하는 경우 웹 공격을 의심할 수 있다. </p>
+</li>
+<li><p>1883 (MQTT)<br>IoT 디바이스 메시지 전송 프로토콜로, 평문으로 메시지를 전송하기 때문에 민감한 데이터를 노출할 수도 있다. 또한 publish&#x2F;subscribe 패턴이 과도하거나 허용되지 않은 Topic 사용 시 공격을 의심해야 한다.</p>
+</li>
+</ul>
+<p><strong>2. MQTT 프로토콜에 따른 필터링 기준</strong><br>MQTT 프로토콜에서의 필터링 기준으로는 먼저 반복적인 메시지 패턴 감지가 있다. 동일한 페이로드가 반복적으로 전송되면 무차별 대입 공격이나 플로딩 같은 자동화 공격을 의심할 수 있다. 이는 MQTT 프로토콜이 아니더라도 자주 사용되는 필터링 조건이다. 다른 기준으로는 Subscribe&#x2F;Publish 빈도 이상치가 있다. 정상적인 상태에 비해 너무 빈번한 Topic 구독 및 발행은 DDoS 공격 시도가 발생한 것일 수 있기 때문에 주의해야 한다. 마지막으로 Topic 구조 점검이다. 허가되지 않은 Topic 구독 및 발행 시도는 언제나 경계해야 하므로 정상적인 Topic과 다른 Topic을 감지하게 되는 경우 조심해야 한다. </p>
+<p><strong>3. HTTP&#x2F;HTTPS 프로토콜에 따른 필터링 기준</strong><br>HTTP&#x2F;HTTPS 프로토콜의 필터링 기준을 살펴보면 POST 요청 반복을 유의해야 한다. 로그인 페이지나 API 등 특정 URL에 POST 요청이 반복되면 무차별 대입 공격이나 인증 우회 시도일 수 있다. 또 다른 필터링 기준은 User-Agent 조작이다. 브라우저가 아닌 이상한 문자열 또는 트래픽을 감지한 경우 자동화 공격이나 스크래핑 탐지로 판단할 수 있다. 마지막으로 응답 코드 모니터링은 인증 실패(401), 접근 거부(403), 서버 오류(500) 등 비정상적은 응답이 다수 발생한다면 경계해야 한다. </p>
+<p><strong>4. DNS 프로토콜에 따른 필터링 기준</strong><br>DNS 프로토콜에 따른 기준은 TXT 요청 및 응답 과다가 있는데, 이는 정상적인 상태에 비해 TXT 조회 빈도가 높은 경우, DNS Tunneling를 통한 데이터 유출 가능성을 의심할 수 있다. </p>
+<p><strong>5. SSH&#x2F;FTP 프로토콜에 따른 필터링 기준</strong><br>SSH&#x2F;FTP 프로토콜의 필터링 기준으로 먼제 다수 로그인 실패 시도를 생각할 수 있다. 여러 번 실패한 로그인 시도는 단순히 실패한 것일 수도 있지만, 무차별 대입 공격으로 의심할 수도 있다. 또 짧은 시간 내 IP 변경 및 반복 로그인의 경우도 있다.<br>동일한 계정이 다른 IP에서 로그인을 반복적으로 시도하는 것은 분산 공격의 가능성으로 볼 수 있기 때문에 유의해야 한다.<br><br></p>
+<h3 id="반복되는-평문-메시지에-대한-이상-징후-판단-기준-정리"><a href="#반복되는-평문-메시지에-대한-이상-징후-판단-기준-정리" class="headerlink" title="반복되는 평문 메시지에 대한 이상 징후 판단 기준 정리"></a>반복되는 평문 메시지에 대한 이상 징후 판단 기준 정리</h3><p><strong>1. 동일 메시지 반복</strong><br>관찰 구간 내 메시지 중 동일한 문자열이 절반 이상이면 비정상적이라고 판단할 수 있다. 정상적인 환경에서는 센서값이나 로그, 텍스트 등에 변화가 생겨야 하는데 동일한 메시지가 반복되는 건 봇이나 오류로 인한 루프, 또는 악성코드의 반복 전송 신호일 확률이 크기 때문이다. </p>
+<p><strong>2. 메시지의 다양성</strong><br>관찰 구간 내에서 서로 다른 평문 메시지 수에 비해 총 메시지 수가 지나치게 많다면 이상하다. 정상적인 상황이었다면 장비나 환경 등의 변화로 인해 다양한 메시지가 섞여야 하는데 다양성이 매우 낮다면 데이터의 변조나 자동으로 생성되는 템플릿일 확률이 크기 때문에 주의해야 한다. </p>
+<p><strong>3. 시간 간격</strong><br>평문 메시지가 일정한 간격으로 연속적으로 전송되면 비정상적이라고 의심해봐야 한다. 정상적이라면 원래 센서는 미세하게 불규칙적인데 거의 동일한 간격으로 약 5회 이상 여러 차례 반복된다면 봇이나 재전송 루프를 의심할 수 있기 때문이다. </p>
+<p><strong>4. 급격한 전송 증가</strong><br>평소 전송되는 평문 메시지 빈도보다 과도하게 증가하면 비정상적이라고 판단할 수 있다. 왜냐하면 전송되는 메시지 빈도가 평소 대비 약 2-3배 늘어난다면 DDoS나 대량의 실패 및 재시도가 발생한 것일 확률이 높기 때문이다. </p>
+<p><strong>5. 다수 출처로부터 동일 메시지</strong><br>여러 개의 출처에서 동시에 같은 평문 메시지를 전송된다면 이상이 있다고 판단해야 한다. 약 3-4대 이상의 출처에서 동시에 같은 내용을 보내는 것은 정상적이지 않으며 웜이나 봇넷일 확률이 높다. 또한 내부에서 확산될 가능성도 있기 때문에 주의해야 한다.<br><br><br></p>
+<h1 id="이상-트래픽-탐지-로직-Threshold-기반-구현"><a href="#이상-트래픽-탐지-로직-Threshold-기반-구현" class="headerlink" title="이상 트래픽 탐지 로직: Threshold 기반 구현"></a>이상 트래픽 탐지 로직: Threshold 기반 구현</h1><h2 id="시간-기반-트래픽-카운팅이란"><a href="#시간-기반-트래픽-카운팅이란" class="headerlink" title="시간 기반 트래픽 카운팅이란"></a>시간 기반 트래픽 카운팅이란</h2><p>네트워크 환경에서는 수많은 패킷이 실시간으로 오가며, 이 흐름을 그대로 다루면 특정 시점에 얼마나 많은 트래픽이 발생했는지 파악하기 어렵다. 이를 해결하기 위해 사용하는 방법이 시간 기반 트래픽 카운팅이다. 말 그대로 일정한 시간 구간을 기준으로 패킷을 세어, 정상 상태와 비정상 상태를 비교할 수 있도록 수치를 만드는 과정이다. </p>
+<p>이 방식의 핵심은 ‘연속적인 네트워크 흐름을 시간 단위로 나누어 관찰한다’는 점이다. 예를 들어 10초라는 구간을 정하고, 그 안에서 발생한 MQTT PUBLISH 메시지의 개수를 집계한다고 하자. 정상적인 상황에서는 이 값이 일정한 범위 내에 머물지만, 공격이 발생하면 짧은 시간에 급격히 증가한다. 이렇게 수치로 기록해 두면 단순히 패킷을 보는 것보다 이상 여부를 훨씬 명확하게 판단할 수 있다.</p>
+<p><img src="/images/323307_260110_image11.png" alt="그림 11. [고정 윈도우와 슬라이딩 윈도우 시각화]"></p>
+<center><span style="font-size: 90%;">그림 11. [고정 윈도우와 슬라이딩 윈도우 시각화]</span></center><br>
+
+<p>시간 구간을 자르는 방식에는 두 가지가 있다. 첫째, 고정 윈도우(tumbling window)는 0 ~ 10초, 10 ~ 20초처럼 구간을 일정하게 나누어 각각의 트래픽 양을 계산한다. 구현이 단순하고 결과 해석이 쉽다는 장점이 있다. 둘째, 슬라이딩 윈도우(sliding window)는 현재 시점을 기준으로 과거 일정 시간(e.g. 최근 10초)을 계속 갱신하면서 집계하는 방식이다. 더 민감하게 변화를 포착할 수 있지만, 계산량이 많고 로그가 늘어난다는 단점이 있다. 보통 초기 단계에서는 고정 윈도우 방식을 먼저 적용하고, 필요에 따라 슬라이딩 윈도우로 확장한다. </p>
+<p>여기서 중요한 선택은 윈도우 길이다. 너무 짧게 잡으면 순간적인 변동에도 민감해져 불필요한 경보가 발생할 수 있고, 너무 길게 잡으면 이상 징후를 늦게 파악하게 된다. 따라서 실험 환경에서 정상 트래픽을 일정 시간 관찰해 평균값을 확인한 뒤, 그 값을 기준으로 윈도우 길이와 임계값을 조정하는 것이 바람직하다. </p>
+<p>또한 단순히 전체 패킷 개수만 세는 것보다는, 프로토콜의 특성을 반영한 지표를 선택하는 것이 효과적이다. 예를 들어 MQTT 환경에서는 PUBLISH 메시지 개수, CONNECT&#x2F;DISCONNECT 횟수, 특정 토픽으로 전송된 메시지 양, 패킷의 총 바이트 크기 등이 활용될 수 있다. 지표를 세분화하면 단순한 네트워크 부하와 실제 공격 시도를 구분하기가 쉬워진다. </p>
+<p>이 방법에도 한계는 존재한다. 공격자가 의도적으로 정상 범위 바로 아래에서 천천히 트래픽을 흘려보내는 경우에는 단순 카운팅만으로 탐지하기 어렵다. 반대로 순간적인 급증이 발생했지만 실제로는 정상이었던 경우에는 오탐이 발생할 수 있다. 따라서 운영 환경에서는 윈도우 길이를 다양하게 설정하거나, 여러 지표를 함께 활용해 보완하는 방식이 필요하다. </p>
+<p>정리하면, 시간 기반 트래픽 카운팅은 이상 트래픽 탐지의 기본이다. 일정한 시간 구간마다 데이터를 집계함으로써 정상 상태의 기준선을 만들고, 이 기준에서 벗어난 상황을 이후 단계에서 탐지할 수 있게 된다. 즉, 이는 IDS의 기본 구조에서 가장 기초적이면서도 반드시 거쳐야 하는 단계이다.<br><br></p>
+<h2 id="탐지-조건-설정-및-이상-감지-로그-저장"><a href="#탐지-조건-설정-및-이상-감지-로그-저장" class="headerlink" title="탐지 조건 설정 및 이상 감지 로그 저장"></a>탐지 조건 설정 및 이상 감지 로그 저장</h2><p>앞서 말했던 것처럼 Threshold 기반 이상 탐지에서는 일정 시간 단위로 들어오는 트래픽의 개수를 세고, 그 값이 임계치를 넘으면 비정상 상황으로 간주한다. 같은 구간에 100건 이상의 메시지가 몰리면 이는 정상 동작이라 보기 어렵고, 서비스 거부(DoS) 공격이나 비정상적인 메시지 폭주일 가능성이 있기 때문에 이 실습에서는 WINDOW&#x3D;10초, THRESHOLD&#x3D;50이라는 기준을 설정하여, 특정 기간 내 MQTT 메시지 수가 50건을 초과하면 ALERT를 발생시키도록 했다. 실습 과정은 다음과 같이 진행되었다. </p>
+<p>먼저 Python 가상환경을 구성하고, <code>py -m pip install --upgrade pip</code> 명령으로 pip를 최신 버전으로 업데이트하였다. 이는 패키지 설치 시 버전 충돌을 방지하기 위함이다. 이후 <code>py -m pip install pyshark paho-mqtt</code> 명령으로 필요한 라이브러리를 설치하였다. PyShark는 Wireshark의 tshark 엔진을 파이썬에서 제어할 수 있게 해주는 패키지이며, paho-mqtt는 MQTT 프로토콜을 이용한 메시지 발행·구독 기능을 제공한다. 이 두 패키지는 이번 실습에서 IDS 트래픽 수집과 MQTT 메시지 생성을 담당하는 핵심 구성요소이다.</p>
+<p><img src="/images/323307_260110_image12.png" alt="그림 12. [가상환경에서 pip로 pyshark·paho-mqtt 설치한 출력 화면]"></p>
+<center><span style="font-size: 90%;">그림 12. [가상환경에서 pip로 pyshark·paho-mqtt 설치한 출력 화면]</span></center><br>
+
+<p>다음으로, 네트워크 인터페이스를 확인하기 위해 Tshark를 설치하고 <code>tshark -D</code> 명령어를 실행하였다. 이 명령은 시스템에 존재하는 모든 네트워크 인터페이스 목록을 출력하며, 이를 통해 PyShark가 어떤 네트워크 경로에서 패킷을 캡처해야 하는지를 지정할 수 있다. 실습에서는 Wi-Fi 환경을 사용하므로, 출력 결과 중 Wi-Fi 인터페이스 번호를 확인해 IDS 코드에서 해당 경로를 지정하였다. 이 과정이 중요한 이유는 잘못된 인터페이스를 지정할 경우 IDS가 트래픽을 수집하지 못하기 때문이다. </p>
+<p>환경 구성이 완료된 후, 로컬에서 MQTT 브로커를 실행하였다. <code>mosquitto -v</code> 명령은 Mosquitto 브로커를 실행하면서 verbose 모드로 동작 로그를 함께 출력한다. 로그에서 “Opening ipv4 listen socket on port 1883” 문구가 나타나면 브로커가 정상적으로 리스닝 중임을 의미한다. 이 포트(1883)는 MQTT의 기본 통신 포트로, 클라이언트들이 메시지를 송수신하는 중심 채널이다.</p>
+<p><img src="/images/323307_260110_image13.png" alt="그림 13. [Mosquitto 브로커 버전 및 시작 로그]"></p>
+<center><span style="font-size: 90%;">그림 13. [Mosquitto 브로커 버전 및 시작 로그]</span></center><br>
+
+<p>다음으로 퍼블리셔 코드(send_loop.py)를 실행하였다. py send_loop.py 명령을 통해 코드를 실행하면 일정한 주기로 메시지를 브로커에 발행한다. 코드 내부에서 <code>publish.single()</code> 함수가 사용되며, <code>payload=f&quot;msg-&#123;i&#125;-&#123;time.time()&#125;&quot;</code> 구문을 통해 메시지 내용에 인덱스와 전송 시간을 포함시켜 트래픽을 일정한 패턴으로 생성한다. 이 메시지는 IDS에서 정상 트래픽과 이상 트래픽을 구분하기 위한 테스트 데이터로 사용된다. 퍼블리셔가 동작하는 동안 브로커 콘솔에는 CONNECT, PUBLISH, DISCONNECT 로그가 연속적으로 출력되어 통신 상태를 확인할 수 있다.</p>
+<p><img src="/images/323307_260110_image14.png" alt="그림 14. [퍼블리셔 코드 send_loop.py 주요 내용]"></p>
+<center><span style="font-size: 90%;">그림 14. [퍼블리셔 코드 send_loop.py 주요 내용]</span></center><br>
+
+<p>이 단계에서는 임계치 초과 여부를 판단할 기준을 설정하고, 실제로 브로커에 다수의 메시지를 발행하여 IDS가 정상과 비정상을 구분할 수 있도록 환경을 구성하였다.<br><br></p>
+<h2 id="PyShark를-이용한-기본-탐지-시스템-구축"><a href="#PyShark를-이용한-기본-탐지-시스템-구축" class="headerlink" title="PyShark를 이용한 기본 탐지 시스템 구축"></a>PyShark를 이용한 기본 탐지 시스템 구축</h2><p>이제 PyShark를 이용해 실시간 트래픽을 수집하고 이상 여부를 판단하는 IDS를 구축하였다. 이때 IDS의 구성 요소와 변수 설정은 다음과 같은 의미를 가진다.<br><br></p>
+<h3 id="인터페이스-지정"><a href="#인터페이스-지정" class="headerlink" title="인터페이스 지정"></a>인터페이스 지정</h3><p><code>tshatk -D</code> 명령을 통해 확인한 Wi-Fi 인터페이스 식별자를 IDS 코드 내 IFACE 변수로 지정하였다. 예를 들어 <code>IFACE = r&quot;\\Device\\NPF &#123;CB7E44B3-125D-4607-875B-F0D998A93001&#125;&quot;</code> 형태로 입력한다. 이는 PyShark가 해당 네트워크 어댑터에서 패킷을 캡처할 수 있도록 하는 경로 정보이다. 문자열 앞의 r은 raw string을 의미하며, 백슬래시()가 경로 문자로 인식되지 않도록 처리한다.</p>
+<p><img src="/images/323307_260110_image15.png" alt="그림 15. [TShark 실행 버전 정보 및 인터페이스 출력 화면]"></p>
+<center><span style="font-size: 90%;">그림 15. [TShark 실행 버전 정보 및 인터페이스 출력 화면]</span></center><br>
+
+<p>이렇게 지정해야만 PyShark가 Wi-Fi 트래픽을 올바르게 수집할 수 있으며, 잘못된 인터페이스를 설정하면 프로그램이 패킷을 읽지 못한다.<br><br></p>
+<h3 id="MQTT-트래픽-필터링"><a href="#MQTT-트래픽-필터링" class="headerlink" title="MQTT 트래픽 필터링"></a>MQTT 트래픽 필터링</h3><p>IDS는 불필요한 트래픽 없이 MQTT 프로토콜만 감시하기 위해 <code>display_filter = &quot;mqtt&quot;</code> 와 <code>bpf_filter = &quot;tcp port 1883&quot;</code> 두 가지 필터를 적용하였다. BPF 필터는 캡처 단계에서 TCP 1883번 포트의 패킷만 수집하도록 제한하고, Display 필터는 그중에서도 MQTT 계층의 패킷만 표시한다. 이중 필터링을 적용함으로써 캡처 효율을 높이고 분석 대상 트래픽을 명확히 한 것이다.<br><br></p>
+<h3 id="시간-기반-트래픽-집계"><a href="#시간-기반-트래픽-집계" class="headerlink" title="시간 기반 트래픽 집계"></a>시간 기반 트래픽 집계</h3><p>IDS는 10초 단위의 슬라이딩 윈도우 방식으로 트래픽을 집계한다. WINDOW &#x3D; 10은 트래픽을 10초 단위로 분석하겠다는 의미이며, THRESHOLD &#x3D; 50은 동일 기간 내 50건 이상의 MQTT 패킷이 발생하면 이상(ALERT)으로 간주하겠다는 조건이다. 이 기준은 실험 환경의 정상 트래픽 평균을 고려해 설정한 값으로, 짧은 시간에 급격히 트래픽이 늘어날 경우 DoS 형태의 이상 징후를 즉시 감지할 수 있다.</p>
+<p><img src="/images/323307_260110_image16.png" alt="그림 16. [IDS 설정 코드(ids_counter.py) 일부]"></p>
+<center><span style="font-size: 90%;">그림 16. [IDS 설정 코드(ids_counter.py) 일부]</span></center>
+<br>
+
+<h3 id="로그-저장-방식"><a href="#로그-저장-방식" class="headerlink" title="로그 저장 방식"></a>로그 저장 방식</h3><p>탐지 결과는 터미널 출력과 동시에 ids_events.jsonl 파일에 기록된다. 이 파일은 JSON Lines 형식을 사용하며, 각 줄이 독립적인 JSON 객체로 구성된다. 이 방식은 추후 Pandas나 ELK Stack을 통해 시각화·분석하기 용이하며, IDS의 탐지 결과를 지속적으로 누적하고 관리할 수 있는 구조를 제공한다.<br><br></p>
+<h3 id="실습-실행-흐름"><a href="#실습-실행-흐름" class="headerlink" title="실습 실행 흐름"></a>실습 실행 흐름</h3><p>실습 과정에서 IDS가 동작하기 위해서는 세 가지 구성 요소가 동시에 실행되어야 한다. </p>
+<p><strong>1. Mosquitto 브로커 실행</strong><br>명령어는 <code>mosquitto -v</code>로, 이 단계에서는 로컬 MQTT 브로커를 열고, 포트 1883에서 메시지를 대기한다. </p>
+<p><img src="/images/323307_260110_image17.png" alt="그림 17. [Mosquitto 브로커에서 표시되는 CONNECT / PUBLISH / DISCONNECT 로그 화면]"></p>
+<center><span style="font-size: 90%;">그림 17. [Mosquitto 브로커에서 표시되는 CONNECT / PUBLISH / DISCONNECT 로그 화면]</span></center><br>
+
+<p><strong>2. 메시지 발송 스크립트 실행</strong> (send_loop.py)<br>명령어는 <code>py send_loop.py</code>이며, 일정 주기로 MQTT 메시지를 브로커에 발송하여 트래픽을 생성한다. </p>
+<p><img src="/images/323307_260110_image18.png" alt="그림 18. [퍼블리셔 실행 명령창]"></p>
+<center><span style="font-size: 90%;">그림 18. [퍼블리셔 실행 명령창]</span></center><br>
+
+<p><strong>3. IDS 실행</strong> (ids_counter.py)<br>명령어는 <code>py ids_counter.py</code>로, IDS를 구동하여 Wi-Fi 인터페이스에서 MQTT 트래픽을 수집하고, 10초 단위로 패킷 수를 집계해 Threshold를 초과하는 경우 ALERT를 발생시킨다. 이 세 과정이 동시에 이루어질 때 IDS는 실시간으로 트래픽 상태를 분석하고, 탐지 결과를 화면과 로그 파일 모두에 기록한다. </p>
+<p><img src="/images/323307_260110_image19.png" alt="그림 19. [IDS 실행 터미널 출력 예시 — tshark 경로 관련 경고와 캡처 시작 로그]"></p>
+<center><span style="font-size: 90%;">그림 19. [IDS 실행 터미널 출력 예시 — tshark 경로 관련 경고와 캡처 시작 로그]</span></center><br>
+
+<p>이 세 단계가 동시에 돌아가야 IDS가 정상적으로 동작하며, 터미널에는 실시간 탐지 결과가 출력되고, ids_events.jsonl 파일에는 탐지 이벤트가 저장된다.<br><br></p>
+<h2 id="로그-포맷-설계"><a href="#로그-포맷-설계" class="headerlink" title="로그 포맷 설계"></a>로그 포맷 설계</h2><p>이상 트래픽을 단순히 탐지할 뿐만 아니라 탐지 결과를 체계적으로 기록하고, 이후 분석이 가능하도록 만드는 것이 중요하다. 이번 실습에서는 탐지 이벤트를 ids_events.jsonl 파일에 저장하는 방식을 사용하였다.<br><br></p>
+<h3 id="JSON-Lines-포맷의-특징"><a href="#JSON-Lines-포맷의-특징" class="headerlink" title="JSON Lines 포맷의 특징"></a>JSON Lines 포맷의 특징</h3><p>로그 저장 포맷으로는 여러 가지 선택지가 있지만, .jsonl(JSON Lines) 구조를 채택하였다. 이 형식은 한 줄마다 독립적인 JSON 객체로 기록되며, 각 이벤트가 별도로 처리될 수 있다. JSON Lines 포맷을 사용하면 여러 가지 장점이 있다. 먼저, 각 이벤트가 독립된 한 줄로 기록되기 때문에 이벤트 단위로 읽고 쓰기가 매우 간편하다. 또한 텍스트 기반 구조라서 Python, ELK Stack, Splunk와 같은 다양한 분석 도구와 쉽게 호환된다. 마지막으로 로그의 크기가 커지더라도 줄 단위로 스트리밍 처리가 가능하다는 점에서 대용량 데이터 환경에서도 효율적으로 활용할 수 있다.<br><br></p>
+<h3 id="저장되는-데이터-구조"><a href="#저장되는-데이터-구조" class="headerlink" title="저장되는 데이터 구조"></a>저장되는 데이터 구조</h3><p>실습에서 생성된 로그는 다음과 같은 구조를 가진다.</p>
+<p><img src="/images/323307_260110_image20.png" alt="그림 20. [ids_events.jsonl 파일 내용]"></p>
+<center><span style="font-size: 90%;">그림 20. [ids_events.jsonl 파일 내용]</span></center><br>
+
+<ul>
+<li>kind : 로그 종류(event &#x3D; 탐지 이벤트, system &#x3D; 시스템 동작 기록) </li>
+<li>ts : 발생 시각(UNIX timestamp, 분석 시 변환 가능) </li>
+<li>count : 해당 구간에서 수집된 MQTT 패킷 수 </li>
+<li>status : NORMAL(정상) 또는 ALERT(이상 발생) </li>
+<li>event : 시스템 이벤트 기록 시 사용 (예: 프로그램 종료, 오류 발생 등)</li>
+</ul>
+<p>이 구조 덕분에 IDS가 단순히 패킷 수를 보여주는 도구가 아니라, 시간 흐름에 따라 이상 여부를 추적할 수 있는 기록 시스템으로 기능할 수 있다.<br><br><br></p>
+<h1 id="이상-트래픽-감지-로직-머신러닝-기반-구현"><a href="#이상-트래픽-감지-로직-머신러닝-기반-구현" class="headerlink" title="이상 트래픽 감지 로직: 머신러닝 기반 구현"></a>이상 트래픽 감지 로직: 머신러닝 기반 구현</h1><h2 id="이상치-탐지-알고리즘-소개"><a href="#이상치-탐지-알고리즘-소개" class="headerlink" title="이상치 탐지 알고리즘 소개"></a>이상치 탐지 알고리즘 소개</h2><h3 id="Threshold-기반-탐지-방식의-한계와-머신러닝의-필요성"><a href="#Threshold-기반-탐지-방식의-한계와-머신러닝의-필요성" class="headerlink" title="Threshold 기반 탐지 방식의 한계와 머신러닝의 필요성"></a>Threshold 기반 탐지 방식의 한계와 머신러닝의 필요성</h3><p>이전 절에서는 일정 시간 동안 들어오는 MQTT 패킷 수를 세고, 미리 정한 임계값을 넘으면 이상으로 판단하는 Threshold 기반 IDS를 구현하였다. WINDOW를 10초로 두고, 같은 구간에 MQTT 메시지가 50건을 초과하면 ALERT를 발생시키는 방식으로, 짧은 시간에 트래픽이 급격히 늘어나는 DoS 형태의 공격을 비교적 쉽게 탐지할 수 있었다.</p>
+<p>하지만 이 방식은 몇 가지 한계를 가진다. 먼저 공격자가 임계값 바로 아래에서 천천히 트래픽을 늘리면 IDS는 이를 정상으로 인식할 수 있다. 예를 들어 10초에 49건씩 꾸준히 전송하는 식의 느린 공격은 임계값을 넘지 않기 때문에 Threshold로는 탐지하기 어렵다. 반대로 특정 시간대에 정상적으로 사용량이 잠깐 늘어나는 상황이라도 임계값을 넘기만 하면 모두 경보로 처리되어 오탐이 발생할 수 있다. 고정된 숫자 하나로 네트워크 전체 상황을 설명하기에는 부족하다는 것이다.IoT 환경에서는 이런 한계가 더 크게 나타난다. 센서 값이나 메시지 주기는 비교적 일정하지만, 장비 종류와 상황에 따라 트래픽 패턴이 미묘하게 달라진다. 단순히 ‘10초에 50건 이상이면 공격’과 같은 규칙만으로는 복잡한 IoT 트래픽을 충분히 구분하기 어렵기 때문에, 정상 패턴 자체를 학습해 두고 그 기준에서 벗어나는 행동을 찾아내는 머신러닝 기반 이상 탐지가 필요하다.<br><br></p>
+<h3 id="이상치-탐지의-기본-개념"><a href="#이상치-탐지의-기본-개념" class="headerlink" title="이상치 탐지의 기본 개념"></a>이상치 탐지의 기본 개념</h3><p>이상치 탐지는 평소와 다른 데이터를 찾아내는 방법이라고 할 수 있다. 이때 중요한 점은 항상 공격 데이터를 기준으로 삼고, 미리 학습해 두기보다는, 오히려 정상 데이터를 중심으로 학습을 진행한다는 점이다.</p>
+<p><img src="/images/323307_260110_image21.png" alt="그림 21. [이상치 탐지 방식 비교(Multi-class vs One-class)]"></p>
+<center><span style="font-size: 90%;">그림 21. [이상치 탐지 방식 비교(Multi-class vs One-class)]</span></center><br>
+
+<p>일반적인 이상치 탐지 과정은 다음과 같다. 먼저 일정 기간 동안 수집한 정상 트래픽으로부터 특징을 추출한다. 예를 들어 10초 동안 발생한 패킷 수, PUBLISH 메시지 개수, CONNECT와 DISCONNECT 횟수처럼 트래픽의 상태를 대표하는 숫자들을 하나의 벡터로 만든다. 이렇게 만들어진 벡터들을 모으면 ‘정상일 때는 이 정도 범위 안에서 값이 움직인다’는 형태의 패턴이 생긴다. 이후 실시간으로 들어오는 새로운 구간의 트래픽도 같은 방식으로 벡터를 만들고, 이 값이 기존 정상 패턴에서 너무 멀리 떨어져 있으면 이상치로 간주하는 방식이다. </p>
+<p>이 접근법의 장점은 미리 모든 공격 유형을 알고 있지 않아도 된다는 점이다. 서명 기반 탐지는 알려진 공격 패턴이 없으면 탐지할 수 없지만, 이상치 탐지는 이전에는 보지 못한 행동 자체를 경계 대상으로 삼을 수 있다. 물론 정상 패턴이 자주 바뀌거나, 원래부터 트래픽이 불규칙한 환경에서는 오탐이 늘어날 수 있다는 한계도 함께 존재한다.<br><br></p>
+<h3 id="Isolation-Forest와-One-Class-SVM의-핵심-개념"><a href="#Isolation-Forest와-One-Class-SVM의-핵심-개념" class="headerlink" title="Isolation Forest와 One-Class SVM의 핵심 개념"></a>Isolation Forest와 One-Class SVM의 핵심 개념</h3><p>이번 실습에서는 이상치 탐지에 자주 사용되는 알고리즘 두 가지를 간단히 비교해 보고자한다. 실습에서 사용할 머신러닝은 Isolation Forest와 One-Class SVM이다. 둘 다 scikit-learn에서 쉽게 사용할 수 있고, 복잡한 수식보다는 정상과 비정상을 나누는 기준을 자동으로 찾아주기 때문에 실습 목적에 더 적합하다. </p>
+<p>Isolation Forest는 데이터를 고립시키는 과정을 반복하면서 이상치를 찾는 방식이다. 랜덤하게 특징을 선택하고 임의의 기준값으로 데이터를 계속해서 나누다 보면, 대부분의 정상 데이터는 여러 번 분할을 거쳐야만 떨어져 나가지만, 극단적으로 튀는 값은 몇 번만 나누어도 쉽게 분리된다. 이 점을 이용해 ‘적은 분할 횟수로 고립되는 데이터’를 이상치로 판단한다. MQTT flood처럼 특정 구간에서 패킷 수가 급격히 증가하는 경우, 해당 구간은 다른 정상 구간과 비교했을 때 고립되기 쉬우므로 이상치로 잘 분류된다.</p>
+<p><img src="/images/323307_260110_image22.png" alt="그림 22. [Isolation Forest의 트리 기반 고립 구조]"></p>
+<center><span style="font-size: 90%;">그림 22. [Isolation Forest의 트리 기반 고립 구조]</span></center><br>
+
+<p>One-Class SVM은 정상 데이터 주변에 경계선을 그리는 방식으로 작동한다. 정상 데이터가 어느 정도 밀집되어 있는 부분을 중심으로, 그 범위를 최대한 넓게 감싸는 경계를 계산한 뒤, 그 경계 밖으로 크게 벗어나는 데이터를 이상치로 본다. 이때 사용하는 커널 함수를 통해 단순한 직선이 아니라 곡선 형태의 경계도 만들 수 있기 때문에 조금 더 복잡한 정상 패턴을 표현할 수 있다. 센서 값이 미세하게 흔들리면서도 일정 범위 안에 머무는 IoT 환경에서는 이런 방식이 유용하다.</p>
+<p><img src="/images/323307_260110_image23.png" alt="그림 23. [One-Class SVM의 경계 학습 개념도]"></p>
+<center><span style="font-size: 90%;">그림 23. [One-Class SVM의 경계 학습 개념도]</span></center><br>
+
+<p>두 알고리즘 모두 정상 데이터를 중심으로 모델을 학습하고, 그 밖으로 벗어나는 지점을 이상으로 본다는 점에서 공통점을 가지지만, 고립시키는 관점에서 접근하느냐, 경계를 그리는 관점에서 접근하느냐에 따라 동작 방식과 민감도가 달라진다. 이번 절에서는 이 두 모델을 모두 적용해 보고, 어떤 상황에서 어떤 방식이 더 적합한지 비교하고자 한다.<br><br></p>
+<h2 id="scikit-learn를-활용한-실습"><a href="#scikit-learn를-활용한-실습" class="headerlink" title="scikit-learn를 활용한 실습"></a>scikit-learn를 활용한 실습</h2><h3 id="실습용-데이터-준비"><a href="#실습용-데이터-준비" class="headerlink" title="실습용 데이터 준비"></a>실습용 데이터 준비</h3><p>머신러닝으로 이상 트래픽을 탐지하기 위해서는 개별 패킷 단위보다는 일정 시간 구간별로 정리된 통계 데이터가 더 적합하다. 앞선 절에서 구현한 IDS가 10초 단위로 MQTT 트래픽을 집계했던 구조를 그대로 활용하여, 이번에는 각 구간의 특징을 한 줄씩 정리한 CSV 형태의 데이터셋을 준비하였다 실습에서는 10초를 하나의 관찰 구간으로 두고, 각 구간마다 다음과 같은 값들을 계산해 하나의 행으로 묶었다.</p>
+<ul>
+<li>packet_count<br>10 초 동안 관찰된 MQTT 관련 패킷의 전체 개수로, 트래픽 전체량을 판단하는 기본 지표로 활용된다. </li>
+<li>publish_count<br>해당 구간에 포함된 PUBLISH 메시지 개수로, MQTT flood처럼 메시지 발행이 과도하게 증가하는 공격 탐지에 핵심 역할을 수행한다. </li>
+<li>connect_count<br>10 초 동안 발생한 CONNECT 메시지 개수로, 정상 환경에서는 자주 나타나지 않지만, 공격·오작동 시 짧은 주기로 반복될 수 있다. </li>
+<li>disconnect_count<br>같은 구간에서 발생한 DISCONNECT 메시지 개수로, connect_count와 함께 연결 반복 여부나 비정상적인 세션 종료 패턴을 보기 위해 기록한다. </li>
+<li>avg_payload_len<br>구간 내 메시지 payload 길이의 평균값이다. 실습 데이터는 5~7 정도의 짧은 텍스트로 구성되어 변화폭이 작지만, 실제 환경에서는 payload가 비정상적으로 길어지거나 일정하게 고정되는 경우 이상 징후로 볼 수 있다. </li>
+<li>unique_topics<br>해당 구간에서 사용된 Topic의 개수로, 이번 실습은 하나의 Topic만 사용하는 단순 시나리오라 모두 1로 설정되었다. 확장 실습 시에는 Topic 수 변화도 이상 여부 판단에 활용 가능하다. </li>
+<li>label<br>각 10초 구간이 정상인지, 공격이 포함된 구간인지 나타내는 값이다. 정상 발행 주기의 앞쪽 8개 윈도우는 0으로, PUBLISH 메시지를 급증시킨 뒤쪽 4개 윈도우는 1로 설정하였다. 이때 모델이 정상 패턴과 flood 공격 패턴을 구분해 학습하도록 구성되었다.</li>
+</ul>
+<p><img src="/images/323307_260110_image24.png" alt="그림 24. [실습에서 사용한 IoT 트래픽 윈도우 통계 데이터]"></p>
+<center><span style="font-size: 90%;">그림 24. [실습에서 사용한 IoT 트래픽 윈도우 통계 데이터]</span></center><br>
+
+<p>이러한 방식으로 구성된 데이터셋의 각 행은 10초짜리 IoT 트래픽 한 구간을 나타내며, 이 값을 그대로 scikit-learn 모델의 입력으로 사용해 이상치 탐지 실습을 진행하였다.<br><br></p>
+<h3 id="Isolation-Forest-학습-코드-작성"><a href="#Isolation-Forest-학습-코드-작성" class="headerlink" title="Isolation Forest 학습 코드 작성"></a>Isolation Forest 학습 코드 작성</h3><p>실습용 CSV 파일을 준비한 뒤에는 이를 scikit-learn에서 바로 사용할 수 있도록 불러오고, Isolation Forest 모델을 학습시킨다. 먼저 pandas로 CSV 파일을 읽어온 후, 머신러닝에 사용할 특정 컬럼들만 골라 입력 데이터인 X를 만든다. 그 후, Isolation Forest 모델을 생성해 학습시켜 각 구간이 정상인지 이상인지 예측 결과를 새로운 컬럼으로 추가하는 식이다. 아래는 이를 코드로 구현한 결과이다. </p>
+<p><img src="/images/323307_260110_image25.png" alt="그림 25. [Isolation Forest 학습 코드 주요 부분 1]"></p>
+<center><span style="font-size: 90%;">그림 25. [Isolation Forest 학습 코드 주요 부분 1]</span></center><br>
+
+<p><img src="/images/323307_260110_image26.png" alt="그림 26. [Isolation Forest 학습 코드 주요 부분 2]"></p>
+<center><span style="font-size: 90%;">그림 26. [Isolation Forest 학습 코드 주요 부분 2]</span></center><br>
+
+<p>각 단계의 의미를 조금 더 구체적으로 살펴보면 다음과 같다. </p>
+<p>먼저 <code>df = pd.read_csv(&quot;mqtt_window_stats.csv&quot;)</code>는 앞에서 만든 윈도우 단위 트래픽 통계 파일을 불러오는 부분이다. 이 데이터프레임에는 앞서 설명한 입력 값이 모두 포함되어 있는데, 이 중에서 머신러닝 모델이 참고할 입력 값만 별도로 뽑아 feature_cols 리스트로 정의하고, df[feature_cols]를 통해 X라는 입력 행렬을 만든다. 이렇게 하면 각 행이 10초짜리 트래픽 한 구간을 나타내는 벡터가 된다. </p>
+<p>IsolationForest를 생성할 때 사용하는 contamination 파라미터는 전체 데이터 중에서 어느 정도를 이상치로 볼 것인지에 대한 대략적인 비율을 의미한다. 실습용 데이터셋에서는 12개의 윈도우 중 4개가 공격 구간(label 1)으로 구성되어 있기 때문에, 이상치 비율을 0.3 정도로 설정하여 모델이 너무 엄격하게 또는 느슨하게 판단하지 않도록 했다. </p>
+<p>random_state는 난수 시드를 고정해서, 같은 데이터를 학습했을 때 매번 결과가 크게 달라지지 않도록 하는 설정이다. </p>
+<p><code>iso_model.predict(X)</code>를 호출하면 모델이 정상 구간을 중심으로 데이터 분포를 학습하고, 어디까지 정상 범위로 볼지 내부적으로 결정한다. 이후 predict(X)를 호출하면 각 행에 대해 1 또는 -1을 반환하는데, 1은 정상으로 판단한 구간, -1은 이상치로 판단한 구간을 의미한다. 이 값을 pred_if라는 새로운 컬럼으로 추가해두면, 나중에 label과 함께 비교하거나, 특정 윈도우가 이상으로 탐지된 이유를 분석할 때 활용할 수 있다.<br><br></p>
+<h3 id="One-Class-SVM-학습-코드-작성"><a href="#One-Class-SVM-학습-코드-작성" class="headerlink" title="One-Class SVM 학습 코드 작성"></a>One-Class SVM 학습 코드 작성</h3><p>Isolation Forest와 함께 비교해 볼 두 번째 알고리즘은 One-Class SVM이다. One-Class SVM은 정상 데이터가 분포하고 있는 영역을 감싸는 경계를 학습한 뒤, 이 경계 밖으로 크게 벗어나는 데이터를 이상치로 판단하는 방식이다. 동일한 입력 데이터 X에 대해 One-Class SVM을 적용해 보면, 같은 트래픽 구간을 두 알고리즘이 어떻게 다르게 보는지 확인할 수 있다. 코드는 다음과 같이 작성할 수 있다.</p>
+<p><img src="/images/323307_260110_image27.png" alt="그림 27. [One-Class SVM 학습 코드 주요 부분]"></p>
+<center><span style="font-size: 90%;">그림 27. [One-Class SVM 학습 코드 주요 부분]</span></center><br>
+
+<p>이때 <code>kernel=&quot;rbf&quot;</code>는 원래 선형적으로 나눌 수 없는 데이터라도 곡선 형태의 경계를 만들어서 분리할 수 있도록 하는 설정이다. IoT 트래픽처럼 여러 특징이 동시에 변하는 경우, 단순 직선 경계보다 비선형 경계가 실제 정상 패턴을 표현하는 데 더 적합하다고 판단해 RBF 커널을 사용하였다. </p>
+<p>nu 파라미터는 전체 데이터 중에서 어느 정도까지를 이상치로 허용할 것인지에 대한 상한선을 정하는 값이다. 실습용 데이터에서는 공격 구간(label 1)이 약 3분의 1 정도이기 때문에 Isolation Forest와 마찬가지로 0.3으로 두고, 모델이 지나치게 적거나 많은 구간을 이상치로 보지 않도록 조정하였다. <code>gamma=&quot;scale&quot;</code>은 각 특징의 분산을 기준으로 자동으로 gamma 값을 정해 주는 설정으로, 별도의 수동 튜닝 없이도 기본적인 실습을 진행하기에 무리가 없다. </p>
+<p><code>ocsvm_model.predict(X)</code>를 호출하면 모델은 정상 데이터의 분포를 감싸는 경계를 학습한다. 이후 predict(X)를 실행하면 각 행에 대해 1 또는 -1을 반환하는데, 1은 정상으로 판단한 구간, -1은 경계 밖에 위치해 이상치로 판단한 구간을 의미한다. 이 값을 pred_svm 컬럼에 저장해 두면, 앞에서 추가한 pred_if와 마찬가지로 실제 정답인 label과 비교하거나, 두 알고리즘이 서로 다른 판단을 내린 구간을 찾아볼 수 있다.<br><br></p>
+<h3 id="탐지-결과-분석"><a href="#탐지-결과-분석" class="headerlink" title="탐지 결과 분석"></a>탐지 결과 분석</h3><p>생성한 csv 파일을 10초 단위 윈도우별 트래픽 통계를 모델 입력으로 사용하는 과정을 먼저 확인하였다. 학습에 필요한 여섯 개 컬럼만 골라 X를 구성했으며, 그림 1은 이 특징 벡터가 어떻게 생겼는지를 보여준다. 앞의 8개 행은 정상 구간으로, 패킷 수가 12 ~ 20 사이에서 비교적 일정하게 유지되고, 공격 구간인 뒤 4개 행은 122 ~ 159 사이로 급격하게 증가한 모습을 확인할 수 있다.</p>
+<p><img src="/images/323307_260110_image28.png" alt="그림 28. [모델 입력으로 사용한 특징 벡터 값 확인]"></p>
+<center><span style="font-size: 90%;">그림 28. [모델 입력으로 사용한 특징 벡터 값 확인]</span></center><br>
+
+<p>Isolation Forest를 적용한 결과는 다음과 같다. label 0인 정상 구간 중 0번째 윈도우(12건)와 3번째 윈도우(16건)가 <code>pred_if = -1</code>로 표시되어 이상치로 탐지되었고, 나머지 정상 구간은 모두 1로 판단되었다. 공격 구간(label 1) 네 개 중에서는 첫 번째 flood 윈도우(122건)와 마지막 윈도우(159건)가 이상치로 탐지되었고, 중간의 148건, 131건 구간은 정상으로 분류되었다. 전체적으로는 트래픽이 가장 적거나, 가장 많은 구간을 중심으로 경계 밖의 점들을 이상치로 본 셈이다.</p>
+<p><img src="/images/323307_260110_image29.png" alt="그림 29. [Isolation Forest를 적용했을 때의 예측 결과]"></p>
+<center><span style="font-size: 90%;">그림 29. [Isolation Forest를 적용했을 때의 예측 결과]</span></center><br>
+
+<p>같은 데이터에 One-Class SVM을 적용했을 때의 결과는 다음과 같다. 표에서 pred_svm 컬럼을 보면, 0번째 윈도우(12건)는 Isolation Forest와 마찬가지로 이상치로 탐지되었지만, 2번째 윈도우(14건)는 Isolation Forest가 정상으로 본 반면 One-Class SVM은 이상치(-1)로 본 것을 확인할 수 있다. 반대로 3번째 윈도우(16건)는 Isolation Forest가 이상치로 본 구간인데, One-Class SVM은 정상(1)으로 분류하였다. 공격 구간에서는 두 모델 모두 첫 번째 flood 윈도우(122건)와 마지막 윈도우(159건)를 이상치로 판단하고, 중간 두 구간(148건, 131건)은 정상으로 분류하여 동일한 결과를 보였다.</p>
+<p><img src="/images/323307_260110_image30.png" alt="그림 30. [One-Class SVM을 적용했을 때의 예측 결과]"></p>
+<center><span style="font-size: 90%;">그림 30. [One-Class SVM을 적용했을 때의 예측 결과]</span></center><br>
+
+<p>두 모델의 전체적인 성능을 정리하기 위해 label과 pred_if, pred_svm 사이의 교차표를 계산한 결과는 다음과 같다. Isolation Forest와 One-Class SVM 모두에서 정상(label 0) 윈도우 8개 중 6개는 정상으로, 2개는 이상치로 분류되었다. 공격(label 1) 윈도우 4개 중에서는 2개를 이상치로, 2개를 정상으로 분류하였다. 즉, 이 실습 데이터셋에서는 두 모델이 서로 다른 윈도우를 이상치로 선택했음에도, 최종적으로는 동일한 개수의 오탐과 미탐을 가지는 것을 확인할 수 있었다. 해당 절에는 크기가 작은 데이터셋으로 실험을 진행했기 때문에 수치만으로 성능을 논하기보다는, 두 모델이 모두 flood 구간 일부를 잘 잡아내지만, 경계에 애매하게 걸친 구간에서는 판단이 갈릴 수 있다는 점을 확인하는 데 의미를 두었다. </p>
+<p><img src="/images/323307_260110_image31.png" alt="그림 31. [Isolation Forest와 One-Class SVM의 예측 결과 교차표 및 json 파일]"></p>
+<center><span style="font-size: 90%;">그림 31. [Isolation Forest와 One-Class SVM의 예측 결과 교차표 및 json 파일]</span></center>
+<br><br>
+
+<h1 id="머신러닝-기반-이상-탐지-결과-해석-및-활용-방안"><a href="#머신러닝-기반-이상-탐지-결과-해석-및-활용-방안" class="headerlink" title="머신러닝 기반 이상 탐지 결과 해석 및 활용 방안"></a>머신러닝 기반 이상 탐지 결과 해석 및 활용 방안</h1><p>앞선 절에서는 IoT 트래픽을 수집하고 윈도우 기반 통계 특징을 구성한 뒤, 머신러닝 기반 이상 탐지 모델을 이용해 정상·이상 패턴을 분류하는 과정을 정리하였다. 이러한 탐지 결과를 바탕으로 실제 공격 패턴이 어떤 형태로 드러나는지 해석하고, 이를 IoT 보안 체계에서 어떻게 활용할 수 있는지 살펴보고자 한다.<br><br></p>
+<h2 id="트래픽-증가-기반-공격-패턴-해석"><a href="#트래픽-증가-기반-공격-패턴-해석" class="headerlink" title="트래픽 증가 기반 공격 패턴 해석"></a>트래픽 증가 기반 공격 패턴 해석</h2><p>IoT 환경에서는 포트 스캔, MQTT Flood, 반복적인 비정상 연결 요청 등 다양한 형태의 공격이 발생할 수 있다. 이러한 공격들은 기술적으로 서로 다른 목적과 구조를 갖지만, 공통적으로 짧은 시간 내 트래픽이 비정상적으로 증가하는 패턴이라는 특징을 공유한다. 포트 스캔의 경우 다수 포트에 대한 빠른 연결 시도로 인해 SYN 패킷이 급증하고, MQTT Flood의 경우 동일 Topic에 대해 PUBLISH 메시지가 짧은 주기로 반복적으로 발행되면서 특정 지표가 급격하게 증가한다. </p>
+<p>이러한 패턴은 앞서 구성한 트래픽 통계 데이터에서도 동일하게 반영할 수 있다. 윈도우 기반으로 집계한 packet_count 값이 정상 구간에서 일정 범위를 유지하다가 특정 구간에서 급격히 증가한 경우, 이를 공격 발생 시점으로 간주할 수 있다.</p>
+<p><img src="/images/323307_260110_image32.png" alt="그림 32. [전체 윈도우 구간에서의 통계 특징 및 실제 레이블·모델 예측 결과]"></p>
+<center><span style="font-size: 90%;">그림 32. [전체 윈도우 구간에서의 통계 특징 및 실제 레이블·모델 예측 결과]</span></center>
+<br>
+
+<h2 id="머신러닝-탐지-모델의-판단-결과-분석"><a href="#머신러닝-탐지-모델의-판단-결과-분석" class="headerlink" title="머신러닝 탐지 모델의 판단 결과 분석"></a>머신러닝 탐지 모델의 판단 결과 분석</h2><p>트래픽 통계 데이터를 기반으로 학습한 Isolation Forest와 One-Class SVM 모델은 정상 패턴을 기준으로 구축된 경계를 벗어난 데이터를 이상치(-1)로 분류한다. 실제 탐지 결과를 살펴보면, 정상 구간에서는 packet_count가 일정한 범위에서 유지되는 반면, 공격으로 가정한 구간에서는 짧은 시간 동안 패킷 수가 급증하는 형태가 나타났다. 두 모델 모두 가장 극단적으로 증가한 구간에서 일관되게 이상치를 반환하였으며, 이는 정상 범위를 벗어난 sudden burst 형태의 변화를 명확히 감지했음을 의미한다.</p>
+<p><img src="/images/323307_260110_image33.png" alt="그림 33. [정상 트래픽 구간의 패킷 통계 예시]"></p>
+<center><span style="font-size: 90%;">그림 33. [정상 트래픽 구간의 패킷 통계 예시]</span></center><br>
+
+<p>또한 일부 구간에서는 두 모델의 판단이 서로 다르게 나타나는 경우도 있었는데, 이는 각각의 알고리즘 구조적 특성이 반영된 결과이다. Isolation Forest는 무작위 분할을 기반으로 고립도가 높은 데이터를 이상치로 판단하는 방식이며, One-Class SVM은 정상 데이터의 경계를 기준으로 그 바깥으로 벗어난 정도에 따라 이상 여부를 판단한다. 이러한 구조적 차이는 동일한 패턴의 트래픽이라도 모델마다 서로 다른 반응을 보일 수 있음을 보여준다.</p>
+<p><img src="/images/323307_260110_image34.png" alt="그림 34. [Isolation Forest 모델과 One-Class SVM 모델의 구간별 이상 탐지 결과]"></p>
+<center><span style="font-size: 90%;">그림 34. [Isolation Forest 모델과 One-Class SVM 모델의 구간별 이상 탐지 결과]</span></center><br>
+
+<p>이 분석을 통해, IoT 기기 환경에서 단일 모델만으로 모든 이상 행위를 완벽하게 탐지하기에는 한계가 존재하며, 상황에 따라 여러 탐지 모델을 조합한 하이브리드 IDS 구성이 필요할 수 있음을 확인할 수 있다.<br><br></p>
+<h2 id="시각화-및-자동-알림-체계로의-확장-가능성"><a href="#시각화-및-자동-알림-체계로의-확장-가능성" class="headerlink" title="시각화 및 자동 알림 체계로의 확장 가능성"></a>시각화 및 자동 알림 체계로의 확장 가능성</h2><p>머신러닝 기반 IDS는 단순히 이상 여부를 분류하는 데서 그치지 않고, 이를 관리자에게 직관적으로 전달하는 단계로 확장될 수 있다. 윈도우별 packet_count 변화를 시간축으로 시각화하고, 각 구간의 탐지 결과를 색상 구분으로 표시하면 정상 구간과 이상 구간이 명확하게 드러난다. 웹 기반 시각화 도구인 Chart.js나 Plotly를 활용하면 간단한 Dashboard 형태로 구성할 수 있으며, 이는 실제 IoT 장비 관제 화면에서도 널리 활용되는 방식이다. </p>
+<p>또한, 이상치가 감지된 경우 이를 즉시 관리자에게 전달하기 위한 자동 알림 시스템도 구성할 수 있다. 예를 들어, 모델이 -1 값을 출력한 시점을 기준으로 Telegram API나 Slack Webhook을 이용해 윈도우 시작 시간, packet_count, 예상 공격 유형 등의 정보를 즉시 전송하는 방식이다. 이러한 구조는 실제 현장에서 이상 행위 발생 시 신속하게 대응할 수 있는 기반이 되며, 본 칼럼에서 정리한 탐지 과정과 자연스럽게 연계된다.<br><br></p>
+<h2 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h2><p>본 칼럼에서는 IoT 환경에서 발생하는 다양한 이상 행위를 탐지하기 위해 트래픽을 수집하고, 윈도우 기반 통계 특징을 구성한 뒤, Threshold 방식과 머신러닝 기반 모델을 비교하는 과정을 정리하였다. 정상 패턴을 중심으로 구축한 머신러닝 모델은 트래픽 폭증과 같은 명확한 공격 패턴을 효과적으로 감지할 수 있었으며, 모델별 탐지 편차를 통해 IDS 설계 시 고려해야 할 다양한 요소도 확인할 수 있었다. </p>
+<p>또한 추후 시각화 및 자동 알림 체계로 확장하여 실제 IoT 환경의 보안 모니터링 기능으로 발전시킬 수 있을 것으로 보인다. 본 칼럼에서 다룬 일련의 과정은 IoT 보안 관제 시스템 구축의 기초적인 틀을 제시하는 것으로, 향후 다양한 데이터 특징 추가, 장기 분석 기반 모델 적용 등으로 확장할 수 있다.<br><br><br></p>
+<h1 id="참고문헌"><a href="#참고문헌" class="headerlink" title="참고문헌"></a>참고문헌</h1><ul>
+<li>D. Green, “PyShark—Documentation,” GitHub Pages. [Online]. Available: <span class="exturl" data-url="aHR0cHM6Ly9raW1pbmV3dC5naXRodWIuaW8vcHlzaGFyay8=">https://kiminewt.github.io/pyshark/</span>. Accessed: Sep. 20, 2025. </li>
+<li>Nmap Project, “Npcap Reference Guide,” npcap.com. [Online]. Available: <span class="exturl" data-url="aHR0cHM6Ly9ucGNhcC5jb20vZ3VpZGUvaW5kZXguaHRtbA==">https://npcap.com/guide/index.html</span>. Accessed: Sep. 20, 2025.  </li>
+<li>이든, 임승순, 최선오, “MQTT 기반 IoT 환경에서 LSTM 및 슬라이딩 윈도우를 이용한 악성 트래픽 탐지 방법,” 한국산업정보통신학회논문지 (Journal of KIIT), vol. 21, no. 5, pp. 111–120, May 2023.  </li>
+<li>이지구, 이수진, 김영원, “MQTT 기반 IoT 환경에서의 PCA와 LightGBM을 이용한 공격 탐지 및 분류 방안,” 융합보안 논문지, vol. 22, no. 4, pp. 17–24, 2022. [Online]. Available: KCI&#x2F;DBpia&#x2F;e-Article portals. Accessed: Sep. 20, 2025.  </li>
+<li>hsl, “침입 감지 시스템 (IDS: Intrusion Detection System),” hsl’s tsmaster 사용기, Jan. 4, 2025. [Online]. Available: <span class="exturl" data-url="aHR0cHM6Ly90c21hc3Rlci50aXN0b3J5LmNvbS80Mw==">https://tsmaster.tistory.com/43</span>. Accessed: Sep. 20, 2025. </li>
+<li>pursh, “대용량 패킷 분석 #3 - tshark 통계 생성,” BoanHack (Tistory), Feb. 10, 2014. [Online]. Available: <span class="exturl" data-url="aHR0cHM6Ly9ib2FuaGFjay50aXN0b3J5LmNvbS8xMzE=">https://boanhack.tistory.com/131</span>. Accessed: Sep. 20, 2025. </li>
+<li>F. Pedregosa et al., “Scikit-learn: Machine Learning in Python,” Journal of Machine Learning Research, vol. 12, pp. 2825–2830, 2011. [Online]. Available: <span class="exturl" data-url="aHR0cHM6Ly9zY2lraXRsZWFybi5vcmcvc3RhYmxlLw==">https://scikitlearn.org/stable/</span>. Accessed: Nov. 14, 2025. </li>
+<li>L. Breiman, “Random Forests,” Machine Learning, vol. 45, no. 1, pp. 5–32, Oct. 2001.  </li>
+<li>F. T. Liu, K. M. Ting, and Z.-H. Zhou, “Isolation Forest,” 2008 Eighth IEEE International Conference on Data Mining, pp. 413–422, 2008. </li>
+<li>V. Chandola, A. Banerjee, and V. Kumar, “Anomaly Detection: A Survey,” ACM Computing Surveys, vol. 41, no. 3, pp. 1–58, 2009.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/IoT/" rel="tag"># IoT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/04/323306_260104/" rel="prev" title="[2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축">
+                  <i class="fa fa-angle-left"></i> [2026 SWING magazine] IoT 기기의 Token 인증 방식과 JWT를 이용한 Token 인증 구축
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/06/313204_260106/" rel="next" title="[2026 SWING magazine] 윈도우 악성코드 인젝션 기법 심층 분석 : Hollowing부터 Ghosting까지">
+                  [2026 SWING magazine] 윈도우 악성코드 인젝션 기법 심층 분석 : Hollowing부터 Ghosting까지 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

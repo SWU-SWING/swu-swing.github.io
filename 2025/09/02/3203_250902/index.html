@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="네트워크 보안 개요: NIDS와 NIPS의 역할과 의의개요오늘날 네트워크 보안은 네트워크 안에서 전송되는 데이터에 대한 무결성, 기밀성, 가용성을 방어하는 것에 있어 기업과 개인에 대해 중요한 의의를 가지고 있다. 다양한 사이버 공격의 시도와 자산에 대한 보호가강조되는 요즘, 네트워크 침입탐지 시스템(Network-Based Intrusion Detecti">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] Suricata-Based NIDS&#x2F;NIPS (1)">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/02/3203_250902/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="네트워크 보안 개요: NIDS와 NIPS의 역할과 의의개요오늘날 네트워크 보안은 네트워크 안에서 전송되는 데이터에 대한 무결성, 기밀성, 가용성을 방어하는 것에 있어 기업과 개인에 대해 중요한 의의를 가지고 있다. 다양한 사이버 공격의 시도와 자산에 대한 보호가강조되는 요즘, 네트워크 침입탐지 시스템(Network-Based Intrusion Detecti">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image7.jpg">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3203_250902_image14.png">
+<meta property="article:published_time" content="2025-09-02T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.249Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="NIDS">
+<meta property="article:tag" content="NIPS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3203_250902_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/02/3203_250902/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/02/3203_250902/","path":"2025/09/02/3203_250902/","title":"[2025 SWING magazine] Suricata-Based NIDS/NIPS (1)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] Suricata-Based NIDS/NIPS (1) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%B3%B4%EC%95%88-%EA%B0%9C%EC%9A%94-NIDS%EC%99%80-NIPS%EC%9D%98-%EC%97%AD%ED%95%A0%EA%B3%BC-%EC%9D%98%EC%9D%98"><span class="nav-number">1.</span> <span class="nav-text">네트워크 보안 개요: NIDS와 NIPS의 역할과 의의</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EA%B0%9C%EC%9A%94"><span class="nav-number">1.1.</span> <span class="nav-text">개요</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDS-IPS-%EC%8B%9C%EC%9E%A5-%EB%8F%99%ED%96%A5-%EB%B6%84%EC%84%9D"><span class="nav-number">1.2.</span> <span class="nav-text">IDS&#x2F;IPS 시장 동향 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AI%EC%99%80-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-IDS-IPS-%ED%86%B5%ED%95%A9-%EC%A0%84%EB%A7%9D"><span class="nav-number">1.3.</span> <span class="nav-text">AI와 머신러닝, IDS&#x2F;IPS 통합 전망</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B9%A8%EC%9E%85-%ED%83%90%EC%A7%80%EC%99%80-%EC%B0%A8%EB%8B%A8-%ED%88%B4"><span class="nav-number">2.</span> <span class="nav-text">침입 탐지와 차단 툴</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIDS-NIPS-%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4-%ED%88%B4-%EC%A2%85%EB%A5%98%EC%99%80-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EC%8B%9D"><span class="nav-number">2.1.</span> <span class="nav-text">NIDS&#x2F;NIPS 오픈소스 툴 종류와 사용 방식</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Suricata-%EC%86%8C%EA%B0%9C-%EC%84%B1%EB%8A%A5-%EB%B6%84%EC%84%9D"><span class="nav-number">2.2.</span> <span class="nav-text">Suricata 소개, 성능 분석</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snort-Suricata-Rules-%EB%B9%84%EA%B5%90-%EB%B6%84%EC%84%9D"><span class="nav-number">3.</span> <span class="nav-text">Snort, Suricata Rules 비교 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Snort%EC%99%80-Suricata-%EB%B9%84%EA%B5%90"><span class="nav-number">3.1.</span> <span class="nav-text">Snort와 Suricata 비교</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Suricata-Rules%EC%97%90-%EB%8C%80%ED%95%9C-%EA%B0%9C%EC%9A%94"><span class="nav-number">3.2.</span> <span class="nav-text">Suricata Rules에 대한 개요</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/02/3203_250902/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] Suricata-Based NIDS/NIPS (1) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] Suricata-Based NIDS/NIPS (1)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: banda</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-02 13:00:00" itemprop="dateCreated datePublished" datetime="2025-09-02T13:00:00+09:00">2025-09-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="네트워크-보안-개요-NIDS와-NIPS의-역할과-의의"><a href="#네트워크-보안-개요-NIDS와-NIPS의-역할과-의의" class="headerlink" title="네트워크 보안 개요: NIDS와 NIPS의 역할과 의의"></a>네트워크 보안 개요: NIDS와 NIPS의 역할과 의의</h2><h3 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h3><p>오늘날 네트워크 보안은 네트워크 안에서 전송되는 데이터에 대한 무결성, 기밀성, 가용성을 방어하는 것에 있어 기업과 개인에 대해 중요한 의의를 가지고 있다. 다양한 사이버 공격의 시도와 자산에 대한 보호가<br>강조되는 요즘, 네트워크 침입탐지 시스템(Network-Based Intrusion Detection Systems)과 네트워크 침입차단 시스템(Network-Based Intrusion Prevention Systems)은 네트워크 보안의 큰 틀의 하나로서 역할을 수행하고 있다.<br>기존의 방화벽은 외부 사용자에 대한 인증되지 않은 외부의 접근 시도를 차단해낼 수 있었다. 그러나 방화벽은 응용 프로그램 수준 공격과 새로운 패턴의 공격에 대해 대응력 낮다는 중대한 문제가 있었다.<br>방화벽이 단독으로 오늘날 빈번히 이루어지는 제로 데이 공격이나 웜과 바이러스, 그 외의 해킹 등의 빠른 시일 내에 이루어지는 공격 환경에 대해 실시간 대응을 하기는 어려우며, 외부에서 차단 역할을 주로 수행하기 때문에 사전&#x2F;사후 탐지와 같은 역할을 수행하기는 어려워졌다.</p>
+<span id="more"></span>
+
+<p>침입탐지시스템은 보다 유해한 트래픽을 ‘탐지’하는 것에 목적을 두어 방화벽의 한계를 보완하고 있다. 그중 네트워크 기반의 침입탐지시스템으로서 주요 수행 기능은 네트워크 내의 암호화된 트래픽을 탐지하거나 모니터링하고 분석해 비정상적인 패턴을 감지하는 기능을 수행한다. 구조도를 확인해 보면 NIDS는 로컬 네트워크 내 switch 노드 근처와 네트워크 경계의 액세스 router 근처에 위치한다. 또한 NIDS는 방화벽에 의해 이미 차단된 트래픽 이후의 탐지 역할을 수행하기 때문에 오탐지율이 감소하는 효과를 보여준다.<br><img src="/images/3203_250902_image1.png" alt="그림 1.NIDS와 NIPS 배치 구조도 예시"></p>
+<center><span style="font-size: 90%;">그림 1. [NIDS와 NIPS 배치 구조도 예시]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+네트워크 보안의 관점에서 특정한 침입이 발생하였다는 것의 의미는 네트워크 상에서 외부의 침입자가 자원을 불법적으로 사용하려는 시도와, 내부 사용자가 권한을 오용하려는 시도가 있었다는 것을 의미한다. 
+이때 침입탐지시스템은 주로 위협 탐지에 초점을 둔 시스템이라고 상정한다. 네트워크 기반의 침입탐지시스템은 네트워크 전반을 감시하면서 탐지된 이벤트를 모니터링해 이에 대해 탐지룰이 매핑되는 경고문(Alert)을 생성할 수 있다. 
+IDS의 조기 경보와 사고 조사는 침입에 대한 사전 조치와 잠재적 영향을 이해하는 것에 많은 도움을 제공하였다. 
+그러나 침입탐지는 단순 탐지 기능에 초점을 두어 직접적인 대응을 하지는 못하는 다소 수동적인 성격을 지니고 있었고 이를 개선하려는 시도가 이루어졌다. 
+이에 대응하여 네트워크 트래픽을 실시간으로 차단하는 등의 능동적인 기능을 침입차단시스템이 함께 수행하고 있다. 
+IPS가 도입된 이후 네트워크 트래픽에 대해 특정 이벤트를 발견하는 것뿐만이 아니라 손수 대응할 수 있게 되면서 네트워크 보안은 더욱 적극적이고 신속한 조치를 취할 수 있게 된 것이다.
+<br><br>
+
+<p><img src="/images/3203_250902_image2.png" alt="그림 2. SIGNATURE 기반 NIDS 요소 블록 구성도"></p>
+<center><span style="font-size: 90%;">그림 2. [SIGNATURE 기반 NIDS 요소 블록 구성도]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+각각의 정의를 구분할 수 있다면 이제 침입탐지시스템과 침입차단시스템의 수행 활동도 구별하여 알아볼 수 
+있다. 
+먼저 침입탐지시스템은 ①행동 패턴을 통해 이상을 발견해 내는 이상 기반 탐지, ②서명(signature)을 데이터베이스에 저장하고 일치하는지 여부를 찾아내는 서명 기반 탐지, ③네트워크로 전송되는 개별 패킷을 분석해 특정 패턴을 탐지해 내는 패킷 검사, ④경고(alert) 기능을 통해 관리자에게 발견된 탐지에 대한 경고문을 전송하는 경고 및 보고 기능을 수행하고 있다. 
+특히 서명 기반 탐지는 네트워크 트래픽 흐름이 서명과 일치하면 조치가 취해지는데, 그중 상업적/전통적인 면에서 사용되는 주요 서명은 문자열 시그니처(String signatures), 포트 시그니처(Port signatures), 헤더 시그니처(Header signatures)가 지정이 되어 있다. 
+오늘날에는 서명 기반 IDS 가 이상 기반 IDS 보다 널리 사용되고 있지만, 이미 여러 시스템에 공격을 당한 후에 알려진 공격에 대한 탐지를 수행하기 때문에 사전 예방적이지는 못했다. 이에 반해 이상 기반 IDS 는 네트워크 트래픽 자체를 모니터링하고 수집한 정상 트래픽 간의 기준 비교하여 통계와 같은 계산을 통한 탐지를 수행할 수 있으므로 수동적인 간섭이 감소될 수 있었고 많은 사람들의 주목을 받고 있다. 
+그러나 이상 기반 탐지는 아직은 오탐지나 거짓 정보 양성의 우려가 조금이라도 존재할 수밖에 없기에 이에 대한 해결책은 보안의 발전을 위한 과제로 남겨져 있다. 
+<br><br>
+한편 침입차단시스템에는 ①특정 트래픽이 탐지되었을 때 이를 즉시 차단해 내는 실시간 차단 기능, ②다양한 정책을 통해 트래픽을 허용하거나 차단하는 정책 기반의 제어, ③패킷의 세부적인 모든 계층을 검사하고 모니터링하는 심층 패킷 검사 기능이 존재할 수 있다.
+
+<p><img src="/images/3203_250902_image3.png" alt="그림 3. NIDS/NIPS 보안 솔루션 수립 과정"></p>
+<center><span style="font-size: 90%;">그림 3. [NIDS/NIPS 보안 솔루션 수립 과정]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+다음은 NIDS와 NIPS를 통해 보안 솔루션을 설계하는 과정을 ①초기, ②준비, ③배치, ④유지 단계로 구분하여 명명하였다. 먼저 초기 단계는 네트워크 세분화 사전 정의이다. 만약 당신이 침입탐지시스템의 사용을 고려하고 있다면 어떤 자산이 네트워크 내에서 중요한 자산인지 세부적으로 식별하고 구분하는 초기 과정이 필요하다. 정확한 모니터링을 위해 자산 정보들을 중요도 순으로, 역할 순으로 각각의 구역을 설정해두는 과정은 사전 조사에 있어 필수적이다.
+<br><br>
+초기 단계를 수립하였다면, 적합한 네트워크 탐지 통합 툴을 신중하게 선택해 결정할 준비를 해야 한다. IDS/IPS 툴은 그 쓰임새와 고려 요소에 따라 소프트웨어별로 다양한 기능을 제공한다. snort 와 suricata, bro, zeek 와 같은 오픈 소스 솔루션을 선택하거나, 혹은 Cisco Firepower, AXENT, CyberSafe, ISS, Shadow 와 같은 상용 제품을 고려하는 등의 다양한 선택 방법을 논의한다. 또한 호스팅을 위한 하드웨어를 선택하는 과정도 매우 중요하다. 침입탐지시스템으로서 방대한 트래픽 모니터링과 부하를 처리하기 위해 하드웨어는 준수한 처리 능력과 메모리, 네트워크 인터페이스와 저장소를 제공해야 한다.
+<br><br>
+배치 단계에서는 정보 자산들을 통해 네트워크의 중요한 지점에 IDS/IPS 센서를 배치해야 한다. 공급 업체나 오픈 소스 프로젝트에서 제공하는 가이드에 따라 초기 탐지 rules 와 signature를 마련한다. 그리고 개발한 규칙이 의도한 바와 같이 탐지가 수행되었는지 확인한다. 마지막 유지 단계는 침입탐지시스템의 유지 보수와 관련된 부분이다. 보안 관리자는 탐지 규칙이 특정한 특성과 위협 활동에 알맞게 설정되었는지 정기적으로 NIDS/NIPS rules를 검토하고 조정해 탐지 오류를 줄이고 보안을 강화하는 작업을 수행해야 한다. 또한 그간의 탐지 로깅을 통해 경고 임계값, 대응 조치, 보고서를 조직 보안 정책에 맞게 추출해 내는 노력이 필요하다.
+<br><br>
+침입탐지시스템과 침입차단시스템은 독립된 개별 도구가 아니며 NIDS/NIPS 시스템의 통합으로 역할로 보안 대응을 신속하고 효과적으로 수행하고 있다. 또한 일부 통합 네트워크 탐지 툴은 방화벽과 NIDS, NIPS 기능을 함께 제공하고 있다. NIDS를 효과적으로 사용하기 위해서는 탐지 툴과 함께 이를 상황에 맞게 유연하게 분석해 보고/대처할 수 있는 침해사고 대응 분석 인력의 투입이 상당히 많이 필요하다. 만약 NIDS/ NIPS 를 적절하게 활용한다면 보안 관리자는 탐지 도구에 대해 로그를 보고받아 분석하면서 잠재적인 침해 사고를 식별해 내는 것에 많은 도움을 받을 수 있을 것이다. 또한 의도된 외부 비인가자의 침입 사건이 아니더라도 내부 사용자가 보안 정책을 위반하지 않도록 이를 억제하는 역할도 수행해낼 수 있다는 점에서 침입 탐지와 차단 시스템은 다양한 활용력을 보여준다.
+<br><br>
+
+<h3 id="IDS-IPS-시장-동향-분석"><a href="#IDS-IPS-시장-동향-분석" class="headerlink" title="IDS&#x2F;IPS 시장 동향 분석"></a>IDS&#x2F;IPS 시장 동향 분석</h3><p><img src="/images/3203_250902_image4.png" alt="그림 4. 2018 GARTNER MAGIC QUADRANT FOR INTRUSION DETECTION AND PREVENTION SYSTEMS"></p>
+<center><span style="font-size: 90%;">그림 4. [2018 GARTNER MAGIC QUADRANT FOR INTRUSION DETECTION AND PREVENTION SYSTEMS]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>침입 탐지 시스템의 글로벌 시장은 향후 빠른 속도로 성장할 가능세를 보였다. Gartner 이 2018 년 제공한 Magic Quadrant for Intrusion Detection and Prevention Systems를 확인해보면, Cisco Systems 와 McAfee, Trend Micro 가 리더 기업으로 선두에 있으며 Alert Logic, FireEye, NSFocus, Vectra Networks, Venustech, Hillstone Networks 가 핵심 IDS&#x2F;IPS 솔루션 기업으로 선정되었다.<br><img src="/images/3203_250902_image5.png" alt="그림 5. 2024 GARTNER INTRUSION DETECTION AND PREVENTION SYSTEMS TOP REVIEWS AND RATINGS"></p>
+<center><span style="font-size: 90%;">그림 5. [2024 GARTNER INTRUSION DETECTION AND PREVENTION SYSTEMS TOP REVIEWS AND RATINGS]</span><br><span style="font-size: 70%;"></span></center>
+
+<ul>
+<li>현재와 비교해보면 Cisco 와 McAfee, Trend Micro 는 여전히 NIDS&#x2F;NIPS 솔루션 공급에서 많은 입지를 담당하고 있다.</li>
+<li>Hillstone Networks 사의 솔루션 방화벽은 IDS&#x2F;IPS 기능이 통합되어 좋은 성능과 높은 점유율을 유지하고 있다.</li>
+<li>CenturyLink 는 클라우드 보안 서비스에 강점을 가져 클라우드 보안과 통합된 IDS&#x2F;IPS 맞춤 솔루션을 제공한다.</li>
+<li>Palo Alto Networks 는 NGFW 로 높은 입지를 가지고 있으며, IDS 와 IPS 기능이 포함되어 있다.</li>
+<li>Security Onion은 무료 및 오픈 소스 보안 모니터링이 가능한 솔루션이며, 기업과 개인 사용자 모두 이용이 가능하다.</li>
+<li>Fidelis Security 는 데이터 유출 방지에 강력한 기능을 제공하여, 기업과 정부 기관이 사용하기에 적합하다.</li>
+<li>Fortra, secureworks 는 MDR 서비스로 높은 인지도를 쌓고 있으며, 지속적인 모니터링과 실시간 탐지 대응에 적합하다.</li>
+<li>Corelight 는 zeek(bro) 기반의 IDS 를 통한 네트워크 트래픽 모니터링 기능을 제공한다.</li>
+<li>침입 탐지 시스템은 그 목적에 따라 하드웨어 &#x2F; 소프트웨어 &#x2F; 서비스로, 배치에 따라 cloud-based &#x2F; on- premises IDS&#x2F;IPS 시스템으로, 제품 분류에 따라 network-based &#x2F; host-based IDS&#x2F;IPS 시스템으로 사용된다. 또한 주요 타겟은 금융업, 보험, 정부, 국방, IT 및 통신, 전자 상거래에 종사하는 사람들이다. 침입 탐지 시스템을 사용하는 주요 국가별 고객층을 확인해 보면 북아메리카는 미국 &#x2F; 캐나다, 유럽에서는 영국 &#x2F; 스페인 &#x2F; 독일 &#x2F; 이탈리아 &#x2F; 프랑스, 아시아 태평양에서는 인도 &#x2F; 중국 &#x2F; 일본 &#x2F; 호주 &#x2F; 대한민국, 라인 아메리카에서는 브라질 &#x2F; 아르헨티나 &#x2F; 멕시코, 중동 및 아프리카에서는 사우디 아라비아 &#x2F; 아랍에미리트 &#x2F; 레바논 &#x2F; 요르단 &#x2F; 키프로스 국가에서 해당 솔루션을 도입하고 있다.</li>
+</ul>
+<p>침입 탐지 시스템은 꾸준히 매해 경제 성장을 이루고 있으며, 미래에도 시장이 꾸준한 성장을 보일 것으로 전문가들은 예측하고 있다. 최근 모바일 기기와 원격 근무가 급증함에 따라 정보 유출에 대한 민감도가 높아진 만큼, 분산된 네트워크를 보호하기 위한 IDPS 솔루션 수요가 급증하였기 때문이다.<br><br><br></p>
+<h3 id="AI와-머신러닝-IDS-IPS-통합-전망"><a href="#AI와-머신러닝-IDS-IPS-통합-전망" class="headerlink" title="AI와 머신러닝, IDS&#x2F;IPS 통합 전망"></a>AI와 머신러닝, IDS&#x2F;IPS 통합 전망</h3><p>AI, 머신러닝, 딥 러닝의 등장을 통해 IDS 와 IPS 탐지 툴이 악성 공격을 매우 효율적으로 탐지할 수 있다는 전망이 제공되었고, 향후 시장 성장에 큰 향상을 가져올 것이라는 기대 효과가 제시되었다.</p>
+<ul>
+<li>오늘날 클라우드는 대량의 기밀 데이터를 포함하고 있고, 현재에도 클라우드 보안을 통한 다양한 침입 탐지 시스템이 개발되는 중에 있다. 이때 ML, DL 알고리즘 접근 방식은 인공지능, 자동 기능 학습을 포함해 새로운 패턴과 침입 탐지 메커니즘을 파악하고 검토해 사전에 알려지지 않은 공격에 대응할 전망이다.</li>
+<li>AI 기반의 IDS&#x2F;IPS 툴은 대량의 데이터 실시간 분석이 가능해 이상 징후를 빠르게 발견할 수 있고, 다양한 알고리즘을 사용하여 위협 패턴을 인식하고 학습한다. 또한 많은 인력의 투입이 필요하지 않은 상태로도 의심스러운 징후에 대해 즉각적인 대응이 가능해질 것으로 기대되고 있다.</li>
+<li>AI는 사용자 행동을 분석(UBA) 하고 학습하며 보안 정책을 스스로 업데이트할 수 있는 힘을 가질 수 있게 된다. 자동화된 보안 관리를 통해 보안 팀이 보다 효율적이고 중요한 업무에 집중할 수 있도록 보조 능력을 제공할 수 있다.</li>
+</ul>
+<p><img src="/images/3203_250902_image6.png" alt="그림 6. AI 기반 IDS에서 ML과 DL 기법 성능 비교"></p>
+<hr>
+<h2 id="침입-탐지와-차단-툴"><a href="#침입-탐지와-차단-툴" class="headerlink" title="침입 탐지와 차단 툴"></a>침입 탐지와 차단 툴</h2><h3 id="NIDS-NIPS-오픈소스-툴-종류와-사용-방식"><a href="#NIDS-NIPS-오픈소스-툴-종류와-사용-방식" class="headerlink" title="NIDS&#x2F;NIPS 오픈소스 툴 종류와 사용 방식"></a>NIDS&#x2F;NIPS 오픈소스 툴 종류와 사용 방식</h3><p>이제 본격적으로 NIDS &#x2F; NIPS 시스템의 툴 종류를 알아볼 것이다. 이 칼럼에는 기본적으로 네트워크 기반 오픈 소스 탐지 툴을 취급할 것이며 대표적인 툴로는 그림7과 같은 것들이 있다.<br><img src="/images/3203_250902_image7.jpg" alt="그림 7. 다양한 오픈 소스 침입 탐지 툴"></p>
+<p><strong>[SNORT]</strong></p>
+<p>Snort는 가장 널리, 오랫동안 사용되고 있는 NIDS에 해당하는 오픈 소스 툴이다. 1998 년에 Martin Roesch에 의해 발표되었으며 현재 Cisco Systems 이 총괄하고 있다. 리눅스, 윈도우 등 다양한 운영 체제에서 실행될 수 있으며, 여러 가지 용도로 사용하기 용이하다. 기본적으로 스니퍼 모드. 패킷 로거 모드, 네트워크 침입탐지 모드를 구동하고 있으며 Packet Decoder, Preprocessor, Detection Engine, Logger, Alerting 구성 기능이 있다. Snort 기반의 rules는 헤더와 옵션으로 이루어져 있다.<br><br></p>
+<p><strong>[SURICATA]</strong></p>
+<p>Suricata는 Snort의 한계, 대안으로 사용하기 위해 미국의 국토 안보부로부터 설립된 단체 OISF(Open Information Security Foundation)에 의해 만들어진 툴이다. 이번 칼럼의 핵심이자 주요 프로그램이기도 하다. Suricata는 기본적으로 snort의 IDS&#x2F;IPS 네트워크 트래픽 탐지를 수행할 수 있으며 추가로 네트워크 보안 모니터링(NSM)을 수행할 수 있다. Snort의 rules를 기반으로 사용할 수 있어 snort에 대한 기본적인 지식이 필요하며, suricata 자체의 규칙 형태를 사용할 수도 있다. 이 외에도 캡처한 네트워크 트래픽을 pcap 형식으로 저장할 수 있는 기능이 있다. 또한 다양한 기존의 한정적이었던 프로토콜에 대한 패킷의 범위를 넓혀 HTTP, TLS, FTP, DNS 등 다양한 프로토콜을 분석할 수 있도록 해 유연성을 높이도록 했다. 그 외에도 L7까지의 애플리케이션 레이어 분석, 멀티 스레딩 지원, 트래픽 파일 추출 기능, 다양한 형태의 로그 출력 기능이 있어 네트워크 침입 탐지 시스템을 효과적으로 이용할 수 있다.<br><br></p>
+<p><strong>[Zeek(bro)]</strong></p>
+<p>Zeek(bro)는 1995 년에 제안된 프로그램으로 기존의 bro 가 현재 zeek로 이름이 변경된 상태이며, 대표적인 오픈 소스 IDS&#x2F;IPS 툴에 속하지만 광범위하고 자세한 트래픽 행동 분석에 보다 많은 이점을 남긴 프로그램이다. 주요 기능은 네트워크 트래픽 모니터링, 이상 징후 탐지, 유연한 분석 및 스크립팅, 높은 수준의 트래픽 로그 기록 파일이다. 저용량으로 대용량 네트워크 모니터링과 초고속 지원을 하도록 설계를 하고 있어 기업 등 다양한 기관에서 활용된다.<br><img src="/images/3203_250902_image8.png" alt="그림 8. 상황에 따른 오픈소스 NIDS/NIPS 툴 선택"><br><br><br></p>
+<h3 id="Suricata-소개-성능-분석"><a href="#Suricata-소개-성능-분석" class="headerlink" title="Suricata 소개, 성능 분석"></a>Suricata 소개, 성능 분석</h3><p>앞서 오픈소스 대표 NIDS 툴에 대해 소개하였고, 이제 suricata 기본 세팅에 대해 상세하게 설명한다. 앞으로 소개될 내용은 suricata 설립 단체 OISF에서 작성된 <code>Suricata Guide</code> 공식 문서를 참고하여 기술하였다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libpcap, libpcre, libmagic, zlib, libyaml, gcc(또는 clang), pkg-config</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install suricata</span><br></pre></td></tr></table></figure>
+
+<p>Suricata 를 설치하기 위해서 다음과 같은 최소 사전 라이브러리와 개발 헤더, 도구가 필요하다. 필자는 이번 칼럼에서 kali linux (Debian) 환경을 통해 suricata 실습을 진행해 보려고 하며, Debian 9에서는 다음과 같은 명령어를 통해 간단하게 설치를 완료할 수 있다.</p>
+<p>추가로 KVM&#x2F;QEMU, VMware ESXi, Xen 등의 가상화된 플랫폼에서 suricata를 가동하면 snapshot, 자원 격리, 자동화 기능을 통해 다양한 시스템 환경을 자율적으로 에뮬레이션 할 수 있고, suricata 탐지와 분석 실험에만 집중할 수 있게 해준다. 반면 VM 과 같은 가상 머신에서 suricata를 가동하면 실제 서비스 중인 네트워크 환경과 유사한 환경 조건 시뮬레이션을 통해 테스트 평가를 진행할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/kali/suricata-7.0.6]</span><br><span class="line">└─# sudo systemctl start suricata</span><br><span class="line">┌──(root㉿kali)-[/home/kali/suricata-7.0.6]</span><br><span class="line">└─# systemctl status suricata</span><br><span class="line">●	suricata.service - Suricata IDS/IDP daemon</span><br><span class="line">...</span><br><span class="line">┌──(root㉿kali)-[/home/kali/suricata-7.0.6]</span><br><span class="line">└─# systemctl stop suricata</span><br></pre></td></tr></table></figure>
+
+<p>다음 명령을 통해 suricata 동작을 시작하거나 종료할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/kali/suricata-7.0.6]</span><br><span class="line">└─# systemctl reload suricata</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>[보안 고려 사항]</strong><br>기본적으로 root 권한을 가진 상태 (높은 시스템 권한)에서만 사용이 가능하다. 추가적으로 사용자나 그룹에게 이용 권한을 부여하려면 다음과 같은 명령어를 입력한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd --no-create-home --system --shell /sbin/nologin username</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>[주요 활동 디렉토리]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/etc/suricata</span><br><span class="line">/var/log/suricata</span><br><span class="line">/var/lib/suricata</span><br><span class="line">/var/run/suricata</span><br></pre></td></tr></table></figure>
+
+<p>Suricata를 기본적인 권고사항에 따라 설치했다면 기본적으로 업데이트되는 디렉토리는 다음과 같다.<br>(사용자나 그룹 권한으로 suricata 를 사용하기 위해서는 활동 디렉토리에 읽고쓰기 권한을 추가하는 등 추가 구성이 필요할 수 있다.)</p>
+<ul>
+<li>suricata 에서 고려할 수 있는 주요 키워드는 다음과 같다. 그 밖에도 기본적인 명령어들은 suricata -h로 확인할 수 있다.</li>
+</ul>
+<br>
+
+<p>Suricata 에서 이루어지는 침입탐지에 대한 성능 분석은 다음과 같이 이루어진다.</p>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>기능 설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>패킷 처리 속도(Throughput)</td>
+<td>Suricata의 다중 스레드 지원은 여러 코어에서 패킷을 병렬로 처리할 수 있도록 한다. 따라서 CPU 코어 수, 스레드 관리에 따라 초당 처리할 수 있는 패킷 성능이 달라진다.</td>
+</tr>
+<tr>
+<td>대기 시간(Latency)</td>
+<td>시스템에 도달한 패킷이 분석되고, 다시 빠져나갈 때까지 걸리는 시간을 의미한다. 대기시간이 낮을수록 보안과 방어 성능에 중요한 영향을 미친다.</td>
+</tr>
+<tr>
+<td>메모리 사용량</td>
+<td>Suricata의 메모리 사용량이 시스템에 적합하지 않으면 시스템 불안정성이 높아질 수 있으며, 이는 Suricata가 적절한 성능으로 작동하지 않을 수 있다는 경고를 시사한다.</td>
+</tr>
+<tr>
+<td>정확도(Detection Accuracy)</td>
+<td>강력한 보안을 위해 오탐(False Positive), 미탐(False Negative)의 비율이 얼마나 되는지 기록하는 성능 평가는 중요하다. 탐지 규칙이 정확하게 작동해 보안 유출이 일어날 위험이 감소하기 때문이다.</td>
+</tr>
+<tr>
+<td>멀티 스레딩 및 CPU 효율성</td>
+<td>다른 침입탐지 툴과 차이가 나타나는 기능은 Suricata가 멀티 스레딩을 활용해 도구 성능을 극대화하는 것이다. CPU 코어 사용률, 효율성은 Suricata의 성능에 많은 영향을 준다.</td>
+</tr>
+</tbody></table>
+<p>Suricata 침입탐지 툴에서 관리하는 주요 지표는 다음과 같은 것이 있다.<br><br></p>
+<p>Suricata의 성능을 확인해 보기 위해서는 다양한 탐지 rules 작성, pcap 파일 분석, 실시간 트래픽 분석, 그리고 통합 툴 사용과 같은 종합적인 이해와 판단이 필요하다.</p>
+<table>
+<thead>
+<tr>
+<th>구성</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pcap 입력</td>
+<td>Pcap는 packet capture의 약자로, 미리 녹화된 네트워크 트래픽을 캡처한 데이터를 의미한다. 이 파일을 통해 전체적인 네트워크 트래픽을 매우 용이하게 분석할 수 있다.<br>Suricata는 데이터를 입력해 처리 능력을 평가할 수 있도록 준비되어 있다.</td>
+</tr>
+<tr>
+<td>실시간 트래픽 분석</td>
+<td>실제 네트워크 환경에서 Suricata rules를 로드하고, 실시간으로 네트워크 트래픽을 탐지&#x2F;차단할 수 있지 모니터링한다.</td>
+</tr>
+<tr>
+<td>규칙 최적화</td>
+<td>활성화된 탐지 rules가 성능에 맞게 작동하는지 그 영향을 분석한다.</td>
+</tr>
+<tr>
+<td>하드웨어 리소스</td>
+<td>Suricata에서 시스템 메모리 사용량, CPU, 디스크 I&#x2F;O 등을 분석해 적절한 성능으로 사용이 되고 있는지 모니터링한다.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Snort-Suricata-Rules-비교-분석"><a href="#Snort-Suricata-Rules-비교-분석" class="headerlink" title="Snort, Suricata Rules 비교 분석"></a>Snort, Suricata Rules 비교 분석</h2><h3 id="Snort와-Suricata-비교"><a href="#Snort와-Suricata-비교" class="headerlink" title="Snort와 Suricata 비교"></a>Snort와 Suricata 비교</h3><p>Suricata는 Snort 기반의 규칙을 활용하고 있기 때문에 기본적으로 탐지 룰이 유사한 성질을 갖고 있다. 본 칼럼에서는 suricata 규칙에 대한 분석을 진행하는데, 해당 규칙은 snort에도 다수 해당되는 탐지 규칙이다. 아래 그림은 사용자가 작성한 Suricata 사용자 정의 룰(NMAP XMAS Scan, Ping of Death)과 해당 룰을 통해 실제로 탐지된 이벤트 로그를 함께 보여주고 있다.<br><img src="/images/3203_250902_image9.png" alt="그림 9. Suricata 사용자 정의 룰 및 탐지 로그 예시"></p>
+<center><span style="font-size: 90%;">그림 9. [Suricata 사용자 정의 룰 및 탐지 로그 예시]</span><br><span style="font-size: 70%;"></span></center>
+<br>
+
+<p>다음은 Snort와 Suricata의 기능 분석에 대한 내용이다.</p>
+<table>
+<thead>
+<tr>
+<th>Snort</th>
+<th>Suricata</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cisco 소유</td>
+<td>OISF에 의해 설립</td>
+</tr>
+<tr>
+<td>NIDS 기능 수행</td>
+<td>NIDS 및 NIPS 기능 수행</td>
+</tr>
+<tr>
+<td>단일 스레드 기반 처리 방식 (성능 제한 가능성)</td>
+<td>멀티 스레드 기반 처리 방식</td>
+</tr>
+<tr>
+<td>주요 프로토콜 지원에 국한</td>
+<td>고급 프로토콜, 7계층 프로토콜에 대한 상세 분석 기능, DPI 제공</td>
+</tr>
+<tr>
+<td>Snort 고유 규칙 사용</td>
+<td>Snort 규칙과 호환, 유지하면서 Suricata 전용 규칙 기능 추가 지원</td>
+</tr>
+<tr>
+<td>규칙 기반 탐지</td>
+<td>규칙 기반 탐지와 함께 흐름 기반, 행위 기반 탐지 가능</td>
+</tr>
+<tr>
+<td>탐지 경고문 생성</td>
+<td>탐지&#x2F;차단 기능 이외에도 네트워크 트래픽 모니터링&#x2F;분석 기능 제공</td>
+</tr>
+<tr>
+<td>가장 대중적이며 오래 안정화된 시스템</td>
+<td>설립 이후 점차적으로 도입 시작, 현재는 해외 기업 등 국제적으로 활용도 높음</td>
+</tr>
+<tr>
+<td>제한적인 로그 및 보고</td>
+<td>상세한 분석 로그, 보고 기능 제공</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+<h3 id="Suricata-Rules에-대한-개요"><a href="#Suricata-Rules에-대한-개요" class="headerlink" title="Suricata Rules에 대한 개요"></a>Suricata Rules에 대한 개요</h3><p>Suricata 탐지 룰은 기본적으로 ①ACTION, ②HEADER, ③RULE OPTIONS 라는 세 부분으로 나뉘어져 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/etc/suricata/rules/</span><br><span class="line">## 다운로드한 규칙 혹은 사용자 정의 규칙을 저장하기에 적합함</span><br><span class="line"></span><br><span class="line">/var/lib/suricata/rules/</span><br><span class="line">## suricata 규칙 관리 시스템에서 규칙을 설정함</span><br></pre></td></tr></table></figure>
+
+<p>기본적으로 rules 파일은 위의 두 가지 경로에서 작성할 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/suricata/suricata.yaml</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>Suricata의 설정 파일은 다음 경로에서 확인할 수 있다. Rules 디렉토리에 들어오면 custom rules 말고도 사전 구성된 rules 가 존재한다.<br><img src="/images/3203_250902_image10.png" alt="그림 10. Suricata 기본 룰 파일 목록"></p>
+<center><span style="font-size: 90%;">그림 10. [Suricata 기본 룰 파일 목록]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>Rules 확장자명은 침입탐지시스템에서 지정하는 탐지 룰을 저장할 수 있는 파일을 의미한다. 직접 rules를 작성해 주기 위해서 swing.rules라는 custom 파일을 생성해 DoS Attack을 탐지하는 규칙을 적어주었다.<br><br></p>
+<p><img src="/images/3203_250902_image11.png" alt="그림 11. TCP SYN Flood 탐지"></p>
+<center><span style="font-size: 90%;">그림 11. [TCP SYN Flood 탐지 룰]</span><br><span style="font-size: 70%;"></span></center>
+
+<p>원하는 규칙 내용을 .rules 파일로 작성해 주고, suricata rules 디렉토리에 포함하면 local rules가 완성된다.<br><br></p>
+<p><strong>[① Action]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alert</span><br></pre></td></tr></table></figure>
+
+<p>Action 범위는 규칙에 어떤 행동을 가할 것인지 결정할 수 있는 동작을 지정한다. 가장 처음 위치하며, 침입탐지로서 취할 수 있는 대표적인 동작은 다음과 같다.</p>
+<table>
+<thead>
+<tr>
+<th>Pass</th>
+<th>Drop</th>
+<th>Reject</th>
+<th>Alert</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>현재 패킷에 대해 패킷 스캐닝을 중지 (패킷 무시)</td>
+<td>패킷 차단 (ONLY IPS&#x2F;온라인 모드일 때만)</td>
+<td>TCP 문제, ICMP 에러 패킷이 발생할 때 패킷 차단</td>
+<td>경고문 출력, 로그 기록</td>
+</tr>
+</tbody></table>
+<p>대표적으로 동작에는 Drop, Reject, Alert 등이 존재한다. Alert(IDS)는 트래픽 차단을 진행하지 않고 감시를 통해 로그 메시지를 관리자에게 전송한다. Drop(IPS)과 reject는 네트워크 트래픽을 차단해 로그에 기록하지만, reject 기능은 추가로 차단 응답 메시지를 클라이언트에게 제공할 수 있다는 점에서 차이점을 보인다.</p>
+<br>
+
+<p><strong>[② HEADER]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcp any any -&gt; $HOME_NET 80</span><br></pre></td></tr></table></figure>
+
+<p>Header는 Protocol, Source and destination, Ports로 구성되어 있으며 규칙이 향하는 방향을 지정하는 역할을 한다. 해당 예시 규칙의 가장 첫 <code>tcp</code>는 어떤 프로토콜의 규칙을 작성할지 결정하는 것이며, suricata에서 지원하는 프로토콜인지 확인해야 한다. Source and destination는 경로는 출발지 any 와, 목적지 $HOME_NET를 가리키고 있다는 것을 의미한다. 마지막으로 ports는 출발지가 any, 그리고 목적지는 80으로 이동하는 포트 정보다.<br><img src="/images/3203_250902_image12.png" alt="그림 12. 네트워크 인터페이스 eht0 설정 정보"></p>
+<center><span style="font-size: 90%;">그림 12. [네트워크 인터페이스 eht0 설정 정보]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>suricata.yaml 파일에서 자신의 네트워크 대역과 캡처할 네트워크 인터페이스가 적절한지 확인하고 필요에 따라 수정한다.<br><img src="/images/3203_250902_image13.png" alt="그림 13. Suricata HOME_NET 변수 설정"></p>
+<center><span style="font-size: 90%;">그림 13. [Suricata HOME_NET 변수 설정]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>[③ RULE Options]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(msg:&quot;DoS Attack (TCP SYN Flood)&quot;; flow:to_server; flags:S; threshold:type both, track by_dst, count 100, seconds 10; reference:cve,CVE-1996-4458; classtype:attempted-dos; sid:1000001; rev:2;)</span><br></pre></td></tr></table></figure>
+
+<p>RULE Options는 rules의 가장 뒷부분에서 침입 탐지 규칙의 세부 사항을 규정한다. 복잡해 보이지만 다음과 같은 정보를 확인할 수 있다.</p>
+<ul>
+<li>Msg: “DoS Attack (TCP SYN Flood)” - 추후 탐지되었을 때 로그에 기록될 문구 지정에 대한 내용이다.</li>
+<li>Flow:to_server - 클라이언트 -&gt; 서버로 향하는 패킷이 주요 검사 대상이다.</li>
+<li>Flags:S – TCP 연결 초기에 사용되는 SYN 플래그 패킷을 검사하고 탐지한다.</li>
+<li>Threshold (both, track by_dst, count 100, seconds 10) – 특정한 조건을 실현하면 DoS Attack (TCP SYN Flood)가 탐지될 규칙을 지정한다.</li>
+<li>CVE-1996-4458 - CVE 는 이 공격에 대한 취약점 정보이며, CVE 넘버를 통해 해당 공격에 대한 정보를 제공받을 수 있다.</li>
+<li>Classtype:attempted-dos – 이 규칙이 어떤 유형의 클래스인지<br>정의한다.</li>
+<li>Sid:1000001 – Suricata 규칙의 고유 식별자를 1000001 로 지정한다.</li>
+<li>Rev:2 – 이 규칙은 업데이트된 두 번째 버전을 나타내고 있다.</li>
+</ul>
+<br>
+
+<p>룰 개발의 Meta Keyword 부분은 트래픽 검사에는 영향을 미치지 않지만 경고 및 로그문을 생성하는 경우에 사용자의 필요에 따라 생성한다. (메시지, sid, rev, gid, classification, reference, priority, metadata, target, requires 와 같은 Keyword 가 이에 해당한다.)<br><img src="/images/3203_250902_image14.png" alt="그림 14. Suricata 룰 파일 경로 및 로드 설정"></p>
+<center><span style="font-size: 90%;">그림 14. [Suricata 룰 파일 경로 및 로드 설정]</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+이후 작성한 rules 파일을 적용하기 위해 suricata.yaml 파일에서 rule-file:을 검색해 swing.rules를 추가하였다.
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/etc/suricata/rules]</span><br><span class="line">└─# suricata -T -c /etc/suricata/suricata.yaml -S swing.rules -v</span><br><span class="line"></span><br><span class="line">Notice: suricata: This is Suricata version 7.0.6 RELEASE running in SYSTEM mode Info: cpu: CPUs/cores online: 1</span><br><span class="line">Info: suricata: Running suricata under test mode</span><br><span class="line">Info: suricata: Setting engine mode to IDS mode by default Info: exception-policy: master exception-policy set to: auto</span><br><span class="line">Info: logopenfile: fast output device (regular) initialized: fast.log Info: logopenfile: eve-log output device (regular) initialized: eve.json Info: logopenfile: stats output device (regular) initialized: stats.log</span><br><span class="line">Info: detect: 1 rule files processed. 1 rules successfully loaded, 0 rules failed, 0 Info: threshold-config: Threshold config parsed: 0 rule(s) found</span><br><span class="line">Info: detect: 1 signatures processed. 0 are IP-only rules, 0 are inspecting packet payload, 0 inspect application layer, 0 are decoder event only</span><br><span class="line">Notice: suricata: Configuration provided was successfully loaded. Exiting</span><br></pre></td></tr></table></figure>
+
+<p>-T를 통해 swing.rules 규칙 파일이 제대로 로드되고 있는지 테스트해보는 작업을 수행하고, Info 와 Notice 정보를 확인해 보면 성공적으로 규칙 파일이 로드되었음을 확인할 수 있었다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Network/" rel="tag"># Network</a>
+              <a href="/tags/NIDS/" rel="tag"># NIDS</a>
+              <a href="/tags/NIPS/" rel="tag"># NIPS</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/30/3106_250830/" rel="prev" title="우클릭/드래그 확장 프로그램(1) - 모험기">
+                  <i class="fa fa-angle-left"></i> 우클릭/드래그 확장 프로그램(1) - 모험기
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/05/3204_250905/" rel="next" title="[2025 SWING magazine] Suricata-Based NIDS/NIPS (2)">
+                  [2025 SWING magazine] Suricata-Based NIDS/NIPS (2) <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. 들어가며(1)번 글에서는 CAPTCHA가 무엇인지, 어떤 종류와 기술이 사용된 것인지 알아봤다.그리고 우회 기술들을 소개했고 CaptchaCracker를 이용한 머신러닝 방식을 직접 실습해보았다.저번 글 내용에 이어서 이번에는 나머지 우회 실습 2가지와 우회 방지 방법에 관한 내용이다.2.2 실습 내용부터 시작한다.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2025 SWING magazine] CAPTCHA bypass (2)">
+<meta property="og:url" content="https://log.swuswing.com/2025/09/10/3206_250912/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. 들어가며(1)번 글에서는 CAPTCHA가 무엇인지, 어떤 종류와 기술이 사용된 것인지 알아봤다.그리고 우회 기술들을 소개했고 CaptchaCracker를 이용한 머신러닝 방식을 직접 실습해보았다.저번 글 내용에 이어서 이번에는 나머지 우회 실습 2가지와 우회 방지 방법에 관한 내용이다.2.2 실습 내용부터 시작한다.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3206_250912_image14.png">
+<meta property="article:published_time" content="2025-09-10T00:10:30.000Z">
+<meta property="article:modified_time" content="2026-01-09T15:54:12.250Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Web Hacking">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3206_250912_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2025/09/10/3206_250912/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2025/09/10/3206_250912/","path":"2025/09/10/3206_250912/","title":"[2025 SWING magazine] CAPTCHA bypass (2)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2025 SWING magazine] CAPTCHA bypass (2) | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">1. 들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-CAPTCHA-%EC%9A%B0%ED%9A%8C"><span class="nav-number">2.</span> <span class="nav-text">2. CAPTCHA 우회</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.1.</span> <span class="nav-text">2.2 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%EC%9B%B9-%ED%81%AC%EB%A1%A4%EB%A7%81-%EB%B0%A9%EC%8B%9D-Selenium-%EC%9D%B4%EC%9A%A9"><span class="nav-number">2.1.1.</span> <span class="nav-text">2. 웹 크롤링 방식(Selenium 이용)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%ED%8C%A8%ED%82%B7-%EC%9E%AC%EC%A0%84%EC%86%A1-%EB%B0%A9%EC%8B%9D-Burp-Suite-%EC%9D%B4%EC%9A%A9"><span class="nav-number">2.1.2.</span> <span class="nav-text">3. 패킷 재전송 방식(Burp Suite 이용)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-CAPTCHA-%EC%9A%B0%ED%9A%8C%EB%A5%BC-%EB%B0%A9%EC%A7%80%ED%95%98%EB%A0%A4%EB%A9%B4"><span class="nav-number">3.</span> <span class="nav-text">3. CAPTCHA 우회를 방지하려면</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-OTP-One-Time-Password-%EC%82%AC%EC%9A%A9"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. OTP(One-Time-Password) 사용</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CAPTCHA-%EC%9C%A0%ED%98%95-%EB%B3%80%EA%B2%BD"><span class="nav-number">3.0.2.</span> <span class="nav-text">2. CAPTCHA 유형 변경</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%EC%BD%94%EB%93%9C-%EB%82%9C%EB%8F%85%ED%99%94"><span class="nav-number">3.0.3.</span> <span class="nav-text">3. 코드 난독화</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">4.</span> <span class="nav-text">4. 참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/09/10/3206_250912/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2025 SWING magazine] CAPTCHA bypass (2) | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2025 SWING magazine] CAPTCHA bypass (2)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: hyemsnail</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2025-09-10 09:10:30" itemprop="dateCreated datePublished" datetime="2025-09-10T09:10:30+09:00">2025-09-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><!-- CAPTCHA bypass (2)-->
+
+<h1 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h1><p>(1)번 글에서는 CAPTCHA가 무엇인지, 어떤 종류와 기술이 사용된 것인지 알아봤다.<br>그리고 우회 기술들을 소개했고 CaptchaCracker를 이용한 머신러닝 방식을 직접 실습해보았다.<br>저번 글 내용에 이어서 이번에는 나머지 우회 실습 2가지와 우회 방지 방법에 관한 내용이다.<br>2.2 실습 내용부터 시작한다. <br></p>
+<span id="more"></span>
+
+<hr>
+<h1 id="2-CAPTCHA-우회"><a href="#2-CAPTCHA-우회" class="headerlink" title="2. CAPTCHA 우회"></a>2. CAPTCHA 우회</h1><h2 id="2-2-실습"><a href="#2-2-실습" class="headerlink" title="2.2 실습"></a>2.2 실습</h2><h3 id="2-웹-크롤링-방식-Selenium-이용"><a href="#2-웹-크롤링-방식-Selenium-이용" class="headerlink" title="2. 웹 크롤링 방식(Selenium 이용)"></a>2. 웹 크롤링 방식(Selenium 이용)</h3><p>Selenium은 웹 브라우저를 이용하는 오픈 소스 라이브러리이다.<br>주로 웹 브라우저 기반의 작업을 자동화시키는 데 사용한다.<br>Google의 <strong>reCAPTCHA v2</strong> 버전을 <strong>Selenium</strong>을 사용한 자동화 프로그램을 이용하여 인증을 완료해<br>볼 것이다. 테스트를 진행할 reCAPTCHA는 아래 사이트에 있는 것으로 했다.<br>주로 reCAPTCHA 우회 테스트를 할 때 많이 쓰는 사이트이다.<br><span class="exturl" data-url="aHR0cHM6Ly9wYXRyaWNraGxhdWtlLmdpdGh1Yi5pby9yZWNhcHRjaGEv">https://patrickhlauke.github.io/recaptcha/</span><br>사이트에 들어가 보면 알 수 있듯이 reCAPTCHA v2는 사용자가 직접 체크 박스를 클릭해야 하고,<br>자동화 프로그램 사용이 의심되면 이미지 퍼즐을 해결해야 한다.</p>
+<p>실습은 크게 나누어 4가지 과정이 있다.</p>
+<ol>
+<li>자동으로 reCAPTCHA가 있는 웹 페이지에 접속한다.</li>
+<li>reCAPTCHA의 체크박스를 찾아내고 클릭한다.</li>
+<li>바로 인증이 완료되지 않고 이미지 퍼즐이 나올 경우 확장 프로그램 Buster: Captcha Solver for Humans을 이용해 이미지 퍼즐을 음성 모드로 전환한다. 그리고 확장 프로그램이 음성을 분석하여 문자<br>데이터로 치환시켜 자동으로 인증을 진행한다. 성공할 때까지 위 과정을 반복한다.</li>
+<li>인증이 완료되면 사이트는 자동으로 닫힌다. <br><br></li>
+</ol>
+<p><em><strong>코드 분석</strong></em> <br></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> selenium.common</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.by <span class="keyword">import</span> By</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> WebDriverWait</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support <span class="keyword">import</span> expected_conditions <span class="keyword">as</span> EC</span><br><span class="line"><span class="keyword">import</span> os</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>Selenium을 사용하여 웹 브라우저를 자동화하기 위한 기초 단계</strong>이다.<br>Selenium 라이브러리를 미리 설치해야 실습을 진행할 수 있다. 첫 번째로 불러온 selenium.common<br>모듈은 selenium에서 발생하는 각종 예외 처리에 사용된다. 브라우저의 자동화를 위해 webdriver를 가져온다. Webdriver의 경우 selenium이 Chrome을 제어하기 위해 사용하는 것으로 ChromeDriver.exe 파일을 다운받은 상태여야 한다.<br>By는 selenium에서 특정 HTML 요소를 찾을 때 사용한다. 특정 요소를 이름, ID, XPath 등으로 찾을 수 있다. WebDriverWait는 특정 조건을 만족할 때까지 일정 시간 동안 대기시키는 데 사용한다.<br>expected_conditions는 특정 조건을 기다릴 때 사용하는 조건이다. 줄여서 EC라고 하였다. <br><br></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 확장 프로그램 폴더 경로 설정</span></span><br><span class="line">extension_folder = <span class="string">r&#x27;C:\Users\Owner\AppData\Local\Google\Chrome\User Data\Default\Extensions\mpbjkejclgfgadiemmefgebjfooflfhl\3.1.0_0&#x27;</span></span><br><span class="line"><span class="comment"># Chrome 옵션 설정</span></span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line"><span class="comment"># 확장 프로그램 폴더 로드</span></span><br><span class="line">chrome_options.add_argument(<span class="string">f&#x27;--load-extension=<span class="subst">&#123;extension_folder&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="comment"># WebDriver 실행</span></span><br><span class="line">driver = webdriver.Chrome(options=chrome_options)</span><br><span class="line"><span class="comment"># 확장 프로그램 및 Chrome Driver 세팅 완료</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>Chrome 브라우저에 확장 프로그램 Buster: Captcha Solver for Humans를 로드하고 실행하는 부분</strong>이다. extension_folder에 확장 프로그램이 위치한 폴더의 경로를 입력한다. Chrome 드라이버에<br>확장 프로그램을 추가하는 옵션을 적용하기 위해 옵션을 설정한다. 그리고 위에서 지정한 확장 프로그램의 경로를 Chrome 웹 드라이버를 실행할 때 자동으로 로드하도록 설정한다.<br>마지막으로 확장 프로그램과 함께 웹 드라이버를 실행한다. <br><br></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">bypass_recaptcha</span>(<span class="params">url</span>):</span><br><span class="line">driver.get(url)</span><br><span class="line"><span class="comment">#전달된 url 값을 get으로 chrome driver에 로드</span></span><br><span class="line">WebDriverWait(driver, <span class="number">10</span>).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,<span class="string">&quot;//iframe[@title=&#x27;reCAPTCHA&#x27;]&quot;</span>)))</span><br><span class="line"><span class="comment">#chrome driver에서 reCAPTCHA의 iframe 확인 후 해당 iframe으로 switch</span></span><br><span class="line">WebDriverWait(driver,<span class="number">10</span>).until(EC.element_to_be_clickable((By.XPATH,<span class="string">&quot;//span[@class=&#x27;recaptcha-checkbox goog-inline-block recaptcha-checkbox-unchecked rc-anchor-checkbox&#x27;]/div[@class=&#x27;recaptcha-checkbox-border&#x27;]&quot;</span>))).click()</span><br><span class="line"><span class="comment">#체크박스 클릭 가능할 때까지 최대 10초 대기 후 체크박스 클릭</span></span><br><span class="line">driver.switch_to.default_content()</span><br><span class="line"><span class="comment">#클릭 후 원래 iframe 밖의 요소로 switch</span></span><br><span class="line">WebDriverWait(driver,<span class="number">10</span>).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH,<span class="string">&quot;//iframe[@title=&#x27;recaptcha challenge expires in two minutes&#x27;]&quot;</span>)))</span><br><span class="line"><span class="comment">#다시 이미지 퍼즐 캡챠 iframe으로 switch</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>bypass_recaptcha 함수에 자동화된 브라우저에서 reCAPTCHA를 해결하는 과정을 나타낸 것</strong>이다.<br>우선 reCAPTCHA가 있는 사이트에 접속한다. 그리고 첫 번째 reCAPTCHA의 iframe이 나올 때까지 최대 10초를 대기한다. 웹 페이지에서 reCAPTCHA 부분은 개발자 모드로 확인을 해보면 iframe으로 감싸져 있는 모습을 볼 수 있다. Selenium을 이용해 내부 요소에 접근해 클릭을 하려면 이 iframe으로 전환을 해야 한다. 해당 iframe이 사용 가능할 때까지 기다린 다음 전환을 한다.<br>iframe[@title&#x3D;’reCAPTCHA’]는 reCAPTCHA의 첫 번째 요소가 포함된 부분이다.<br>체크박스가 클릭이 가능한 상태로 나타날 때까지 최대 10초 동안 대기한다. 클릭이 가능한 상태면 바로 클릭을 한다. XPATH에는 체크박스 부분을 나타낸 것이다.<br>체크박스를 클릭한 다음 다시 iframe 내부에서 바깥으로 전환해야 한다. 클릭을 한 다음에는 원래 페이지로 돌아가야 하기 때문이다.<br>만약 이미지 퍼즐 인증 문제가 나온다면 두 번째 iframe이 나타난다. 두 번째 iframe이 사용 가능할 때까지 최대 10초 대기한다. iframe[@title&#x3D;’recaptcha challenge expires in two minutes’]는 이미지 퍼즐 reCAPTCHA의 iframe이다. 이것을 해결하기 위해 이 iframe으로 전환한다. <br><br></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line"><span class="comment">#Buster:Captcha Solver for Humans 인증 실패했을 때를 대비, 반복적인 클릭 위해 무한반복 사용</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">WebDriverWait(driver,<span class="number">3</span>).until(EC.element_to_be_clickable((By.XPATH,<span class="string">&quot;//div[@class=&#x27;button-holder help-button-holder&#x27;]&quot;</span>))).click()</span><br><span class="line"><span class="comment">#captcha 퍼즐 자동 풀이 버튼 클릭</span></span><br><span class="line"><span class="keyword">except</span> selenium.common.exceptions.StaleElementReferenceException:</span><br><span class="line"><span class="comment">#만약 StaleElementReferenceException에러 즉, 찾을 수 없다면</span></span><br><span class="line"><span class="keyword">pass</span></span><br><span class="line"><span class="comment">#이미 클릭 중인 상태인 것이니 pass</span></span><br><span class="line"><span class="keyword">except</span> selenium.common.exceptions.ElementClickInterceptedException:</span><br><span class="line"><span class="comment">#만약 ElementClickInterceptedException에러 즉, 모종의 이유로 클릭할 수 없는 상태라면 해당 iframe이 비활성화 된 것이니 체크 완료된 것.</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;bypassed&quot;</span>)</span><br><span class="line"><span class="keyword">break</span></span><br><span class="line"><span class="comment">#reCAPTCHA 퍼즐인증이 수행 완료됐고 무한반복문 탈출</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li><strong>bypass_recaptcha 함수 내부이고, 이미지 퍼즐을 자동으로 해결하는 과정</strong>이다.<br>reCAPTCHA의 퍼즐 인증이 성공적으로 해결이 될 때까지 무한 반복하고 해결이 되면 반복문에서 탈출한다. Try 부분은 예외가 발생할 가능성이 있는 코드를 감싸서 문제가 발생했을 때 적절한 처리를 위해 준비하는 부분이다. 최대 3초 동안 클릭이 가능한 상태가 될 때까지 대기한다.<br>그리고 해당 요소가 클릭이 가능한 상태인지 확인한 다음 클릭한다. XPATH로 지정된 요소는 확장 프로그램에서 이미지를 음성으로 전환하여 문제를 자동으로 해결하기 위한 자동 풀이 버튼이다. Except 부분은 특정 요소를 클릭하려고 시도했지만 다른 요소나 상황으로 인해 클릭할 수 없는 경우 발생하는 예외 부분이다.<br>이 경우 iframe이 활성화되지 않아 비활성화될 가능성이 커 인증 과정이 끝났다(체크가 이미 되어서 클릭을 못 한다)고 여길 수 있다.<br>이 예외가 발생할 경우 reCAPTCHA가 성공적으로 해결되었다는 메시지 ‘bypassed’라는 메시지를 출력하고 반복문에서 탈출한다. <br><br></li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">__main__</span>():</span><br><span class="line">url = <span class="string">&#x27;https://patrickhlauke.github.io/recaptcha/&#x27;</span></span><br><span class="line">bypass_recaptcha(url)</span><br><span class="line">__main__()</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li><strong>메인 함수</strong>이다. 웹 페이지의 URL을 지정하고 bypass_recaptcha 함수를 호출하며 url 값을 전달한다.<br>그리고 실행한다.<br>실습에서 사용한 전체 소스 코드는 아래 사이트에 저장해 두었다.<br><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2h5ZW1zbmFpbC9jYXB0Y2hhX3Byb2plY3QvYmxvYi9tYWluL3JlY2FwdGNoYV9ieXBhc3Nfc2NyaXB0LnB5">https://github.com/hyemsnail/captcha_project&#x2F;blob&#x2F;main&#x2F;recaptcha_bypass_script.py</span> <br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image1.png" alt="그림 1. recaptcha_bypass_script.py 스크립트 실행"></p>
+<center><span style="font-size: 90%;">그림 1. recaptcha_bypass_script.py 스크립트 실행</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="6">
+<li>스크립트 파일, 크롬 드라이버를 저장한 폴더로 이동한 다음 위의 사진처럼 실행시킨다.<br>성공적으로 해결이 되면 ‘bypassed’라는 텍스트가 나온다. <br><br></li>
+</ol>
+<p><em><strong>실행 화면</strong></em><br><br><img src="/images/3206_250912_image2.png" alt="그림 2. 웹 페이지 접속"></p>
+<center><span style="font-size: 90%;">그림 2. 웹 페이지 접속</span><br><span style="font-size: 70%;"></span></center><br>
+가장 먼저 웹 페이지로 접속하면 이 모습이 나온다. <br><br><br>
+
+<p><img src="/images/3206_250912_image3.png" alt="그림 3. reCAPTCHA 등장"></p>
+<center><span style="font-size: 90%;">그림 3. reCAPTCHA 등장</span><br><span style="font-size: 70%;"></span></center><br>
+reCAPTCHA가 나타난다. 이미지 퍼즐 인증이 나타나지 않을 경우 위의 사진처럼 체크 박스가 뜨고 바로 그것을 클릭하면 인증이 완료된다. <br><br><br>
+
+<p><img src="/images/3206_250912_image4.png" alt="그림 4. 이미지 퍼즐 등장"></p>
+<center><span style="font-size: 90%;">그림 4. 이미지 퍼즐 등장</span><br><span style="font-size: 70%;"></span></center><br>
+이미지 퍼즐이 나오는 경우이다. 확장 프로그램이 자동으로 음성으로 바꾸는 버튼(헤드폰 모양)을 누른다. <br><br><br>
+
+<p><img src="/images/3206_250912_image5.png" alt="그림 5. 확장 프로그램 인증 시도"></p>
+<center><span style="font-size: 90%;">그림 5. 확장 프로그램 인증 시도</span><br><span style="font-size: 70%;"></span></center><br>
+확장 프로그램이 음성을 듣고 그것을 문자로 치환하여 인증을 시도한다. <br><br><br>
+
+<p><img src="/images/3206_250912_image6.png" alt="그림 6. 인증 완료"></p>
+<center><span style="font-size: 90%;">그림 6. 인증 완료</span><br><span style="font-size: 70%;"></span></center><br>
+인증이 완료된 모습이다. <br><br><br>
+
+<p><em><strong>결과 분석</strong></em><br><br>생각보다 훨씬 쉽고 빠르게 reCAPTCHA를 우회하여 인증을 완료한다. 실행은 총 20번 해보았다. <br></p>
+<table>
+<thead>
+<tr>
+<th>테스트 순서</th>
+<th>걸린 시간(초)</th>
+<th>이미지 퍼즐 여부</th>
+<th>성공 여부</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>04.28</td>
+<td>X</td>
+<td>O</td>
+</tr>
+<tr>
+<td>2</td>
+<td>07.75</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>3</td>
+<td>07.22</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>4</td>
+<td>07.62</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>5</td>
+<td>07.75</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>6</td>
+<td>07.77</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>7</td>
+<td>07.41</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>8</td>
+<td>07.83</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>9</td>
+<td>15.86</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>10</td>
+<td>07.36</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>11</td>
+<td>07.82</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>12</td>
+<td>07.62</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>13</td>
+<td>07.24</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>14</td>
+<td>06.29</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>15</td>
+<td>06.68</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>16</td>
+<td>05.38</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>17</td>
+<td>06.91</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>18</td>
+<td>06.24</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>19</td>
+<td>06.29</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>20</td>
+<td>06.11</td>
+<td>O</td>
+<td>O</td>
+</tr>
+</tbody></table>
+<br>
+실행하면 대부분 7초 대로 모든 과정이 끝이 난다. 테스트에서 이미지 퍼즐의 등장 여부를 따진 이유는 실행할 때 이미지 퍼즐 과정을 애초에 거치지 않고 바로 인증 완료가 되는 경우도 있기 때문이다. (위 표의 결과들은 2024/11/08에 재실시한 실습을 기준으로 작성한 것이다. 
+이번 실습에서는 이미지 퍼즐 과정을 거치지 않는 경우는 거의 나타나지 않았다. 하지만 9/26 실습 때는 이미지 퍼즐 과정을 거치지 않고 바로 인증이 되는 경우도 빈번하게 일어났다.) 
+그리고 실행을 하고 인증을 완료하기까지 걸린 시간도 조금 흥미로운 부분이 있다. 처음에는 분명히 7초대 후반으로 나오던 것이 6초대까지 줄어든 것이다. 물론 서서히 줄어든 것은 아니지만 후반부에 6초대로 계속 나오는 것은 유의미한 차이라고 생각한다. 
+이런 현상이 일어나는 원인이 무엇인지 조사해 보았다. 가장 가능성이 있다고 생각한 것은 확장 프로그램이 처음 몇 번 실행하는 동안 CAPTCHA의 패턴이나 유형을 학습하여 최적화된 방법을 선택하는 것이다. 
+하지만 확장 프로그램 Buster: Captcha Solver for Humans는 프로그램은 특정 패턴을 학습하거나 캐싱하는 기능에 관한 언급을 찾아볼 수 없었다. 이 원인이 아니라면, 확장 프로그램이 처음 실행될 때 필요한 리소스나 모듈을 로드하는 과정에서 시간이 조금 더 걸린 것이 아닐까 추정된다. 
+
+<p><strong>결론적으로, 이 실습을 통해 reCAPTCHA v2는 보안의 기능으로써 전혀 안전하지 않은 대책이라는 것을 알 수 있었다.</strong><br><br><br></p>
+<h3 id="3-패킷-재전송-방식-Burp-Suite-이용"><a href="#3-패킷-재전송-방식-Burp-Suite-이용" class="headerlink" title="3. 패킷 재전송 방식(Burp Suite 이용)"></a>3. 패킷 재전송 방식(Burp Suite 이용)</h3><p>패킷 재전송 방식은 이미 캡처가 된 패킷을 재전송하여 동일한 요청을 처리하도록 하는 기법이다.<br>요청(Request), 응답(Response) 과정을 기록한 후, <strong>반복적으로 전송하여 CAPTCHA를 우회</strong>한다.<br>하지만 이 방법은 머신러닝, 웹 크롤링, OCR 방식에 비하면 잘 언급되지도, 쓰지도 않는 방식이다. 왜냐하면 서버에서 동작 값을 요구하거나, 변동되는 데이터에는 유연하게 대응하기 어렵다. 그리고 우회하는 데 걸리는 시간도 다른 방식에 비하면 더 걸리는 편이라 별로 효율적인 방법도 아니다.<br>실습에서는 DVWA 환경에서 Burp Suite를 이용하여 패킷을 재전송해 CAPTCHA를 우회해 볼 것이다. <br><br></p>
+<p><img src="/images/3206_250912_image7.png" alt="그림 7. DVWA Insecure CAPTCHA"></p>
+<center><span style="font-size: 90%;">그림 7. DVWA Insecure CAPTCHA</span><br><span style="font-size: 70%;"></span></center>
+
+<ol>
+<li>DVWA에서 Security Level을 Impossible에서 Low로 낮춰준다. 그리고 Insecure CAPTCHA로 들어가면 우선 패스워드를 변경하는 기능이 있고, 그러려면 reCAPTCHA를 거쳐야 한다는 사실을 알 수 있다. 새 패스워드 ’minmin’를 입력하고 reCAPTCHA v2로 인증을 한다. 패스워드를 바꿨을 때 전송된 패킷을 확인해 보기 위해 Change를 누르기 전 Burp Suite의 Proxy에서 설정을 Intercept on(off에서 on)으로 바꿔준다. 그다음에 Change 버튼을 누른다.<br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image8.png" alt="그림 8. Burp Suite로 패킷 확인"></p>
+<center><span style="font-size: 90%;">그림 8. Burp Suite로 패킷 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="2">
+<li>Change 버튼을 눌렀을 때 서버로 전송된 패킷을 확인하였다. 패킷을 읽어보고 가장 중요하다고 여겨진 부분은 step으로 시작하는 줄이다.<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">step=1&amp;password_new=minmin&amp;password_conf=minmin&amp;g-recaptcha-response=</span><br></pre></td></tr></table></figure>
+읽어보면 step은 패스워드를 minmin으로 변경 후 reCAPTCHA의 인증 정보와 함께 서버로 전송하는 부분인 것을 알 수 있다. 1은 파라미터로 쓰는 것 같다.<br>여기서는 reCAPTCHA 인증이 성공적으로 되었으므로 g-recaptcha-response로 서버에 전송되는 것이다. 그리고 g-recaptcha-response 뒤에 많은 값들이 있는데 이것들은 reCAPTCHA를 확인할 때 무작위로 만들어지는 난수이다.<br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image9.png" alt="그림 9. CAPTCHA 인증 완료"></p>
+<center><span style="font-size: 90%;">그림 9. CAPTCHA 인증 완료</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="3">
+<li>Forward를 눌러 바로 다음 과정으로 넘어가면 이 화면이 뜬다. CAPTCHA 인증이 완료되었다는 메시지가 나온다. 바꾼 패스워드를 저장하기 위해 Change 버튼을 누르면 패스워드 변경 과정이 끝이 난다.<br>요청(Change)이 한 번 더 나오는 관계로 Change 버튼을 누르고 서버로 전달되는 패킷을 확인해 보았다.<br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image10.png" alt="그림 10. Change 이후 Burp Suite로 패킷 확인"></p>
+<center><span style="font-size: 90%;">그림 10. Change 이후 Burp Suite로 패킷 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="4">
+<li>두 번째 Change 버튼을 눌렀을 때 서버로 전송되는 패킷을 확인해 보았다. 이번에도 가장 중요하게 여겨진 부분은 step으로 시작하는 부분이다.<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">step=2&amp;password_new=minmin&amp;password_conf=minmin&amp;Change=Change</span><br></pre></td></tr></table></figure>
+읽어보면 이 부분의 기능은 변경할 패스워드 minmin을 최종적으로 변경하는 역할이다. 앞에 step&#x3D;1 부분과 다르게 파라미터가 2이다. 2는 CAPTCHA가 인증이 완료되었다는 것을 증명하는 역할로 추정된다.<br>변경할 패스워드 minmin은 step&#x3D;1 부분에서도, step&#x3D;2 부분에서도 등장한다. 같은 패스워드로 요청을<br>2번 보낸다. step&#x3D;2부분이 패스워드 변경 전 최종 단계이기도 하고 CAPTCHA를 통과했다는 인증도<br>가지고 있으니 더 중요도가 높아 보였다. <strong>그래서 첫 번째 요청은 생략하고 두 번째 요청만 패스워드를 수정해서 다시 전송하면 CAPTCHA 기능을 우회하여 패스워드를 변경할 수 있겠다는 생각이 들었다.</strong><br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image11.png" alt="그림 11. 패스워드 수정 및 재전송"></p>
+<center><span style="font-size: 90%;">그림 11. 패스워드 수정 및 재전송</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="5">
+<li>패킷의 step&#x3D;2부분에서 패스워드 부분만 수정해서 Repeater로 서버에 여러 번 재전송하였다.<br>패스워드는 minmin에서 minmin_hack으로 바꿨다. 그리고 Repeater 탭으로 전송했다. <br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image12.png" alt="그림 12. 패스워드 변경 완료"></p>
+<center><span style="font-size: 90%;">그림 12. 패스워드 변경 완료</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="6">
+<li>Forward를 눌러 다음 과정으로 진행했다. 패스워드가 변경되었다는 메시지가 뜬다. 이 화면만 봐서는 바뀐 패스워드가 minmin인지 아니면 minmin_hack인지 알 수 없다. 의도한 대로 minmin_hack으로 변경되었는지 확인하기 위해서는 다시 DVWA에 로그인을 해보면 알 수 있다.<br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image13.png" alt="그림 13. 바뀐 패스워드로 로그인"></p>
+<center><span style="font-size: 90%;">그림 13. 바뀐 패스워드로 로그인</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="7">
+<li>패스워드가 minmin일 때는 Login Failed라는 결과가 나왔고, minmin_hack일 때는 로그인이 성공적으로 되었다. <br><br></li>
+</ol>
+<p><img src="/images/3206_250912_image14.png" alt="그림 14. 정상적으로 접속"></p>
+<center><span style="font-size: 90%;">그림 14. 정상적으로 접속</span><br><span style="font-size: 70%;"></span></center>
+
+<ol start="8">
+<li>패스워드 minmin_hack으로 로그인 후 정상적으로 접속이 된 모습이다. <br></li>
+</ol>
+<hr>
+<h1 id="3-CAPTCHA-우회를-방지하려면"><a href="#3-CAPTCHA-우회를-방지하려면" class="headerlink" title="3. CAPTCHA 우회를 방지하려면"></a>3. CAPTCHA 우회를 방지하려면</h1><h3 id="1-OTP-One-Time-Password-사용"><a href="#1-OTP-One-Time-Password-사용" class="headerlink" title="1. OTP(One-Time-Password) 사용"></a>1. OTP(One-Time-Password) 사용</h3><p>CAPTCHA를 포함하여 그 외에 <strong>추가적인 인증</strong>을 거치도록 한다. 흔히 ‘2단계 인증’이라고도 부른다. 추가적인 인증의 경우 일회성인 OTP(One-Time-Password)가 가장 유용하다. 한번 생성되면 새로운 OTP가 나올 때까지 유효기간이 짧아 이를 해결하는 자동화 프로그램을 개발하기 매우 까다롭다.<br>그리고 OTP는 주로 사용자의 신뢰할 수 있을 만한 기기로 전달되는 특징이 있다. (ex. SMS, 이메일, 인증 앱 등). 자동화 프로그램이 이 과정을 넘어가기는 매우 어렵고 만약 방법을 개발했다고 하더라도 사용자가 직접 인증하는 것과 비교해서 비효율적이다.<br>현실적으로 CAPTCHA 우회를 시도하는 행위 자체를 막는 것은 불가능하다. 이런 상황에서 OTP는 CAPTCHA의 앞 또는 뒤에 붙어 자동화 프로그램이 CAPTCHA를 혹시나 통과하더라도 추가 인증에서 실패하게 하거나, 애초에 OTP 인증에서부터 실패하여 CAPTCHA에 진입하지도 못하게 막을 수 있어 가장 효율적인 방법이다. 굳이 단점을 찾자면 사용자 입장에서 조금 번거롭고 귀찮다고 느낄 수 있다. <br><br></p>
+<h3 id="2-CAPTCHA-유형-변경"><a href="#2-CAPTCHA-유형-변경" class="headerlink" title="2. CAPTCHA 유형 변경"></a>2. CAPTCHA 유형 변경</h3><p>한 사이트에서 사용하는 CAPTCHA의 종류를 한가지로 국한하지 않고, 텍스트, 이미지, 오디오 등<br><strong>다양한 종류의 CAPTCHA를 랜덤하게 번갈아 가면서 사용</strong>하는 것이다. 이런 경우 공격자 입장에서 모든 경우를 고려해야 하므로 자동화 프로그램을 이용하기 까다로워진다. 하지만 이후에 공격자가 이를 모두 고려한 프로그램을 만들 수 있기 때문에 새로운 CAPTCHA 버전이나 종류가 나온다면 빠르게 반영하는 것이 좋다. <br><br></p>
+<h3 id="3-코드-난독화"><a href="#3-코드-난독화" class="headerlink" title="3. 코드 난독화"></a>3. 코드 난독화</h3><p>난독화로 코드의 가독성을 떨어뜨려 자동화 프로그램이 CAPTCHA를 우회하는 것을 막는 방법이다.<br>이 방법은 공격자가 코드를 분석하고 그것을 조작하는 것을 어렵게 만든다. 예를 들어 의미가 있는 변수나 함수 이름을 무작위의 다른 문자들로 대체한다.<br>또, 중요한 문자열을 XOR 등의 방법으로 암호화하고 실행 시에 복호화한다. 이 외에도 CSS를 통해 CAPTCHA를 숨겨진 상태로 로드시켜 봇이 CAPTCHA를 인식하기 어렵게 만들거나, 서버와의 통신을 난독화해 자동화 프로그램이 API 요청을 분석하기 어렵게 만드는 것 등 방법은 여러 가지이다. <br></p>
+<hr>
+<h1 id="4-참고-문헌"><a href="#4-참고-문헌" class="headerlink" title="4. 참고 문헌"></a>4. 참고 문헌</h1><ul>
+<li>Cloudflare.(n.d.).캡챠 작동 원리 | 캡챠란?.Cloudflare.<span class="exturl" data-url="aHR0cHM6Ly93d3cuY2xvdWRmbGFyZS5jb20va28ta3IvbGVhcm5pbmcvYm90cy9ob3ctY2FwdGNoYXMtd29yay8=">https://www.cloudflare.com/ko-kr/learning/bots/how-captchas-work/</span></li>
+<li>ITWorld.(2016, October 20).ITWorld 용어풀이 | 캡챠(Captcha).ITWorld.<span class="exturl" data-url="aHR0cHM6Ly93d3cuaXR3b3JsZC5jby5rci9uZXdzLzk5ODI2">https://www.itworld.co.kr/news/99826</span></li>
+<li>조금환, 최주섭, &amp; 김형식. (2017). 보안성 및 사용성 측면에서의 CAPTCHA 동향. 정보보호학회지, 27(1), 47-56.</li>
+<li>Gao, H., Wang, W., Fan, Y., Qi, J., &amp; Liu, X. (2014). The robustness of “connecting characters together” CAPTCHAs. Journal of Information Science and Engineering, 30(2), 347–369.</li>
+<li>Gao, H., Wang, W., Qi, J., Wang, X., Liu, X., &amp; Yan, J. (2013, November). The robustness of hollow CAPTCHAs. In Proceedings of the 20th ACM Conference on Computer and Communications Security (CCS ’13) (pp. 1075–1086). ACM. <span class="exturl" data-url="aHR0cHM6Ly9kb2kub3JnLzEwLjExNDUvMjUwODg1OS4yNTE2NzMy">https://doi.org/10.1145/2508859.2516732</span></li>
+<li>염지현.(2016, September 20).’사람이 아니무니다’ 캡차(CAPTCHA) 못 읽는 내가 문제?.동아사이언스.<span class="exturl" data-url="aHR0cHM6Ly9tLmRvbmdhc2NpZW5jZS5jb20vbmV3cy5waHA/aWR4PTE2NjY4">https://m.dongascience.com/news.php?idx=16668</span></li>
+<li>Google 검색 센터. (2018, October 29).reCAPTCHA v3 소개: 봇을 차단하는 새로운 방법.Google.<span class="exturl" data-url="aHR0cHM6Ly9kZXZlbG9wZXJzLmdvb2dsZS5jb20vc2VhcmNoL2Jsb2cvMjAxOC8xMC9pbnRyb2R1Y2luZy1yZWNhcHRjaGEtdjMtbmV3LXdheS10bz9obD1rbw==">https://developers.google.com/search/blog/2018/10/introducing-recaptcha-v3-new-way-to?hl=ko</span></li>
+<li>Authme.(2022, March 16).OCR(광학 문자 인식)이란? OCR 인식 기술의 장점과 적용 사례 탐구.Authme.<span class="exturl" data-url="aHR0cHM6Ly9hdXRobWUuY29tL2tvL2Jsb2cvd2hhdC1pcy1vY3Iv">https://authme.com/ko/blog/what-is-ocr/</span></li>
+<li>김재환, 김수아, &amp; 김형중. (2015). 특징 분리를 통한 자연 배경을 지닌 글자 기반 CAPTCHA 공격. 정보보호학회논문지, 25(5), 1011–1019</li>
+<li>정우일.(2021, July 13). CaptchaCracker 보안문자 인식 모델 만들기.정우일 블로그.<span class="exturl" data-url="aHR0cHM6Ly93b29pbGplb25nLmdpdGh1Yi5pby9weXRob24vY2FwdGNoYS1jcmFja2VyLw==">https://wooiljeong.github.io/python/captcha-cracker/</span></li>
+<li>WooilJeong.(2021).CaptchaCracker.GitHub.<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1dvb2lsSmVvbmcvQ2FwdGNoYUNyYWNrZXIvYmxvYi9tYWluL1JFQURNRS1rby5tZA==">https://github.com/WooilJeong/CaptchaCracker/blob/main/README-ko.md</span></li>
+<li>BizSpring 블로그.(n.d.). 자동화툴 ‘Selenium’을 이용한 크롤러 구현 및 3사 데이터 획득 방법 안내.BizSpring.<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmJpenNwcmluZy5jby5rci8lRUQlODUlOEMlRUQlODElQUMvc2VsZW5pdW0tJUVEJTgxJUFDJUVCJUExJUE0JUVCJTlGJUFDLSVFQSVCNSVBQyVFRCU5OCU4NC0zJUVDJTgyJUFDLSVFQiU4RCVCMCVFQyU5RCVCNCVFRCU4NCVCMC8=">https://blog.bizspring.co.kr/%ED%85%8C%ED%81%AC/selenium-%ED%81%AC%EB%A1%A4%EB%9F%AC-%EA%B5%AC%ED%98%84-3%EC%82%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0/</span></li>
+<li>앵한.(2024, May 10). Google reCAPTCHA selenium으로 무력화 시켜보기.앵하니의 더 나은 보안.<span class="exturl" data-url="aHR0cHM6Ly9hZW5nLWlzLXlvdW5nLnRpc3RvcnkuY29tL2VudHJ5L0dvb2dsZS1yZUNBUFRDSEEtc2VsZW5pdW0lRUMlOUMlQkMlRUIlQTElOUMtJUVCJUFDJUI0JUVCJUEwJUE1JUVEJTk5JTk0LSVFQyU4QiU5QyVFQyVCQyU5QyVFQiVCMyVCNCVFQSVCOCVCMA==">https://aeng-is-young.tistory.com/entry/Google-reCAPTCHA-selenium%EC%9C%BC%EB%A1%9C-%EB%AC%B4%EB%A0%A5%ED%99%94-%EC%8B%9C%EC%BC%9C%EB%B3%B4%EA%B8%B0</span></li>
+<li>TGGG23.(2020,April 4). [DVWA] insecure CAPTCHA.Two Greedy Guys’ Garage 23.<span class="exturl" data-url="aHR0cHM6Ly90Z2dnMjMudGlzdG9yeS5jb20vNTc=">https://tggg23.tistory.com/57</span></li>
+<li>Wadhwa, M., Prasad, B. K., Ranjan, S., &amp; Kathuria, M. (2020). CAPTCHA bypass and prevention mechanisms: A review. IOSR Journal of Computer Engineering, 22(3, Ser. IV), 23–29.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Web-Hacking/" rel="tag"># Web Hacking</a>
+              <a href="/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/07/3205_250909/" rel="prev" title="[2025 SWING magazine] CAPTCHA bypass (1)">
+                  <i class="fa fa-angle-left"></i> [2025 SWING magazine] CAPTCHA bypass (1)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/14/3302_250914/" rel="next" title="객체 배열과 포인터 톺아보기 using C++">
+                  객체 배열과 포인터 톺아보기 using C++ <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

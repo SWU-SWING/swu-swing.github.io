@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="서론연계 포렌식의 필요성최근 디지털 환경에서 발생하는 보안 사고는 단순히 로컬 컴퓨터에 국한되지 않고 클라우드 서비스까지 확산되는 양상을 보인다. 1990년대 부터 2000년대 초반, 대부분의 데이터를 PC 하드디스크, 외장하드, USB 등 로컬 기기에 저장했던 과거와 달리 2010년대 초반 이후 Apple iCloud,Google Drive, Micros">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석">
+<meta property="og:url" content="https://log.swuswing.com/2026/01/07/3305_260107/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="서론연계 포렌식의 필요성최근 디지털 환경에서 발생하는 보안 사고는 단순히 로컬 컴퓨터에 국한되지 않고 클라우드 서비스까지 확산되는 양상을 보인다. 1990년대 부터 2000년대 초반, 대부분의 데이터를 PC 하드디스크, 외장하드, USB 등 로컬 기기에 저장했던 과거와 달리 2010년대 초반 이후 Apple iCloud,Google Drive, Micros">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image01.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image02.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image03.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image04.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image05.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image06.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image07.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image08.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image09.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image31.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image32.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image33.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image34.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image35.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image36.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image37.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image38.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image39.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image40.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image41.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image42.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image43.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image44.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image45.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image46.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image47.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image49.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image50.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image51.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image52.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image53.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image54.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image55.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image56.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image57.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image58.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image59.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image60.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image61.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image62.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image63.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image64.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3305_260111_image65.png">
+<meta property="article:published_time" content="2026-01-07T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-13T01:49:29.605Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="Forensics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3305_260111_image01.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/01/07/3305_260107/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/01/07/3305_260107/","path":"2026/01/07/3305_260107/","title":"[2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%84%9C%EB%A1%A0"><span class="nav-number">1.</span> <span class="nav-text">서론</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%97%B0%EA%B3%84-%ED%8F%AC%EB%A0%8C%EC%8B%9D%EC%9D%98-%ED%95%84%EC%9A%94%EC%84%B1"><span class="nav-number">1.1.</span> <span class="nav-text">연계 포렌식의 필요성</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9C%88%EB%8F%84%EC%9A%B0-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%ED%8F%AC%EB%A0%8C%EC%8B%9D%EC%9D%98-%EC%B0%A8%EC%9D%B4"><span class="nav-number">1.2.</span> <span class="nav-text">윈도우&#x2F;클라우드 포렌식의 차이</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EC%86%8C%EA%B0%9C-%EB%B0%8F-%EC%B9%A8%ED%88%AC-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4-%EC%86%8C%EA%B0%9C"><span class="nav-number">2.</span> <span class="nav-text">악성코드 소개 및 침투 시나리오 소개</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A9%94%EC%9D%B8-%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EC%86%8C%EA%B0%9C-%EB%B0%8F-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">2.1.</span> <span class="nav-text">메인 악성코드 소개 및 시나리오</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%84%9C%EB%B8%8C1-%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EB%B0%8F-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">2.2.</span> <span class="nav-text">서브1 악성코드 및 시나리오</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%84%9C%EB%B8%8C2-%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EB%B0%8F-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">2.3.</span> <span class="nav-text">서브2 악성코드 및 시나리오</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A9%94%EC%9D%B8-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4-%EB%B3%B4%EA%B0%95"><span class="nav-number">3.</span> <span class="nav-text">메인 시나리오 보강</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%B9%A8%ED%88%AC"><span class="nav-number">3.1.</span> <span class="nav-text">침투</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%90%EC%97%BC"><span class="nav-number">3.2.</span> <span class="nav-text">감염</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%A0%84%ED%8C%8C-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EB%8F%99%EA%B8%B0%ED%99%94"><span class="nav-number">3.3.</span> <span class="nav-text">전파(클라우드 동기화)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5"><span class="nav-number">4.</span> <span class="nav-text">실습</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95"><span class="nav-number">4.1.</span> <span class="nav-text">실습 환경 구축</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vmem-%EC%B6%94%EC%B6%9C"><span class="nav-number">4.2.</span> <span class="nav-text">.vmem 추출</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Volatility-%EB%B6%84%EC%84%9D"><span class="nav-number">4.3.</span> <span class="nav-text">Volatility 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%EC%8A%B5-%EA%B2%B0%EB%A1%A0"><span class="nav-number">4.4.</span> <span class="nav-text">실습 결론</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-%ED%99%98%EA%B2%BD%EC%97%90%EC%84%9C-%EB%94%94%EC%8A%A4%ED%81%AC-%EC%95%84%ED%8B%B0%ED%8C%A9%ED%8A%B8-%ED%8C%8C%EC%9D%BC-%EC%B6%94%EC%B6%9C%EC%9D%84-%ED%86%B5%ED%95%9C-%EB%A1%9C%EC%BB%AC-%EB%A1%9C%EA%B7%B8-%EB%B6%84%EC%84%9D%EC%9D%98-%ED%95%84%EC%9A%94%EC%84%B1"><span class="nav-number">5.</span> <span class="nav-text">로컬 환경에서 디스크 아티팩트 파일 추출을 통한 로컬 로그 분석의 필요성</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%94%94%EC%8A%A4%ED%81%AC-%EA%B8%B0%EB%B0%98-%EB%B6%84%EC%84%9D-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95-%EB%B0%8F-%EB%B6%84%EC%84%9D"><span class="nav-number">5.1.</span> <span class="nav-text">디스크 기반 분석 환경 구축 및 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B6%84%EC%84%9D-%EA%B2%B0%EB%A1%A0"><span class="nav-number">5.2.</span> <span class="nav-text">분석 결론</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-%EB%A1%9C%EA%B7%B8%EC%9D%98-%EC%A1%B0%EC%9E%91-%EA%B0%80%EB%8A%A5%EC%84%B1%EA%B3%BC-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C-%EB%A1%9C%EA%B7%B8-%EB%B6%84%EC%84%9D%EC%9D%B4-%ED%95%84%EC%9A%94%ED%95%9C-%EC%9D%B4%EC%9C%A0"><span class="nav-number">6.</span> <span class="nav-text">로컬 로그의 조작 가능성과 클라우드 로그 분석이 필요한 이유</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A1%9C%EC%BB%AC-%EB%A1%9C%EA%B7%B8-%ED%83%80%EC%9E%84%EB%9D%BC%EC%9D%B8-%EC%A0%95%EB%A6%AC-%EB%B0%8F-%EA%B8%B0%ED%83%80-%EB%B6%84%EC%84%9D"><span class="nav-number">6.1.</span> <span class="nav-text">로컬 로그 타임라인 정리 및 기타 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%B6%84%EC%84%9D-%EA%B2%B0%EB%A1%A0-1"><span class="nav-number">6.2.</span> <span class="nav-text">분석 결론</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">7.</span> <span class="nav-text">참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/07/3305_260107/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: 창 너머 구름 (ycl)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-07 10:00:00" itemprop="dateCreated datePublished" datetime="2026-01-07T10:00:00+09:00">2026-01-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="서론"><a href="#서론" class="headerlink" title="서론"></a>서론</h1><h2 id="연계-포렌식의-필요성"><a href="#연계-포렌식의-필요성" class="headerlink" title="연계 포렌식의 필요성"></a>연계 포렌식의 필요성</h2><p>최근 디지털 환경에서 발생하는 보안 사고는 단순히 로컬 컴퓨터에 국한되지 않고 클라우드 서비스까지 확산되는 양상을 보인다. 1990년대 부터 2000년대 초반, 대부분의 데이터를 PC 하드디스크, 외장하드, USB 등 로컬 기기에 저장했던 과거와 달리 2010년대 초반 이후 Apple iCloud,Google Drive, Microsoft OneDrive 서비스가 본격적으로 대중화되면서 스마트폰 + PC 간 동기화가 자연스러워졌다. 특히 코로나 19 팬데믹 사태 이후 기업 및 개인 사용자 모두 파일 동기화, 원격 저장, 협업 도구를 일상적으로 사용하면서 악성코드 감염이 로컬에 머무르지 않고 클라우드 자원까지 영향을 미치는 사례가 늘어나고 있다. 즉, 이제는 로컬과 클라우드의 로그 및 아티팩트를 종합적으로 분석해야만 공격자의 시나리오를 재구성할 수 있다는 것이다. 이러한 상황에서 ‘Forensic Investigation, Challenges, and Issues of Cloud Data: A Systematic Literature Review(2024)’ 논문에서는 클라우드 환경의 역동적인 특성으로 인해 증거의 수집과 보존 과정에서 복잡성을 내포함을 지적한다. </p>
+<span id="more"></span>
+
+<h2 id="윈도우-클라우드-포렌식의-차이"><a href="#윈도우-클라우드-포렌식의-차이" class="headerlink" title="윈도우&#x2F;클라우드 포렌식의 차이"></a>윈도우&#x2F;클라우드 포렌식의 차이</h2><p>먼저 클라우드 환경의 특수성을 알아야 한다. 클라우드의 특성은 다음과 같다.</p>
+<p>첫째, 클라우드 인프라는 동적으로 자원이 관리되므로 데이터가 빠르게 휘발한다. 가령 클라우드 리소스는 온디맨드(on-demand)로 생성·삭제된다. 예를 들어 가상 머신, 컨테이너, 세션이 몇 분 만에 새로 배포되거나 제거된다. 이 때문에 로그, 파일, 메모리 등이 금방 소멸되거나 다른 인스턴스로 교체되어 휘발성이 커 증거 보존이 어렵다.</p>
+<p>둘째, 클라우드는 다수 사용자 간 자원을 공유하는 멀티테넌시(multi-tenancy)를 기반으로 하기 때문에 개인정보 보호법 등 법적 제약이 증거 확보의 제약으로 이어진다. 멀티테넌시란 다수의 사용자와 기업이 같은 인프라를 공유한다는 뜻으로 이러한 구조는 단일 사용자의 데이터를 수집하려 해도 같은 서버 안에 수천 명의 사용자 데이터가 같이 저장돼 있기에 다른 이용자의 개인정보 유출이 수반될 위험을 내포한다. 수사관이 필요한 데이터만 정확히 추출해야 하는데 하나의 로그에 속한 (조사 대상자 이외의) 타인의 데이터를 보는 것은 프라이버시 위반이므로 증거 추출이 어렵다.</p>
+<p>셋째, 조사자는 클라우드 서비스 제공자(CSP)가 제공하는 API나 감사 로그에 의존할 수밖에 없으며 이는 포렌식 관점에서 세부 증거에 직접 접근하는 것을 어렵게 한다. 이는 위의 멀티테넌시 구조의 문제점과 이어진다. 클라우드는 가상화 기술(VM, 컨테이너 등)을 통해 사용자별로 가상 자원만 보이도록 설계되어 있다. 개인이 쓰는 가상 하드디스크는 실제로는 큰 물리 디스크의 일부이지만 개인에게 직접 접근 권한은 없고 제공자가 만들어주는 가상 인터페이스(API, 콘솔)만 사용할 수 있다. 서비스 제공자 이외의 인물이 직접 접근 권한을 가지게 된다면 서비스 안정성이 무너질 뿐만 아니라 다른 사용자의 데이터가 보호되지 않기 때문이다. 따라서 서비스 제공자는 필터링을 거친 기록, 즉 원시 로그가 아닌 개인 계정(사용자의 가상환경)에 해당하는 데이터만 잘라 제출하게 되므로 수사관이 원하는 수준의 증거를 확보하기 어렵다.</p>
+<p>마지막으로, 표준화된 클라우드 포렌식 도구와 절차가 부족하여 기존의 로컬 포렌식 도구만으로는 효과적인 조사가 불가능하다. EnCase, FTK, Autopsy 등은 로컬 분석을 위한 오픈소스 상용화 도구이지만 클라우드 API 로그나 가상화 환경증거에는 적용하기 어렵다. 본 칼럼에서는 CSP가 제공하는 로그 서비스(AWS CloudTrail, Azure Audit Logs, Google Cloud Logging)와 이를 분석·시각화하는 오픈소스 툴 ELK 기반 파서 혹은 상용 DFIR 솔루션(Magnet AXIOM Cyber, EnCase Cloud Edition 등)을 사용할 예정이다. 구글 클라우드 계정&#x2F;연구용임을 고려하여 선정했다.</p>
+<p>반대로 각각의 클라우드 특성에 대비되는 윈도우(로컬) 포렌식의 특성은 다음과 같다.</p>
+<p>로컬 PC의 하드디스크에는 삭제된 파일의 메타데이터, 레지스트리 변경 흔적, 이벤트 로그가 일정 기간 남아 있어 비교적 안정적으로 추적 가능하다.</p>
+<p>로컬 환경에서는 한 사용자의 PC 아티팩트만 다루므로 프라이버시 충돌이 상대적으로 적어 수사관의 입장에서 증거 확보가 수월하다.</p>
+<p>로컬에서는 디스크 이미징, 메모리 덤프, 파일시스템 직접 분석이 가능하므로 수사관이 원시 데이터까지 확보하여 정밀 분석할 수 있다.</p>
+<p>윈도우 환경은 수십 년간 연구와 사건 대응 경험이 축적되어 있어 도구·절차가 잘 정립되어 있으며, 다양한 오픈소스, 상용화 도구로 포렌식 분석에 수월하다.</p>
+<h1 id="악성코드-소개-및-침투-시나리오-소개"><a href="#악성코드-소개-및-침투-시나리오-소개" class="headerlink" title="악성코드 소개 및 침투 시나리오 소개"></a>악성코드 소개 및 침투 시나리오 소개</h1><h2 id="메인-악성코드-소개-및-시나리오"><a href="#메인-악성코드-소개-및-시나리오" class="headerlink" title="메인 악성코드 소개 및 시나리오"></a>메인 악성코드 소개 및 시나리오</h2><p>메인은 실험용 랜섬웨어 시뮬레이터로 진행한다. 랜섬웨어는 사용자의 파일을 암호화하거나 접근 불가능하게 만들고, 이를 풀어주는 대가로 금전을 요구하는 악성코드다. Yousuf et al에 따르면 특히 동기화 클라우드 폴더(OneDrive, Google Drive 등) 안의 파일이 암호화 될 경우 해당 변경이 그대로 클라우드에 전파되어 피해가 확산된다. 이는 단순히 로컬 피해에 그치지 않고 조직 전체의 협업 데이터에도 영향을 준다.<br>실험에서는 실제 암호화를 수행하는 악성코드를 사용하지 않고 깃허브에 공개된(<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL05leHRyb25TeXN0ZW1zL3JhbnNvbXdhcmUtc2ltdWxhdG9y">https://github.com/NextronSystems/ransomware-simulator</span>) 교육용 도구인 ‘Ransomware Simulator’를 활용한다. NextronSystems의 시뮬레이터는 테스트 파일에 대해서만 확장자를 변경하고 경고 메시지를 생성하는 방식으로, 실제 피해를 유발하지 않으면서도 랜섬웨어의 핵심 행위를 모의할 수 있다. </p>
+<p>이 랜섬웨어 시뮬레이터는 대량 파일 변경 이벤트로 로컬·클라우드 로그 분석에 유리하다. 이는 로컬(윈도우) 로그 측면에서는 윈도우의 Sysmon, Noriben, Procmon 같은 도구가 파일 상태 변경 이벤트를 잡는 과정에서 평소 PC 사용 패턴과 달리 수십, 수백 개 파일이 짧은 시간에 연속적으로 변경됨을 감지하기 때문이다. 즉, 로그에 ‘짧은 시간대에 폭발적으로 증가한 파일 변화 이벤트’가 뚜렷하게 나타나게 된다. 초보 분석자 입장에서도 악성 행위의 특징적 패턴(대량·동시 변경)을 쉽게 식별할 수 있다는 것이다.<br>클라우드 로그 측면에서도 마찬가지로 분석에 유리하다. Google Drive 같은 클라우드 서비스는 파일이 바뀌면 곧바로 동기화하는데, 따라서 랜섬웨어 시뮬레이터가 동작하면 로컬에서 대량 변경이 일어나고 클라우드에서 동시간대에 파일 버전 기록이 줄줄이 남게 된다. 마찬가지로 일반적인 사용 패턴(한두 개의 문서 수정)과 달리 단기간에 수십 건의 변경 기록이 찍히므로 클라우드 로그에서도 쉽게 구분된다는 것이다.</p>
+<p>시나리오는 ‘침투 → 감염 → 환경 분석 → 원인 규명’의 흐름으로 진행된다.</p>
+<p><strong>a. 침투</strong></p>
+<p>사용자가 실험용 시뮬레이터를 실행한다.</p>
+<p>VM 환경(본 시뮬레이터가 GO 언어를 사용하므로 설치 후 kali 예정)과 동기화된 클라우드 계정 폴더 안에 더미 파일(20~30개 텍스트&#x2F;문서 파일)을 준비해 둔다.</p>
+<p><strong>b. 감염</strong></p>
+<p>시뮬레이터가 동작하면서 준비된 파일들의 확장자를 일괄 변경하고, 랜섬 노트(README.txt 형태)를 생성한다. 이때 실제 암호화는 이루어지지 않으나, 대량 변경 패턴이 그대로 발생한다.</p>
+<p><strong>c. 환경 분석</strong></p>
+<p>윈도우 측 로그: Sysmon 이벤트(ID 11, 13), Noriben 보고서를 통해 다량의 파일 변경·생성 이벤트 확인.</p>
+<p>클라우드 측 로그: OneDrive 또는 Google Drive의 Version History&#x2F;Activity Log에서 동일 시점에 대량의 파일명 변경·버전 증가 기록 확인.</p>
+<p><strong>d. 원인 규명</strong></p>
+<p>로컬 이벤트 로그와 클라우드 로그의 타임라인을 매칭해 ‘로컬 시뮬레이터 실행 → 클라우드 파일 변경 확산’이라는 인과관계를 규명한다. 이를 통해 랜섬웨어류 악성코드가 클라우드 환경에 미치는 파급 효과를 직관적으로 확인할 수 있다.</p>
+<p>결과적으로 윈도우 로그에서는 어떤 프로세스가 대량의 파일을 동시에 만졌다는 패턴 증거 폭증과, 클라우드 로그에서는 클라우드 서비스가 관리하는 파일 이력의 폭증이 예상되며, 이 둘을 매치하여 악성 코드 행위를 더욱 정밀하게 분석할 수 있음을 기대한다.</p>
+<h2 id="서브1-악성코드-및-시나리오"><a href="#서브1-악성코드-및-시나리오" class="headerlink" title="서브1 악성코드 및 시나리오"></a>서브1 악성코드 및 시나리오</h2><p>서브 1은 오픈소스 키로거로 진행한다. 키로거(Keylogger)는 사용자가 입력하는 키보드 입력(계정, 비밀번호, 메시지 등)을 기록해 저장하거나 외부로 전송하는 정보 유출형 악성코드다. 실제 공격에서는 이 데이터가 외부 C2 서버로 전송되지만, 본 칼럼에서는 위험을 피하기 위해 ‘로컬 파일에만 저장하는 오픈소스 버전’을 사용한다. GitHub에(<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0dpYWNvbW9MYXcvS2V5bG9nZ2Vy">https://github.com/GiacomoLaw/Keylogger</span>) 공개된 Python 기반의 단순 키로거 예제를 사용할 예정이며, 이는 로컬에 단순 텍스트 파일을 생성하는 기능만 수행한다. </p>
+<p>마찬가지로 시나리오는 ‘침투 → 감염 → 환경 분석 → 원인 규명’의 흐름으로 진행된다.</p>
+<p><strong>a. 침투</strong></p>
+<p>사용자가 VM 환경(kali 예정)에서 키로거 실행.</p>
+<p><strong>b. 감염</strong></p>
+<p>키 입력 기록이 로컬 파일(예를 들면 log.txt)로 저장된다.</p>
+<p><strong>c. 환경 분석</strong></p>
+<p>윈도우 로그: Sysmon&#x2F;Noriben에서 프로세스 실행 이벤트와 파일 쓰기 이벤트 확인.</p>
+<p>클라우드 로그: log.txt 파일이 동기화 폴더에 위치 → OneDrive&#x2F;Google Drive 활동 로그에 파일 업로드 및 버전 생성 기록이 남는다.</p>
+<p><strong>d. 원인 규명</strong></p>
+<p>‘정보 유출형 행위가 로컬 로그 파일 생성으로 시작 → 클라우드 동기화로 외부에서도 확인 가능’이라는 흐름을 규명한다.</p>
+<h2 id="서브2-악성코드-및-시나리오"><a href="#서브2-악성코드-및-시나리오" class="headerlink" title="서브2 악성코드 및 시나리오"></a>서브2 악성코드 및 시나리오</h2><p>서브2는 Reverse Shell 모의 스크립트 (백도어형)로 진행한다. 백도어(Backdoor) 악성코드는 공격자가 원격에서 피해자의 PC를 조종할 수 있는 숨겨진 통로를 만든다. 이 중 대표적 형태가 리버스 쉘이다. 감염 PC가 공격자의 C2 서버에 연결해 명령을 받아 실행하는 방식이다. 실제 악성코드는 네트워크를 통해 C2 서버와 통신하지만, 본 칼럼에서는 역시 위험을 제거하기 위해 외부 연결 없이 로컬에서 명령 실행을 따라하는 PowerShell 스크립트를 사용한다. 이 스크립트는 지정 폴더 내 파일을 삭제하거나 이름 변경하는 방식으로 원격 명령의 결과만을 모사한다.</p>
+<p>마찬가지로 시나리오는 ‘침투 → 감염 → 환경 분석 → 원인 규명’의 흐름으로 진행된다.</p>
+<p><strong>a. 침투</strong></p>
+<p>VM 환경(kali 예정)에서 PowerShell 스크립트 실행.</p>
+<p><strong>b. 감염</strong></p>
+<p>클라우드랑 자동으로 동기화되는 로컬 폴더의 파일이 일괄 삭제되거나 이름이 변경된다.</p>
+<p><strong>c. 환경 분석</strong></p>
+<p>윈도우 로그: Sysmon&#x2F;Noriben에서 프로세스 실행 이벤트, 파일 삭제&#x2F;변경 이벤트 확인.</p>
+<p>클라우드 로그: OneDrive&#x2F;Google Drive 활동 기록에 해당 파일의 삭제 또는 이름 변경 내역 기록. 휴지통&#x2F;버전 관리 기록에서도 확인한다.</p>
+<p><strong>d. 원인 규명</strong></p>
+<p>‘로컬 스크립트 실행 → 대량 파일 삭제&#x2F;변경 → 클라우드 활동 로그에 그대로 반영’ 흐름을 규명한다.</p>
+<p>본 시나리오는 결론 도출 측면에서는 로컬에서 변경된 파일이 클라우드에 반영된다는 점에서 메인 시나리오와 유사하지만, 포렌식 관점에서는 다르다. 메인 시나리오는 ‘대량 변경 패턴’에 주목하여 피해 규모&#x2F;자동화 공격 여부를 확인하기에 적합하고, 본 시나리오는 ‘원격 명령 수행 흔적’에 주목하여 누구의 명령으로 어떤 결과가 도출됐는지 원인 규명에 적합하다.</p>
+<h1 id="메인-시나리오-보강"><a href="#메인-시나리오-보강" class="headerlink" title="메인 시나리오 보강"></a>메인 시나리오 보강</h1><p>기존 시나리오에서 사용자가 악성코드를 실행하게 되는 트리거 유발 포인트를 ‘공유폴더 동기화’로 인한 감염으로 지정한다. 최종 시나리오는 다음과 같다. </p>
+<h2 id="침투"><a href="#침투" class="headerlink" title="침투"></a>침투</h2><p>피해자와 협업자이던 공격자 A는 협업용 공유폴더(OneDrive 공유 링크 또는 공동 폴더)에 악성 파일을 업로드한다. 피해자 B는 별 생각 없이 해당 공유파일을 열람하거나, 공유폴더가 자동 동기화된 자신의 동기화 폴더에서 업데이트를 수신한다. </p>
+<h2 id="감염"><a href="#감염" class="headerlink" title="감염"></a>감염</h2><p>피해자가 공유파일을 열람하거나 동기화된 파일을 수동 실행하면 실험용 랜섬웨어 시뮬레이터가 동작한다. 시뮬레이터는 대상 폴더에 있는 다수 파일을 암호화 하거나 제거한다.(랜섬웨어 시뮬레이터는 실제 암호화를 수행하지 않아도 다량의 더미 파일을 변경하는 등 탐지 포인트를 유발한다) 이 과정은 로컬 파일 시스템에서 대량&#x2F;동시성 파일 변경 이벤트를 발생시킨다. </p>
+<h2 id="전파-클라우드-동기화"><a href="#전파-클라우드-동기화" class="headerlink" title="전파(클라우드 동기화)"></a>전파(클라우드 동기화)</h2><p>OneDrive 클라이언트는 로컬에서 파일이 변경되면 즉시(또는 순차적으로) 변경사항을 업로드한다. 따라서 동일 시점대에 OneDrive의 Version History에 대량의 변경 기록이 남는다. </p>
+<p>해당 차시에서는 로그 분석을 선행하러 하였으나 순서를 변경하여 volatility3를 이용해 악성코드 분석을 진행한다. </p>
+<h1 id="실습"><a href="#실습" class="headerlink" title="실습"></a>실습</h1><h2 id="실습-환경-구축"><a href="#실습-환경-구축" class="headerlink" title="실습 환경 구축"></a>실습 환경 구축</h2><p>호스트: Kali (Volatility 설치, 분석 역할)<br>게스트: Windows (시뮬레이터 실행 역할)</p>
+<p>본 실습에서 두 가상머신의 역할은 이러하다. 즉 Volatility3와 Windows10 설치가 요구된다.</p>
+<p><img src="/images/3305_260111_image01.png" alt="그림 1. Volatility3 설치"></p>
+<center><span style="font-size: 90%;">그림 1. Volatility3 설치</span></center>
+<br>
+
+<p>Volatility3을 칼리에 git clone으로 설치했다.<br>나중에 YARA 같은 파이썬 기반 툴을 사용할 때 충돌이 일어날 수 있다고 하여 프로젝트 폴더 ~&#x2F;volatility3&#x2F;.venv를 경로의 가상환경을 추가해 주었다.</p>
+<p><img src="/images/3305_260111_image02.png" alt="그림 2"><br><br><br><img src="/images/3305_260111_image03.png" alt="그림 3"></p>
+<center><span style="font-size: 90%;">그림2, 5. 스냅샷</span></center>
+<br>
+
+<p>다음으로는 windows 게스트가 악성코드 샘플을 실행하고 Suspend하여 vmem 파일을 추출해야 하므로 vmware 안에 windows를 설치했다. 설치 후 악성코드 실행 이전 최초 상태를 스냅샷으로 찍어 남겨두었다.</p>
+<h2 id="vmem-추출"><a href="#vmem-추출" class="headerlink" title=".vmem 추출"></a>.vmem 추출</h2><p>먼저 Windows VM에 Go를 설치한다. 악성코드 샘플을 빌드해 가져와야 하기 때문이다. ransomware-simulator는 Go언어 기반 프로젝트이므로 Windows VM 내에서 직접 빌드하려면 Windows에 Go를 설치해야 한다. vm 윈도우 내부에서 <span class="exturl" data-url="aHR0cHM6Ly9nby5kZXYvZGwv">https://go.dev/dl/</span> 에 들어가 msi를 설치해준다. 또 git clone을 위해 Git도 깔아주었다.</p>
+<p><img src="/images/3305_260111_image04.png" alt="그림 4. go, git 설치"></p>
+<center><span style="font-size: 90%;">그림 4. go, git 설치</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image05.png" alt="그림 5. 랜섬웨어 시뮬레이터 git clone"></p>
+<center><span style="font-size: 90%;">그림 5. 랜섬웨어 시뮬레이터 git clone</span></center>
+<br>
+
+<p>vm 윈도우 안에서 powershell을 열고 랜섬웨어 시뮬레이터를 git clone.</p>
+<p><img src="/images/3305_260111_image06.png" alt="그림 6. cmd 파일 구조"></p>
+<center><span style="font-size: 90%;">그림 6. cmd 파일 구조</span></center>
+<br>
+
+<p>cd 명령어로 cmd에 들어가 dir 명령어를 통해 실행파일이 있는지 찾는다. exe는 바로 안 보이고 go 소스 파일만 있는 모습. </p>
+<p><img src="/images/3305_260111_image07.png" alt="그림 7. 악성코드 실행파일 빌드"></p>
+<center><span style="font-size: 90%;">그림 7. 악성코드 실행파일 빌드</span></center>
+<br>
+
+<p>소스 파일만으로는 실행되지 않으니 빌드해준다. go build –o ransim.exe 로 실행파일을 만들어 주었다. -o 는 실행파일 이름을 지정해 줄 수 있는 옵션이다. 뒤에 작성한 이름에서 확장자 제외하고 생성된다. 지정하지 않으면 모듈이나 디렉터리 이름을 따라가는데 랜섬웨어 시뮬레이션이기 때문에 ransim이라는 이름 그대로 픽스했다.</p>
+<p><img src="/images/3305_260111_image08.png" alt="그림 8. 실행파일 생성 확인"></p>
+<center><span style="font-size: 90%;">그림 8. 실행파일 생성 확인</span></center>
+<br>
+
+<p>cmd 디렉토리에 들어가면 제대로 빌드했음을 알 수 있다.<br>이제 본격적으로 .vmem파일을 추출한다. vmem 파일이란 VMware의 메모리 상태를 저장하는 파일이다. 가상 머신 메모리 내용을 디스크에 저장하기 위해 생성한다.</p>
+<p><img src="/images/3305_260111_image09.png" alt="그림 9. 네트워크 격리"></p>
+<center><span style="font-size: 90%;">그림 9. 네트워크 격리</span></center>
+<br>
+
+<p>악성코드 샘플 실행 전 안전을 위해 VM 네트워크를 격리(Disconnected) 해준다. 또한 정적&#x2F;동적 분석 툴을 쓸 때 다시 ransim.exe를 불러와야 하므로 스냅샷을 한번 더 해줬다. 내부 분석 용도이며 외부 C2 서버와 교신이 필요한 실습이 아니므로 HostOnly 대신 완전 차단을 택했다.</p>
+<p><img src="/images/3305_260111_image10.png" alt="그림 10. ransim 실행"></p>
+<center><span style="font-size: 90%;">그림 10. ransim 실행</span></center>
+<br>
+
+<p>바이러스 위협 방지 설정은 ransim을 자동 삭제 차단하므로 잠깐 꺼준 다음 powershell을 관리자 권한으로 실행해 Start-Process -FilePath .\ransim.exe –Verb runAs 명령어를 입력하면 ransim이 실행된다. </p>
+<p>Start-Process는 cmd의 start와 유사하다. -FilePath 뒤에는 실행할 파일의 이름(경로)가 들어간다. –Verb runAs는 관리자 권한으로 실행하려는 시도다.</p>
+<p><img src="/images/3305_260111_image11.png" alt="그림 11. vmem 파일 스냅샷으로 추출"></p>
+<center><span style="font-size: 90%;">그림 11. vmem 파일 스냅샷으로 추출</span></center>
+<br>
+
+<p>ransim은 실험용 시뮬레이터로 아주 단시간에 실행되기 때문에 실행 후 suspend를 하면 .vmsn이 남겠지만 메모리가 남지 않을 가능성이 크다. 두어 번의 시행착오 결과 실행 당시 스냅샷을 남겨야 vmem 파일이 추출된다는 것을 확인했다.</p>
+<p><img src="/images/3305_260111_image12.png" alt="그림 12. 디렉토리에서 vmem 추출 확인"></p>
+<center><span style="font-size: 90%;">그림 12. 디렉토리에서 vmem 추출 확인</span></center>
+<br>
+
+<p>실제 로컬 Virtual Machine 폴더에 들어가면 약 4GB의 vmem파일이 생성된 것을 볼 수 있다.</p>
+<h2 id="Volatility-분석"><a href="#Volatility-분석" class="headerlink" title="Volatility 분석"></a>Volatility 분석</h2><p><img src="/images/3305_260111_image13.png" alt="그림 13. df 명령어 실행 (마운트 된 파일 시스템 크기 확인)"></p>
+<center><span style="font-size: 90%;">그림 13. df 명령어 실행 (마운트 된 파일 시스템 크기 확인)</span></center>
+<br>
+
+<p>kali에 vmem 파일을 불러오기 위해 먼저 디스크 용량을 확인해 주어야 한다. 파일이 약 4GB이므로 여유 공간이 있는지 확인하기 위함이다. 해당 실습에서는 하나의 파일을 추출하여 필요성이 상대적으로 낮지만 여러 개의 vmem 파일을 분석할 때를 대비하여 습관적으로 요구되는 절차다. 저장공간이 영원할 수는 없는 법이다.</p>
+<p>&#x2F;dev&#x2F;sda1이 루트 디스크이다. 79G 중 16G 사용, 59G 남아있다. 충분할 것으로 보인다.<br>VMware Tools이 깔려 있으니 직접 로컬 폴더에서 드래그&#x2F;드롭 방식을 써서 kali에 vmem 파일을 전달했다.</p>
+<p><img src="/images/3305_260111_image14.png" alt="그림 14. 파일 존재 확인"></p>
+<center><span style="font-size: 90%;">그림 14. 파일 존재 확인</span></center>
+<br>
+
+<p>sudo find &#x2F; -type f -name ‘*.vmem’ 2&gt;&#x2F;dev&#x2F;null 명령어로  전체 디스크에서 .vmem 파일이 존재하는지 점검하였고 드롭해 넣은 파일의 위치를 알아냈다.</p>
+<p><img src="/images/3305_260111_image15.png" alt="그림 15. 파일 이름 변경"></p>
+<center><span style="font-size: 90%;">그림 15. 파일 이름 변경</span></center>
+<br>
+
+<p>파일의 경로가 길고 공백이 있어 추후 따옴표를 사용해 명령어를 이행하기 복잡하므로 파일 이름을 변경해 주었다.</p>
+<p>또 본격적인 분석 전 기본 정보를 출력하는 windows.info 플러그를 이용해 -f ~&#x2F;snapshot4.vmem 분석할 메모리 덤프 파일을 지정 (-f 옵션 &#x3D; file) 하여 출력 테스트를 하였는데  Progress: 100.00 PDB scanning finished &#x2F; No metadata file found alongside VMEM file. A VMSS or VMSN file may be required… 가 출력되었다.<br>즉 snapshot4.vmem 파일은 읽히고 있으나 추가 메타데이터 파일(.vmsn &#x2F; .vmss) 이 없어서 Volatility가 커널 구조를 해석하지 못하고 있는 상태이다. 부가적인 메타데이터 파일(.vmss, .vmsn)도 필요함을 알 수 있다.</p>
+<p><img src="/images/3305_260111_image16.png" alt="그림 16. windows.info 출력"></p>
+<center><span style="font-size: 90%;">그림 16. windows.info 출력</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image17.png" alt="그림 17. .vmsn .vmem 같은 홈 주소로 이동"></p>
+<center><span style="font-size: 90%;">그림 17. .vmsn .vmem 같은 홈 주소로 이동</span></center>
+<br>
+
+<p>vmsn 파일도 드롭해온 다음 마찬가지로 이름을 간단히 바꿔주었다. 그 후 windows.info를 똑같이 실행하면 다음 결과가 출력된다.<br>&#x2F;home&#x2F;kali&#x2F;volatility3&#x2F;volatility3&#x2F;symbols&#x2F;windows&#x2F;ntkrnlmp.pdb…<br>이 줄은 Volatility가 심볼 파일을 다운로드해서 매핑한 것으로 vmem&#x2F;vmsn 파일끼리 심볼 매칭에 성공했다는 뜻이다.<br>이하<br>Is64Bit True: 64비트 운영체제<br>layer_name: WindowsIntel32e (Volatility 내부 계층명)<br>SystemTime: 2025-09-20 17:45:54 UTC<br>→ 덤프된 시점의 시스템 시간 등은 기본 정보에 관한 이야기이다.</p>
+<p><img src="/images/3305_260111_image18.png" alt="그림 18. windows.info 재출력"></p>
+<center><span style="font-size: 90%;">그림 18. windows.info 재출력</span></center>
+<br>
+
+<p>windows.pslist를 실행하면 어떤 프로세스가 살아있었는지 알 수 있다.<br>맨 오른쪽 false라고 뜨는 것은 해당 프로세스가 Wow64(32비트 프로세스를 64비트에서 돌리는 호환 계층)인지를 표시한 것으로 틀렸다는 게 아니다.<br>False → 64비트 프로세스(정상)<br>True → 32비트 Wow64 프로세스<br>즉 지금 메모리는 Windows 10 x64이고, 시스템 기본 프로세스 대부분이 64비트라서 False가 쭉 뜨는 게 정상이다.<br>여기서 ransim.exe같은 프로세스가 감지되면 PID를 따려고 했는데 그렇지는 않았다. ransim을 사이트 <span class="exturl" data-url="aHR0cHM6Ly9yYW5jZXJ0LmNvbS9yYW5zaW1fc2V0dXAucGhwJUVDJTk3JTkwJUVDJTg0JTlD">https://rancert.com/ransim_setup.php에서</span> 설치하면 이때 비번이 KnowBe4 이기 때문에  KnowBe4 관련 워딩도 찾아봤는데 없었다. 정상 프로세스로는 남아있지 않을 가능성이 높은 것이다. ransim은 너무 빨리 종료되는 시뮬레이터라 메모리 상 남는 것이 거의 없어 그럴 수도 있고 이름을 바꿨거나, 혹은 숨김(언링크드) 상태일 가능성이 있다. 다음으로 숨긴&#x2F;이미 종료된 프로세스를 찾아서 pslist 결과랑 비교하면 실마리를 찾을 수 있을 것으로 예상했다.</p>
+<p><img src="/images/3305_260111_image19.png" alt="그림 19. python3 vol.py -f ~/snapshot4.vmem windows.pslist"></p>
+<center><span style="font-size: 90%;">그림 19. python3 vol.py -f ~/snapshot4.vmem windows.pslist</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image20.png" alt="그림 20. python3 vol.py -f ~/snapshot4.vmem windows.psscan"></p>
+<center><span style="font-size: 90%;">그림 20. python3 vol.py -f ~/snapshot4.vmem windows.psscan</span></center>
+<br>
+
+<p>windows.psscan은 메모리를 스캔해서 프로세스 구조체(EPROCESS) 흔적을 찾아낸다. pslist로는 안 보이는 숨겨진 프로세스나 이미 종료됐지만 메모리에 남은 흔적을 알 수 있으므로 루트킷이나 인젝션으로 부모-목록에서 지워진 악성 프로세스를 찾을 때 유용하다.<br>정상적인 프로세스 목록(pslist)은 커널이 관리하는 ActiveProcessLinks(더블 링크드 리스트)를 따라 읽어온다. 반면 루트킷&#x2F;악성코드는 이 링크를 조작해서 목록에서 자신을 끌어내어 숨기는(unlink) 경우가 있다.<br>psscan은 메모리 전체를 스캔해서 EPROCESS 구조체 패턴을 찾아내므로, unlink 되어도 남아있는 흔적(메모리 내 구조체)을 잡아낸다. 즉 pslist에 없는데 psscan에만 보이면 은닉&#x2F;루트킷 가능성(혹은 단순히 이미 종료됐지만 메모리에 잔존)이 존재하는 것이다.</p>
+<p><img src="/images/3305_260111_image21.png" alt="그림 21. ransim.exe 발견"></p>
+<center><span style="font-size: 90%;">그림 21. ransim.exe 발견</span></center>
+<br>
+
+<p>pslist 실행 당시 보이지 않았던 ransim.exe를 잡아냈다. 이제 특정했으니 타겟해서 심층 분석을 진행한다. 해당 사진에서 알 수 있는 것은 rasim.exe는 PID(프로세스 본인  아이디) 6284, PPID(부모 아이디) 6052, Offset(V)(메모리 내에 해당 EPROCESS 구조체가 존재하는 가상 메모리 주소) 0xd98637f91080를 가진 프로세스라는 것이다.</p>
+<p><img src="/images/3305_260111_image22.png" alt="그림 22. 결과값 저장 파일"></p>
+<center><span style="font-size: 90%;">그림 22. 결과값 저장 파일</span></center>
+<br>
+
+<p>출력값 중 텍스트는 vol_reports에 실제 덤프(바이너리&#x2F;파일 덤프)는 dumps&#x2F; 하위 폴더에 저장하도록 vol_reports와 dumps 디렉터리를 만들었다. 출력이 너무 길어서 파일에 저장하고 필요한 부분만 읽기 위함이다.</p>
+<p><img src="/images/3305_260111_image23.png" alt="그림 23. windows.cmdline 후 파일 저장/오픈"></p>
+<center><span style="font-size: 90%;">그림 23. windows.cmdline 후 파일 저장/오픈</span></center>
+<br>
+
+<p>프로세스가 어떤 명령행 인자로 실행되었는지 보여주는 windows.cmdline을 grep -i 와 함께 실행해 ransim 관련 줄만 뽑아 vol_reports 디렉터리 안 텍스트 파일로 저장했다. cmdline은 설치 경로, 임시 인자, 추가 실행 스크립트 경로, *데몬화 인자 등 악성행위 단서(예: 특정 폴더 반복 접근, *config 파일 경로, 스케줄러 등록 인자)를 찾을 수 있다. </p>
+<p>config 파일: 주로 .conf 확장자를 쓰는 텍스트 파일로 프로그램이 실행될 때 서비스 동작을 지정해놓는 설정 파일. 어떤 포트에서 실행할지 등을 적용.<br>데몬화: 사용자가 직접 실행하지 않아도 시스템이 켜지면 자동으로 실행되어 백그라운드 형태로 돌아가게 만드는 것.</p>
+<p><img src="/images/3305_260111_image24.png" alt="그림 24. less 명령어로 파일 오픈"></p>
+<center><span style="font-size: 90%;">그림 24. less 명령어로 파일 오픈</span></center>
+<br>
+
+<p>출력값<br>cmd.exe “C:\Windows\system32\cmd.exe” &#x2F;k “.\ransim.exe &amp; echo RanSim finished &amp; timeout &#x2F;t 60“<br>을 해석하자면 cmd.exe가 현재 작업 디렉터리 기준의 .\ransim.exe 를 실행하고 “RanSim finished” 출력 후 60초를 대기했다는 것이다.<br>처음 ransim을 suspend 했을 때 너무 짧게 끝나 다음 스냅샷을 시도할 때 강제로 cmd창을 띄워두는 명령어를 썼는데 그 실행 당시 행위 부분이 잡혔다.</p>
+<p><img src="/images/3305_260111_image25.png" alt="그림 25. windows.handles 명령어 실행"></p>
+<center><span style="font-size: 90%;">그림 25. windows.handles 명령어 실행</span></center>
+<br>
+
+<p>다음으로는 windows.handles를 수행해 현재 작업 디렉터리가 무엇이었는지 추적한다.<br>PPID(6052 &#x3D; cmd.exe), PID(6284 &#x3D; ransim.exe) 즉 부모 ID와 본인 ID를 모두 확인하는 이유는 ransim.exe가 단기간에 실행하고 종료된 실행파일이기 때문이다.<br>자식이 짧게 실행 후 종료되면 자식의 핸들&#x2F;모듈은 정리되어 거의 안 남고, 부모(cmd.exe)의 작업 폴더(Directory 핸들), 표준 입출력(ConDrv), 명령줄 흔적이 상대적으로 더 잘 남는다.<br>ransim은 psscan에 보였더라도 pslist에 보이지 않아 이미 종료된 프로세스일 가능성이 높은데, handles&#x2F;dlllist는 실행 중이던 테이블(핸들 테이블&#x2F;PEB 등)을 더 의존한다. 그래서 PID 6284 쪽은 필터에 안 걸리는 경우가 흔히 발생한다.<br>결론적으로 이 경우 자식은 휘발되고 부모는 흔적이 남으므로 둘 다 확인한다.</p>
+<p>eprep는 |a|b|c 형태로 or 출력이 가능하다. -i 옵션으로 대소문자 무시하고 디렉터리 관련 키워드가 하나라도 있으면 출력하도록 했다. 부모 ID에서 실제로 실행했던 Desktop 주소가 잡혔다. 또한 예상대로 PID에서는 아무것도 출력되지 않았다.</p>
+<p><img src="/images/3305_260111_image26.png" alt="그림 26. dlllist 실행"></p>
+<center><span style="font-size: 90%;">그림 26. dlllist 실행</span></center>
+<br>
+
+<p>지금까지 실행 당시 행위와 경로가 잡혔으므로 이제 마지막으로 어떤 행위를 했는지 분석할 차례다. 다만 실제 ransim이 악성 행위를 하는 샘플은 아니므로 덤프 했을 때 증거가 나오지 않을 확률이 있다. 감안하고 수행한다.<br>우선 dlllist로 남은 .dll파일 흔적을 확인한다. DLL은 프로그램이 실행될 때 필요한 함수, </p>
+<p><img src="/images/3305_260111_image27.png" alt="그림 27. egrep -i 실행"></p>
+<center><span style="font-size: 90%;">그림 27. egrep -i 실행</span></center>
+<br>
+
+<p>리소스를 동적으로 가져온다. 악성코드에서 DLL은 흔히 인젝션 대상이다. 정상 프로세스에 DLL을 강제로 페이로드 시키는 DLL Injection 기법 등이 사용되었는지 점검하기 위해 dilllist를 실행했다.</p>
+<p>아무것도 나오지 않았다. ransim이 너무 짧게 끝나 현실적으로 잡히지 않은 것이다. 다음으로 netscan을 하여 c2 서버 등의 외부 통신 가능성을 점검하는 것이 보통의 경우이나 본 케이스는 netscan 역시 잡히지 않을 것이므로 파일 경로를 확정하고 바이너리&#x2F;메모리를 덤프해서 strings으로 확인한다.</p>
+<p><img src="/images/3305_260111_image28.png" alt="그림 28. filescan"></p>
+<center><span style="font-size: 90%;">그림 28. filescan</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image29.png" alt="그림 29. egrep -in"></p>
+<center><span style="font-size: 90%;">그림 29. egrep -in</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image30.png" alt="그림 30. less 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 30. less 실행 결과</span></center>
+<br>
+
+<p>-n : 줄 번호를 함께 출력 , ransim.exe : .(아무 문자)와 구분하려고 <br>3582:0x…  \Users\windows\Desktop\ransomware-simulator\cmd<br>4400:0x…  \Users\windows\Desktop\desktop.ini<br>4669:0x…  \Users\windows\Desktop\ransomware-simulator\cmd</p>
+<p>이 세 줄이 떴으니 객체 메모리가 남아 있음을 알 수 있다. 마지막으로 덤프해서 strings 하고 분석을 종료한다.</p>
+<p><img src="/images/3305_260111_image31.png" alt="그림 31. 파일 생성"></p>
+<center><span style="font-size: 90%;">그림 31. 파일 생성</span></center>
+<br>
+
+<p>vol_reports&#x2F;와 달리 바이너리&#x2F;메모리 추출물은 dumps&#x2F;로 분리해서 저장하기 위해 파일을 만들고 덤프했다. 덤프란 메모리 스냅샷 속 객체의 원본 바이트를 디스크 파일로 뽑아내는 것이다.</p>
+<p><img src="/images/3305_260111_image32.png" alt="그림 32. 덤프"></p>
+<center><span style="font-size: 90%;">그림 32. 덤프</span></center>
+<br>
+
+<p>windows.dumpfiles → 메모리에 존재하는 파일 객체의 내용을 파일로 추출<br>windows.procdump&#x2F;memdump → 프로세스 메모리 전체를 통째로 추출<br>windows.vad_dump → 프로세스의 VAD(메모리 영역) 단위로 추출<br>맨 처음 확인했던 오프셋이 가상이라 Offset(V) → –virtaddr</p>
+<p>결과를 보면 두 개는 행이 비어 아무것도 출력되지 않았고 desktop.ini는 덤프에 성공했다.</p>
+<p><img src="/images/3305_260111_image33.png" alt="그림 33. 덤프 파일 읽기"></p>
+<center><span style="font-size: 90%;">그림 33. 덤프 파일 읽기</span></center>
+<br>
+
+<p>마지막으로 desktop.ini을 열어서 ransim이 접근했었는지를 확인해 보았다.<br>f&#x3D;$(ls dumps&#x2F;ransim_from_filescan&#x2F;<em>desktop.ini</em>.dat)에서<br>ls dumps&#x2F;…&#x2F;<em>desktop.ini</em>.dat는 dumpfiles가 만든 파일 중 이름에 desktop.ini가 들어가고 끝이 .dat인 파일을 찾으라는 명령이다.<br>$( )로 ls의 출력(&#x3D; 경로)를 변수 f(그냥 파일이라 임의 지정했다.)에 넣은 이유는 덤프 파일의 정확한 이름이 매번 바뀌기 때문에 자동으로 그 파일 경로를 잡아 다음 명령에 넘기기 위해서이다.</p>
+<p>strings -el “$f” | sed –n ‘1,120p’ 에서<br>-e l (&#x3D; -el) : encoding &#x3D; little-endian 16-bit, 즉 UTF-16LE 모드로 읽는다. 해당 덤프 파일이 UTF-16 기반이기 때문이다. 문자를 16비트 단위(2바이트) 로 저장한다는 뜻인데 HxD 툴을 쓸 때 빅 엔디언&#x2F;리틀 엔디언을 택하는데 이때 리틀 엔디언을 생각하면 된다. 낮은 바이트가 먼저 오는 저장 순서다.<br>sed -n ‘1,120p’ : 1~120번째 줄만 출력.(쓰레기 값을 줄이기 위해서이다)<br>-n : 기본 출력 끔</p>
+<p>출력된 내용을 분석하면 아래와 같다.</p>
+<p>[.ShellClassInfo]: 윈도우 폴더 표시 설정 섹션(아이콘&#x2F;표시 이름 등을 커스터마이즈). 정상적인 시스템 파일 형식.<br>LocalizedResourceName&#x3D;@%SystemRoot%\system32\shell32.dll,-21769<br>:%SystemRoot%는 보통 C:\Windows이다. -21769는 DLL 안의 리소스 ID. 일반적으로 바탕 화면(Desktop) 같은 이름을 가리킨다.<br>IconResource&#x3D;%SystemRoot%\system32\imageres.dll,-183 :폴더 아이콘을 지정. 역시 시스템 DLL의 아이콘 리소스 ID.</p>
+<h2 id="실습-결론"><a href="#실습-결론" class="headerlink" title="실습 결론"></a>실습 결론</h2><p>결론적으로 이 desktop.ini는 사용자 Desktop 폴더의 정상 설정 파일이고 암호화&#x2F;명령&#x2F;네트워크 정보 없기 때문에 악성 코드의 흔적은 아님을 알 수 있다. ransim은 원래 실험용 시뮬레이터로 실제 암호화 등을 수행하지 않으므로 당연한 결과이며 다만 Desktop 폴더가 열렸다는 정황(현재 작업 디렉터리가 Desktop이었음)은 뒷받침 한다. ransim이 Desktop에서 실행되었다는 근거는 아래와 같다.</p>
+<p>첫 번째로 windows.handles을 실행해서 부모 프로세스를 확인했을 때 cmd.exe의 작업 폴더가 Desktop인 것을 확인했다.</p>
+<p>두 번째로 windows.cmdline을 실행했을 때 출력된 실행 파일들 중 cmd.exe, ransim.exe등이 확인되었음으로 작업 폴더 기준으로 ransim.exe를 실행했음을 알 수 있다.</p>
+<p>마지막으로 filescan을 해보니 또 \Users\windows\Desktop\ 같은 경로가 등장하였고, desktop.ini를 실제로 덤프했더니 출력 내용이 Desktop 폴더의 전형적인 설정과 일치했다.</p>
+<h1 id="로컬-환경에서-디스크-아티팩트-파일-추출을-통한-로컬-로그-분석의-필요성"><a href="#로컬-환경에서-디스크-아티팩트-파일-추출을-통한-로컬-로그-분석의-필요성" class="headerlink" title="로컬 환경에서 디스크 아티팩트 파일 추출을 통한 로컬 로그 분석의 필요성"></a>로컬 환경에서 디스크 아티팩트 파일 추출을 통한 로컬 로그 분석의 필요성</h1><p>이번 차시에는 로컬(Windows) 로그 (Prefetch + 이벤트 로그) 분석을 통해 악성코드 ransim의 행위를 더 자세히 규명해 볼 예정이다. 지난 차시 메모리 분석에서 vmem&#x2F;vmsn 파일을 통해 “ransim.exe가 실행되었다”는 사실 소명에 성공하였으나 dlllist, netscan의 결과가 유의미하게 나타나지 않았던 것은 ransim이 짧게 실행 → 즉시 종료되는 프로그램이므로 첫째, DLL 로드 테이블이 정리되지 않고 둘째, 네트워크 연결이 종료됨으로써 프로세스가 pslist에서 사라졌기 때문이다. 추가로 ransim 자체가 C2 통신 없이 로컬에서만 작동하는 시뮬레이터이기 때문이다. </p>
+<p>이에 본 칼럼의 초기 목적인  </p>
+<p>로컬 이벤트 로그 + Sysmon + Prefetch + 클라우드 Version History<br>               ↓<br>     시간축 매칭 (Timeline Correlation)<br>               ↓<br>  local ransomware execution → cloud sync 폭증<br>               ↓<br>           원인 규명</p>
+<p>의 절차를 따르기 위해서는 실제 디스크 아티팩트 파일들을 추출하는 것이 필수불가결 하다. </p>
+<h2 id="디스크-기반-분석-환경-구축-및-분석"><a href="#디스크-기반-분석-환경-구축-및-분석" class="headerlink" title="디스크 기반 분석 환경 구축 및 분석"></a>디스크 기반 분석 환경 구축 및 분석</h2><p>Prefetch 파일 추출을 위한 단계를 수행한다. </p>
+<p>프리패칭은 부팅, 응용프로그램 시작 시 성능 향상을 위해 마이크로소프트 윈도우에 구현된 기능으로 윈도우의 부팅 커널까지 포함하여 응용 프로그램 실행 정보를 저장한 파일을 메모리에 올려두고, 필요할 때마다 하드디스크가 아닌 메모리에서 읽는 기법을 사용하여 응용프로그램 실행속도를 빠르게 하는 역할을 한다.</p>
+<p><img src="/images/3305_260111_image34.png" alt="그림 34. 로그 수집 디렉토리 생성"></p>
+<center><span style="font-size: 90%;">그림 34. 로그 수집 디렉토리 생성</span></center>
+<br>
+
+<p>윈도우 VM에서 관리자 권한으로 PowerShell을 실행하여 본 프로젝트 관련 로그들을 모아둘 디렉터리를 생성했다.</p>
+<p><img src="/images/3305_260111_image35.png" alt="그림 35. prefetch 폴더"></p>
+<center><span style="font-size: 90%;">그림 35. prefetch 폴더</span></center>
+<br>
+
+<p>다음으로 Prefetch 폴더에 접근한다. 해당 폴더는 시스템이 프로그램 실행 정보를 저장하는 중요한 경로라서 기본적으로 일반 사용자 권한으로는 접근이 제한되어 오픈 시 관리자 권한을 요구한다. </p>
+<p><img src="/images/3305_260111_image36.png" alt="그림 36. prefetch 파일 전체 복사"></p>
+<center><span style="font-size: 90%;">그림 36. prefetch 파일 전체 복사</span></center>
+<br>
+
+<p>추후 호스트&#x2F;칼리로 가져간 뒤 PrefetchView로 분석해주기 위해 폴더 안의 모든 파일을 전체 선택 (Ctrl+A)한 후 복사하여 C:\Evidence_ransim 안에 Prefetch 라는 폴더를 새로 하나 만들고 붙여 넣어 주었다.<br>다음은 이벤트 로그(.evtx) 내보내기를 수행해야 한다. 이는 ransim 실행 전의 윈도우 내부 상태를 저장해 두기 위한 과정이다.</p>
+<p>ransim 실행 후의 파일 대량 변경 (Sysmon ID 11, 13)등의 이벤트를 탐지하기 위해서는 ransim 실행 전 ‘정상 상태’의 증거를 보존해 두어야 한다. 즉 시스템 안에서 직접 로그를 꺼내와 순수 원본 상태(.evtx) 로 저장해 두는 과정이 필요하다는 것이다.</p>
+<p><img src="/images/3305_260111_image37.png" alt="그림 37. 이벤트 뷰어"></p>
+<center><span style="font-size: 90%;">그림 37. 이벤트 뷰어</span></center>
+<br>
+
+<p>기본 로그 (System, Security, Application)와 Sysmon 로그 이벤트를 저장해야 하는데 먼저 기본 로그부터 저장한다. 시작 메뉴에서 eventvwr.msc 입력 후 이벤트 뷰어를 열어준 다음 응용 프로그램, 보안, 시스템에 해당하는 로그들을 전부 오른쪽 ‘다른 이름으로 모든 이벤트 저장’을 통해 C:\Evidence_ransim\logs 경로에 저장해 주었다.</p>
+<p><img src="/images/3305_260111_image38.png" alt="그림 38. 기본 로그 킵"></p>
+<center><span style="font-size: 90%;">그림 38. 기본 로그 킵</span></center>
+<br>
+
+<p>이어서 Sysmon 로그를 저장해주기 위해 Sysmon을 윈도우 vm안에 설치해주었다.</p>
+<p>Sysmon이란 System Monitor의 준말로 Microsoft Sysinternals에서 만든 고급 모니터링 도구이다. Sysmon이 수행하는 일들은 아래와 같다.</p>
+<p>프로세스 생성 &#x2F; 종료 로그 기록 (Event ID 1)<br>파일 생성 &#x2F; 삭제 &#x2F; 변경 로그 기록 (Event ID 11, 13)<br>네트워크 연결 로그 기록 (Event ID 3)<br>이미지 로드(DLL) 이벤트 기록 (Event ID 7)<br>타임라인 포렌식의 핵심 데이터 생성</p>
+<p>Sysmon의 역할에 기반하여 해당 프로젝트에서 Sysmon 로그 분석이 필수적인 이유에 대하여 설명하자면, ransim은 실행이 매우 짧고, Windows 기본 로그로는 어떤 파일이 언제 변경되었는지 명확히 기록되지 않기 때문에 ‘ransim.exe 실행 → 수십&#x2F;수백 파일 생성&#x2F;변경&#x2F;삭제 → ID 1&#x2F;5 혹은 11&#x2F;13 폭증’ 과정을 증명할 수 있는 Sysmon 로그가 있어야 로컬 ‘파일 변조 → 클라우드 동기화 폭증’을 입증할 수 있다.</p>
+<p><img src="/images/3305_260111_image39.png" alt="그림 39. Sysmon 설치 (오류: PS에서 실행 시 앞에 .\ 붙여야 함에 유의)"></p>
+<center><span style="font-size: 90%;">그림 39. Sysmon 설치 (오류: PS에서 실행 시 앞에 .\ 붙여야 함에 유의)</span></center>
+<br>
+
+<p>설치 과정에서 유의할 점은 Sysmon이 단순 실행형 프로그램이 아니라 Windows 내부에 Sysmon 서비스를 등록하고, 이벤트 로그 채널(Sysmon&#x2F;Operational)을 새로 생성하는 도구이므로 명령줄에 설치까지 해주어야 최종적으로 적용 가능하다는 것이다.</p>
+<p>설치 완료 후 이벤트 로그에 재접속해 응용 프로그램 및 서비스 로그 → Microsoft → Windows → Sysmon → Operational 로그 파일이 생성된 것을 확인할 수 있다. 해당 파일을 추출하고 추후 원활한 분석을 위해 파일 이름 뒤에 BEFORE를 추가해 주었다.</p>
+<p><img src="/images/3305_260111_image40.png" alt="그림 40. 로컬 로그 저장 완료 (베이스라인 확보)"></p>
+<center><span style="font-size: 90%;">그림 40. 로컬 로그 저장 완료 (베이스라인 확보)</span></center>
+<br>
+
+<p>이 시점에서 다음 차시 클라우드 연계 분석을 위해 OneDrive 로컬 로그도 복사 및 이동을 시행해 준다. 탐색기 주소 창에 %localappdata%\Microsoft\OneDrive\logs<br>를 입력 후 해당 폴더의 모든 내용을 C:\Evidence_ransim\OneDrive_logs_before 경로에 저장해 주었다.</p>
+<p><img src="/images/3305_260111_image41.png" alt="그림 41. 기존 클라우드 로컬 로그 확보"></p>
+<center><span style="font-size: 90%;">그림 41. 기존 클라우드 로컬 로그 확보</span></center>
+<br>
+
+<p>모든 준비를 마쳤으므로 VM → Settings → Network Adapter → Connect 체크 해제 후 ransim.exe을 클릭해 실행해 주었다.</p>
+<p><img src="/images/3305_260111_image42.png" alt="그림 42. ransim 실행을 위한 windows 보안 설정 해제"></p>
+<center><span style="font-size: 90%;">그림 42. ransim 실행을 위한 windows 보안 설정 해제</span></center>
+<br>
+
+<p>실행 후 실행 전과 같은 과정을 반복하여 실행 후의 로그들을 다시 수집해 주었다.</p>
+<p><img src="/images/3305_260111_image43.png" alt="그림 43. ransim 실행 후 로그 파일 저장"></p>
+<center><span style="font-size: 90%;">그림 43. ransim 실행 후 로그 파일 저장</span></center>
+<br>
+
+<p>분석을 위한 준비가 모두 끝이 났으므로 우선 WinPrefetchView를 통해 prefetch 파일을 분석해 주어야 한다. WinPrefetchView는 C:\Windows\Prefetch 경로의 파일만 읽어들이기 때문에 분석할 파일을 해당 경로로 이동시켜 주어야 한다. 관리자 권한으로 prefetch_after 폴더에 생성된 ransim 관련 파일을 붙여넣기 해주었다.</p>
+<p><img src="/images/3305_260111_image44.png" alt="그림 44. RANSIM.EXE.df 파일 경로 이동"></p>
+<center><span style="font-size: 90%;">그림 44. RANSIM.EXE.df 파일 경로 이동</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image45.png" alt="그림 45. WinPrefetchView 실행"></p>
+<center><span style="font-size: 90%;">그림 45. WinPrefetchView 실행</span></center>
+<br>
+
+<p>WinPrefetchView를 실행해 주고 해당 파일을 열어주었다.</p>
+<p>RANSIM.EXE-6CC7EAF5.pf는 RanSim 실행 시 Windows가 만든 Prefetch 파일로 PF가 존재한다는 것은 RanSim이 실행됨을 증명한다. [그림 12]를 기준으로 한 분석 내역은 아래와 같다.</p>
+<p>Created Time: 2025-11-15 오후 7:16:31<br>→ Prefetch 파일이 생성된 시점<br>→ Prefetch는 프로세스 실행 직후 생성되므로 RanSim이 최초 실행된 시점과 거의 동일</p>
+<p>Last Run Time:<br>2025-11-14 오후 11:38:22<br>2025-09-21 오전 2:45:45<br>→ Prefetch는 최대 최근 8회 실행 기록 저장하는데 여기서는 2회 등장.<br>→ 즉, RanSim이 이 시스템에서 총 2번 실행됨 (지난 차시 실행 흔적이 잡힌 모습)</p>
+<p>Run Counter: 2<br>→ RanSim.exe가 총 2번 실행됨</p>
+<p>Process Path: \VOLUME{01dc2a29579cf4c7-ec57a916}\USERS\WINDOWS\DESKTOP\RANSOMWARE-SIMULATOR\CMD\RANSIM.EXE<br>→ 실제 실행 경로</p>
+<p>다음은 ransim이 어떤 행위를 했는가를 더 자세히 규명하기 위해 Sysmon 이벤트 로그를 분석해 준다. FullEventLogView를 실행시켜 단일 파일 불러오기로 Operational_after.evtx 파일을 열어주었다.</p>
+<p><img src="/images/3305_260111_image46.png" alt="그림 46. Sysmon 이벤트 로그 분석 시작"></p>
+<center><span style="font-size: 90%;">그림 46. Sysmon 이벤트 로그 분석 시작</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image47.png" alt="그림 47"></p>
+<center><span style="font-size: 90%;"></span></center>
+![그림 48](/images/3305_260111_image48.png)
+<center><span style="font-size: 90%;">그림 47, 48. Sysmon 로그</span></center>
+<br>
+
+<p>ransim 실행 이후의 Sysmon 이벤트 로그 파일에서 Event ID 1 &#x2F; 5 즉 프로세스 실행과 종료 이벤트) 로그들이 단기간 내에 여러 개 기록되어 있는 것을 확인했다.</p>
+<p>파일을 대량 변경하는 ransim의 특성상 RanSim.exe 실행 흔적(ID 1), 프로세스 접근(ID 10), 파일 생성(ID 11), 최소 세 가지 이벤트 로그 기록을 예상했으나 실제로 10과 11은 잡히지 않았다. 이 경우 ransim은 진짜 파일 암호화를 하지는 않기 때문에 실제 파일을 건드리지 않고 테스트용 폴더 &#x2F; 테스트 스크립트 &#x2F; 테스트 시나리오만 실행하고 단기간에 종료하므로 테스트 모듈(랜섬웨어 시나리오) 여러 개 생성 (ID 1) &#x2F; 종료 (ID 5) 로그가 폭발적으로 쌓이는 패턴이 발견되는 것이다.</p>
+<p>실제로 ransim이 단기간에 여러 작업을 행위한 것을 증명하기 위해 다음으로는 보안 이벤트 로그를 확인해 주어야 한다. Windows 10 기본값에서는 로그 수가 너무 많아지지 않게 하기 위한 정책상 프로세스 생성(4688)이 기록되지 않으므로 특정 행위를 기록한 ID를 추적하여 주었다.</p>
+<p>4672 특권 할당 &#x2F; 4798 그룹 구성원 조회 &#x2F; 4624 로그인 성공&#x2F; 5379 Credential 읽기 등을 찾아 살펴보아야 하는데, 시점을 ransim 실행 시각인 약 11시 40분 이후로 이동해 주면 그룹 구성원 조회 역할을 하는 Event ID 4798 로그가 연속으로 4개 찍혀있는 것을 확인할 수 있다.(아래 [그림 15]) 이는 어떤 프로세스가 현재 로그인 계정의 그룹&#x2F;권한을 조회하였다는 뜻으로 악성코드가 종종 권한 있는 사용자 여부를 확인할 때 나타나는 로그이다. ransim 동작 중 Windows가 자동으로 권한을 확인하면서 여러 번 찍혀있는 모습. </p>
+<p><img src="/images/3305_260111_image49.png" alt="그림 49. 연속된 로그인 계정 권한 조회"></p>
+<center><span style="font-size: 90%;">그림 49. 연속된 로그인 계정 권한 조회</span></center>
+<br>
+
+<p>다음으로는 이벤트 ID 4624 4672 로그가 번갈아 가며 기록되어 있는 모습을 확인할 수 있다.<br>[그림 16] 로그인 성공 및 특권 할당 로그의 반복<br>(아래 [그림50]) Event ID 4624는 로그인 성공(세션 유지)을 뜻하는 로그로 새로운 로그인 세션 또는 기존 로그인 세션이 갱신되었다는 뜻이다. ransim이 백그라운드에서 파일을 만지기 전에 계정 세션 유지 확인 시 발생한 것으로 유추해 볼 수 있다.</p>
+<p><img src="/images/3305_260111_image50.png" alt="그림 50. 로그인 성공 및 특권 할당 로그의 반복"></p>
+<center><span style="font-size: 90%;">그림 50. 로그인 성공 및 특권 할당 로그의 반복</span></center>
+
+<p><img src="/images/3305_260111_image51.png" alt="그림 51. EVENT D 4672 로그"></p>
+<center><span style="font-size: 90%;">그림 51. EVENT D 4672 로그</span></center>
+<br>
+
+<p>실제로 특권 토큰 할당을 기록하는 Event ID 4672 세부 내역을 살펴보면 시스템이 파일 암호화 시도 등을 처리하며 ‘SeBackupPrivilege’ 등 특권을 재할당한 흔적이 남아있음을 확인할 수 있다.  </p>
+<p>ransim은 실제 암호화를 수행하지 않아도 랜섬웨어처럼 대량의 파일을 열고, 읽고, 복호화 테스트하고, 암호화된 파일을 생성하는 ‘시뮬레이션’을 한다. 이 과정에서 Windows는 내부적으로 보호된 파일에 접근하는 동작을 감지하여 SYSTEM 계정에 SeBackupPrivilege 등 특권 재할당을 통해 SYSTEM 권한 강화 행위를 한 것이다.</p>
+<p>ransim 실행 시점 후 windows 내부 행위를 시간 순으로 정리해 보면 아래와 같다.</p>
+<p>프로세스 실행 전 권한 확인 → 세션 인증 → 특권 상승을 수행하여 환경 세팅</p>
+<p><img src="/images/3305_260111_image52.png" alt="그림 52. Application_after 로그"></p>
+<center><span style="font-size: 90%;">그림 52. Application_after 로그</span></center>
+<br>
+
+<p>다음으로 랜심 실행 직후 Application 로그를 분석한 결과, Event ID 256 (Provider: Edge, Browser Event)이 1건 존재하지만 이는 Edge 브라우저 확장 프로그램의 Garbage Collection 작업으로 ransim 실행과는 관련 없는 정상적인 브라우저 내부 이벤트로 확인되었다. 따라서 Application 로그에서는 ransim과 직접적으로 연관된 흔적은 확인되지 않았다.</p>
+<p><img src="/images/3305_260111_image53.png" alt="그림 53. System_after 로그"></p>
+<center><span style="font-size: 90%;">그림 53. System_after 로그</span></center>
+<br>
+
+<p>마찬가지로 ransim 실행 직후 System 로그에서 Event ID 4107(Display) 이벤트가 확인되었으나, 이는 SetDisplayConfig API 호출에 의해 발생하는 일반적인 디스플레이 설정 갱신 이벤트로(모니터 해상도&#x2F;디스플레이 크기 등의 설정을 변경했다는 뜻) 랜섬웨어 실행과는 무관한 정상 시스템 동작이다.</p>
+<p>즉 ransim은 디스크 암호화 시뮬레이션만 수행하고 Edge&#x2F;Chrome 확장 프로그램처럼 Application 채널 메시지를 남기거나 시스템 설정을 변경하지 않으므로 해당 로그들과는 무관함을 알 수 있다.</p>
+<p>마지막으로 OneDrive 로그를 확인해 주고 분석을 마친다. 랜섬웨어가 실제로 파일을 암호화했다면 OneDrive 로그에는 FileChanged*, FileModified*, FileDeleted*, FileRestored*, FileVersionAdded*, FileSyncProvider* 같은 파일이 등장해야 한다. 그러나 ransim은 실제 암호화를 진행하지 않으므로 폴더 구조를 확인하고 왜 랜섬 흔적이 없는지에 대해 규명하는 식으로 해당 내용을 전개할 예정이다.</p>
+<p><img src="/images/3305_260111_image54.png" alt="그림 54. OneDrive_logs_after 폴더"></p>
+<center><span style="font-size: 90%;">그림 54. OneDrive_logs_after 폴더</span></center>
+<br>
+
+<p>ransim 실행 후 생성된 OneDrive_logs_after 폴더에는 총 3개의 상위 디렉터리가 존재한다. 이는 before 폴더 구조와도 다르지 않다. </p>
+<p>먼저 Common 폴더는 OneDrive 기본 동작(인증&#x2F;설정) 로그가 기록되는 곳으로 OneDrive의 CoAuth(공동 편집), 파일 동기화 설정, 프로그램 업데이트와 관련된 기본 로그가 생성되는 디렉터리이다.</p>
+<p><img src="/images/3305_260111_image55.png" alt="그림 55. OneDrive_logs_after/Common"></p>
+<center><span style="font-size: 90%;">그림 55. OneDrive_logs_after/Common</span></center>
+<br>
+
+<p>내부를 확인해 보면 ransim 실행 시점 이후 FileCoAuth-<em>.odl, FileSyncConfig-</em>.odlgz, StandaloneUpdater-* 등의 파일이 기록되어 있는데 이는 모두 OneDrive 앱의 초기 설정&#x2F;로그인&#x2F;업데이트&#x2F;라이선스 인증 과정에서 생성되는 파일이다. 사용자 파일 변경(FileChanged &#x2F; SyncEngine-FileUpdate) 같은 기록은 없으므로 결론적으로 ransim 실행 이후에도 OneDrive가 실제 사용자 파일 변화(암호화·삭제·수정)를 감지한 기록은 존재하지 않는다.</p>
+<p><img src="/images/3305_260111_image56.png" alt="그림 56. ListSync 폴더"></p>
+<center><span style="font-size: 90%;">그림 56. ListSync 폴더</span></center>
+<br>
+
+<p>두 번째로 ListSync 폴더는 폴더&#x2F;라이브러리 목록 동기화 정보를 기록하는 디렉터리로 OneDrive가 클라우드와 로컬 장치의 폴더 목록을 동기화할 때 사용하는 캐시 및 메타데이터 저장 공간이다.</p>
+<p><img src="/images/3305_260111_image57.png" alt="그림 57. ListSync/Business1"></p>
+<center><span style="font-size: 90%;">그림 57. ListSync/Business1</span></center>
+<br>
+
+<p>내부에는 Business1, Local 두 폴더가 존재하는데, 그 안에는 Nucleus*.odlgz, telemetry*.otc 등 동기화 엔진의 캐싱 파일만 존재하며  before 폴더와 비교하였을 때 ransim 실행 시점 이후 새 파일은 존재하지 않았으며 사용자 파일에 대한 변경 &#x2F; 삭제 &#x2F; 버전 추가에 대한 기록 없이 나타나지 않았다.<br>ListSync는 주로 폴더 목록 정보를 관리하며, 랜섬웨어의 파일 암호화와 직접적인 연관 파일이 없음을 알 수 있다.</p>
+<p><img src="/images/3305_260111_image58.png" alt="그림 58. Personal"></p>
+<center><span style="font-size: 90%;">그림 58. Personal</span></center>
+<br>
+
+<p>마지막으로 Personal 폴더는 사용자 데이터 동기화&#x2F;업데이트 로그를 기록하는 디렉터리로 사용자 계정에 대한 OneDrive 엔진 업데이트, 설치, 동기화 엔진 정보가 저장되는 공간이다. before와 비교하였을 때 ransim 실행 시점 이후 생긴 파일은 SyncEngine-*.odlgz인데 이는 OneDrive 업데이트&#x2F;상태 점검(Health Check) 에 대한 로그이다. 그 외 파일 변경을 나타내는 기록(FileChanged, FileRestored, FileUpdate, FileDeleted)은 마찬가지로 존재하지 않음이 확인되었다. </p>
+<h2 id="분석-결론"><a href="#분석-결론" class="headerlink" title="분석 결론"></a>분석 결론</h2><p>이번 차시에 얻은 ransim 실행 후 로컬 시스템에서 확인된 유효 로그는 다음과 같다.</p>
+<ol>
+<li><p>Prefetch<br>RANSIM.EXE.pf 확보로 인한 실행 시간 기록 확인 → 프로그램 실행 사실 확정</p>
+</li>
+<li><p>Sysmon<br>단기간 Event ID 1 &#x2F; 5 (프로세스 생성과 종료)  무수히 반복 → ransim 특유의 부하 생성 시뮬레이션 구조 때문에 발생</p>
+</li>
+<li><p>Security 로그 타임라인<br>4624 (로그온 성공)<br>4672 (특수 권한 부여된 로그온)<br>4798 (SID&#x2F;그룹 조회)<br>→ 이 세 가지 이벤트 로그 관찰을 통해 ransim 실행 당시 SYSTEM 수준 권한 토큰이 활성화되었음을 확인하였고, 이는 악성 행위자가 권한 상승 기능을 쓰는 실제 랜섬웨어의 행동과 유사함.</p>
+</li>
+</ol>
+<p>반면 실제 암호화 행위가 없는 ‘시뮬레이터’인 ransim의 특성상 관찰을 예상했으나 나타나지 않은 로그들은 다음과 같다.</p>
+<ol>
+<li><p>Sysmon ID 11(FileCreate), ID 15(FileCreateStreamHash) </p>
+</li>
+<li><p>Application&#x2F;System 로그<br>→ Windows Defender, Edge, Display 설정 관련 로그 외에 파일 변조·암호화와 직접 연관된 항목은 없음</p>
+</li>
+<li><p>로컬 PC의 OneDrive 동기화 엔진에서 파일 변조 &#x2F; 암호화 관련 로그</p>
+</li>
+</ol>
+<p>결론적으로 ransim은 실제 파일 암호화를 수행하지 않는 시뮬레이터이므로, 파일 변조, 프로세스 주도 암호화, OneDrive 클라우드 동기화에 해당하는 로그는 전혀 발생하지 않았다.다만 로컬 포렌식 관점에서 단기간 &#x2F; 단발성 프로세스 실행, 권한 상승(Security Log 4672·4798), 등의 증거는 명확하게 확보되었다. </p>
+<h1 id="로컬-로그의-조작-가능성과-클라우드-로그-분석이-필요한-이유"><a href="#로컬-로그의-조작-가능성과-클라우드-로그-분석이-필요한-이유" class="headerlink" title="로컬 로그의 조작 가능성과 클라우드 로그 분석이 필요한 이유"></a>로컬 로그의 조작 가능성과 클라우드 로그 분석이 필요한 이유</h1><p>지난 차시 after 로컬 로그에서는 파일 변경이 전혀 없었음이 드러났다. 이번 차시에서는 서버 측 클라우드 로그 분석을 통해 클라우드 서버에서 정말로 없었는지 검증할 예정이다. </p>
+<p>로컬 PC에 존재하는 로그(Prefetch, 이벤트 로그, Sysmon, OneDrive 로컬 캐시 등)는 로그 저장 위치가 사용자의 장치 내부에 있기 때문에 다음과 같은 이유로 임의 수정·삭제가 가능하다.</p>
+<p>첫 번째, 관리자 권한을 획득한 악성코드 또는 공격자에 의해 조작이 가능하다. 로컬 로그는 NTFS 파일시스템에 저장되므로 SYSTEM 또는 Administrator 권한을 획득한 공격자는 이벤트 로그 삭제, Prefetch 폴더 조작, Sysmon 서비스 중지 등 forensic artifact 은폐가 가능하다.</p>
+<p>두 번째, 로컬 장치에 직접 접근하는 내부자(공격자)가 증거를 지울 수 있다. 물리적으로 PC에 접근 가능한 경우 부팅 USB, WinPE 환경을 사용하여 로그 파일을 삭제하거나 덮어쓰기가 가능하다. 본 칼럼에서는 시뮬레이션과 분석 모두 한 사람의 통제 하에 조작 없이 진행하였으므로 적용되지 않는 케이스이지만 로컬 증거는 사용자의 수중에 있는 자산이므로 조작 가능성이 높음을 알 수 있다.</p>
+<p>마지막으로 악성코드 자체가 로컬 로그 삭제 모듈을 포함하는 경우가 다수 발견된다. 실제 랜섬웨어&#x2F;트로이 목마의 일부는 “wevtutil clear-log” 같은 명령을 자동 실행하여 Prefetch 또는 Sysmon ID 11&#x2F;13 같은 파일 행위 로그를 남기지 않도록 우회한다.</p>
+<p>반면 OneDrive와 같은 클라우드 서비스의 서버 로그는 Microsoft 클라우드 인프라 내부에 저장되며, 사용자의 PC에서 Microsoft 서버로 업로드되는 과정에서 무결성 보호가 이루어진다. 따라서 로컬 로그는 공격자&#x2F;악성코드에 의해 조작·삭제·은폐될 가능성이 항상 존재하므로 사용자가 서버 로그를 수정&#x2F;삭제할 권한이 없는 클라우드 로그와의 병행 분석이 필수적인 것이다.</p>
+<p>이번 차시에 활용할 Microsoft Purview의 Audit(Log Search) 기능은 기업·기관의 보안, 규정 준수, 사고 조사 목적을 위해 모든 사용자, 장치, 파일, 관리자 행위를 기록하고 분석할 수 있도록 제공되는 포렌식 기반 서버 로그 시스템이다. 이는 사고 조사나 포렌식 분석 시 신뢰할 수 있는 1차적 증거로 활용된다. </p>
+<p>클라우드 로그의 무결성은 Microsoft의 중앙화된 보안 로깅 시스템으로 보장되는데 로그는 Microsoft 365의 백엔드에서 처리되며 지속적으로 백업되고 전 세계 데이터 센터에서 분산되어 저장된다. 또한 클라우드 시스템은 tamper-proof 구조를 따른다. 이는 장치를 제거하거나 조작하면 기계가 작동하지 않거나 조작 시도를 명확히 알 수 있는 흔적을 남기도록 하는 보안 설계로 물리적 또는 논리적으로 장치를 무단으로 변경하거나 조작하는 것을 막는다. 즉 공격자가 로컬 PC를 장악해도 클라우드 서버까지 침투하는 것은 사실상 불가능하다는 것이다.</p>
+<h2 id="로컬-로그-타임라인-정리-및-기타-분석"><a href="#로컬-로그-타임라인-정리-및-기타-분석" class="headerlink" title="로컬 로그 타임라인 정리 및 기타 분석"></a>로컬 로그 타임라인 정리 및 기타 분석</h2><p>지난 차시 실습으로 얻은 기준 타임라인을 정리한다. 정리할 대상은 다음과 같다.</p>
+<p>Prefetch → RanSim 최초 실행 시각<br>Security 로그 → 4624, 4672, 4798 발생 시점<br>Sysmon → ID 1&#x2F;5 폭증 시간대</p>
+<p>모두 2025-11-14 오후 기준으로</p>
+<p>RANSIM.EXE-6CC7EAF5.pf 즉 ransim 실행 시각: 11:38:22</p>
+<p>Security 로그 </p>
+<p>4798 그룹 구성원 조회 (총 4개 연속)<br>11:41:12<br>11:41:56<br>11:42:22<br>11:43:42</p>
+<p>4642 logon: 11:44:48</p>
+<p>4672 special logon: 11:44:48</p>
+<p><img src="/images/3305_260111_image59.png" alt="그림 59. Sysmon 로그 시간"></p>
+<center><span style="font-size: 90%;">그림 59. Sysmon 로그 시간</span></center>
+<br>
+
+<p><img src="/images/3305_260111_image60.png" alt="그림 60. Sysmon 로그 시간 2"></p>
+<center><span style="font-size: 90%;">그림 60. Sysmon 로그 시간 2</span></center>
+<br>
+
+<p>단기간에 기록된 Sysmon 로그들 시간대 (ransim 실행시간 11:38:22~ 11:40:00 이후에도 추가적인 발견 시 뒤 타임라인 추가 비교 예정)</p>
+<p>OneDrive 로컬 로그(before&#x2F;after) 비교 당시 새로운 파일 생성 x 이므로 최초 실행 시각 이후 새로운 증거 발견 시 기록한다.</p>
+<p>타임라인을 확인해 주었으니 Microsoft 365 Compliance Center(&#x3D;Microsoft Purview)에서 Audit 로그를 확인한다. 다만 해당 과정에서 예기치 못한 오류가 발생했다. naver.com 이메일로 만든 Microsoft 계정은 개인 계정이고, Compliance Center(Audit)는 기업·학교 조직 계정(Organizational Account) 전용 서비스이므로 개인 계정으로는 로그인 자체가 차단되어 로그를 확인할 수 없다는 것이다.</p>
+<p><img src="/images/3305_260111_image61.png" alt="그림 61. 개인 계정 Microsoft Purview 로그인 실패"></p>
+<center><span style="font-size: 90%;">그림 61. 개인 계정 Microsoft Purview 로그인 실패</span></center>
+<br>
+
+<p>이어서 조직 계정인 학교 계정으로 Microsoft Purview 로그인을 시도했다. 이 경우 단순 로그인에는 성공했으나 학교 IT 부서 자체에서 Purview &#x2F; Audit 기능을 아예 활성화하지 않았기 때문에 기능적 접근에 실패했다.</p>
+<p><img src="/images/3305_260111_image62.png" alt="그림 62. 학교 계정 Microsoft Purview 로그인 성공 후 Audit 접근 실패"></p>
+<center><span style="font-size: 90%;">그림 62. 학교 계정 Microsoft Purview 로그인 성공 후 Audit 접근 실패</span></center>
+<br>
+
+<p>정리하자면 개인 계정으로는 로그인 자체가 실패하였고, 조직 계정인 학교 계정으로는 로그인에 성공하였으나 Audit에 접근하지 못하였다. 이러한 현상의 원인을 기술적&#x2F;정책적으로 정리하자면 아래와 같다.</p>
+<p>먼저 개인 Microsoft 계정으로 Microsoft Purview 로그인에 실패한 까닭을 기술적 관점에서 접근하자면 해당 서비스가 Azure AD 테넌트 기반 보안 서비스이므로 조직에 속하지 않은 개인 계정을 인증 단계에서 바로 차단하기 때문이다. 개인 계정(예를 들어 Naver&#x2F;Gmail로 만든 MS 계정)은 Azure Active Directory, 즉 테넌트(조직)에 속하지 않아 서버에서 [그림3]에 나타난 오류 메시지 AADSTS500200를 반환하게 된 것이다. 해당 오류 메시지는 개인 계정으로 파일 관리자에 로그인 하려고 할 경우 자주 뜨는 메시지로 기술적으로 Purview Audit은 조직(학교&#x2F;회사)의 디렉터리 내 계정만 사용 가능하다는 것을 알 수 있다.</p>
+<p>정책적 관점에서는 Microsoft는 개인용 서비스(Outlook, 개인 OneDrive 등)에 대해<br>법적 감사(Audit), 보안 로그 분석 등과 같은 기업용 Purview 기능을 제공하지 않기 때문이다. 이는 개인 정보 보호 정책을 준수하기 위해서인데 Purview Audit은 모든 사용자 활동(로그인, 파일 접근, 메일 열람, 관리자 변경 등)을 상세히 기록하는 고위험 보안 기능이므로 GDPR (EU 일반 개인정보보호 규정)에서 강하게 규제하고 있다.  Microsoft는 미국 기업이지만 EU 시민의 데이터를 처리하므로 영토 주권의 원칙에 따라 EU 법률의 적용을 받고 이를 준수할 의무가 있다. 관련 조항은 5조 데이터 최소화의 원칙, 6조 처리의 합법성, 25 · 32 조  Privacy by design &#x2F; Security of processing 등이 있으며 자세한 내용은 아래와 같다.</p>
+<p><img src="/images/3305_260111_image63.png" alt="그림 63. GDPR 공식 홈페이지 제5조"></p>
+<center><span style="font-size: 90%;">그림 63. GDPR 공식 홈페이지 제5조</span></center>
+<br>
+
+<p>GDPR Article 5 – 데이터 최소화 원칙 (Data Minimization)<br>감사 로그는 데이터 양과 범위가 매우 커서 필요한 사람에게만 접근 허용해야 한다.</p>
+<p>GDPR Article 6 – 처리의 적법성(Lawfulness of Processing)<br>모든 로그 기록은 정당한 목적(보안·규정 준수)이 있는 조직에서만 가능하며 개인 계정은 이 목적을 충족하지 못하므로 제공 불가하다.</p>
+<p>GDPR Article 25 · 32 – Privacy by design &#x2F; Security of processing<br>보안 로그는 고위험 개인정보 처리이므로 데이터 보호 기본 설계 단계에서 권한 분리가 이루어져야 한다.(제25조) 또한 보안 처리의 단계에서 조직 단위의 보안 책임자에게만 해당 정보 관리를 허용해야 한다.(제32조) 학생 계정·개인 계정은 조직 단위의 보안 책임자에 해당하지 않는다.</p>
+<p>결론적으로 Audit 로그는 민감 데이터라 개인 계정에 제공할 경우 보안 사고 위험성이 높아 규제 대상이다. Purview는 기업용(*E5), 교육기관용(*A5) 라이선스에서만 허용하고 있으며 정책적으로 개인 계정은 Audit 기능 자체를 제공하지 않고 있다.</p>
+<p>*Microsoft 365 라이선스 등급(요금제) 이름. E: 기업 A: 교육기관<br>1: 기본 3: 중간 5: 최고 보안&#x2F;감사 기능 제공<br>다음으로 학교 계정으로 Microsoft Purview 로그인에 성공하여도 Audit에 여전히 접근 불가능한 이유를 기술적 관점에서 접근하자면 Purview 서비스 앱이 학교 테넌트에 설치되지 않았기 때문이다. 터넨트란 조직의 디렉터리로 [그림4]의 에러 메시지 Failed to list accounts: Purview first party app service principal not present in the tenant.는 단순한 권한 부족을 뜻하는 것이 아니라 “이 테넌트(학교 Microsoft 365)는 Purview Audit 서비스를 아예 설치하지 않았다.”는 뜻이다.</p>
+<p>Purview Audit이 동작하려면 테넌트 안에 아래 세 가지 조건이 만족되어야 한다.</p>
+<p>Microsoft Purview Audit 서비스 주체(Service Principal)<br>Unified Audit Log 활성화 설정<br>보안·감사 역할(Security Reader, Audit Reader 등) 활성화</p>
+<p>Service Principal는 클라우드 컴퓨팅 환경, 특히 Microsoft Azure(Microsoft 클라우드 생태계 전체의 기반이 되는 플랫폼. Microsoft Purview Audit도 이 기반)에서 애플리케이션, 호스팅된 서비스 또는 자동화 도구를 위한 비인간 보안 ID이다. 비인간 보안 ID란 사람이 아닌 주체가 시스템에 접근하기 위한 신분증 같은 개념으로 마치 사람이 사이트에 로그인을 하기 위해 ID를 입력하듯 소프트웨어가 사람이 개입하지 않는 자동화된 작업(EX: 예약된 시간에 자동으로 데이터를 백업하는 프로그램)을 시행할 때 스스로 ‘나 이 프로그램 맞아’라고 증명하기 위해 사용하는 것이다.</p>
+<p>서울여자대학교 테넌트에는 이 Service Principal 자체가 없으므로 권한 부여가 이루어지지 않고 Audit 동작이 불가한 상황이다. 즉 기술적으로 서비스가 설치되지 않아 기능 자체가 비활성화 된 상태라는 것이다.</p>
+<p>다음으로 정책적 관점에서의 Audit 접근 불가 사유는 교육기관 테넌트 기본 정책에서 보안 제한이 강하게 걸려있기 때문이다. 학교·교육기관 M365 환경은 보안 담당자가 다음과 같이 정책을 제한하는 경우가 대부분이다.</p>
+<p>먼저 Audit 기능은 고급 보안 기능(E5&#x2F;A5 기반)이지만 비용 문제로 학교가 A1 또는 A3 일부 기능만 구독한 경우 Audit 기능이 제거될 수 있다.</p>
+<p>또한 Audit 로그는 교직원(보안 담당자)만 접근이 가능하고 학생 계정은 역할(Role) 자체가 부여되지 않을 가능성이 높다. 이는 개인정보보호법 규정 상 학생 계정 대상에서는 민감한 감사 로그 제공을 금지하고 있기 때문이다.</p>
+<p><img src="/images/3305_260111_image64.png" alt="그림 64. 서울여자대학교 도서관 SW 이용"></p>
+<center><span style="font-size: 90%;">그림 64. 서울여자대학교 도서관 SW 이용</span></center>
+<br>
+
+<p>실제로 학교 사이트를 확인해보면 소프트웨어 제공 방침이 교직원과 학생용으로 나뉘어져 있음을 알 수 있다. </p>
+<p><img src="/images/3305_260111_image65.png" alt="그림 65. 국가법령정보센터 – 개인정보보호법 제29조 – 대통령령 시행령 제30조"></p>
+<center><span style="font-size: 90%;">그림 65. 국가법령정보센터 – 개인정보보호법 제29조 – 대통령령 시행령 제30조</span></center>
+<br>
+
+<p>개인정보보호법 제29조 안전성 확보 조치에 따르면 로그 기록에 대한 접근 권한을 최소화하고 있다. 이와 관련하여 시행령 제30조는 중요 정보 시스템 운영기관, 즉 조직에게 추가적인 보안 조치를 강제하고 있는데 Audit(감사 로그), Security 로그, OneDrive 서버 로그 같은 접속기록은 내부 관리 계획 기반 &#x2F; 위험도 기반 접근 통제에 의거하여 관리자만 접근 가능하도록 제한하고 있다.</p>
+<p>만약 원래의 시나리오대로 클라우드 로그 감사가 가능했다면 로컬 로그가 조작되었을 경우와 그렇지 않은 경우로 두 가지 케이스를 분류할 수 있다.</p>
+<p>Purview Audit 로그는 UTC 기반으로 정확하게 저장되며 MS 클라우드 전체의 활동이 남는다. ransim 실행 후 Audit에서 확인할 수 있는 주요 로그는 다음과 같다.</p>
+<p>첫 번째로 FileAccess (파일 접근).</p>
+<p>File accessed &#x2F; Item accessed &#x2F; File previewed 로그들은 사용자 PC에서 OneDrive 폴더 안의 파일을 OS 또는 프로세스가 읽기(Read) 하는 순간 기록된다.</p>
+<p>ransim의 로컬 로그 타임라인과 연결시켜보면 ransim이 암호화 대상 파일을 스캔할 때, 즉 11:38:xx 경 FileAccess 이벤트가 다량 발생되어 있어야 한다. 이는 Sysmon Event ID 1(Process Create) 바로 이후에 나타나는 특징과 일치하기 때문이다. 포렌식의 관점에서 로컬 프로세스가 파일을 읽었다는 사실은 서버에서 독립적으로 수집한 증거이므로 조작이 불가능하다. </p>
+<p>두 번째로 FileModified (파일 수정).</p>
+<p>File modified &#x2F; Item modified 로그들은 OneDrive 동기화 폴더 내 파일이 쓰기(Write) 되거나 내용 변경이 감지될 때 기록된다.</p>
+<p>ransim의 경우 암호화가 진행되는 시점(11:38 ~ 11:40)에 파일 내용이 교체(암호화)되는 시뮬레이터인데, 실제 sysmon 로컬 로그에는 새로운 암호화 파일 생성, 확장자 변경, 복호화 힌트 파일을 생성 시 발생하는 Event ID 11 — FileCreate 로그의 흔적이 남지 않았으므로 실제 암호화(파일 변경)은 없었다고 판단했다.<br>만약 Purview Audit에서 이 시각에 수십 ~ 수백 개의 FileModified가 남았다면 이는 로컬 로그가 조작되었다는 증거로 활용될 수 있다. 포렌식의 관점에서 암호화가 실제로 발생했음을 로컬 시스템이 아닌 클라우드 서버가 직접 목격한 기록이기 때문이다.</p>
+<p>세 번째로 OneDrive Sync 이벤트.</p>
+<p>File synced &#x2F; File Uploaded &#x2F; File checked in&#x2F;out 로그들은 PC 로컬 OneDrive 폴더에서 파일이 바뀌면 동기화 클라이언트가 이를 서버에 전송할 때 생성된다.</p>
+<p>ransim이 파일을 건드리는 순간 거의 실시간으로 반영되므로 암호화된 파일이 새 파일로 동기화될 경우 ransim 실행 후 몇 분 이내, 즉 11:38~11:41 사이에 Sync 이벤트가 대량 발생해야 한다. 해당 로그는 로컬 로그에서 발견되지 않았던 Sysmon Event ID 11(두 번째 파일 수정 로그에서 언급한 로그와 동일), 파일 업로드 전 파일 스트림 해시를 계산하고 변경된 스트림을 생성하는 Sysmon Event ID 15 (FileCreateStreamHash), 특정 파일에 접근 시도 시 기록되는 Security 로그 4663(Object Access)과 유사하게 대응되는 로그이다. 즉 이 경우 만약 해당 로그들이  Purview Audit에서 발견된다면 로컬 로그가 조작된 증거가 되는 것이다. 포렌식의 관점에서 공격자가 로컬 파일 시스템을 조작해도 동기화된 클라우드 파일 변경 기록은 남아 증거 보존이 가능하기 때문이다.</p>
+<p> 마지막으로 Authentication (로그인&#x2F;인증) 이벤트.</p>
+<p>UserLoggedIn &#x2F; UserLoginFailed &#x2F; Token Issued는 사용자가 Microsoft 서비스(OneDrive, Office 앱 등)에 로그인하면 로그인 시간을 서버에서 정확히 남기는 로그이다.</p>
+<p>로컬 로그에서 Security 로그의 이벤트 id 4642(Logon), 4672(Special Logon) 로그와 유사한 역할을 한다. 즉, ransim 실행 후 로컬 로그가 조작되지 않았다고 가정한다면 해당 로그들이 기록된 시간과 동일한 시간(11:44:48)에 해당 인증 이벤트가 Purview에 기록되어 있어야 한다. 포렌식의 관점에서 Audit 로그와 시간 불일치 여부로 로컬 Windows Security 로그의 조작 여부가 검증 가능하다.</p>
+<p>그렇다면 접근 권한 부재 등의 문제로 클라우드 로그 포렌식이 불가능한 환경에서 어떻게 타임라인 분석을 보완하거나 조작 여부를 판단할 수 있을까? 대표적으로 세 가지 방법이 존재한다. 서로 다른 종류의 로컬 로그를 교차 검증하는 방법, 파일 시스템 메타데이터로 역추적, 복구 가능한 삭제 로그 복원 등으로 로컬 로그의 조작 여부를 검증할 수 있다.</p>
+<p>먼저 서로 다른 종류의 로컬 로그를 교차 검증하는 방법이 가능한 이유는, 로컬 로그가 조작되기 쉽다고 해도 모든 로그를 동시에 일관성 있게 조작하는 것은 매우 어렵기 때문이다. 이전 차시에 진행한 로컬 범주에서의 로그 분석과 유사하며 비교 대상은 아래와 같다.</p>
+<ol>
+<li>Sysmon ↔ Security 로그 교차 확인</li>
+</ol>
+<p>Sysmon Event ID 1(프로세스 실행)<br>Security 4688(프로세스 생성)<br>→ 거의 모든 프로세스는 생성 즉시 실행되므로 불일치가 나면 조작 의심 가능.<br>2. Windows System 로그(Winlogon &#x2F; Service Control Manager) 확인</p>
+<p>공격자가 어떠한 악성 행위가 이루어졌는지 은폐하기 위해 Security + Sysmon만 주로 삭제하는 경우가 많아서, 다른 기본 로그와의 시간 간격 비교로 조작 여부 파악이 가능하다.</p>
+<p>예를 들어 System 로그에는 11:38:10에 Service 실행 기록 있지만,<br>Sysmon은 11:38 시간대의 기록이 통째로 없는 경우 Sysmon 조작의 근거가 된다.</p>
+<ol start="3">
+<li>Prefetch ↔ Sysmon 비교</li>
+</ol>
+<p>Prefetch는 삭제가 수월하지만 만약 Prefetch가 남아있다면 최근 실행 시간, 실행 횟수, 마지막 실행 시간을 제공한다. 이 시간대와 Sysmon에서 일어난 악성 행위들의 시간대를 비교해 본 뒤 불일치 시 조작 의심이 가능하다.</p>
+<p>로그 파일은 삭제되고 변경되기 쉬운 것이 핵심이기 때문에 그 일관성이 다소 부족하다 하더라도 로그 파일 간의 비교 만으로는 무결성 확보가 어렵다. 그러므로 두 번째, 파일 시스템 메타데이터로 역추적하는 방식으로 점검할 수 있다. 로그를 삭제해도 파일시스템은 남아있는 경우가 많기 때문이다. 오늘날 사용되는 대부분의 파일시스템은 NTFS이므로 NTFS를 기준으로 확인해야 하는 로그는 다음과 같다.</p>
+<ol>
+<li>$MFT (Master File Table)</li>
+</ol>
+<p>NTFS 파일 시스템의 모든 파일&#x2F;폴더의 정보가 행(row) 형태로 저장되어 있다.<br>NTFS 파일 시스템은 각 파일의 메타데이터를 최소 두 곳에 저장하는데, 바로 그게 $MFT 안에 있는 아래 두 속성이다.</p>
+<p>(1) Standard Information (SI) 타임스탬프 4개<br>생성시간 (C – Creation)<br>수정시간 (M – File Modified)<br>MFT 레코드 수정시간 (B – MFT Modified)<br>마지막 접근시간 (A – Last Access)</p>
+<p>(2) File Name (FN) 타임스탬프 4개<br>위 SI와 동일한 4가지 유형의 시간을 기록하지만 윈도우 운영체제에 의해 다르게 관리된다.<br>공격자가 흔히 하는 조작 방법은 Timestomping으로 이는 파일의 시간 정보만 조작해서 마치 아무것도 실행하지 않은 것처럼 보이게 하는 기법이다. 하지만 공격자는 보통 SI 타임 스탬프만 조작하고 FN은 대부분 건드리지 못한다. 왜냐하면 SI 속성은 사용자 수준의 프로세스나 일반적인 파일 작업(파일 열기, 수정 등)에 의해 쉽게 업데이트되며 대부분의 시간 변경 도구는 이 SI 값을 수정하기 때문이다. 반면 FN 속성은 오직 시스템 커널에 의해서만 변경될 수 있으며, 일반적인 사용자 작업이나 안티 포렌식 도구로는 수정하기가 훨씬 어렵다. 또한 파일 생성, 이름 변경, 또는 같은 볼륨 내에서 이동할 때만 업데이트되어 종합적으로 SI 속성보다 더 신뢰할 수 있는 원본 생성 시간을 제공하는 경향이 있다. 따라서 결론적으로 SI(조작 가능성이 존재하는 값)와 FN(원래 값)을 비교하여 시간 불일치를 확정하면 이는 조작이라는 명백한 증거가 된다.</p>
+<ol start="2">
+<li>$LogFile (NTFS 트랜잭션 로그)</li>
+</ol>
+<p>$LogFile은 트랜잭션 로그 파일로, 시스템 충돌이나 전원 장애 시 파일 시스템의 무결성을 유지하고 복구하기 위한 핵심적인 메타파일이다. 파일 및 디렉터리의 생성, 수정, 삭제, 이름 변경과 같은 모든 메타데이터 변경 사항을 기록하여 저널링(Journaling)기능을 수행하는 것이 목적이다.</p>
+<p>해당 로그의 핵심적인 특징은 Windows 내부에서 자동으로 운영되어 사용자가 끌 수 없고, 사실상 삭제가 불가능한 로그라는 것이다. 만약 지운다고 하더라도 NTFS 구조 상 패턴이 남아 조작 역시 거의 불가능하다. 이는 파일 시스템 변경이 순서대로 기록되기 때문인데, 파일 생성 &#x2F; 파일 내용 덮어쓰기 &#x2F; 파일 이름 변경 &#x2F; 속성 변경 &#x2F; 파일 삭제 모두가 날짜순으로 저장된다. 즉, 전체 파일 시스템의 타임라인이 남는 구조라는 것이다.</p>
+<p>공격자는 프로그램을 삭제할 수 있고 다른 로그(Security, Sysmon 등)를 끄거나 조작할 수 있다. 그러나 $LogFile은 NTFS 내부 레벨에서 자동으로 기록되어 조작 시도 과정에서 필연적으로 NTFS 자체를 건들게 되고 이는 추가 흔적을 남긴다.</p>
+<p>ransim 케이스에서 $LogFile로 파악할 수 있는 것을 예로 들면 ransim이 11:38:00 ~ 11:40:00 사이에 대량 암호화를 수행했다고 가정할 경우,<br>11:38:23 – a.txt 내용 덮어쓰기<br>11:38:24 – a.txt 메타데이터 변경<br>11:38:25 – a.txt 삭제<br>11:38:26 – a.txt.enc 새 파일 생성<br>11:38:27 – a.txt.enc 스트림 확장<br>11:38:40 – 파일 시스템 커밋<br>이 모든 작업이 순서대로 $LogFile 트랜잭션으로 남게 된다. 즉 Sysmon이 지워져도, Security가 지워져도, Prefetch를 삭제해도 $LogFile을 보면 ransim이 이 시간대에 파일을 대량 변경했다는 사실이 그대로 드러나는 것이다.</p>
+<ol start="3">
+<li>$UsnJrnl (USN Journal)</li>
+</ol>
+<p>USN는 Update Sequence Number의 약자로 말 그대로 파일 시스템에서 무언가 변경(업데이트)이 일어날 때마다 하나씩 증가하는 번호이다. 즉 $UsnJrnl은 NTFS가 갖고 있는 파일 변경 이력 로그. 어떤 파일이 언제 만들었는지(생성) &#x2F; 언제 이름이 바뀌었는지(이름 변경) &#x2F; 언제 수정됐는지(내용 변경) &#x2F; 언제 지워졌는지(삭제)를 순서대로 기록된다.</p>
+<p>앞서 언급한 것처럼 이벤트 로그(Security, Sysmon 등)는 관리자가 쉽게 지우거나 끌 수 있고 애플리케이션 로그(안티바이러스, Sysmon 등)는 공격자가 서비스 중지&#x2F;삭제 할 수 있다. 그러나 USN 저널은 다른 아티팩트(MFT, LogFile 등)처럼 NTFS 내부 구조이므로 직접 건드리기 어려우며 무엇보다 파일 시스템이 계속 사용하여 쌓이는 형태라 깔끔하게 조작하기 또한 어렵다. 이미 남은 다른 아티팩트(MFT, LogFile 등)와 타임라인 불일치가 발생하기 때문이다.</p>
+<p>USN 레코드 하나에는 아래와 같은 정보들이 들어가 있다.</p>
+<p>(1) USN 번호 (Update Sequence Number: 일련번호, 계속 증가)<br>(2) 파일 참조 번호(File Reference Number)<br>→ NTFS의 파일 ID<br>(3) Parent 파일 참조 번호<br>→ 어떤 디렉터리 아래에 있었는지<br>(4) 시간(Timestamp)<br>→ 변경이 발생한 시각 (UTC)<br>(5) Reason 플래그(무엇을 했는지)<br>→ 예: FILE_CREATE, FILE_DELETE, DATA_OVERWRITE 등</p>
+<p>예를 들어 ransim이 실제 암호화를 한다고 가정하였을 때, USN에는 아래와 같이 최소 2~3개의 레코드가 남게 된다.<br>원본 파일 읽기 + 암호화된 내용 쓰기 → DATA_OVERWRITE or DATA_EXTEND<br>새 확장자(.encrypted 등)로 저장 → FILE_RENAME &#x2F; FILE_CREATE<br>원본 파일 삭제(완전히 지움) → FILE_DELETE<br>결국 Sysmon이나 Security 로그가 지워져도 USN 저널 안에는 어떤 파일이 언제 내용이 바뀌었는지, 언제 삭제&#x2F;이름 변경 됐는지와 같은 정보가 그대로 남아 있으므로 타임라인을 다시 만들어 점검할 수 있는 것이다.</p>
+<p>다만 디스크가 오래 쓰이면 오래된 USN 레코드는 덮어씌워질 수 있다는 사실과 ‘fsutil usn deletejournal’ 명령으로 저널을 초기화할 수는 있다는 한계점이 존재한다. 하지만 그 명령의 실행 자체가 로그(Security, Prefetch, ShimCache 등)에 남고, 시간 전후의 MFT&#x2F;LogFile&#x2F;USN 패턴이 비정상적으로 끊기기 때문에 포렌식의 관점에서는 오히려 USN 삭제 시도라는 증거가 될 수 있다. 결론적으로 사고 직후&#x2F;근접 시점 포렌식에서는 USN이 신빙성 높은 타임라인 증거 중 하나라는 것은 부정할 수 없는 사실이다.</p>
+<p>마지막으로 로컬 로그의 조작 가능성을 점검하는 방법은 복구 가능한 삭제 로그를 복원하는 것이다. 로그를 복원하는 방법은 크게 두 가지가 있다. </p>
+<p>먼저 Volume Shadow Copy(VSS)라는 Windows 스냅샷 기능을 통해 이전 로그를 복구할 수 있다. VM에서 수동으로 스냅샷을 생성할 수 있듯이 Windows는 시스템 안정성과 복구를 위해 주기적으로 전체 디스크의 스냅샷을 생성한다. 이는 파일 시스템 수준에서 작동하며, 디스크 볼륨의 특정 시점 상태를 복사본으로 저장한다.</p>
+<p>VSS는 특정 시점에 OS 전체를 사진 찍듯이 저장하는 백업이므로 파일의 이전 버전, 시스템 파일(MFT, $LogFile, $UsnJrnl 포함), 레지스트리, 이벤트 로그(Security.evtx, System.evtx 등)을 모두 저장한다. 때문에 포렌식의 관점에서 공격자가 로그를 삭제해도 삭제 전 시점의 옛날 로그 파일이 VSS에 남아 있다면 이전 버전의 MFT&#x2F;USN를 모두 포함하여 타임라인 복원이 가능하다. </p>
+<p>A. 공격자가 11:45에 Security 로그 삭제<br>B. 그런데 VSS(11:40 시점)에는 삭제되기 전의 Security.evtx가 보존되어 있다면?<br>→ 조작 사실을 그대로 입증 가능.</p>
+<p>랜섬웨어 상황에서 VSS가 특히 중요한 이유는 일부 랜섬웨어에서 VSS까지 삭제하는 ‘vssadmin delete shadows’ 명령을 사용하는 경우가 존재하기 때문이다. 하지만 명령 실행 자체가 Security 로그에 Event ID 4688 (vssadmin.exe 실행), Sysmon ID 1 등의 존재로 흔적을 남기고, Prefetch, MFT&#x2F;USN에도 흔적을 남기기 때문에 VSS 삭제를 시도하면 오히려 공격 시도가 더 명확해지는 효과가 있다.</p>
+<p>다음으로는 삭제된 이벤트 로그의 복원을 위해 Unallocated 영역을 분석하는 방법이 있다. Windows 이벤트 로그는 보통 C:\Windows\System32\winevt\Logs 아래에 존재한다. 공격자가 로그를 삭제하면 파일은 삭제되었다고 표시되지만 실제 데이터는 디스크에서 바로 지워지지 않는다. 이는 디스크에서 ‘삭제’라는 개념이 데이터를 즉시 완전히 파괴하는 물리적 삭제에 해당하는 것이 아니라, 운영체제가 해당 데이터가 차지하고 있던 공간을 할당되지 않은 공간으로 분류하여 새로운 데이터를 저장할 준비를 하는 과인 논리적 삭제에 해당하기 때문이다. 즉 삭제된 데이터는 ‘Unallocated Space(할당되지 않은 공간)’에 그대로 남아 있으므로 포렌식 도구(FTK Imager, Autopsy, Magnet Axiom 등)에서 그 영역을 읽으면 EVTX 조각을 복원할 수 있는 것이다.</p>
+<p>EVTX 파일은 내부적으로 1,280byte 단위의 Chunk 구조로 되어 있어서 파일이 일부 손상되어도 Chunk 단위로 로그를 꺼낼 수 있다. 예를 들어 공격자가 Security.evtx를 삭제하여 원본 파일은 사라졌어도 Unallocated에 Chunk#23, Chunk#24 … 이런 방식으로 조각이 남아 있어 연결 시 로그를 상당 부분 복원 가능하다. 포렌식의 관점에서 이렇게 복원된 Chunk를 살펴보면 삭제된 시점 전후로 어떤 행위가 있었는지 알 수 있다.</p>
+<h2 id="분석-결론-1"><a href="#분석-결론-1" class="headerlink" title="분석 결론"></a>분석 결론</h2><p>Sysmon, Security 로그뿐 아니라 NTFS 내부 구조인 MFT &#x2F; USN Journal &#x2F; LogFile, VSS 스냅샷, 그리고 삭제된 EVTX 조각 분석을 함께 활용하면 공격자가 특정 로그를 삭제하거나 시간을 조작하더라도 전체 타임라인의 불일치를 통해 조작 사실을 명확하게 식별할 수 있다. 이러한 다중 아티팩트 기반 교차 분석은 단일 로그보다 훨씬 신뢰도가 높아, 클라우드 로그 없이도 랜섬웨어 실행 시점 · 변조 시점 · 삭제 시점까지 정밀하게 재구성할 수 있음을 의미한다.</p>
+<p>기획 단계에서 Microsoft Purview의 로그인 권한에 대해 알아보고 진행하지 않은 점, 정확히는 이에 대해 조사해야 한다는 발상조차 하지 못해서 마지막 차시의 실습이 제대로 진행되지 않은 것에 대한 아쉬움이 남는다. 하지만 덕분에 Purview Audit과 같은 클라우드 로그가 제공되지 않는 환경에서도 타임라인을 복원하고 조작 여부를 판별하여 로컬 포렌식의 무결성을 검증하는 방법이 있다는 사실을 알아볼 수 있어서 시야를 넓힐 수 있었다. </p>
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><ul>
+<li><p>Forensic Investigation, Challenges, and Issues of Cloud Data: A Systematic Literature Review. (n.d.). MDPI. <span class="exturl" data-url="aHR0cHM6Ly93d3cubWRwaS5jb20vMjA3My00MzFYLzEzLzgvMjEz">https://www.mdpi.com/2073-431X/13/8/213</span></p>
+</li>
+<li><p>Use Service Principals and Managed Identities in Azure DevOps. (n.d.). Learn.Microsoft. <span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2VuLXVzL2F6dXJlL2Rldm9wcy9pbnRlZ3JhdGUvZ2V0LXN0YXJ0ZWQvYXV0aGVudGljYXRpb24vc2VydmljZS1wcmluY2lwYWwtbWFuYWdlZC1pZGVudGl0eT92aWV3PWF6dXJlLWRldm9wcw==">https://learn.microsoft.com/en-us/azure/devops/integrate/get-started/authentication/service-principal-managed-identity?view=azure-devops</span></p>
+</li>
+<li><p>Security of Processing. (n.d.). GDPR. <span class="exturl" data-url="aHR0cHM6Ly9nZHByLWluZm8uZXUvYXJ0LTMyLWdkcHIv">https://gdpr-info.eu/art-32-gdpr/</span></p>
+</li>
+<li><p>개인정보 보호법. (n.d.). 법령. <span class="exturl" data-url="aHR0cHM6Ly93d3cubGF3LmdvLmtyLyVFQiVCMiU5NSVFQiVBMCVCOS8lRUElQjAlOUMlRUMlOUQlQjglRUMlQTAlOTUlRUIlQjMlQjQlRUIlQjMlQjQlRUQlOTglQjglRUIlQjIlOTUvJUVDJUEwJTlDMjklRUMlQTElQjA=">https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B0%9C%EC%9D%B8%EC%A0%95%EB%B3%B4%EB%B3%B4%ED%98%B8%EB%B2%95/%EC%A0%9C29%EC%A1%B0</span></p>
+</li>
+<li><p>NTFS 파일시스템의 파일 시간. (n.d.). K씨’s 쪼꼬렛팩토리. <span class="exturl" data-url="aHR0cHM6Ly9tLmJsb2cubmF2ZXIuY29tL3JlbnVjcy8yMjA4NDY0MTY2NTY=">https://m.blog.naver.com/renucs/220846416656</span></p>
+</li>
+<li><p>NTFS File System (8) $LogFile. (n.d.). Kali-KM_Security Study. <span class="exturl" data-url="aHR0cHM6Ly9rYWxpLWttLnRpc3RvcnkuY29tL2VudHJ5L05URlMtRmlsZS1TeXN0ZW0tOA==">https://kali-km.tistory.com/entry/NTFS-File-System-8</span></p>
+</li>
+<li><p>랜섬웨어의 종류. (n.d.). FUTURNING. <span class="exturl" data-url="aHR0cHM6Ly9mdXR1cmluZy5jby5rci9sb3VuZ2UvcG9zdFZpZXc/Ym9fdGFibGU9cG9zdHMmd3JfaWQ9Mjk=">https://futuring.co.kr/lounge/postView?bo_table=posts&amp;wr_id=29</span></p>
+</li>
+<li><p>VSS(Volume Shadow Copy Service) 개념 및 실습. (n.d.). 보안 공부하는 사람. <span class="exturl" data-url="aHR0cHM6Ly9zaHNoMDEwOTE0LnRpc3RvcnkuY29tLzcz">https://shsh010914.tistory.com/73</span></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Forensics/" rel="tag"># Forensics</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/06/313204_260106/" rel="prev" title="[2026 SWING magazine] 윈도우 악성코드 인젝션 기법 심층 분석 : Hollowing부터 Ghosting까지">
+                  <i class="fa fa-angle-left"></i> [2026 SWING magazine] 윈도우 악성코드 인젝션 기법 심층 분석 : Hollowing부터 Ghosting까지
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
