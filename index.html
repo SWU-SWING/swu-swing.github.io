@@ -114,7 +114,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">37</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -125,7 +125,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-count">67</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -165,6 +165,280 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/14/323307_260114/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/01/14/323307_260114/" class="post-title-link" itemprop="url">[2026 SWING magazine] Volatility 기반 메모리 포렌식과 YARA 탐지 자동화</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: Memochi (Yebbi, ssseo)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-14 19:00:00" itemprop="dateCreated datePublished" datetime="2026-01-14T19:00:00+09:00">2026-01-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="메모리-포렌식-기초"><a href="#메모리-포렌식-기초" class="headerlink" title="메모리 포렌식 기초"></a>메모리 포렌식 기초</h1><h2 id="메모리-포렌식-기초-1"><a href="#메모리-포렌식-기초-1" class="headerlink" title="메모리 포렌식 기초"></a>메모리 포렌식 기초</h2><h3 id="메모리-포렌식-개념-및-필요성"><a href="#메모리-포렌식-개념-및-필요성" class="headerlink" title="메모리 포렌식 개념 및 필요성"></a>메모리 포렌식 개념 및 필요성</h3><p>메모리 포렌식은 휘발성 정보인 메모리를 수집한 뒤, 이를 분석하여 증거를 확보하는 과정을 의미한다.<br>휘발성 메모리에서 정보를 추출하고 분석함으로써 시스템의 상태, 실행 중인 프로세스, 네트워크 연결, 파일 핸들링 등 다양한 데이터를 확인할 수 있다. 이러한 과정을 통해 악성 행위를 탐지하거나 시스템에서 발생한 이벤트를 파악할 수 있다. 최근에는 디스크에 흔적을 남기지 않고 메모리에서만 동작하는 악성코드가 증가하고 있어, 메모리 포렌식의 중요성도 점차 커지고 있다.<br>휘발성 메모리에서 정보 수집이 가능한 이유는 RAM에 프로세스 정보, 악성코드 관련 데이터, 시스템 데이터 구조, 사용자 활동 정보 등이 일시적으로 저장되기 때문이다. CPU가 연산을 수행하기 위해서는 모든 소프트웨어의 코드와 데이터가 RAM에 적재되어야 하며, 이러한 특성으로 인해 메모리 포렌식을 통해 다양한 정보를 분석할 수 있다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/01/14/323307_260114/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/14/3213_260114/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/01/14/3213_260114/" class="post-title-link" itemprop="url">[2026 SWING magazine] 퍼징의 개념, 구현 그리고 취약점 분석까지</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: zzing(teatree)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-14 02:00:00" itemprop="dateCreated datePublished" datetime="2026-01-14T02:00:00+09:00">2026-01-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Fuzzing의-개념과-역사"><a href="#Fuzzing의-개념과-역사" class="headerlink" title="Fuzzing의 개념과 역사"></a>Fuzzing의 개념과 역사</h1><h2 id="Fuzzing의-기본-원리"><a href="#Fuzzing의-기본-원리" class="headerlink" title="Fuzzing의 기본 원리"></a>Fuzzing의 기본 원리</h2><h3 id="Fuzzing의-정의"><a href="#Fuzzing의-정의" class="headerlink" title="Fuzzing의 정의"></a>Fuzzing의 정의</h3><p>Fuzzing(퍼징) 또는 Fuzz Testing은 보안 취약점을 찾기 위한 자동화된 테스트 기술로 시스템에 의도적으로 잘못된 데이터나 무작위 데이터를 입력하여 비정상적인 동작(크래시, 무한 루프, 예외, 메모리 누수 등)이 발생하는지 확인하는 기술이다. 프로그램이이 복잡할수록 많은 버그와 attack surface가 생기는데 이에 대해 수동 테스트보다 퍼징은 입력을 자동으로 생성 및 변형하여 대규모의 테스트를 수행한다는 점에서 더 효율적일 수 있다. </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/01/14/3213_260114/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/13/323308_260113/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/01/13/323308_260113/" class="post-title-link" itemprop="url">[2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: PortGuard(kamatte, sonotri, anywheremoon)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-13 21:00:00" itemprop="dateCreated datePublished" datetime="2026-01-13T21:00:00+09:00">2026-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="Linux-Kernel-이론"><a href="#Linux-Kernel-이론" class="headerlink" title="Linux Kernel 이론"></a>Linux Kernel 이론</h1><h2 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h2><p>최근 IoT 및 임베디드 시스템 환경의 확산과 함께 USB 장치는 단순한 주변기기 연결 수단을 넘어, 보안 위협이 유입되는 주요 공격 벡터로도 활용되고 있다. 이에 따라 커널 수준에서 USB 장치의 연결과 제거를 실시간으로 감지하고 이를 적절히 처리하는 메커니즘을 이해하는 것은 단순한 시스템 관리 역량을 넘어, 보안 관점에서도 중요한 기술적 기반이 된다.</p>
+<p>본 프로젝트에서는 커널 내 핵심 구조체인 <code>usb_device</code>와 이벤트 처리 메커니즘인 <code>uevent</code>를 중심으로, USB 장치가 연결될 때 어떤 과정을 거쳐 커널이 이를 인식하고 사용자 공간까지 전달하는지를 분석하였다. 이후 실습 단계에서는 실제로 USB 장치 이벤트를 감지하고 로그를 출력하는 커널 모듈(LKM)을 구현하며, 리눅스의 디바이스 모델, 인터럽트 처리, 그리고 사용자 공간과의 연동까지 포괄적인 관점을 체험한다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/01/13/323308_260113/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -322,7 +596,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="1-서론"><a href="#1-서론" class="headerlink" title="1. 서론"></a>1. 서론</h1><h2 id="가-칼럼-작성-배경"><a href="#가-칼럼-작성-배경" class="headerlink" title="가. 칼럼 작성 배경"></a>가. 칼럼 작성 배경</h2><p>최근 APT(Advanced Persistent Threat) 공격은 국가·기업을 가리지 않고 꾸준히 발생하고 있다. 안랩을 비롯한 여러 보안 업체의 최신 보고서에서 확인되었듯, 공격자들은 다양한 악성코드를 활용해 윈도우 환경을 중심으로 장기간 은밀하게 침투하고 있다. 이러한 APT 공격에는 합법적 프로세스에 악성 행위를 숨기는 ‘프로세스 인젝션’ 기법이 탐지 우회 효과를 위해 주요 수단으로 사용되고 있으며, 날이 갈수록 그 기술이 고도화되고 있다. </p>
+          <h1 id="1-서론"><a href="#1-서론" class="headerlink" title="1. 서론"></a>1. 서론</h1><h2 id="가-칼럼-작성-배경"><a href="#가-칼럼-작성-배경" class="headerlink" title="가. 칼럼 작성 배경"></a>가. 칼럼 작성 배경</h2><p>최근 APT(Advanced Persistent Threat) 공격은 국가·기업을 가리지 않고 꾸준히 발생하고 있다. 안랩을 비롯한 여러 보안 업체의 최신 보고서에서 확인되었듯, 공격자들은 다양한 악성코드를 활용해 윈도우 환경을 중심으로 장기간 은밀하게 침투하고 있다. 이러한 APT 공격에는 합법적 프로세스에 악성 행위를 숨기는 “프로세스 인젝션” 기법이 탐지 우회 효과를 위해 주요 수단으로 사용되고 있으며, 날이 갈수록 그 기술이 고도화되고 있다. </p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/01/06/313204_260106/#more" rel="contents">
@@ -783,279 +1057,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/01/01/323305_260101/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/11/30/323304_251130/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/11/30/323304_251130/" class="post-title-link" itemprop="url">[사이버 탐험 : 보안의 첫걸음] 파일을 삭제하면 정말 사라질까?</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: Yebbi, ycl</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-11-30 00:00:00" itemprop="dateCreated datePublished" datetime="2025-11-30T00:00:00+09:00">2025-11-30</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/%EC%82%AC%EC%9D%B4%EB%B2%84-%ED%83%90%ED%97%98-series/" itemprop="url" rel="index"><span itemprop="name">사이버 탐험 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="파일-삭제의-원리"><a href="#파일-삭제의-원리" class="headerlink" title="파일 삭제의 원리"></a>파일 삭제의 원리</h1><p>우리가 파일을 삭제하고 휴지통을 비우면 파일이 완전히 사라질까요? </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/11/30/323304_251130/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/11/04/3209_250928/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/11/04/3209_250928/" class="post-title-link" itemprop="url">[2025 SWING hackingcamp] 「AI 기본법」의 제정과 개인정보보호‧산업발전 간 균형 과제</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: esol</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-11-04 13:59:59" itemprop="dateCreated datePublished" datetime="2025-11-04T13:59:59+09:00">2025-11-04</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SWING-%ED%95%B4%EC%BA%A0-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 해캠 모아보기 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="1-서론"><a href="#1-서론" class="headerlink" title="1. 서론"></a>1. 서론</h2><p>2024년에 제정되어 곧 시행을 앞둔 AI 기본법은 한국에서 인공지능을 포괄적으로 다루는 첫 번째 종합 법률이다. 이 법은 단순히 기술 개발을 촉진하는 진흥법이 아니라, 산업적 활용과 사회적 위험 관리라는 두 가지 목적을 동시에 담고 있다는 점에서 주목할 만하다. 주요 내용에는 인공지능의 정의와 범위, 개발·활용 단계에서의 안전성 확보, 자동화된 의사결정의 투명성과 책임성 강화, 공공과 민간 부문의 데이터 활용 체계 정립 등이 포함된다. 동시에 개인정보 침해, 알고리즘 편향, 안전성 문제 등 AI가 불러올 수 있는 사회적 위험을 제도적으로 예방할 수 있도록 감독 장치도 마련되어 있다. 따라서 AI 기본법은 기술 진흥과 인권 보호라는 상반된 목표를 하나의 법률 체계 안에서 동시에 조율하려는 시도라고 할 수 있다.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/11/04/3209_250928/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2025/10/14/3212_250809/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/10/14/3212_250809/" class="post-title-link" itemprop="url">커널 패닉(Kernel Panic) 완전 정복</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: sonotri</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2025-10-14 00:00:00" itemprop="dateCreated datePublished" datetime="2025-10-14T00:00:00+09:00">2025-10-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="Kernel-Panic"><a href="#Kernel-Panic" class="headerlink" title="Kernel Panic"></a>Kernel Panic</h1><h2 id="커널-크래시란"><a href="#커널-크래시란" class="headerlink" title="[커널 크래시란?]"></a>[커널 크래시란?]</h2><h3 id="1-커널이란"><a href="#1-커널이란" class="headerlink" title="1. 커널이란?"></a>1. 커널이란?</h3><p>커널(Kernel)은 항상 메모리에 상주하는 OS의 핵심 부분으로, 하드웨어와 응용 프로그램 사이에서 인터페이스를 제공하며 컴퓨터 자원들을 관리하는 역할을 한다. 즉, 커널은 인터페이스로서 프로그램 수행에 필요한 여러 가지 서비스를 제공하고 여러 하드웨어 자원(CPU, Memory, Disk 등)을 관리하는 역할을 한다. 메모리에 상주하는 특징을 빼면 평범한 C 프로그램이다.  </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/10/14/3212_250809/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Linux Kernel 이론개요최근 IoT 및 임베디드 시스템 환경의 확산과 함께 USB 장치는 단순한 주변기기 연결 수단을 넘어, 보안 위협이 유입되는 주요 공격 벡터로도 활용되고 있다. 이에 따라 커널 수준에서 USB 장치의 연결과 제거를 실시간으로 감지하고 이를 적절히 처리하는 메커니즘을 이해하는 것은 단순한 시스템 관리 역량을 넘어, 보안 관점에서도">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발">
+<meta property="og:url" content="https://log.swuswing.com/2026/01/13/323308_260113/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="Linux Kernel 이론개요최근 IoT 및 임베디드 시스템 환경의 확산과 함께 USB 장치는 단순한 주변기기 연결 수단을 넘어, 보안 위협이 유입되는 주요 공격 벡터로도 활용되고 있다. 이에 따라 커널 수준에서 USB 장치의 연결과 제거를 실시간으로 감지하고 이를 적절히 처리하는 메커니즘을 이해하는 것은 단순한 시스템 관리 역량을 넘어, 보안 관점에서도">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/323308_260113_image30.png">
+<meta property="article:published_time" content="2026-01-13T12:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-19T04:52:03.635Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="System Hacking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/323308_260113_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/01/13/323308_260113/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/01/13/323308_260113/","path":"2026/01/13/323308_260113/","title":"[2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux-Kernel-%EC%9D%B4%EB%A1%A0"><span class="nav-number">1.</span> <span class="nav-text">Linux Kernel 이론</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%9C%EC%9A%94"><span class="nav-number">1.1.</span> <span class="nav-text">개요</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%BB%A4%EB%84%90%EA%B3%BC-%EB%AA%A8%EB%93%88%ED%99%94"><span class="nav-number">1.2.</span> <span class="nav-text">리눅스 커널과 모듈화</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%AA%A8%EB%93%88%ED%99%94%EC%9D%98-%EB%93%B1%EC%9E%A5-LKM"><span class="nav-number">1.2.1.</span> <span class="nav-text">모듈화의 등장 - LKM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LKM%EC%9D%98-%EC%83%9D%EB%AA%85%EC%A3%BC%EA%B8%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">LKM의 생명주기</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LKM-%EA%B4%80%EB%A6%AC-%EB%8F%84%EA%B5%AC"><span class="nav-number">1.2.3.</span> <span class="nav-text">LKM 관리 도구</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sysfs%EC%97%90%EC%84%9C%EC%9D%98-%EB%85%B8%EC%B6%9C"><span class="nav-number">1.2.4.</span> <span class="nav-text">sysfs에서의 노출</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A6%AC%EB%88%85%EC%8A%A4-%EC%BB%A4%EB%84%90%EC%9D%98-%ED%95%B5%EC%8B%AC-%EC%84%9C%EB%B8%8C%EC%8B%9C%EC%8A%A4%ED%85%9C"><span class="nav-number">1.2.5.</span> <span class="nav-text">리눅스 커널의 핵심 서브시스템</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%94%94%EB%B0%94%EC%9D%B4%EC%8A%A4%EC%99%80-%EB%B2%84%EC%8A%A4-%EA%B4%80%EC%A0%90-%E2%80%93-USB-%EC%82%AC%EB%A1%80"><span class="nav-number">1.2.6.</span> <span class="nav-text">디바이스와 버스 관점 – USB 사례</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%A4%91%EC%8B%AC-%EC%B2%98%EB%A6%AC-%EB%AA%A8%EB%8D%B8-Hot-Plug-interrupt-uevent"><span class="nav-number">1.3.</span> <span class="nav-text">이벤트 중심 처리 모델(Hot Plug&#x2F;interrupt&#x2F;uevent)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%95%98%EB%93%9C%EC%9B%A8%EC%96%B4-%EC%9D%B4%EB%B2%A4%ED%8A%B8%EC%99%80-%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8"><span class="nav-number">1.3.1.</span> <span class="nav-text">하드웨어 이벤트와 인터럽트</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8-%EB%8F%99%EC%9E%91-%EA%B3%BC%EC%A0%95"><span class="nav-number">1.3.2.</span> <span class="nav-text">인터럽트 동작 과정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%9D%B8%ED%8A%B8%EB%9F%BD%ED%8A%B8-%ED%95%B8%EB%93%A4%EB%9F%AC-%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8%EC%9D%98-%EB%B6%84%EB%A5%98"><span class="nav-number">1.3.3.</span> <span class="nav-text">인트럽트 핸들러 &amp; 인터럽트의 분류</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Top-half-Bottom-half"><span class="nav-number">1.3.4.</span> <span class="nav-text">Top-half &amp; Bottom-half</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-%EC%BB%A8%ED%8A%B8%EB%A1%A4%EB%9F%AC-%EC%9D%B8%ED%84%B0%EB%9F%BD%ED%8A%B8-%EB%B0%9C%EC%83%9D-%ED%9D%90%EB%A6%84"><span class="nav-number">1.3.5.</span> <span class="nav-text">USB 컨트롤러 인터럽트 발생 흐름</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hot-Plug-uevent"><span class="nav-number">1.3.6.</span> <span class="nav-text">Hot Plug &amp; uevent</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uevent%EC%9D%98-%EC%A3%BC%EC%9A%94-%ED%99%98%EA%B2%BD-%EB%B3%80%EC%88%98-%EC%98%88%EC%8B%9C-%EB%B6%84%EC%84%9D"><span class="nav-number">1.3.7.</span> <span class="nav-text">uevent의 주요 환경 변수 &amp; 예시 분석</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#udev"><span class="nav-number">1.3.8.</span> <span class="nav-text">udev</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#device-kset-kobject"><span class="nav-number">1.3.9.</span> <span class="nav-text">device_kset &amp; kobject</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USB-%EC%9E%A5%EC%B9%98%EC%9D%B8%EC%8B%9D-Enumeration-%EB%8B%A8%EA%B3%84%EB%B3%84-%ED%9D%90%EB%A6%84"><span class="nav-number">1.4.</span> <span class="nav-text">USB 장치인식(Enumeration) 단계별 흐름</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%AC%BC%EB%A6%AC%EC%97%B0%EA%B2%B0-%EA%B0%90%EC%A7%80-%EC%A3%BC%EC%86%8C-%ED%95%A0%EB%8B%B9-devnum-%EA%B3%BC%EC%A0%95"><span class="nav-number">1.4.1.</span> <span class="nav-text">물리연결 감지 ~ 주소 할당(devnum)과정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Descriptor-%EC%88%98%EC%A7%91"><span class="nav-number">1.4.2.</span> <span class="nav-text">Descriptor 수집</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%99%9C%EC%84%B1%EA%B5%AC%EC%84%B1-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4-altsetting-%EC%84%A0%ED%83%9D-%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EC%84%A4%EC%A0%95"><span class="nav-number">1.4.3.</span> <span class="nav-text">활성구성&#x2F;인터페이스&#x2F;altsetting 선택 &amp; 엔드포인트 설정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%94%94%EB%B0%94%EC%9D%B4%EC%8A%A4-%EB%AA%A8%EB%8D%B8-%EB%93%B1%EB%A1%9D-sysfs-%EB%85%B8%EC%B6%9C-%EA%B3%BC%EC%A0%95"><span class="nav-number">1.4.4.</span> <span class="nav-text">커널 디바이스 모델 등록 &amp; sysfs 노출 과정</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B2%84-%EB%B0%94%EC%9D%B8%EB%94%A9%EA%B3%BC-%EC%82%AC%EC%9A%A9%EC%9E%90-%EA%B3%B5%EA%B0%84-%EC%97%B0%EB%8F%99"><span class="nav-number">1.5.</span> <span class="nav-text">드라이버 바인딩과 사용자 공간 연동</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%93%9C%EB%9D%BC%EC%9D%B4%EB%B2%84-%EB%A7%A4%EC%B9%AD-%EB%A9%94%EC%BB%A4%EB%8B%88%EC%A6%98"><span class="nav-number">1.5.1.</span> <span class="nav-text">드라이버 매칭 메커니즘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#probe-disconnect-%EC%BD%9C%EB%B0%B1-%ED%95%A8%EC%88%98%EC%9D%98-%EC%97%AD%ED%95%A0"><span class="nav-number">1.5.2.</span> <span class="nav-text">probe() &amp; disconnect() 콜백 함수의 역할</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#USB-%EC%9E%A5%EC%B9%98-%EA%B5%AC%EC%A1%B0%EC%B2%B4-%ED%98%B8%EC%8A%A4%ED%8A%B8-%EC%B8%A1-Wrapper%EC%99%80-%ED%95%84%EB%93%9C"><span class="nav-number">1.6.</span> <span class="nav-text">USB 장치 구조체: 호스트 측 Wrapper와 필드</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-usb-device"><span class="nav-number">1.6.1.</span> <span class="nav-text">struct usb_device</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#usb-host-config-usb-host-interface-usb-host-endpoint"><span class="nav-number">1.6.2.</span> <span class="nav-text">usb_host_config &#x2F; usb_host_interface &#x2F; usb_host_endpoint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-usb-interface"><span class="nav-number">1.6.3.</span> <span class="nav-text">struct usb_interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-usb-driver"><span class="nav-number">1.6.4.</span> <span class="nav-text">struct usb_driver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct-usb-endpoint-descriptor"><span class="nav-number">1.6.5.</span> <span class="nav-text">struct usb_endpoint_descriptor</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%A0%84%EC%86%A1-%EB%AA%A8%EB%8D%B8-URB-%C2%B7-%ED%8C%8C%EC%9D%B4%ED%94%84-%C2%B7-%EB%8F%99%EA%B8%B0-%EB%B9%84%EB%8F%99%EA%B8%B0"><span class="nav-number">1.7.</span> <span class="nav-text">데이터 전송 모델: URB · 파이프 · 동기&#x2F;비동기</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#URB-USB-Request-Block"><span class="nav-number">1.7.1.</span> <span class="nav-text">URB(USB Request Block)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%8C%8C%EC%9D%B4%ED%94%84%EC%99%80-%EC%97%94%EB%93%9C%ED%8F%AC%EC%9D%B8%ED%8A%B8-%EB%A7%A4%ED%95%91"><span class="nav-number">1.7.2.</span> <span class="nav-text">파이프와 엔드포인트 매핑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%84%EC%86%A1-%ED%83%80%EC%9E%85%EB%B3%84-%ED%8A%B9%EC%84%B1"><span class="nav-number">1.7.3.</span> <span class="nav-text">전송 타입별 특성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%95%EB%A6%AC"><span class="nav-number">1.7.4.</span> <span class="nav-text">정리</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EA%B0%9C%EB%B0%9C-%EC%A4%80%EB%B9%84"><span class="nav-number">2.</span> <span class="nav-text">커널 모듈 개발 준비</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%9C%EC%9A%94-1"><span class="nav-number">2.1.</span> <span class="nav-text">개요</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EA%B0%9C%EB%B0%9C-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95"><span class="nav-number">2.2.</span> <span class="nav-text">커널 모듈 개발 환경 구축</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EC%8B%A4%EC%8A%B5"><span class="nav-number">2.3.</span> <span class="nav-text">커널 모듈 실습</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Task1-%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EB%B0%8F-Makefile-%EC%9E%91%EC%84%B1"><span class="nav-number">2.3.1.</span> <span class="nav-text">Task1 : 커널 모듈 및 Makefile 작성</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Task5-USB-%EB%94%94%EB%B0%94%EC%9D%B4%EC%8A%A4-%EC%9D%B8%EC%8B%9D-%EB%AA%A8%EB%93%88"><span class="nav-number">2.3.2.</span> <span class="nav-text">Task5 : USB 디바이스 인식 모듈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%95%EB%A6%AC-1"><span class="nav-number">2.3.3.</span> <span class="nav-text">정리</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EA%B0%9C%EB%B0%9C"><span class="nav-number">3.</span> <span class="nav-text">커널 모듈 개발</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%EA%B0%9C%EC%9A%94-2"><span class="nav-number">3.1.</span> <span class="nav-text">개요</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%BB%A4%EB%84%90-%EB%AA%A8%EB%93%88-%EC%86%8C%EA%B0%9C"><span class="nav-number">3.2.</span> <span class="nav-text">커널 모듈 소개</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#usb-block-kernel-c"><span class="nav-number">3.3.</span> <span class="nav-text">usb_block_kernel.c</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%84%EC%B2%98%EB%A6%AC-%EC%A7%80%EC%8B%9C%EC%9E%90"><span class="nav-number">3.3.1.</span> <span class="nav-text">전처리 지시자</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%99%94%EC%9D%B4%ED%8A%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A0%95%EC%9D%98%EB%B6%80"><span class="nav-number">3.3.2.</span> <span class="nav-text">화이트리스트 정의부</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ID-%ED%85%8C%EC%9D%B4%EB%B8%94"><span class="nav-number">3.3.3.</span> <span class="nav-text">ID 테이블</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%99%94%EC%9D%B4%ED%8A%B8%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B2%80%EC%82%AC-%EB%A1%9C%EC%A7%81-%EC%84%A4%EA%B3%84"><span class="nav-number">3.3.4.</span> <span class="nav-text">화이트리스트 검사 로직 설계</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Netlink-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%A0%84%EC%86%A1"><span class="nav-number">3.3.5.</span> <span class="nav-text">Netlink 메시지 전송</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%ED%99%9C%EB%8F%99-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EB%B0%8F-Revoke-%EC%B2%98%EB%A6%AC"><span class="nav-number">3.3.6.</span> <span class="nav-text">활동 모니터링 및 Revoke 처리</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-Probe-%EC%97%B0%EA%B2%B0-%EA%B0%90%EC%A7%80-%EB%B0%8F-%EC%B0%A8%EB%8B%A8"><span class="nav-number">3.3.7.</span> <span class="nav-text">USB Probe(연결 감지 및 차단)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%B4%88%EA%B8%B0%ED%99%94-%EB%B0%8F-%EC%A2%85%EB%A3%8C"><span class="nav-number">3.3.8.</span> <span class="nav-text">초기화 및 종료</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EB%A9%94%EC%8B%9C%EC%A7%80%EB%B0%95%EC%8A%A4-%EA%B5%AC%ED%98%84%EB%B6%80"><span class="nav-number">3.3.9.</span> <span class="nav-text">메시지박스 구현부</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#usb-block-notifier-c"><span class="nav-number">3.4.</span> <span class="nav-text">usb_block_notifier.c</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GUI-%EA%B5%AC%ED%98%84%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%B3%80%EC%88%98-%EC%A0%95%EC%9D%98"><span class="nav-number">3.4.1.</span> <span class="nav-text">GUI 구현을 위한 변수 정의</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-%EC%B0%A8%EB%8B%A8"><span class="nav-number">3.4.2.</span> <span class="nav-text">USB 차단</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#USB-%ED%97%88%EC%9A%A9"><span class="nav-number">3.4.3.</span> <span class="nav-text">USB 허용</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GUI-%EB%9D%84%EC%9A%B0%EA%B8%B0"><span class="nav-number">3.4.4.</span> <span class="nav-text">GUI 띄우기</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%EC%8B%A4%ED%96%89"><span class="nav-number">3.5.</span> <span class="nav-text">실행</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%8B%A4%ED%96%89-%EA%B3%BC%EC%A0%95"><span class="nav-number">3.5.1.</span> <span class="nav-text">실행 과정</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%EC%A0%95%EB%A6%AC-2"><span class="nav-number">3.5.2.</span> <span class="nav-text">정리</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%B0%B8%EA%B3%A0-%EB%AC%B8%ED%97%8C"><span class="nav-number">4.</span> <span class="nav-text">참고 문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">67</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/13/323308_260113/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [2026 SWING magazine] 리눅스 커널 기반 USB 장치 실시간 탐지 모듈 개발
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: PortGuard(kamatte, sonotri, anywheremoon)</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-01-13 21:00:00" itemprop="dateCreated datePublished" datetime="2026-01-13T21:00:00+09:00">2026-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Linux-Kernel-이론"><a href="#Linux-Kernel-이론" class="headerlink" title="Linux Kernel 이론"></a>Linux Kernel 이론</h1><h2 id="개요"><a href="#개요" class="headerlink" title="개요"></a>개요</h2><p>최근 IoT 및 임베디드 시스템 환경의 확산과 함께 USB 장치는 단순한 주변기기 연결 수단을 넘어, 보안 위협이 유입되는 주요 공격 벡터로도 활용되고 있다. 이에 따라 커널 수준에서 USB 장치의 연결과 제거를 실시간으로 감지하고 이를 적절히 처리하는 메커니즘을 이해하는 것은 단순한 시스템 관리 역량을 넘어, 보안 관점에서도 중요한 기술적 기반이 된다.</p>
+<p>본 프로젝트에서는 커널 내 핵심 구조체인 <code>usb_device</code>와 이벤트 처리 메커니즘인 <code>uevent</code>를 중심으로, USB 장치가 연결될 때 어떤 과정을 거쳐 커널이 이를 인식하고 사용자 공간까지 전달하는지를 분석하였다. 이후 실습 단계에서는 실제로 USB 장치 이벤트를 감지하고 로그를 출력하는 커널 모듈(LKM)을 구현하며, 리눅스의 디바이스 모델, 인터럽트 처리, 그리고 사용자 공간과의 연동까지 포괄적인 관점을 체험한다.</p>
+<span id="more"></span>
+
+<br>
+
+<h2 id="리눅스-커널과-모듈화"><a href="#리눅스-커널과-모듈화" class="headerlink" title="리눅스 커널과 모듈화"></a>리눅스 커널과 모듈화</h2><p>리눅스 커널은 모놀리식(Monolithic) 커널 구조를 기반으로 한다. 모놀리식 커널은 운영체제의 핵심 기능인 프로세스 관리, 메모리 관리, 파일 시스템, 장치 드라이버 등 모든 구성 요소가 하나의 거대한 프로그램으로 묶여 커널 공간에서 동작하는 방식으로 작동한다. 이 구조는 각 구성 요소 간의 통신이 빠르고 효율적이며 모든 기능이 커널 내부에 통합되어 있어 시스템 성능이 뛰어나다는 장점을 지닌다.</p>
+<p>하지만 단점도 명확하다. 새로운 장치를 추가하거나 특정 기능을 변경하려면 커널 전체를 다시 컴파일해야 하고, 이는 시스템 관리와 개발에 큰 불편함을 초래한다. 또한 커널의 한 부분에서 오류가 발생하면 시스템 전체가 불안정해질 위험이 있다.</p>
+<br>
+
+<h3 id="모듈화의-등장-LKM"><a href="#모듈화의-등장-LKM" class="headerlink" title="모듈화의 등장 - LKM"></a>모듈화의 등장 - LKM</h3><p>이러한 모놀리식 커널의 단점을 극복하기 위해 로드 가능한 커널 모듈(Loadable Kernel Modules, LKM) 개념이 도입되었다. LKM은 커널 전체 구조를 변경하지 않고도 필요에 따라 특정 기능을 동적으로 커널에 추가하거나 제거할 수 있게 해준다.</p>
+<br>
+
+<h3 id="LKM의-생명주기"><a href="#LKM의-생명주기" class="headerlink" title="LKM의 생명주기"></a>LKM의 생명주기</h3><p>LKM은 커널에 적재되는 순간과 제거되는 순간을 정의하는 두 가지 중요한 함수를 가진다. 이 두 함수는 모듈의 시작과 끝을 담당하며 안정적인 커널 운영을 위해 반드시 구현해야 한다.</p>
+<ul>
+<li><code>module_init()</code> : 모듈이 커널에 로드될 때 호출된다. 주로 장치를 초기화하거나 드라이버를 등록하는 등 모듈의 핵심 기능을 활성화한다.</li>
+<li><code>module_exit()</code> : 모듈이 커널에서 제거될 때 호출된다. module_init()에서 할당한 자원을 해제하고 등록된 드라이버를 제거한다.</li>
+</ul>
+<br>
+
+<h3 id="LKM-관리-도구"><a href="#LKM-관리-도구" class="headerlink" title="LKM 관리 도구"></a>LKM 관리 도구</h3><p>리눅스 시스템은 LKM을 쉽게 관리할 수 있는 도구들을 제공한다. 이 도구들은 사용자가 필요한 기능만 선택적으로 커널에 포함시킬 수 있게 하여 커널의 크기를 줄이고 시스템의 유연성을 높인다.</p>
+<ul>
+<li><strong>insmod</strong> : 특정 모듈 파일을 커널에 삽입한다. 의존성 검사 없이 단순히 모듈 파일(.ko 확장자)을 로드한다.</li>
+<li><strong>rmmod</strong> : 로드된 모듈을 커널에서 제거한다.</li>
+<li><strong>lsmod</strong> : 현재 커널에 로드된 모든 모듈의 목록을 보여준다.</li>
+<li><strong>modprobe</strong> : 의존성을 자동으로 해결하여 모듈을 로드한다. 예를 들어 A라는 모듈이 B라는 모듈을 필요로 한다면 modprobe A 명령은 B를 먼저 로드하고 A를 로드한다. 이는 insmod보다 훨씬 편리하고 안정적이다.</li>
+</ul>
+<br>
+
+<h3 id="sysfs에서의-노출"><a href="#sysfs에서의-노출" class="headerlink" title="sysfs에서의 노출"></a>sysfs에서의 노출</h3><p><strong>sysfs</strong>는 리눅스 커널이 시스템의 하드웨어 장치와 커널 드라이버 정보를 가상 파일 시스템 형태로 노출하는 메커니즘이다. <code>/sys</code> 디렉토리에 마운트되며 커널 모듈이나 장치 드라이버가 로드될 때 관련된 정보들이 이 디렉토리 아래에 파일이나 디렉토리 형태로 생성된다.</p>
+<p>예를 들어, 특정 USB 장치가 연결되면 sysfs의 <code>/sys/bus/usb/devices/</code> 경로에 해당 장치 정보가 나타난다. 이를 통해 사용자 공간의 프로그램은 커널 내부의 복잡한 구조를 직접 다루지 않고도 파일 시스템을 탐색하듯 시스템 상태를 확인하고 제어할 수 있다.</p>
+<br>
+
+<h3 id="리눅스-커널의-핵심-서브시스템"><a href="#리눅스-커널의-핵심-서브시스템" class="headerlink" title="리눅스 커널의 핵심 서브시스템"></a>리눅스 커널의 핵심 서브시스템</h3><p>리눅스 커널은 여러 중요한 서브시스템으로 구성되어 있으며, 각각 특정 기능을 전담하고 서로 유기적으로 상호작용한다.</p>
+<ul>
+<li><strong>프로세스 관리(Process Management)</strong>: 시스템에서 실행되는 모든 프로세스의 생성, 종료, 스케줄링을 담당한다. 여러 프로세스가 CPU를 효율적으로 공유할 수 있도록 관리하여 사용자에게 마치 여러 프로그램이 동시에 실행되는 것처럼 보이게 한다.</li>
+<li><strong>메모리 관리(Memory Management)</strong>: 시스템의 물리적 메모리를 효율적으로 할당하고 관리한다. 각 프로세스가 필요한 메모리를 확보하고 사용하지 않는 메모리를 회수하며, 가상 메모리와 스와핑 기술을 통해 실제 메모리보다 큰 주소 공간을 제공한다.</li>
+<li><strong>파일 시스템(File System)</strong>: 파일, 디렉토리, 저장 장치를 관리한다. 다양한 파일 시스템(ext4, XFS, NTFS 등)을 지원하여 데이터를 구조적으로 저장하고 접근할 수 있게 한다.</li>
+<li><strong>I&#x2F;O (디바이스 드라이버)</strong>: 입력&#x2F;출력 장치와의 통신을 담당한다. 디바이스 드라이버는 특정 하드웨어 장치를 제어하는 소프트웨어로, 커널이 다양한 장치를 인식하고 사용할 수 있도록 해준다.</li>
+</ul>
+<br>
+
+<h3 id="디바이스와-버스-관점-–-USB-사례"><a href="#디바이스와-버스-관점-–-USB-사례" class="headerlink" title="디바이스와 버스 관점 – USB 사례"></a>디바이스와 버스 관점 – USB 사례</h3><p><strong>버스(Bus)</strong> 는 여러 장치 간에 데이터와 제어 신호를 주고받는 통신 경로를 의미한다. USB는 범용 직렬 버스(Universal Serial Bus)의 약자로, 컴퓨터와 다양한 주변기기(키보드, 마우스, USB 메모리, 프린터 등)를 연결하는 표준 인터페이스다.</p>
+<p>리눅스 커널에서 USB는 I&#x2F;O 서브시스템의 한 부분으로 관리된다. USB 장치를 연결하면 커널의 USB 하위 시스템이 이를 감지하고 해당 장치에 맞는 USB 장치 드라이버를 로드한다. 이 드라이버는 커널과 USB 장치 간 통신을 담당하여 장치가 정상적으로 작동하게 한다. sysfs에서는 &#x2F;sys&#x2F;bus&#x2F;usb&#x2F; 경로를 통해 USB 버스 및 연결된 장치 정보를 확인할 수 있다.<br>이처럼 리눅스 커널은 모놀리식 구조의 안정성과 모듈화의 유연성을 결합해 다양한 하드웨어와 기능을 효과적으로 지원하는 강력한 운영체제 기반을 제공한다.</p>
+<br>
+<br>
+
+<h2 id="이벤트-중심-처리-모델-Hot-Plug-interrupt-uevent"><a href="#이벤트-중심-처리-모델-Hot-Plug-interrupt-uevent" class="headerlink" title="이벤트 중심 처리 모델(Hot Plug&#x2F;interrupt&#x2F;uevent)"></a>이벤트 중심 처리 모델(Hot Plug&#x2F;interrupt&#x2F;uevent)</h2><h3 id="하드웨어-이벤트와-인터럽트"><a href="#하드웨어-이벤트와-인터럽트" class="headerlink" title="하드웨어 이벤트와 인터럽트"></a>하드웨어 이벤트와 인터럽트</h3><p>하드웨어 이벤트란 하드웨어 장치에서 발생하는, CPU에 알릴 필요가 있는 신호를 의미한다.<br>인터럽트(interrupt)는 프로그램의 정상 실행 흐름을 바꾸는 이벤트를 말한다. 인터럽트는 하드웨어나 CPU에 의해 발생할 수 있다. 인터럽트가 발생하면 현재 실행 중인 작업을 잠시 중단하고 인터럽트 핸들러가 실행된다. 인터럽트 핸들러가 종료되면 인터럽트 발생 전 수행 중이던 작업이 다시 이어진다.</p>
+<br>
+
+<h3 id="인터럽트-동작-과정"><a href="#인터럽트-동작-과정" class="headerlink" title="인터럽트 동작 과정"></a>인터럽트 동작 과정</h3><p>인터럽트가 발생하면 현재 실행 중인 프로그램과 프로세서의 상태를 저장하고, 인터럽트 핸들러로 점프한 뒤 <strong>ISR(Interrupt Service Routine)</strong> 로 이동하여 인터럽트 처리 동작을 수행한다. 인터럽트 처리 동작이 완료되면 원래 실행 중이던 부분으로 돌아가 다시 프로그램을 실행한다.</p>
+<p><img src="/images/323308_260113_image1.png" alt="그림 1. 인터럽트 동작 과정"></p>
+<center><span style="font-size: 90%;">그림 1. 인터럽트 동작 과정</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="인트럽트-핸들러-인터럽트의-분류"><a href="#인트럽트-핸들러-인터럽트의-분류" class="headerlink" title="인트럽트 핸들러 &amp; 인터럽트의 분류"></a>인트럽트 핸들러 &amp; 인터럽트의 분류</h3><p>인터럽트 핸들러는 인터럽트가 발생했을 때 CPU가 실행하는 코드이다. 이 코드는 중요한 작업은 최대한 빠르게 처리하고, 중요하지 않은 작업은 나중으로 미루도록 설계되어 있다.</p>
+<p>인터럽트는 발생 원인과 무시 가능 여부에 따라 다음과 같이 분류할 수 있다.</p>
+<p><strong>[발생 원인에 따른 분류]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">• Synchronous interrupt(동기 인터럽트) : 명령어 실행 과정에서 발생한다.</span><br><span class="line">• Asynchronous interrupt(비동기 인터럽트) : 외부 이벤트로 발생한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[무시 가능 여부에 따른 분류]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">• Maskable interrupt(마스크 가능 인터럽트) : CPU가 일시적으로 무시할 수 있다.</span><br><span class="line">• Non-Maskable interrupt(마스크 불가능 인터럽트) : 무시할 수 없으며 반드시 처리해야 한다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="Top-half-Bottom-half"><a href="#Top-half-Bottom-half" class="headerlink" title="Top-half &amp; Bottom-half"></a>Top-half &amp; Bottom-half</h3><p>인터럽트 핸들러는 보통 Top-half와 Bottom-half 구조로 나뉜다.</p>
+<ul>
+<li>Top-half : 인터럽트 발생 시 가장 먼저 실행되는 부분이다. 중요한 작업을 빠르게 처리하고 가능한 한 빨리 반환한다.</li>
+<li>Bottom-half : Top-half에서 미처 처리하지 못한 덜 긴급한 작업을 나중에 수행한다. 커널 스레드, softirq, tasklet, workqueue 등 다양한 메커니즘으로 구현할 수 있다.<br>이 구조를 통해 커널은 인터럽트 응답 시간을 줄이고 시스템의 전체적인 성능을 유지한다.</li>
+</ul>
+<p><img src="/images/323308_260113_image2.png" alt="그림 2. 인터럽트 핸들러의 top-half와 bottom-half 구조"></p>
+<center><span style="font-size: 90%;">그림 2. 인터럽트 핸들러의 top-half와 bottom-half 구조</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="USB-컨트롤러-인터럽트-발생-흐름"><a href="#USB-컨트롤러-인터럽트-발생-흐름" class="headerlink" title="USB 컨트롤러 인터럽트 발생 흐름"></a>USB 컨트롤러 인터럽트 발생 흐름</h3><ol>
+<li>USB 장치 이벤트 발생: USB 장치가 연결, 제거, 오류 등의 신호를 보낸다.</li>
+<li>USB 호스트 컨트롤러 감지: USB 호스트 컨트롤러가 장치의 신호를 감지한다.</li>
+<li>Top-half 인터럽트 핸들러 실행: 중요하고 긴급한 작업을 우선 처리한다.</li>
+<li>Bottom-half 인터첩트 핸들러 실행: Top-half가 넘긴 작업을 마저 처리한다.</li>
+<li>uevent 발생: 새 장치의 시스템 이벤트가 있을 경우 <code>kobject_uevent()</code>가 호출된다. 그 후 netlink를 통해 사용자 공간의 udev로 전달되고, 필요하다면 <code>modprobe</code>가 호출된다.</li>
+</ol>
+<br>
+
+<h3 id="Hot-Plug-uevent"><a href="#Hot-Plug-uevent" class="headerlink" title="Hot Plug &amp; uevent"></a>Hot Plug &amp; uevent</h3><p><strong>[핫플러그(hotplug)]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">핫플러그는 컴퓨터 전원이 켜진 상태에서 장치를 자유롭게 연결하거나 제거할 수 있는 기능이다. 데이터 전송 중에 장치를 제거할 경우 안전한 절차를 거쳐야 하며, 그렇지 않으면 데이터 손상이나 파일 시스템 오류가 발생할 수 있다. 이로 인해 파일 시스템의 무결성이 깨질 위험이 있다. USB는 대표적인 핫플러그 장치로, 연결은 자유롭지만 제거 시에는 안전하게 제거하는 절차가 필요하다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[uevent]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">uevent는 kobject의 상태가 변경, 추가, 삭제될 때 사용자 공간에 알리는 역할을 한다. 리눅스에서는 핫플러그 메커니즘을 구현하기 위한 핵심 요소이다.</span><br><span class="line">• uevent는 보통 netlink를 통해 전송된다.</span><br><span class="line">• netlink는 커널과 사용자 공간 간의 데이터를 송수신하는 소켓 기반 IPC 메커니즘이다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[kobject]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kobject는 커널 내부에서 구조체를 관리하기 위한 도구이다. 보통 독립적으로 쓰이지 않고, 다른 구조체에 임베딩되어 사용된다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="uevent의-주요-환경-변수-예시-분석"><a href="#uevent의-주요-환경-변수-예시-분석" class="headerlink" title="uevent의 주요 환경 변수 &amp; 예시 분석"></a>uevent의 주요 환경 변수 &amp; 예시 분석</h3><p>uevent가 사용자 공간으로 전달될 때 다음과 같은 주요 환경 변수를 포함한다. 이러한 정보는 사용자 공간에서 udev 규칙을 작성할 때 유용하게 활용된다.</p>
+<ul>
+<li><code>ACTION</code> : 이벤트의 행동을 나타낸다. ACTION&#x3D;add는 장치가 새로 추가되었음을 의미한다.</li>
+<li><code>DEVPATH</code> : 커널 장치 트리에서 장치의 경로를 나타낸다. 예시에서는 <code>/devices/pci0000:00/0000:00:1d.7/usb2/2-1</code> 경로에 위치함을 알 수 있다.</li>
+<li><code>SUBSYSTEM</code> : 장치가 속한 서브시스템을 나타낸다. 예시에서는 usb가 서브시스템임을 알 수 있다.</li>
+<li><code>ID_VENDOR_ID</code> : 장치 벤더 ID를 나타낸다.</li>
+<li><code>ID_MODEL_ID</code> : 장치 모델 ID를 나타낸다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ACTION=add;DEVPATH=/devices/pci0000:00/0000:00:1d.7/usb2/2-1;SUBSYSTEM=usb</span><br></pre></td></tr></table></figure>
+
+<p>ID_VENDOR_ID와 ID_MODEL_ID 값을 통해 udev는 특정 장치를 식별하고, 규칙에 따라 적절한 동작을 수행한다.</p>
+<br>
+
+<h3 id="udev"><a href="#udev" class="headerlink" title="udev"></a>udev</h3><p><strong>udev</strong>는 리눅스 커널을 관리하는 장치 관리자이다. 시스템에 장치가 추가되거나 제거될 때 발생하는 이벤트를 처리하며, &#x2F;dev 디렉토리에 해당 장치를 나타내는 파일을 생성하고 관리한다. &#x2F;dev 디렉토리에 장치 파일을 생성하고 관리하는 과정에서 필요한 펌웨어를 로드하며, 장치 특성에 맞는 권한을 설정하는 역할도 수행한다.</p>
+<p><strong>[udev 동작 흐름]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Kernel driver core → udevd 부분에서는 Kernel driver core에서 USB나 PCI와 같은 하드웨어의 연결 또는 해제를 감지한다. 그러면 커널은 uevent 신호를 발생시키고, 이 신호를 udevd에게 전달한다. udev event process 부분에서는 udevd가 전달받은 uevent를 /etc/udev/rules.d/에 있는 규칙 파일과 비교하여 규칙 매칭을 수행하고, 그 결과에 따라 /dev 디렉토리 에 장치 파일을 생성하거나 제거한다. /lib/udev/ programs or others 부분에서는 규칙에 정의된 추가적인 동작을 수행하 며, 해당 장치에 맞는 모듈을 로드하기도 한다. 마지막으로 사용자 공간의 프로그램 들에게 새 장치가 연결되었음을 알린다</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/323308_260113_image3.png" alt="그림 3. udev 동작 흐름"></p>
+<center><span style="font-size: 90%;">그림 3. udev 동작 흐름</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="device-kset-kobject"><a href="#device-kset-kobject" class="headerlink" title="device_kset &amp; kobject"></a>device_kset &amp; kobject</h3><p><strong>kset</strong>은 서로 관련있는 kobject를 모아놓은 컨테이너를 말한다. devices_kset은 모든 device를 모아 관리하는 컨테이너 역할을 하는 것으로, 시스템에 존재하는 모든 장치들의 최상위 집합이다. 그렇기 때문에 새로운 장치가 생기면 devices_kset에 등록이 된다. Kobject란, 커널 내부에서 구조체를 관리하기 위한 도구이다. 보통은 독립적으로 쓰이지 않고 구조체에 임베딩되어서 쓰인다.</p>
+<p><strong>[device_kset &amp; kobject 관계]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">커널 내부의 모든 장치(struct device)와 드라이버는 kobject를 기반으로 표현되고,이 장치들을 묶어서 관리하기 위해서 devices_kset이 사용된다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[uevent 생성 과정]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kobject가 커널에 등록될 때, kobject_uevent()가 호출 -&gt; kobject_uevent()는 이벤트 정보를 담은 uevent를 메세지를 생성하여, 사용자 공간으로 전달</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+
+<h2 id="USB-장치인식-Enumeration-단계별-흐름"><a href="#USB-장치인식-Enumeration-단계별-흐름" class="headerlink" title="USB 장치인식(Enumeration) 단계별 흐름"></a>USB 장치인식(Enumeration) 단계별 흐름</h2><h3 id="물리연결-감지-주소-할당-devnum-과정"><a href="#물리연결-감지-주소-할당-devnum-과정" class="headerlink" title="물리연결 감지 ~ 주소 할당(devnum)과정"></a>물리연결 감지 ~ 주소 할당(devnum)과정</h3><p><strong>1. D-&#x2F;D+ 풀업 저항을 통한 인식</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Device가 Host에 연결되었을때, 호스트는 디바이스의 속도를 알아야 필요한 설정 정보 등을 알 수 있고 원하는 통신을 할 수 있다. 따라서 호스트 컨트롤러(HC)는 물리적으로 장치가 연결되면 전압변화를 감지한다. 속도 구분을 위해 D-(LS)와 D+(FS) 선이 존재하며 D- 선의 경우 LS(Low Speed)에 풀업 저항이 걸려있고, D+선의 경우 FS(Full Speed) 풀업 저항이 걸려있다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 호스트 컨트롤러(HC) -&gt; CPU 인터럽트 발생</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D-/D+ 선의 상태로 새 장치 연결을 감지했다면 해당 포트의 상태 변화를 호스트 컨트롤러에게 알린다. 이후 컴퓨터의 USB 호스트 컨트롤러(HC)는 해당 신호를 감지하고, CPU에 인터럽트를 발생시킨다. 이 인터럽트는 새로운 장치가 연결되었다는 것을 커널에게 알리는 역할을 한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. HCD 드라이버와 hub.c의 포트 이벤트 처리</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HCD는 USB 호스트 컨트롤러 하드웨어(xHCL/EHCI/OHCI/UHCI)를 제어하는 드라이버이다. 그리고 커널은 물리적인 USB 컨트롤러 칩을 각각의 전용 드라이버(HCD)를 통해 제어한다.</span><br><span class="line"></span><br><span class="line">• xHCL(Extensible Host Controller Interface): USB 3.0 이상에서 사용되는 USB 컨트롤러 인터페이스</span><br><span class="line">• EHCI(Enhanced Host Controller Interface): 이전 USB 2.0 장치를 지원하는 컨트롤러 인터페이스</span><br><span class="line">• OHCI(Open Host Controller Interface): USB 1.1 LS/FS 장치를 지원하는 컨트롤러 인터페이스</span><br><span class="line">• UHCL(Universal Host Controller Interface): USB 1.1 장치를 지원하는 컨트롤러 인터페이스. 인텔 전용이다.</span><br></pre></td></tr></table></figure>
+
+<p>(Controller Interface: SW나 HW 구성 요소 간에 정보를 교환하고 제어하는데 사용되는 표준화된 통신 방식)</p>
+<br>
+<br>
+
+<h3 id="Descriptor-수집"><a href="#Descriptor-수집" class="headerlink" title="Descriptor 수집"></a>Descriptor 수집</h3><p>CPU는 인터럽트를 받으면 하던 작업을 멈추고 HCD가 이를 처리한 후, USB 코어 드라이버로 이벤트를 전달한다. 그리고 커널은 장치를 식별하기 위한 장치인식(Enumeration) 과정을 수행한다. 장치인식 과정이란, 새로운 디바이스가 Bus에 연결되어 있는지 감지한 이후, 해당 디바이스를 인식하고 적절한 드라이버로 로드하는 작업을 의미한다.</p>
+<p>USB는 대표적인 Plug&amp;Play를 지원하는 인터페이스이다. 따라서 호스트가 디바이스에 대한 정보와 설정 사항을 알기 위해서는 Descriptor를 읽어와야한다. 장치인식 과정에서 호스트는 EP0을 통해 Descriptor를 읽고, 디스크립터를 기반으로 커널은 드라이버를 매칭하게 된다.<br>Descriptor는 USB 디바이스에 대한 기본적인 정보를 가지고 있다. 호스트와 디바이스 사이에 데이터를 어떻게 주고받을 것인지, 인터페이스를 어떻게 설정할 것인지 등의 구체적인 설정을 담당한다. USB Descriptor의 종류는 아래와 같다.</p>
+<p><strong>1. 디바이스 디스크립터(Device Descriptor)</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">• 디바이스에 대한 일반적인 정보를 담는다.</span><br><span class="line">• 단 하나만 존재한다.</span><br><span class="line">• 디바이스가 몇 개의 Configuration을 가지고 있는지에 대한 정보가 담겨있다.</span><br><span class="line">• ProductID, VenderID, Class 정보가 담겨있다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 환경설정 디스크립터(Configuration Descriptor)</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• 환경 설정 관련 정보를 가지고있다(전원 방식 등).</span><br><span class="line">• USB 디바이스는 디바이스 디스크립터 하위에 여러 개의 환경설정 디스크립터를 가질 수 있다.</span><br><span class="line">• 하나의 USB 디바이스는 일반적으로 하나의 환경설정 디스크립터를 가지며, 여러 개의 전원 공급망을 가진 특별한 USB 디바이스의 경우 여러개의 환경설정 디스크립터를 가지는 경우가 있다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 인터페이스 디스크립터(Interface Descriptor)</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• 장치의 기능 단위 대한 정보를 가지고있다(오디오, 저장장치, HID 등)</span><br><span class="line">• 인터헤이스 번호, 엔드포인트 개수, 클래스 코드(bInterfaceClass)가 포함된다.</span><br><span class="line">• 하나의 USB 디바이스는 여러 개의 기능을 제공할 수 있고, 각 기능마다 하나의 인터페이스를 할당한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. 엔드포인트 디스크립터(Endpoint Descriptor)</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">• 실제 호스트와 디바이스간의 통신이 이루어지는 통로이다.</span><br><span class="line">• bEndpointAddress, bmAttributes, wMaxPacketSize가 포함된다.</span><br><span class="line">• 엔트포인트 전송 타입으로 Control, Interrupt, Isochronous, Bulk 등이 있다.</span><br><span class="line">• 기본적으로 엔드포인트 번호는 0, 타입은 Control로 사용된다.</span><br></pre></td></tr></table></figure>
+
+<p>그리고 USB의 Device Descriptor 구조는 Device &gt; Configuration &gt; Interface &gt; Endpoint 트리 형태로 구성되어있다.</p>
+<p><img src="/images/323308_260113_image4.png" alt="그림 4. USB 장치 디스크립터 계층 구조"></p>
+<center><span style="font-size: 90%;">그림 4. USB 장치 디스크립터 계층 구조</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>디스크립터를 읽는 과정을 정리하면 다음과 같다.</p>
+<ol>
+<li>USB 디바이스 장치 연결 감지 + 포트 리셋</li>
+<li>연결된 USB 장치는 초기에는 0번 주소에서만 응답 가능한 상태이다.</li>
+<li>0번 주소를 가진 디바이스에게 Device Descriptor 요청하여 EP0의 wMaxPackerSize0(제어 전송 패킷의 크기)를 읽어온다.</li>
+<li>Device Descriptor의 정보를 읽어온 뒤, 디바이스에 고유한 주소(devnum)를 할당해준다(SET_ADDRESS).</li>
+<li>devnum 주소로 Device Descriptor 전체 데이터를 읽어온다.</li>
+<li>트리 구조에 따라 Configuration → Interface → Endpoint Descriptor 순서로 읽으며 디바이스의 전체 구조를 파악한다.</li>
+<li>디스크립터 정보(idVendor, idProduct 등)를 기반으로 커널이 적절한 드라이버를 매칭한다.</li>
+</ol>
+<br>
+
+<h3 id="활성구성-인터페이스-altsetting-선택-엔드포인트-설정"><a href="#활성구성-인터페이스-altsetting-선택-엔드포인트-설정" class="headerlink" title="활성구성&#x2F;인터페이스&#x2F;altsetting 선택 &amp; 엔드포인트 설정"></a>활성구성&#x2F;인터페이스&#x2F;altsetting 선택 &amp; 엔드포인트 설정</h3><p>앞에서 호스트는 Descriptor를 읽어와 장치가 어떤 인터페이스&#x2F;Class를 제공하는지, 어떤 엔드포인트를 가지는지 등을 확인했다. 이는 장치에 대한 ‘정보’를 알게 된 것이다.</p>
+<p>하지만 하나의 USB 장치가 여러 동작모드를 가지는 경우, 호스트는 어떤 동작모드를 활성화시킬지 결정해야한다. 이렇게 호스트가 어떤 모드(Configuration&#x2F;Interface&#x2F;Alsetting)를 활성화할지 지정하는 단계를 SET_CONFIGURATION 요청이라고 한다.</p>
+<p>단계는 아래와 같다.</p>
+<p><strong>1. SET_CONFIGURATION</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">디바이스에 여러 Configuration이 존재할 경우, 호스트가 이 중 하나를 선택해야만 디바이스가 동작할 수 있다. 일반적인 USB 디바이스는 1개의 Configuration이 존재하며 이 경우 자동 선택된다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. Interface 선택</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">하나의 Configuration 내에는 여러 Interface가 존재한다.</span><br><span class="line">• 인터페이스 0: 프린터</span><br><span class="line">• 인터페이스 1: 스캐너</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. Alternate Setting 선택</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">또한 같은 인터페이스 내부에는 여러가지 동작 모드가 있을 수 있다.</span><br><span class="line">• Altsetting 0: 비활성화</span><br><span class="line">• Altsetting 1: 44.1kHz 스테레오 등</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. Endpoint 설정</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• 2, 3에서 확인한 Interface와 Altsetting에 정의된 엔트포인트를 열어 실제 데이터 전송을 한다.</span><br><span class="line">• EP0: 제어 엔드포인트로, 주소할당/디스크립터 교환 등을 담당하며 항상 존재한다.</span><br><span class="line">• EP1~EP15: 나머지 엔드포인트로 Bulk, Interrupt 등의 전송을 담당한다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="커널-디바이스-모델-등록-sysfs-노출-과정"><a href="#커널-디바이스-모델-등록-sysfs-노출-과정" class="headerlink" title="커널 디바이스 모델 등록 &amp; sysfs 노출 과정"></a>커널 디바이스 모델 등록 &amp; sysfs 노출 과정</h3><p>리눅스 커널은 모든 장치를 공통된 방식으로 관리하기 위해 Linux Device Model 추상화를 도입하였다. USB 장치가 장치인식(Enumeration) 과정을 마치면, 커널 내부에서는 struct usb_device가 생성되고 이 안에 포함된 struct device를 통해 Linux Device Model에 등록된다. 해당 과정을 거쳐야만 드라이버 바인딩, 전원 관리, sysfs 연동이 가능하다.</p>
+<ul>
+<li>드라이버 바인딩: 커널은 로드된 드라이버를 struct usb_device와 연결한다. 이 과정에서 드라이버는 장치에 대한 제어권을 획득한다</li>
+<li>리눅스는 커널 내부 장치 트리구조를 사용자 공간에서 확인할 수 있도록 <strong>sysfs</strong>라는 것을 제공한다. sysfs는 kernel 2.6 버전에 새로 등장한 파일 시스템이다. USB 장치가 연결되면 &#x2F;sys&#x2F;bus&#x2F;usb&#x2F;devices 하위에 sysfs 노드가 생성된다.</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/sys/bus/usb/devices/1-1/ #root bus의 port1에 연결된 디바이스 장치</span><br><span class="line">/sys/bus/usb/devices/1-1:1.0/ #위 장치의 인터페이스 0을 의미</span><br></pre></td></tr></table></figure>
+
+<p>sysfs 노드 생성과 동시에 커널은 uevent를 발생시키고, 해당 이벤트는 netlink socket을 통해 사용자 공간의 udevd로 전달된다. 그리고 udevd는 해당 이벤트를 받아 규칙에 따라 &#x2F;dev&#x2F; 하위에 노드를 생성한다. 즉, sysfs → uevent 발생 → udev 전달 → &#x2F;dev&#x2F; 하위 노드 생성 과정을 거친다. 이런 방식으로, 커널 내부에서 감지된 USB 장치 정보가 사용자 공간으로 전달되고 실제 장치 파일로 활용 가능하게 된다.</p>
+<br>
+<br>
+
+<h2 id="드라이버-바인딩과-사용자-공간-연동"><a href="#드라이버-바인딩과-사용자-공간-연동" class="headerlink" title="드라이버 바인딩과 사용자 공간 연동"></a>드라이버 바인딩과 사용자 공간 연동</h2><p>챕터 1.4까지의 과정을 거치면 장치가 호스트에 등록된다. 이제 커널은 등록된 struct usb_device와 같은 알맞은 드라이버를 바인딩하여 실제로 장치를 사용하면 된다. 이제 이 ‘바인딩’ 과정을 살펴보자.</p>
+<h3 id="드라이버-매칭-메커니즘"><a href="#드라이버-매칭-메커니즘" class="headerlink" title="드라이버 매칭 메커니즘"></a>드라이버 매칭 메커니즘</h3><p><strong>[usb_device_id 배열]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">USB 드라이버는 자신이 지원하는 장치를 struct usb_device_id 배열로 선언한다. struct usb_device_id 배열은 Hot Plug 스크립트가 특정 디바이스를 시스템에 연결할 때, 어떤 드라이버를 자동으로 적재할지 결정하는데 사용된다. 해당 배열에는 VID(Vendor), PID(Product ID), 클래스 코드 등이 정의되어있다. 이후 커널은 디스크립터로부터 읽어온 값과 usb_device_id 배열을 비교하여 매칭을 시도한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[VID&#x2F;PID&#x2F;Class 기반 매칭]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">• U16 idVendor: 디바이스를 위한 USB 제조사 식별자</span><br><span class="line">• U16 idProduct: 디바이스를 위한 USB 제품 식별자</span><br><span class="line">• u8 bDeviceClass / **u8 bDeviceSubClass / \_\_u8 bDeviceProtocol</span><br><span class="line"></span><br><span class="line">VID/PID(전용 드라이버) 매칭, Class(클래스 드라이버) 매칭 과정을 거친다. 해당 과정을 통해 일치하는 드라이버를 탐색하게된다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[모듈 자동 적재 흐름]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">드라이버 탐색이 완료되고, 커널이 특정 하드웨어가 감지되어 모듈을 적재할 필요가 있다고 판단하면 call_usermodehelper() 함수를 이용해 modprobe 프로그램을 수행한다. modprobe는 요청된 모듈이 동작할 수 있도록 depmod 프로그램을 이용하여 부수적인 모듈을 검색해 필요한 모듈을 커널에 차례대로 등록시킨다. 이후 커널은 매칭된 드라이버 모듈이 적재되면, USB core를 통해 해당 드라이버의 probe() 함수를 호출한다. 그리고 드라이버는 장치 초기화를 수행하며, 메모리 할당·엔드포인트 설정·인터럽트 준비 등을 마치고 장치 제어권을 획득하게 된다.</span><br><span class="line"></span><br><span class="line">(\*여기서의 초기화는, 장치 인식 과정의 초기화가 아니다)</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="probe-disconnect-콜백-함수의-역할"><a href="#probe-disconnect-콜백-함수의-역할" class="headerlink" title="probe() &amp; disconnect() 콜백 함수의 역할"></a>probe() &amp; disconnect() 콜백 함수의 역할</h3><p>앞에서 살펴봤듯이, 장치와 드라이버가 매칭되면, USB core는 해당 드라이버의 <code>probe()</code> 함수를 호출한다. <code>probe()</code>는 드라이버에 의해 지원되는 모든 디바이스가 감지될 때마다 실행되는 함수이며, 장치 초기화를 담당하는 핵심 함수이다. 반대로 장치가 제거되면 disconnect() 함수가 호출되어 드라이버가 할당했던 자원을 해제하고 인터페이스를 정리한다.</p>
+<p>→ probe() 와 disconnect() 함수는 USB 드라이버 생명 주기에서 ‘장치 사용 준비&#x2F;장치 사용 해제’를 담당하는 핵심 요소이다.</p>
+<br>
+<br>
+
+<h2 id="USB-장치-구조체-호스트-측-Wrapper와-필드"><a href="#USB-장치-구조체-호스트-측-Wrapper와-필드" class="headerlink" title="USB 장치 구조체: 호스트 측 Wrapper와 필드"></a>USB 장치 구조체: 호스트 측 Wrapper와 필드</h2><p>리눅스 커널에서 USB 장치는 단순한 하드웨어 연결 이상의 복잡성을 가진다. 호스트는 USB 버스에 연결된 각 장치를 효과적으로 관리하기 위해 장치가 제공하는 정적 디스크립터 정보를 동적 메모리 구조체로 변환한다. 이 구조체는 장치의 상태를 표현하고 드라이버와 커널 코어 간의 표준 인터페이스 역할을 한다.</p>
+<h3 id="struct-usb-device"><a href="#struct-usb-device" class="headerlink" title="struct usb_device"></a>struct usb_device</h3><p>struct usb_device는 커널에서 특정 USB 장치를 나타내는 가장 중요한 데이터 구조체다. 장치가 연결되면 usbcore에 의해 이 구조체가 생성되며, 장치의 토폴로지, 주소, 속도, 상태, 디스크립터 캐시 등을 관리한다.</p>
+<table>
+<thead>
+<tr>
+<th align="left">필드</th>
+<th align="left">설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>devnum</strong></td>
+<td align="left">USB 버스에 할당된 장치 주소</td>
+</tr>
+<tr>
+<td align="left"><strong>state</strong></td>
+<td align="left">장치의 현재 상태 (configured 등)</td>
+</tr>
+<tr>
+<td align="left"><strong>speed</strong></td>
+<td align="left">장치 동작 속도 (high &#x2F; full &#x2F; low)</td>
+</tr>
+<tr>
+<td align="left"><strong>parent</strong></td>
+<td align="left">부모 허브 (<code>struct usb_device</code>)</td>
+</tr>
+<tr>
+<td align="left"><strong>bus</strong></td>
+<td align="left">속한 USB 버스 (<code>struct usb_bus</code>)</td>
+</tr>
+<tr>
+<td align="left"><strong>portnum</strong></td>
+<td align="left">부모 허브의 포트 번호</td>
+</tr>
+<tr>
+<td align="left"><strong>level</strong></td>
+<td align="left">루트 허브로부터의 허브 계층 수</td>
+</tr>
+<tr>
+<td align="left"><strong>devpath</strong></td>
+<td align="left">메시지용 장치 ID 문자열</td>
+</tr>
+<tr>
+<td align="left"><strong>route</strong></td>
+<td align="left">xHCI에서 사용하는 트리 토폴로지 문자열</td>
+</tr>
+<tr>
+<td align="left"><strong>actconfig</strong></td>
+<td align="left">현재 활성화된 장치 구성</td>
+</tr>
+<tr>
+<td align="left"><strong>ep_in &#x2F; ep_out</strong></td>
+<td align="left">IN &#x2F; OUT 방향의 엔드포인트 배열</td>
+</tr>
+</tbody></table>
+<center><span style="font-size: 90%;">표 1. struct usb_device의 주요 필드와 그 역할</span><br><span style="font-size: 70%;"></span></center>
+
+<p>이 필드들을 통해 커널은 USB 트리를 논리적으로 모델링하고, 장치 열거 과정에서 고유 주소를 부여하며, 위치를 추적한다.</p>
+<br>
+
+<h3 id="usb-host-config-usb-host-interface-usb-host-endpoint"><a href="#usb-host-config-usb-host-interface-usb-host-endpoint" class="headerlink" title="usb_host_config &#x2F; usb_host_interface &#x2F; usb_host_endpoint"></a>usb_host_config &#x2F; usb_host_interface &#x2F; usb_host_endpoint</h3><p>커널은 장치 디스크립터 계층(Device-Configuration-Interface-Endpoint)을 다음 구조체로 래핑해 관리한다. 또한 커널은 엔드포인트 주소를 직접 다루는 대신 파이프(pipe) 추상화를 사용한다. 파이프 값은 usb_pipe_endpoint()로 매핑되어 ep_in[ ] 또는 ep_out[ ]에서 해당 엔드포인트 구조체를 찾는다.</p>
+<ul>
+<li>usb_host_config: 장치의 전원 특성, 최대 전력 소비량, 인터페이스 배열을 포함합니다. intf_cache를 통해 모든 altsetting 정보를 영속적으로 참조할 수 있다.</li>
+<li>usb_host_interface: 인터페이스 디스크립터의 래퍼이며, 대체 설정(altsetting) 배열을 통해 모든 모드를 관리한다.</li>
+<li>usb_host_endpoint: 엔드포인트 디스크립터 래퍼이며, 주소·속성·최대 패킷 크기 등을 저장한다.</li>
+</ul>
+<br>
+
+<h3 id="struct-usb-interface"><a href="#struct-usb-interface" class="headerlink" title="struct usb_interface"></a>struct usb_interface</h3><p>USB 드라이버는 장치 전체가 아니라 인터페이스 단위로 바인딩된다.</p>
+<ul>
+<li>cur_altsetting: 현재 활성화된 altsetting을 가리킨다.</li>
+<li>altsetting: 모든 대체 설정 배열을 가리킨다.</li>
+<li>dev: 드라이버별 데이터를 연결할 수 있는 일반 struct device 필드를 제공한다.<br>드라이버는 usb_set_interface()를 호출하여 동적으로 altsetting을 전환할 수 있다.</li>
+</ul>
+<br>
+
+<h3 id="struct-usb-driver"><a href="#struct-usb-driver" class="headerlink" title="struct usb_driver"></a>struct usb_driver</h3><p>USB 인터페이스 드라이버를 등록하기 위한 구조체다. 이 방식 덕분에 리눅스는 PnP(Plug and Play)를 지원하고, 드라이버는 자신이 관리할 장치가 연결되었을 때만 동작한다.</p>
+<ul>
+<li>id_table: 지원 가능한 장치(VID, PID, Class 등) 목록이다.</li>
+<li>probe: 매칭된 장치 인터페이스가 발견되었을 때 호출되어 초기화를 수행한다.</li>
+<li>disconnect: 장치 해제 시 호출되어 리소스를 정리한다.</li>
+</ul>
+<br>
+
+<h3 id="struct-usb-endpoint-descriptor"><a href="#struct-usb-endpoint-descriptor" class="headerlink" title="struct usb_endpoint_descriptor"></a>struct usb_endpoint_descriptor</h3><ul>
+<li>bEndpointAddress: 엔드포인트 번호와 방향(IN&#x2F;OUT)을 포함한다.</li>
+<li>bmAttributes: 전송 타입(Control, Bulk, Interrupt, Isochronous) 지정 필드이다.</li>
+<li>wMaxPacketSize: 엔드포인트 최대 패킷 크기이다.<br>각 전송 타입은 용도와 특성이 다르다.</li>
+<li>Control: 설정 및 열거</li>
+<li>Bulk: 대용량 데이터, 높은 신뢰성</li>
+<li>Interrupt: HID 입력, 낮은 지연</li>
+<li>Isochronous: 오디오&#x2F;비디오 스트리밍, 대역폭 보장</li>
+</ul>
+<br>
+<br>
+
+<h2 id="데이터-전송-모델-URB-·-파이프-·-동기-비동기"><a href="#데이터-전송-모델-URB-·-파이프-·-동기-비동기" class="headerlink" title="데이터 전송 모델: URB · 파이프 · 동기&#x2F;비동기"></a>데이터 전송 모델: URB · 파이프 · 동기&#x2F;비동기</h2><h3 id="URB-USB-Request-Block"><a href="#URB-USB-Request-Block" class="headerlink" title="URB(USB Request Block)"></a>URB(USB Request Block)</h3><p>URB는 USB 비동기 전송을 위한 핵심 구조체다.</p>
+<ol>
+<li>usb_alloc_urb()로 생성한다.</li>
+<li>대상 장치, 파이프, 버퍼, 길이, 완료 콜백을 설정한다.</li>
+<li>usb_submit_urb()로 제출하면 논블로킹으로 즉시 반환된다.</li>
+<li>완료 시 콜백이 호출되며, 상태 확인 후 재사용 또는 해제를 결정한다.<br>이 모델은 드라이버가 I&#x2F;O 완료를 기다리지 않고 다른 작업을 계속할 수 있게 해 시스템 반응성을 높인다.</li>
+</ol>
+<br>
+
+<h3 id="파이프와-엔드포인트-매핑"><a href="#파이프와-엔드포인트-매핑" class="headerlink" title="파이프와 엔드포인트 매핑"></a>파이프와 엔드포인트 매핑</h3><p>파이프 값은 엔드포인트 번호와 방향을 조합한 정수다. 커널은 usb_pipe_endpoint()로 파이프를 파싱하고 ep_in[ ] 또는 ep_out[ ]에서 해당 엔드포인트 구조체를 반환한다.</p>
+<br>
+
+<h3 id="전송-타입별-특성"><a href="#전송-타입별-특성" class="headerlink" title="전송 타입별 특성"></a>전송 타입별 특성</h3><p>드라이버는 장치 특성에 맞는 전송 타입을 선택해 최적의 성능과 안정성을 확보해야 한다.</p>
+<table>
+<thead>
+<tr>
+<th align="left">특성</th>
+<th align="left">Control</th>
+<th align="left">Bulk</th>
+<th align="left">Interrupt</th>
+<th align="left">Isochronous</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>버퍼링</strong></td>
+<td align="left">제한적</td>
+<td align="left">가능</td>
+<td align="left">가능하다 (작은 버퍼)</td>
+<td align="left">지속적</td>
+</tr>
+<tr>
+<td align="left"><strong>지연</strong></td>
+<td align="left">낮음</td>
+<td align="left">보장 안 됨</td>
+<td align="left">낮음</td>
+<td align="left">매우 낮음</td>
+</tr>
+<tr>
+<td align="left"><strong>대역폭</strong></td>
+<td align="left">보장</td>
+<td align="left">가용 시 사용</td>
+<td align="left">주기적 보장</td>
+<td align="left">고정 보장</td>
+</tr>
+<tr>
+<td align="left"><strong>신뢰성</strong></td>
+<td align="left">매우 높음</td>
+<td align="left">높음</td>
+<td align="left">높음</td>
+<td align="left">낮음 (손실 허용)</td>
+</tr>
+<tr>
+<td align="left"><strong>용도</strong></td>
+<td align="left">설정 · 열거</td>
+<td align="left">스토리지, 프린터</td>
+<td align="left">HID 입력</td>
+<td align="left">오디오 · 비디오</td>
+</tr>
+</tbody></table>
+<center><span style="font-size: 90%;">표 2. 각 전송 타입의 특성 및 적합한 용도</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="정리"><a href="#정리" class="headerlink" title="정리"></a>정리</h3><p>챕터 1에서는 리눅스 커널에서 USB 장치가 인식되고 사용자 공간까지 전달되는 전체 과정을 단계별로 살펴보았다. 먼저 모놀리식 커널 구조와 로드 가능한 커널 모듈(LKM)의 개념을 정리하며, 커널 모듈을 통해 동적으로 기능을 추가·제거할 수 있는 유연성을 확인했다. 이어서 이벤트 중심 처리 모델을 통해 인터럽트 발생, top-half&#x2F;bottom-half 처리, uevent 생성 및 사용자 공간 전달 과정을 이해했고, sysfs와 udev를 통한 장치 정보 노출 메커니즘까지 학습했다. 또한 USB 장치 인식(Enumeration) 과정에서 물리적 연결 감지, Descriptor 수집, Configuration&#x2F;Interface 선택, sysfs 노출 과정을 추적하였으며, 드라이버 매칭 메커니즘과 probe()&#x2F;disconnect() 콜백의 역할을 통해 실제 장치가 드라이버와 바인딩되는 원리를 정리했다. 마지막으로 USB 관련 핵심 커널 구조체(struct usb_device, struct usb_interface 등)와 데이터 전송 모델(URB, 파이프, 전송 타입별 특성)을 살펴봄으로써 커널 내부에서 USB 장치가 관리되는 전체 흐름을 한눈에 파악할 수 있었다.</p>
+<p>다음 챕터에서는 이번 이론 학습을 기반으로 실제 실습을 진행한다. 구체적으로는 커널 모듈(LKM) 개발 환경을 구축하고, <code>insmod</code>, <code>rmmod</code>, <code>printk</code> 등을 활용한 간단한 LKM 로드·언로드 실습을 진행한다. 이어서 USB 실시간 장치 감지 메커니즘을 구현하기 위한 특허와 선행 연구를 분석·정리하여 프로젝트 설계의 근거를 마련하고, 실제 USB 이벤트를 커널 수준에서 감지하고 로그로 출력하는 모듈 프로토타입을 작성하는 과정을 다룰 계획이다.</p>
+<br>
+<br>
+<br>
+<br>
+
+<h1 id="커널-모듈-개발-준비"><a href="#커널-모듈-개발-준비" class="headerlink" title="커널 모듈 개발 준비"></a>커널 모듈 개발 준비</h1><h2 id="개요-1"><a href="#개요-1" class="headerlink" title="개요"></a>개요</h2><p>챕터 2에서는 실시간 USB 탐지 모듈 개발을 위한 사전 준비 과정을 다룬다. 우선 가상 머신을 활용해 커널 모듈 개발 환경을 구축하는 방법을 살펴보고, 이어서 Github의 Eudyptula 과제를 통해 Task1~Task5를 실습하면서 리눅스 커널 모듈과 Makefile 작성 방법, 커널 모듈 로드와 언로드, 컴파일과 수정 방법 등을 학습할 것이다.</p>
+<p>추가로 작성한 커널 모듈에서 발생하는 오류를 확인하고 해결하는 방법을 알아보고, 마지막으로 USB를 인식하는 모듈을 실습하며 향후 실시간 USB 탐지 모듈을 어떻게 개발할지 구상하는 과정까지 이어질 예정이다.</p>
+<br>
+
+<h2 id="커널-모듈-개발-환경-구축"><a href="#커널-모듈-개발-환경-구축" class="headerlink" title="커널 모듈 개발 환경 구축"></a>커널 모듈 개발 환경 구축</h2><p>커널 모듈 개발 실습에 앞서, 팀원 간 원활한 협업을 위해 먼저 개발 환경을 통일하는 작업을 진행했다. 우리는 VMware나 VirtualBox와 같은 가상화 소프트웨어를 활용해 게스트 OS를 구축하는 방식으로 실습 환경을 구성했으며, 모든 팀원이 Ubuntu 24.04 LTS 버전을 사용하도록 통일하였다.</p>
+<p><img src="/images/323308_260113_image5.png" alt="그림 5. 시스템 정보(우분투 버전) 확인"></p>
+<center><span style="font-size: 90%;">그림 5. 시스템 정보(우분투 버전) 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>이후에는 모듈 개발에 필요한 외부 라이브러리와 도구들을 설치하는 과정을 진행했다. 가장 먼저 커널 모듈을 빌드하기 위해 필수적인 툴들을 갖추었다. 여기에는 gcc, g++ 컴파일러, make, 그리고 libc6-dev 표준 라이브러리 헤더 등이 포함된다. 해당 툴은 User Space에서 실행되는 일반적인 프로그램을 만들 때 필요하다. 아래 명령어를 통해 설치 가능하다.</p>
+<pre><code>apt-get install build-essential make
+</code></pre>
+<p><img src="/images/323308_260113_image6.png" alt="그림 6. gcc와 g++의 설치 확인"></p>
+<center><span style="font-size: 90%;">그림 6. gcc와 g++의 설치 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<table>
+<thead>
+<tr>
+<th align="left">gcc</th>
+<th align="left">g++</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>.c</code>는 C로, <code>.cpp</code>는 C++로 컴파일</td>
+<td align="left"><code>.c</code>와 <code>.cpp</code> 파일 모두 C++로 컴파일</td>
+</tr>
+<tr>
+<td align="left">기본적으로 C 라이브러리와 링크됨</td>
+<td align="left">C++ 표준 라이브러리(libstdc++)와 링크됨</td>
+</tr>
+<tr>
+<td align="left">미리 정의된 매크로가 거의 없음</td>
+<td align="left">C++ 관련 몇 가지 추가 매크로가 존재</td>
+</tr>
+<tr>
+<td align="left">C 프로그램 컴파일</td>
+<td align="left">C++ 프로그램 컴파일 (링킹 단계 포함)</td>
+</tr>
+</tbody></table>
+<center><span style="font-size: 90%;">표 3. GCC, G++ 비교</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+Kernel Space 빌드에 필요한 헤더 파일도 설치해준다. 이 라이브러리에는 linux.h, module.h와 같이 커널 모듈 개발에 반드시 필요한 헤더 파일들이 포함되어 있다. 아래 명령어를 통해 설치 가능하다.
+
+<pre><code>sudo apt install linux-headers-$(uname -r)
+</code></pre>
+<br>
+<br>
+
+<h2 id="커널-모듈-실습"><a href="#커널-모듈-실습" class="headerlink" title="커널 모듈 실습"></a>커널 모듈 실습</h2><h3 id="Task1-커널-모듈-및-Makefile-작성"><a href="#Task1-커널-모듈-및-Makefile-작성" class="headerlink" title="Task1 : 커널 모듈 및 Makefile 작성"></a>Task1 : 커널 모듈 및 Makefile 작성</h3><p>커널에 모듈을 적재하고 메시지를 띄우기 위해서는 아래의 과정이 필요하다.</p>
+<ol>
+<li>hello.c &amp; Makefile 생성</li>
+<li>make → .ko 파일 생성</li>
+<li>모듈 로드: insmod hello.ko로</li>
+<li>메세지 확인: dmesg</li>
+<li>모듈 언로드: demod</li>
+</ol>
+<p>먼저 Hello, World!를 출력하는 간단한 C 소스코드를 작성해보자. 필요한 라이브러리는 다음과 같다.</p>
+<ul>
+<li>#include &lt;linux&#x2F;init.h&gt; → 모듈 초기화&amp;종료 시 필요한 헤더</li>
+<li>#include &lt;linux&#x2F;module.h&gt; → 모듈과 관련된 자료구조와 매크로가 정의</li>
+<li>#include &lt;linux&#x2F;kernel.h&gt; → 커널과 관련된 자료구조와 printk() 함수 등이 정의</li>
+</ul>
+<br>
+
+<p><strong>[커널 로드 함수]</strong></p>
+<p><code>init_modue(void)</code>는 모듈이 로드될 때 호출되며, 엔트리 포인트(entry_function) 역할을 한다. 함수의 return 값이 0이 아닐 시, 모듈을 로드하는데 실패한 것으로 간주한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int init_module(void)&#123;</span><br><span class="line">    printk(&quot;Hello World! \n&quot;);</span><br><span class="line">    return 0; //모듈이 정상적으로 로드되었을 경우, 이를 알리기 위해 0을 return한다.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>[모듈 언로드 함수]</strong></p>
+<p><code>cleanup_module(void)</code>는 모듈이 제거될 때 호출되며, 종료 함수(exit function) 역할을 한다. 최신 커널 개발에서는 init_module 대신 <code>module_init</code>()을,<br>cleanup_module대신 <code>module_exit()</code>을 사용하는 방식이 권장된다고 한다.</p>
+<pre><code>void cleanup_module(void)&#123;
+    printk(KERN_INFO &quot;Module unload. ByeBye~\n&quot;);
+&#125;
+</code></pre>
+<br>
+
+<p>언로드 함수 부분에 있는 <code>KERN_INFO</code>는 로그 레벨(Log Level)로, 커널에서 디버깅 메시지를 출력할 때 사용된다. 로그 레벨은 숫자가 낮을수록 치명적이고 긴급한 메시지를 의미하며, 숫자가 높을수록 일반적인 정보나 디버깅 메시지까지 포함한 다양한 수준의 메시지를 출력한다. 이러한 로그 레벨 값들은 <code>printk()</code>함수와 함께 사용되며, 실제로는 pr_xxx 계열의 매크로 함수들에 인자로 전달된다.</p>
+<table>
+<thead>
+<tr>
+<th align="left">이름</th>
+<th align="center">문자열</th>
+<th align="left">별칭 함수</th>
+<th align="left">설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>KERN_EMERG</strong></td>
+<td align="center">0</td>
+<td align="left"><code>pr_emerg()</code></td>
+<td align="left">시스템이 사용 불가능한 긴급 상황</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_ALERT</strong></td>
+<td align="center">1</td>
+<td align="left"><code>pr_alert()</code></td>
+<td align="left">즉각적인 조치가 필요한 경고 수준</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_CRIT</strong></td>
+<td align="center">2</td>
+<td align="left"><code>pr_crit()</code></td>
+<td align="left">하드웨어&#x2F;소프트웨어의 치명적 상태</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_ERR</strong></td>
+<td align="center">3</td>
+<td align="left"><code>pr_err()</code></td>
+<td align="left">일반적인 에러 발생 시 출력</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_WARNING</strong></td>
+<td align="center">4</td>
+<td align="left"><code>pr_warn()</code></td>
+<td align="left">주의가 필요한 경고 상황</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_NOTICE</strong></td>
+<td align="center">5</td>
+<td align="left"><code>pr_notice()</code></td>
+<td align="left">에러는 아니지만 주의 깊게 볼 상태</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_INFO</strong></td>
+<td align="center">6</td>
+<td align="left"><code>pr_info()</code></td>
+<td align="left">일반적인 정보 알림 (부팅 정보 등)</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_DEBUG</strong></td>
+<td align="center">7</td>
+<td align="left"><code>pr_debug()</code>, <code>pr_devel()</code></td>
+<td align="left">디버깅용 상세 정보 출력</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_DEFAULT</strong></td>
+<td align="center">-</td>
+<td align="left">-</td>
+<td align="left">별도 지정이 없을 때 사용하는 기본 레벨</td>
+</tr>
+<tr>
+<td align="left"><strong>KERN_CONT</strong></td>
+<td align="center">“c”</td>
+<td align="left"><code>pr_cont()</code></td>
+<td align="left">이전 로그 메시지와 같은 라인에 연속 출력</td>
+</tr>
+</tbody></table>
+<center><span style="font-size: 90%;">표 4. 로그 레벨</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>이제 커널 빌드를 위해 필요한 Makefile을 작성하자. Makefile은 빌드 과정을 자동화하기 위한 설정 파일로, 다음과 같은 요소로 구성된다.</p>
+<ul>
+<li><strong>Target (목표 파일)</strong>: 명령어 수행 후 나온 결과를 저장할 파일</li>
+<li><strong>Dependency (의존성)</strong>: 목표 파일을 만들기 위해 필요한 구성요소</li>
+<li><strong>Command (명령어)</strong>: 실행 되어야 할 명령어들</li>
+<li><strong>Macro (매크로)</strong>: 코드를 단순화 시킴</li>
+</ul>
+<br>
+
+<p>작성한 Makefile은 다음과 같다.</p>
+<pre><code>obj-m += test1.o
+KDIR := /lib/modules/$(shell uname -r)/build
+all:
+    $(MAKE) -C $(KDIR) M=$(PWD) modules
+clean:
+    $(MAKE) -C $(KDIR) M=$(PWD) clean
+</code></pre>
+<ul>
+<li>obj-m(Loadable module goals): 적재 가능한 모듈을 만들때 사용한다.</li>
+<li>KDIR: 호스트의 커널 소스 루트 경로이다.</li>
+</ul>
+<p><img src="/images/323308_260113_image7.png" alt="그림 7. uname -r 결과"></p>
+<center><span style="font-size: 90%;">그림 7. uname -r 결과</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><code>all: $(MAKE) -C $(KDIR) M=$(PWD) modules</code>: 모든 파일에서 모듈을 빌드한다는 의미.</p>
+<ul>
+<li><code>-C</code>: 디렉토리 변경 후 해당 디렉토리에서 make 실행</li>
+<li><code>M=$(PWD)</code>: 커널 빌드 시스템에 외부 모듈 소스 위치를 알려주는 변수. M&#x3D;에서 지정한 디렉토리의 Makefile을 읽어 모듈을 빌드한다.</li>
+<li><code>modules</code>: 외부 모듈을 빌드하도록 하는 표준 타깃. .o → .ko</li>
+<li><code>clean: $(MAKE) -C $(KDIR) M=$(PWD) clean</code>: 파일을 빌드에서 삭제한다는 의미이다. make clean과 같은 역할을 한다.</li>
+</ul>
+<br>
+
+<p>최종 코드는 다음과 같다.</p>
+<pre><code>#include &lt;linux/module.h&gt;
+#include &lt;linux/init.h&gt;
+#include &lt;linux/kernel.h&gt;
+
+MODULE_LICENSE(&quot;GPL&quot;);
+int init_module(void)&#123;
+    printk(&quot;Hello World! \n&quot;);
+    return 0; //모듈이 정상적으로 로드되었을 경우, 이를 알리기 위해 0을 return한다.
+&#125;
+void cleanup_module(void)&#123;
+    printk(KERN_INFO &quot;Module unload. ByeBye~\n&quot;);
+&#125;
+
+
+obj-m += test1.o
+KDIR := /lib/modules/$(shell uname -r)/build
+all:
+    $(MAKE) -C $(KDIR) M=$(PWD) modules
+clean:
+    $(MAKE) -C $(KDIR) M=$(PWD) clean
+</code></pre>
+<br>
+
+<p>두 개의 파일 작성하고 make 명령어를 실행한다. 빌드가 완료되면 커널 모듈의 실행파일인 .ko 파일이 생성된다.</p>
+<p><img src="/images/323308_260113_image8.png" alt="그림 8. make 명령어 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 8. make 명령어 실행 결과</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>이제 모듈을 생성했으니 <code>insmod</code> 명령어를 사용해 커널에 로드해 보자. 권한이 없을 경우 Operation not permitted 오류가 발생하므로, 반드시 sudo 권한(관리자 권한)으로 실행해야 한다.</p>
+<pre><code>sonotri@sonotri:~/Desktop/portguard$ insmod test1.ko
+insmod: ERROR: could not insert module test1.ko: Operation not permitted sonotri@sonotri:~/Desktop/portguard$ sudo insmod test1.ko
+[sudo] password for sonotri:
+</code></pre>
+<p>이후 dmesg 명령어를 통해 커널 로그를 확인하여 모듈이 정상적으로 로드되었는지 확인한다. 아래와 같이 우리가 C파일의 printf에 작성한 문장이 출력된다면 모듈 로드가 성공적으로 이루어진 것이다.</p>
+<pre><code>sonotri@sonotri:~/Desktop/portguard$ sudo dmesg
+[0.000000] Linux version 6.14.0-28-generic (buildd@lcy02-amd64-079) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #28~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 25 10:47:01 UTC 2 (Ubuntu 6.14.0-28.28~24.04.1-generic 6.14.8) ...
+[13352.625765] workqueue: hub_event hogged CPU for &gt;10000us 11 times, consider switching to WQ_UNBOUND
+[13745.160691] Hello World!
+</code></pre>
+<p>이제 rmmod 명령어를 사용해 커널에서 모듈을 언로드해 보자. 이후 dmesg를 통해 커널 로그를 확인했을 때, 우리가 작성한 “Module unload. ByeBye~” 메시지가 출력된다면 모듈 언로드가 정상적으로 수행된 것이다.</p>
+<pre><code>sonotri@sonotri:~/Desktop/portguard$ sudo rmmod test1
+</code></pre>
+<p><img src="/images/323308_260113_image9.png" alt="그림 9. 모듈 언로드"></p>
+<center><span style="font-size: 90%;">그림 9. 모듈 언로드</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="Task5-USB-디바이스-인식-모듈"><a href="#Task5-USB-디바이스-인식-모듈" class="headerlink" title="Task5 : USB 디바이스 인식 모듈"></a>Task5 : USB 디바이스 인식 모듈</h3><p>Eudyptula Challenge Task 5는 USB 키보드가 연결될 때 모듈이 자동으로 로드되도록 Task 01 모듈을 수정하는 과제로, 팀 프로젝트의 핵심인 USB 장치 감지 모듈 개발과 직접적으로 관련이 있는 중요한 과정이다. 따라서 챌린지 깃허브에서 제공하는 소스 코드를 빌드해 챌린지를 완료하는 것 뿐만 아니라 직접 소스 코드를 작성해 커널을 빌드하여 실행하는 과정 또한 수행했다. 제공하는 소스 코드를 사용하여 실습을 진행하였다.</p>
+<p><strong>[소스 코드 분석]</strong></p>
+<p>챌린지에서 제공하는 커널 소스 코드인 helloworld.c이다.</p>
+<pre><code>#include &lt;linux/usb.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/hid.h&gt;
+
+static int hello_probe(struct usb_interface *interface, const struct usb_device_id *id)
+&#123;
+    pr_alert(&quot;USB keyboard plugged in\n&quot;);
+    return 0;
+&#125;
+
+static void hello_disconnect(struct usb_interface *interface)
+&#123;
+    pr_alert(&quot;USB keyboard disconnected.\n&quot;);
+&#125;
+
+static const struct usb_device_id id_table[] = &#123;
+    &#123; USB_INTERFACE_INFO(USB_INTERFACE_CLASS_HID,
+                        USB_INTERFACE_SUBCLASS_BOOT,
+                        USB_INTERFACE_PROTOCOL_KEYBOARD) &#125;,
+    &#123; &#125;
+&#125;;
+
+MODULE_DEVICE_TABLE(usb, id_table);
+
+static struct usb_driver hello_driver = &#123;
+    .name       = &quot;hellousb&quot;,
+    .probe      = hello_probe,
+    .disconnect = hello_disconnect,
+    .id_table   = id_table,
+&#125;;
+
+static int __init hello_init(void)
+&#123;
+    pr_debug(&quot;Hello World!\n&quot;);
+    return usb_register(&amp;hello_driver);
+&#125;
+
+static void __exit hello_exit(void)
+&#123;
+    pr_debug(&quot;See you later.\n&quot;);
+    usb_deregister(&amp;hello_driver);
+&#125;
+
+module_init(hello_init);
+module_exit(hello_exit);
+
+MODULE_LICENSE(&quot;GPL&quot;);
+MODULE_AUTHOR(&quot;7c1caf2f50d1&quot;);
+MODULE_DESCRIPTION(&quot;Just a module&quot;);
+</code></pre>
+<p><strong>1. 헤더 파일 포함</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• &lt;linux/usb.h&gt;: USB 드라이버를 작성하기 위한 핵심 API와 자료구조 (usb_driver, usb_interface, usb_device_id 등)를 제공한다.</span><br><span class="line">• &lt;linux/module.h&gt;, &lt;linux/kernel.h&gt;: 커널 모듈 관련 매크로 및 로깅 함수 (pr_debug, pr_alert) 사용을 위해 필요하다.</span><br><span class="line">• &lt;linux/hid.h&gt;: HID (Human Interface Device) 장치 관련 정의 포함. HID 키보드는 이 클래스로 분류된다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>2. 장치 연결 시 콜백: hello_probe()</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">• 역할: 지정된 USB 장치가 연결되었을 때 자동으로 호출된다.</span><br><span class="line">• 매개변수</span><br><span class="line">    • interface: 연결된 USB 인터페이스에 대한 정보이다.</span><br><span class="line">    • id: 매칭된 장치 ID이다.</span><br><span class="line">• 기능: 현재는 단순히 경고 레벨 로그(pr_alert)로 키보드 연결을 알린다.</span><br><span class="line">• 반환값: 0은 정상적으로 드라이버가 장치를 처리했음을 의미한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 장치 제거 시 콜백: hello_disconnect()</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">• 역할: USB 키보드가 시스템에서 제거되었을 때 호출된다.</span><br><span class="line">• 기능: 마찬가지로 로그 메시지를 출력하며 자원 해제 등의 작업이 필요한 경우 여기에 구현한다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>4. 지원 장치 정의: id_table[]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">• 목적: 드라이버가 지원하는 USB 장치(또는 클래스)를 명시하는 테이블이다.</span><br><span class="line">• 매크로:</span><br><span class="line">    • USB_INTERFACE_INFO(...)는 장치의 인터페이스 클래스 정보를 기반으로 매칭을 수행한다.</span><br><span class="line">    • HID 클래스(0x03), Boot 서브클래스(0x01), 키보드 프로토콜(0x01)을 갖는 장치 → USB 키보드이다.</span><br><span class="line">• 마지막 원소는 빈 구조체 &#123;&#125;로 종료해야 한다. (kbuild 매크로 규칙)</span><br></pre></td></tr></table></figure>
+
+<p><strong>5. 장치 테이블 등록</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">• 해당 드라이버가 특정 USB 장치 ID 테이블을 참조한다는 사실을 커널에 알린다.</span><br><span class="line">• 사용자 공간의 udev, modprobe 등에서 자동 모듈 로딩에 필요하다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>6. USB 드라이버 구조체 정의</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">• usb_driver 구조체는 이 드라이버가 어떤 장치를 지원하고 어떤 함수가 어떤 이벤트를 처리할지 커널에 알려준다.</span><br><span class="line">    • name: 드라이버 이름 /sys/bus/usb/drivers/ 아래에 등록된다.</span><br><span class="line">    • probe, disconnect: 장치 연결 및 제거 시 호출될 콜백 함수이다.</span><br><span class="line">    • id_table: 지원 장치 ID 목록이다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>7. 모듈 초기화 및 종료 함수</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">• hello_init():</span><br><span class="line">    • 모듈이 로드될 때 실행한다.</span><br><span class="line">    • usb_register()를 호출하여 커널에 드라이버 등록한다.</span><br><span class="line">• hello_exit():</span><br><span class="line">    • 모듈이 언로드될 때 실행한다.</span><br><span class="line">    • usb_deregister()를 호출하여 커널에서 드라이버 제거한다.</span><br><span class="line">• 로그는 디버그 레벨로 출력되며 pr_debug()는 DDEBUG 옵션이 설정되어야 표시된다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>8. 모듈 메타데이터 및 등록 매크로</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">• module_init, module_exit: 커널에 초기화 및 정리 함수 등록한다.</span><br><span class="line">• MODULE_LICENSE(&quot;GPL&quot;): 라이선스를 명시하지 않으면 일부 심볼에 접근 제한이 생길 수 있다.</span><br><span class="line">• MODULE_AUTHOR, MODULE_DESCRIPTION: modinfo 명령으로 확인 가능한 메타데이터를 포함한다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>[실습 과정]</strong><br>먼저 make를 이용해서 챌린지에서 제공하는 소스코드를 빌드해준다.</p>
+<p><img src="/images/323308_260113_image10.png" alt="그림 10. 소스 코드 빌드 과정"></p>
+<center><span style="font-size: 90%;">그림 10. 소스 코드 빌드 과정</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>관련 파일들이 생성되며 정상적으로 빌드되었음을 확인 가능하다.</p>
+<p><img src="/images/323308_260113_image11.png" alt="그림 11. 빌드를 통해 생성된 파일들"></p>
+<center><span style="font-size: 90%;">그림 11. 소스 코드 빌드 과정</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+    
+<p><code>insmod</code>를 이용해 모듈을 수동으로 로드해준다.</p>
+<p><img src="/images/323308_260113_image12.png" alt="그림 12. 빌드를 통해 생성된 파일들"></p>
+<center><span style="font-size: 90%;">그림 12. insmod 명령어 사용</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+    
+<p>이후 <code>sudo dmesg | tail</code> 을 이용해서 확인해보니 모듈이 로드되어 기존 Task1의 모듈 기능과 같이 hello world!가 뜬다. 또한 usb도 연결되어 usbcore : registered new interface drver hellousb라는 메시지가 뜨는 것을 확인할 수 있다.</p>
+<p><img src="/images/323308_260113_image13.png" alt="그림 13. 모듈 로드 실행 결과 확인"></p>
+<center><span style="font-size: 90%;">그림 13. insmod 명령어 사용</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>마지막으로 <code>rmmod</code>를 이용해 수동으로 언로드한다.</p>
+<p><img src="/images/323308_260113_image14.png" alt="그림 14. rmmod 명령어 사용"></p>
+<center><span style="font-size: 90%;">그림 14. rmmod 명령어 사용</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><code>see you later</code>이라는 메시지가 출력되며 usb 연결이 해제된것을 확인할 수 있다.</p>
+<p><img src="/images/323308_260113_image15.png" alt="그림 15. rmmod 명령어 사용"></p>
+<center><span style="font-size: 90%;">그림 15. usb 연결 해제 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+<br>
+<br>
+
+<p><strong>[직접 소스코드를 작성하여 모듈 개발 실습 진행]</strong></p>
+<p>본격적인 커널 모듈 개발을 준비하기 위해 챌린지에서 제공되는 소스 코드를 분석하고 실습하는 과정뿐만 아니라 직접 USB (이번 실습의 경우 SanDisk Ultra Flair)가 시스템에 연결될 때 직접 제작한 hello.ko 커널 모듈이 자동으로 로드되도록 구현하는 실습을 진행하기로 했다.</p>
+<br>
+
+<p><strong>[USB 장치 정보 확인]</strong></p>
+<p><img src="/images/323308_260113_image16.png" alt="그림 16. lsusb 명령어 사용하여 대상 USB 정보 확인"></p>
+<center><span style="font-size: 90%;">그림 16. lsusb 명령어 사용하여 대상 USB 정보 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<ul>
+<li>lsusb 명령어로 모듈이 반응할 USB 드라이브의 벤더 ID(idVendor)와 제품 ID(idProduct)를 알아낸다. 벤더 ID와 제품 ID는 USB 장치를 고유하게 식별하는 데 사용되는 16비트 정수 값이다.</li>
+<li>벤더 ID (Vendor ID, VID): 장치를 제조한 회사에 할당된 고유 번호이다. 이 실습에서는 0x0781이 SanDisk의 벤더 ID이다.</li>
+<li>제품 ID (Product ID, PID): 해당 제조사가 만든 특정 제품에 할당된 고유 번호이다. SanDisk에서 만든 Ultra Flair 모델의 제품 ID는 0x5591이다.</li>
+</ul>
+<br>
+
+<p><strong>[커널 모듈 소스 코드 작성]</strong></p>
+<pre><code>#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/usb.h&gt;
+
+static const struct usb_device_id usb_drive_id_table[] = &#123;
+    &#123;
+        .match_flags     = USB_DEVICE_ID_MATCH_VENDOR |
+                        USB_DEVICE_ID_MATCH_PRODUCT |
+                        USB_DEVICE_ID_MATCH_INT_CLASS,
+        .idVendor        = 0x0781,                 // 벤더 ID (SanDisk 등)
+        .idProduct       = 0x5591,                 // 제품 ID
+        .bInterfaceClass = USB_CLASS_MASS_STORAGE, // USB 저장 장치 클래스
+    &#125;,
+    &#123; &#125;
+&#125;;
+
+MODULE_DEVICE_TABLE(usb, usb_drive_id_table);
+
+static int usb_drive_probe(struct usb_interface *interface, const struct usb_device_id *id)
+&#123;
+    printk(KERN_INFO &quot;kamatte@ubuntu: USB drive detected! Vendor: 0x%04x, Product: 0x%04x\n&quot;,
+        id-&gt;idVendor, id-&gt;idProduct);
+    return 0;
+&#125;
+
+static void usb_drive_disconnect(struct usb_interface *interface)
+&#123;
+    printk(KERN_INFO &quot;kamatte@ubuntu: USB drive disconnected.\n&quot;);
+&#125;
+
+static struct usb_driver usb_drive_driver = &#123;
+    .name       = &quot;usb_drive_hotplug&quot;, // 모듈의 이름
+    .probe      = usb_drive_probe,
+    .disconnect = usb_drive_disconnect,
+    .id_table   = id_table,
+&#125;;
+
+static int __init hello_init(void)
+&#123;
+    int result;
+    result = usb_register(&amp;usb_drive_driver);
+    if (result) &#123;
+        printk(KERN_ERR &quot;kamatte@ubuntu: Failed to register USB driver: %d\n&quot;, result);
+    &#125;
+    return result;
+&#125;
+
+static void __exit hello_exit(void)
+&#123;
+    usb_deregister(&amp;usb_drive_driver);
+&#125;
+
+module_init(hello_init);
+module_exit(hello_exit);
+
+MODULE_LICENSE(&quot;GPL&quot;);
+MODULE_AUTHOR(&quot;kamatte&quot;);
+MODULE_DESCRIPTION(&quot;USB Hotplug Example Module&quot;);
+</code></pre>
+<br>
+
+<p><strong>[소스 코드 분석]</strong></p>
+<p><strong>헤더와 역할</strong></p>
+<pre><code>#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/usb.h&gt;
+</code></pre>
+<ul>
+<li><code>linux/init.h</code>: **init, **exit 같은 초기화&#x2F;종료 관련 매크로를 제공한다. 초기화 함수의 코드가 모듈 로드 후 불필요하면 제거되도록 한다.</li>
+<li><code>linux/module.h</code>: 모듈 메타데이터와 module_init&#x2F;module_exit 등 기본 매크로를 제공한다.</li>
+<li><code>linux/kernel.h</code>: 커널 로깅과 일반 유틸리티를 제공한다.</li>
+<li><code>linux/usb.h</code>: USB 코어 인터페이스(구조체 usb_driver, usb_interface, usb_device_id 등) 정의가 들어 있다.</li>
+</ul>
+<br>
+
+<p><strong>usb_device_id usb_drive_id_table[ ]</strong></p>
+<pre><code>static const struct usb_device_id usb_drive_id_table[] = &#123;
+    &#123;
+        .match_flags = USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT | USB_DEVICE_ID_MATCH_INT_CLASS,
+        .idVendor = 0x0781,
+        .idProduct = 0x5591,
+        .bInterfaceClass = USB_CLASS_MASS_STORAGE,
+    &#125;,
+    &#123;&#125;
+&#125;;
+MODULE_DEVICE_TABLE(usb, usb_drive_id_table);
+</code></pre>
+<ul>
+<li>드라이버가 어떤 USB 장치&#x2F;인터페이스와 바인딩될지 정의하는 부분이다. 각 항목은 어떤 필드를 비교할지 알려주는 match_flags 와 비교 대상 필드(idVendor, idProduct, bInterfaceClass)를 가진다.</li>
+<li>이번 실습에서는 USB_DEVICE_ID_MATCH_VENDOR | USB_DEVICE_ID_MATCH_PRODUCT | USB_DEVICE_ID_MATCH_INT_CLASS로 지정했으므로 벤더 ID(0x0781), 제품 ID(0x5591), 그리고 인터페이스 클래스(USB_CLASS_MASS_STORAGE)가 모두 일치할 때 바인딩 대상으로 고려된다.</li>
+<li>배열 끝의 {}는 NULL-terminator(마지막을 알리는 빈 값) 역할이다.</li>
+<li>MODULE_DEVICE_TABLE(usb, usb_drive_id_table);는 이 ID 표를 바탕으로 모듈의 alias(어떤 장치가 들어오면 이 모듈을 자동으로 로드할지)를 생성해 준다. 또 udev가 장치 연결 시 이 모듈을 자동 로드할 수 있게 해준다.</li>
+</ul>
+<br>
+
+<p><strong>usb_drive_probe (probe 콜백)</strong></p>
+<pre><code>static int usb_drive_probe(struct usb_interface *interface, const struct usb_device_id *id)
+&#123;
+    printk(KERN_INFO &quot;kamatte@ubuntu: USB drive detected! Vendor: 0x%04x, Product: 0x%04x\n&quot;, id-&gt;idVendor, id-&gt;idProduct);
+    return 0;
+&#125;
+</code></pre>
+<ul>
+<li><p><strong>시그니처</strong>: static int usb_drive_probe(struct usb_interface *interface, const struct usb_device_id *id)</p>
+<p>● interface는 바인딩되는 Interface Descriptor를 가리키는 포인터이다. (USB 장치는 여러 인터페이스를 가질 수 있다.)</p>
+<p>● id는 매칭된 usb_device_id 테이블 항목의 포인터이다.</p>
+</li>
+<li><p><strong>호출 시점</strong>: USB 코어가 장치를 enumeration(열거) 하고 드라이버의 id_table과 비교해서 일치하는 드라이버를 찾았을 때 바인딩 단계에서 호출된다.</p>
+</li>
+<li><p><strong>내부 동작</strong>: printk(KERN_INFO, …)로 설정된 로그 메시지를 남기는 것을 수행한다. id-&gt;idVendor&#x2F;id-&gt;idProduct를 16진수로 출력한다.</p>
+</li>
+<li><p><strong>반환 값</strong>: 0을 반환하면 바인딩 성공으로 간주된다. probe에서 실제 장치 초기화(메모리 할당, 엔드포인트 파싱, URB 생성 등)를 해서 성공&#x2F;실패 여부에 따라 0 또는 음수로 반환하는 것이 일반적이다.</p>
+</li>
+</ul>
+<br>
+
+<p><strong>usb_drive_disconnect (disconnect 콜백)</strong></p>
+<pre><code>static void usb_drive_disconnect(struct usb_interface *interface)
+&#123;
+    printk(KERN_INFO &quot;kamatte@ubuntu: USB drive disconnected.\n&quot;);
+&#125;
+</code></pre>
+<ul>
+<li><strong>시그니처</strong>: static void usb_drive_disconnect(struct usb_interface *interface)</li>
+<li><strong>호출 시점</strong>: 장치가 제거되거나 드라이버가 언바인드될 때 호출된다.</li>
+<li><strong>내부 동작</strong>: 실습에서는 단순히 printk로 설정된 분리 로그 메시지만 남긴다. 일반적인 실제 드라이버는 보통 probe에서 할당한 모든 자원(메모리, URB, 파일&#x2F;디바이스 등록 등)을 해제하고 usb_set_intfdata(interface, NULL) 등으로 인터페이스에 연결된 드라이버 데이터를 정리한다.</li>
+</ul>
+<br>
+
+<p><strong>struct usb_driver usb_drive_driver</strong></p>
+<pre><code>static struct usb_driver usb_drive_driver = &#123;
+    .name = &quot;usb_drive_hotplug&quot;,
+    .probe = usb_drive_probe,
+    .disconnect = usb_drive_disconnect,
+    .id_table = usb_drive_id_table,
+&#125;;
+</code></pre>
+<ul>
+<li><strong>.name</strong> : 드라이버 이름이다. 디버깅이나 내부 표시에 사용된다.</li>
+<li><strong>.probe, .disconnect</strong> : 콜백 함수들이다. USB 코어가 호출한다.</li>
+<li><strong>.id_table</strong> : 위에서 정의한 id 테이블을 가리킨다. USB 코어는 이 테이블을 이용해서 어떤 인터페이스에 이 드라이버를 바인딩할지 결정한다.</li>
+</ul>
+<br>
+
+<p><strong>모듈 초기화&#x2F;종료 (hello_init &#x2F; hello_exit)</strong></p>
+<pre><code>static int __init hello_init(void)
+&#123;
+    int result;
+    result = usb_register(&amp;usb_drive_driver);
+    if (result) &#123;
+        printk(KERN_ERR &quot;kamatte@ubuntu: Failed to register USB driver: %d\n&quot;, result);
+    &#125;
+    return result;
+&#125;
+
+static void __exit hello_exit(void)
+&#123;
+    usb_deregister(&amp;usb_drive_driver);
+&#125;
+module_init(hello_init);
+module_exit(hello_exit);
+</code></pre>
+<ul>
+<li>hello_init에서 usb_register(&amp;usb_drive_driver)를 호출해 USB 코어에 이 드라이버를 등록한다. 반환값이 0이 아니면 등록 실패이므로 따로 로그를 남기도록 설정해 두었다.</li>
+<li>hello_exit에서 usb_deregister(&amp;usb_drive_driver)로 커널에서 드라이버를 등록 해제한다.</li>
+<li>**init&#x2F;**exit는 초기화&#x2F;종료 루틴이 각각 init&#x2F;exit 전용 섹션에 들어가게 한다.</li>
+<li>module_init과 module_exit 매크로는 커널에 이 함수들을 등록한다.</li>
+</ul>
+<br>
+
+<p><strong>모듈 메타데이터</strong></p>
+<p>모듈의 메타데이터를 정의하는 부분이다.</p>
+<pre><code>MODULE_LICENSE(&quot;GPL&quot;);
+MODULE_AUTHOR(&quot;kamatte&quot;);
+MODULE_DESCRIPTION(&quot;USB Hotplug Example Module&quot;);
+</code></pre>
+<br>
+
+<p><strong>[동작 흐름]</strong></p>
+<ol>
+<li>USB 장치를 꽂음 → 호스트가 장치 열거(디스크립터 읽기) 수행. 커널 USB 코어가 새 장치를 인식하고 디스크립터(벤더 ID, 제품 ID, 인터페이스 정보)를 읽음.</li>
+<li>커널 USB 코어가 연결된 장치의 정보와 드라이버의 usb_device_id 테이블(usb_drive_id_table)을 비교.</li>
+<li>매칭되면 USB 코어가 해당 인터페이스에 대해 드라이버를 바인딩하고 probe 호출. 이 시점에서 printk()가 실행돼 설정해둔 로그 메시지가 출력됨.</li>
+<li>probe가 성공하면 해당 인터페이스는 드라이버가 관리. (디바이스와 드라이버가 연결된 상태)</li>
+<li>장치 제거 시 disconnect 호출 → 설정한 로그 메시지가 출력되고 드라이버는 할당 자원 정리.</li>
+<li>모듈을 언로드하면 hello_exit로 usb_deregister 되고 더 이상 바인딩되지 않음.</li>
+</ol>
+<br>
+
+<p><strong>[컴파일 및 설치]</strong></p>
+<ul>
+<li><code>make</code>로 hello.ko 파일을 생성</li>
+<li><code>sudo cp hello.ko /lib/modules/$(uname -r)/kernel/drivers/usb/</code>로 제작한 모듈을 커널 디렉터리에 복사</li>
+</ul>
+<br>
+
+<p><strong>[모듈 종속성 업데이트]</strong><br>sudo depmod -a 명령어로 커널이 USB ID와 hello.ko 모듈을 매핑하도록 종속성 정보를 업데이트했다.</p>
+<p><img src="/images/323308_260113_image17.png" alt="그림 17. 모듈 종속성 업데이트 명령어 depmod -a"></p>
+<center><span style="font-size: 90%;">그림 17. 모듈 종속성 업데이트 명령어 depmod -a</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>모듈 종속성 업데이트란?</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">depmod -a 명령어는 커널 모듈의 종속성 정보를 업데이트하는 도구이다. 명령어를 실행하면 /lib/modules/ 디렉터리 내의 모든 모듈을 스캔하고, 모듈 간의 의존성 및 특정 장치에 대한 드라이버 정보를 담은 파일을 생성한다. 파일의 이름은 기본적으로 modules.dep.</span><br></pre></td></tr></table></figure>
+
+<p><strong>왜 해야 하는가?</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">핫플러그 기능이 올바르게 작동하기 위해 필수적이다. depmod가 생성하는 정보는 udev와 같은 사용자 공간 핫플러그 도구들이 사용한다. USB가 연결되면 udev는 해당 장치의 ID를 얻어 modules.dep 파일을 조회한다. 이런 조회 과정을 통해 특정 ID에 맞는 드라이버 모듈(이번 실습의 경우 hello.ko)을 찾아내고 커널에 해당 모듈을 로드하라고 요청한다.</span><br><span class="line">따라서 depmod -a를 실행하지 않으면 시스템은 우리가 만든 모듈이 어떤 장치를 위한 것인지 알지 못하므로 USB를 연결해도 모듈이 자동으로 로드되지 않는다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>[기존 드라이버 언로드]</strong></p>
+<ul>
+<li>처음에 usb-storage나 uas와 같은 기본 드라이버가 먼저 로드되어 직접 제작한 모듈의 probe 함수가 호출되지 않았다. usb_drive_hotplug 드라이버가 등록은 되었지만, 실제로 장치 제어 권한을 얻지 못하고 기본 드라이버가 먼저 동작하고 있는 것이다.</li>
+<li><code>sudo rmmod uas와 sudo rmmod usb_storage</code> 명령어를 사용해서 기존 드라이버를 임시로 언로드했다.</li>
+</ul>
+<p><img src="/images/323308_260113_image18.png" alt="그림 18. 기존 드라이버 언로드 과정"></p>
+<center><span style="font-size: 90%;">그림 18. 기존 드라이버 언로드 과정</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>[실행 결과]</strong></p>
+<p>USB 드라이브를 연결하면 모듈이 자동으로 로드되고, dmesg로 설정한 로그 메시지가 출력되는 것을 확인 할 수 있다.</p>
+<p><img src="/images/323308_260113_image19.png" alt="그림 19. 모듈 자동 로드 및 grep 명령어를 통한 USB 감지 로그 메시지 확인"></p>
+<center><span style="font-size: 90%;">그림 19. 모듈 자동 로드 및 grep 명령어를 통한 USB 감지 로그 메시지 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>이후 다시 USB를 연결 해제하면 연결 해제 시 설정해둔 로그 메시지가 출력되는 것 또한 확인할 수 있다.</p>
+<p><img src="/images/323308_260113_image20.png" alt="그림 20. USB를 연결 해제 로그 메시지 확인"></p>
+<center><span style="font-size: 90%;">그림 20. USB를 연결 해제 로그 메시지 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+<br>
+
+<h3 id="정리-1"><a href="#정리-1" class="headerlink" title="정리"></a>정리</h3><p>이번 챕터에서는 실시간 USB 탐지 모듈 개발을 위한 사전 준비해보았다. 가상 머신을 활용해 커널 모듈 개발 환경을 구축하고, 리눅스 커널 모듈과 Makefile 작성 방법, 커널 모듈의 로드와 언로드, 컴파일 및 수정 방법을 학습하였다. 또한, 커널 모듈에서 발생하는 오류를 확인하고 해결하는 방법을 익히며, 코드 스타일에 대해서도 알아보았다. 마지막으로 USB를 인식하는 모듈을 실습하면서 USB 관련 모듈의 구조와 작동 방식을 확인할 수 있었다.</p>
+<p>다음 챕터에서는 이번에 준비한 내용을 바탕으로 USB 모듈의 구조를 설계하고, USB 장치가 삽입되거나 제거될 때 이벤트가 어떻게 처리되는지 살펴볼 예정이다. 더 나아가 VID와 PID 로그를 출력하도록 구현하며, 본격적으로 실시간 USB 탐지 모듈 개발을 진행할 것이다.</p>
+<br>
+<br>
+<br>
+<br>
+
+<h1 id="커널-모듈-개발"><a href="#커널-모듈-개발" class="headerlink" title="커널 모듈 개발"></a>커널 모듈 개발</h1><h2 id="개요-2"><a href="#개요-2" class="headerlink" title="개요"></a>개요</h2><p>지금까지 리눅스 커널의 기본 구조와 USB 서브시스템이 어떻게 동작되는지 학습했다. 챕터 3에서는 USB 장치의 연결·해제 이벤트를 실시간으로 탐지하는 커널 모듈을 직접 개발하고, 코드가 어떻게 동작하는지에 대해 다룰것이다. 커널 모듈이 어떻게 유저 공간과 통신하고 이벤트를 전달하는지 확인해보고 이를 통해 커널 레벨 USB 모니터링의 작동 원리를 살펴보려고 한다.</p>
+<br>
+
+<h2 id="커널-모듈-소개"><a href="#커널-모듈-소개" class="headerlink" title="커널 모듈 소개"></a>커널 모듈 소개</h2><p>제작한 커널 모듈은 크게 세 가지의 주요 기능을 가진다.</p>
+<p><strong>1. 화이트리스트 및 차단 정책</strong></p>
+<ul>
+<li>usb_drive_probe 함수가 USB 장치 연결 시 가장 먼저 호출된다.</li>
+<li>등록된 whitelist에 있는 VID와 PID인지 확인한다.</li>
+<li>화이트리스트에 있다면 -ENODEV를 리턴해 원래의 스토리지 드라이버(usb-storage)가 장치를 사용할 수 있게 허용한다.</li>
+<li>화이트리스트에 없다면 0을 리턴해 이 보안 모듈이 장치를 Claim 해버림으로써 실제 스토리지 드라이버가 붙지 못하게 하여 차단한다.</li>
+</ul>
+<p><strong>2.비정상 반복 활동 감지</strong></p>
+<ul>
+<li>기능: 1분안에 5번 이상 연결&#x2F;해제 이벤트가 발생하면 공격 시도나 오동작으로 간주한다.</li>
+<li>동작: update_activity_and_maybe_revoke 함수에서 시간을 체크한다. 기준치를 초과하면 revoked 플래그를 true로 설정한다.</li>
+<li>결과: revoked 상태가 되면 원래 화이트리스트에 있던 장치라도 즉시 차단 대상으로 변경된다.</li>
+</ul>
+<p><strong>3.Netlink 통신</strong></p>
+<ul>
+<li>커널에서 발생하는 차단, 허용, 경고 메시지를 netlink_send_msg 함수를 통해 유저 공간의 특정 프로세스(PID 100)로 전송한다. 이렇게 해서 사용자가 실시간으로 상황을 모니터링할 수 있다.</li>
+</ul>
+<br>
+<br>
+
+<h2 id="usb-block-kernel-c"><a href="#usb-block-kernel-c" class="headerlink" title="usb_block_kernel.c"></a>usb_block_kernel.c</h2><h3 id="전처리-지시자"><a href="#전처리-지시자" class="headerlink" title="전처리 지시자"></a>전처리 지시자</h3><p>전처리기란 ‘#’기호로 시작되며, 프로그램 코드를 컴파일 하기 전에 특정 작업을 수행하는 소프트웨어 도구이다. 컴파일 단계 이전에 특정 코드의 변경, 수정, 조건적 컴파일 등을 처리한다.</p>
+<p>먼저 프로그램에 포함할 헤더파일을 참조하는 기능의 <code>#include</code>을 이용하여 필요한 헤더파일들을 작성해준다.</p>
+<pre><code>#include &lt;linux/init.h&gt;
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/usb.h&gt;
+#include &lt;linux/types.h&gt;
+#include &lt;linux/usb/ch9.h&gt; // USB_CLASS_MASS_STORAGE 상수 포함
+#include &lt;linux/netlink.h&gt; //netlink 사용을 위해
+#include &lt;net/netlink.h&gt;
+#include &lt;linux/skbuff.h&gt;
+#include &lt;net/net_namespace.h&gt;
+#include &lt;linux/jiffies.h&gt;
+#include &lt;linux/spinlock.h&gt;
+</code></pre>
+<p><code>#define</code>은 반복되는 일반적으로 코드 내에서 많이 사용되는 상수나 함수를 정의할 떄 사용된다. 컴파일러가 원본 파일에서 식별자가 발생할 때마다 토큰 문자열로 대체하도록 해준다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">//Netlink 메시지 수신 대상 user의 PID를 100으로 정의(고정)</span><br><span class="line">#define USER_PID 100</span><br><span class="line"></span><br><span class="line">//user space와 통신할 Netlink 프로토콜 ID를 31로 지정</span><br><span class="line">#define NETLINK_USB 31</span><br><span class="line"></span><br><span class="line">//1분동안 5번 이상 등록·해제가 반복 감지되면 차단시키는 기능 구현부. 임계값 설정부</span><br><span class="line">#define USB_IO_WINDOW_MS   (60*1000)</span><br><span class="line">#define USB_IO_THRESHOLD   5</span><br><span class="line"></span><br><span class="line">//struct sock 구조체를 가리키는 nl_sk라는 포인터 선언</span><br><span class="line">//Null은 아직 소켓을 생성하지 않았음을 의미</span><br><span class="line">static struct sock *nl_sk = NULL;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p><strong>Struct socket &amp; struct sock 구조체</strong></p>
+<p>커널에는 소켓을 표현하는 두 개의 구조체로 struct socket과 struct sock가 있다. struct socket은 사용자 공간에 인터페이스를 제공하며, struct sock는 L3 레이어에 인터페이스를 제공한다. Struct socket 구조체는 아래와 같이 구성되어있다.</p>
+<pre><code>/**
+*  struct socket - general BSD socket
+*  @state: socket state (%SS_CONNECTED, etc)
+*  @type: socket type (%SOCK_STREAM, etc)
+*  @flags: socket flags (%SOCK_NOSPACE, etc)
+*  @ops: protocol specific socket operations
+*  @file: File back pointer for gc
+*  @sk: internal networking protocol agnostic socket representation
+*  @wq: wait queue for several uses
+*/
+</code></pre>
+<br>
+
+<p><strong>[Netlink]</strong></p>
+<p>Netlink는 Linux 운영체제에서 커널과 사용자 공간 프로세스 간의 데이터 교환을 가능하게 하는 통신 메커니즘으로 설계되어 있는 BSD 소켓 기반의 IPC(Inter-Process Communication) API이다. Netlink의 특징은 아래와 같다.</p>
+<ul>
+<li>비동기 이벤트 기반 통신: 커널에서 발생하는 이벤트를 사용자 공간으로 실시간 전달. 사용자는 Polling 없이 이벤트 기반 처리 구현 가능</li>
+<li>효율적인 데이터 교환: 소켓 기반의 통신</li>
+<li>보안 및 안정성: User space와 Kernel Space 간의 인터페이스가 명확히 분리되어있어 보안성이 높음</li>
+</ul>
+<p><img src="/images/323308_260113_image21.png" alt="그림 21. netlink&amp;socket"></p>
+<center><span style="font-size: 90%;">그림 21. netlink&socket</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>[BSD 소켓]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">프로세스 간 통신(IPC)에 사용되는, 인터넷 도메인 소켓과 유닉스 도메인 소켓을 위한 애플리케이션 프로그래밍 인터페이스이다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[PC(Inter-Process Communication)]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IPC는 프로세스 간 통신이다. 프로세스들 사이에 서로 데이터를 주고받는 행위 또는 행위에 대한 방법이나 경로를 의미한다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="화이트리스트-정의부"><a href="#화이트리스트-정의부" class="headerlink" title="화이트리스트 정의부"></a>화이트리스트 정의부</h3><p>구조체는, 여러 자료형의 변수들을 하나로 묶어 새로운 자료형을 만드는 것을 의미한다. 배열과 비슷한 개념이며 다양한 자료형을 하나의 단위로 묶을 수 있다는 차이점을 가진다.</p>
+<p>먼저 struct 키워드로 allowed_usb_device 구조체를 작성하고, 구조체 멤버로 <code>__u16 idVendor와</code> <code>__u16 idProduct</code> 2개를 정의한다. USB 장치를 하나로 표현하기 위한 새로운 자료형을 만드는 것이다. 그리고 하단의 구조체 배열 whitelist로, 위에서 정의한 구조체를 여러개 묶어 배열로 만든다.</p>
+<pre><code>//구조체 선언
+struct allowed_usb_device &#123;
+    __u16 idVendor;
+    __u16 idProduct;
+&#125;;
+
+//위 구조체 여러개를 묶어 배열로 저장
+static const struct allowed_usb_device whitelist[] = &#123;
+    &#123; 0x0781, 0x5591 &#125;, //idVendor=0x0781이고 idProduct=0x5591
+    &#123; 0x058f, 0x6387 &#125;,
+    &#123; 0x325d, 0x6310&#125;
+&#125;;
+</code></pre>
+<ul>
+<li><code>__u16 idVendor</code>: 디바이스를 위한 USB 제조사 식별자</li>
+<li><code>__u16 idProduct</code>: 디바이스를 위한 USB 식품 식별자</li>
+</ul>
+<p>⇒ VID와 PID쌍으로 USB 식별 가능하다.</p>
+<p>⇒ 화이트리스트에 등록해둘 USB 정보를 구조체 배열로써 저장해둔다.</p>
+<br>
+
+<p>usb의 활동을 저장하는 usb_activity 구조체를 선언한다. 구조체의 멤버로는 <code>idVendor</code>, <code>idProduct</code>와 정수형 변수2개, bool형 변수 1개가 포함된다.</p>
+<pre><code>struct usb_activity &#123;
+    __u16 idVendor;
+    __u16 idProduct;
+    unsigned long last_event_jiffies;  // 마지막 등록·해제 시각 변수 선언
+    int event_count;                   // window 내 이벤트 횟수 변수 선언
+    bool revoked;                      // true = whitelist에서 제거된 상태
+&#125;;
+</code></pre>
+<p>⇒ usb_activity는 각 USB의 활동 정보를 담고 있는 구조체이다.</p>
+<pre><code>//activity_table이라는 구조체 배열 선언. usb_activity들을 저장
+//크기는 whitelist 배열 크기로
+static struct usb_activity activity_table[ARRAY_SIZE(whitelist)];
+
+//스핀락 선언- 커널에서의 동시 접근을 막기 위한 잠금장치
+static spinlock_t activity_lock;
+</code></pre>
+<ul>
+<li><p><code>spinlock_t</code> 구조체: 커널 내부에서 정의된 스핀락 객체 타입. 해당 객체는 CPU가 동시에 자원에 접근하는 것을 막기 위해 사용된다.</p>
+<p>⇒ activity_table이라는 USB들의 활동 정보를 저장할 배열을 만든다.</p>
+<br></li>
+</ul>
+<p><strong>[스핀락(spinlock)]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Race Condition(경쟁상태) 상황에서 Lock이 반환될 때까지, 즉 임계구역에 진입 가능할 때까지 프로세스가 재시도하며 대기하는 상태. 즉 임계 구역에 여러 스레드가 접근한 상태</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="ID-테이블"><a href="#ID-테이블" class="headerlink" title="ID 테이블"></a>ID 테이블</h3><p>usb_device_id 구조체를 요소로 가지는 usb_drive_id_table 배열을 선언하고 초기화 하고있다.</p>
+<pre><code>static const struct usb_device_id usb_drive_id_table[] = &#123;
+&#123;
+    .match_flags = USB_DEVICE_ID_MATCH_INT_CLASS,
+    .bInterfaceClass = USB_CLASS_MASS_STORAGE,
+&#125;, &#123;&#125;
+&#125;;
+MODULE_DEVICE_TABLE(usb, usb_drive_id_table);
+</code></pre>
+<ul>
+<li><p>usb_device_id 구조체: 커널에서 제공하는, USB 장치 매칭 규칙을 정의하는 커널 구조체이다. 어떤 USB 장치를 지원하는지 명시하기 위해 사용한다.</p>
+<p>• <code>.match_flag</code>: USB 장치 매칭시 어떤 필드를 사용할 지 지정하는 bit flag. 우리는 USB_DEVICE_ID_MATCH_INT_CLASS 즉 인터페이스의 클래스로 장치를 매칭하도록 하였다.</p>
+<p>• <code>.bInterfaceClass</code>: USB 인터페이스의 class code를 정의. 우리는 USB_CLASS_MASS_STORAGE(0x08, USB 메모리)를 사용한다고 정의하였다. 참고로 오디오의 경우 0x01, HID의 경우 0x03 등의 값을 가진다.</p>
+</li>
+</ul>
+<p>⇒ USB 인터페이스 클래스가 USB 메모리 장치를 허용(처리)하도록 규칙을 정하는 기능을 한다.</p>
+<br>
+
+<p>핫플러그와 모듈 적재 시스템은 어떤 모듈이 어떤 하드웨어 디바이스와 함께 동작해야하는지 알아야한다. 따라서 struct pci_device_id를 통해 이를 사용자 영역으로 공개한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MODULE_DEVICE_TABLE(usb, usb_drive_id_table);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>MODULE_DEVICE_TABLE(pci, pci_ids): 사용자 공간에서 해당 드라이버가 제어할 수 있는 장치를 파악하는데 필요한 매크로이다.</li>
+</ul>
+<p>⇒ USB 드라이버에서 장치 매핑 정보(usb_drive_table)을 커널에 공개하는 기능을 한다.</p>
+<br>
+
+<p><strong>[버스]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">컴퓨터 구조에서 버스(bus)는 하드웨어 통신을 위한 통로로 주소버스, 데이터버스, 제어버스 등이 있다. 이 버스들은 CPU ↔ 메모리 ↔ I/O 장치를 물리적으로 연결하는 hw 신호선의 집합이라고 할 수 있다.</span><br></pre></td></tr></table></figure>
+
+<p><strong>[PIC 버스(Peripheral Component Interconnect Bus)]</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PIC버스는 위의 시스템 버스 위에 존재하는, 시스템 버스를 기반으로 동작하는 확장 버스라고 생각하면 된다. CPU와 여러 하드웨어 확장 장치(GPU 등)를 연결하기 위해 설계되었다.</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="화이트리스트-검사-로직-설계"><a href="#화이트리스트-검사-로직-설계" class="headerlink" title="화이트리스트 검사 로직 설계"></a>화이트리스트 검사 로직 설계</h3><pre><code>// 내부적으로 activity_table에서 해당 usb의 vid, pid 엔트리를 찾는다.
+static struct usb_activity *find_activity(__u16 vid, __u16 pid)
+&#123;
+    int i;
+    for (i = 0; i &lt; ARRAY_SIZE(activity_table); i++) &#123;
+        if (activity_table[i].idVendor == vid &amp;&amp;
+            activity_table[i].idProduct == pid) &#123;
+            return &amp;activity_table[i];
+        &#125;
+    &#125;
+    return NULL;
+&#125;
+</code></pre>
+<ul>
+<li><p>find_activity: VID&#x2F;PID를 이용해 현재 상태 테이블(activity_table)에서 해당 장치의 항목을 찾는다.</p>
+</li>
+<li><p>is_device_whitelisted</p>
+<p>• 단순히 whitelist 배열에 있는 장치인지 먼저 확인한다.</p>
+<p>• 배열에 있더라도 activity_table을 조회하여 revoked가 true라면 allowed를 false로 바꾼다.</p>
+<p>• 이 과정에서 spin_lock을 사용해 Race Condition을 방지한다.</p>
+</li>
+</ul>
+<br>
+
+<h3 id="Netlink-메시지-전송"><a href="#Netlink-메시지-전송" class="headerlink" title="Netlink 메시지 전송"></a>Netlink 메시지 전송</h3><pre><code>static void netlink_send_msg(const char *message)
+&#123;
+    struct sk_buff *skb;
+    struct nlmsghdr *nlh;
+    ... (메모리 할당 및 에러 처리)
+
+    nlh = nlmsg_put(skb, 0, 0, NETLINK_USB, msg_size, 0);
+    memcpy(nlmsg_data(nlh), message, msg_size);
+
+    res = nlmsg_unicast(nl_sk, skb, USER_PID);
+    ...
+&#125;
+</code></pre>
+<ul>
+<li>커널 내부의 문자열 메시지를 사용자 공간 프로세스로 보낸다.</li>
+<li>nlmsg_new &#x2F; nlmsg_put: Netlink 메시지를 담을 버퍼(sk_buff)를 생성하고 헤더를 설정한다.</li>
+<li>nlmsg_unicast: 특정 PID(USER_PID&#x3D;100)를 가진 프로세스에게 유니캐스트로 메시지를 전송한다.</li>
+</ul>
+<br>
+
+<h3 id="활동-모니터링-및-Revoke-처리"><a href="#활동-모니터링-및-Revoke-처리" class="headerlink" title="활동 모니터링 및 Revoke 처리"></a>활동 모니터링 및 Revoke 처리</h3><pre><code>static void update_activity_and_maybe_revoke(struct usb_device *dev, const char *event_type)
+&#123;
+    ... (변수 선언)
+    spin_lock(&amp;activity_lock);
+
+    act = find_activity(vid, pid);
+    if (!act) &#123; ... return; &#125;
+
+
+    if (time_after(now, act-&gt;last_event_jiffies + msecs_to_jiffies(USB_IO_WINDOW_MS))) &#123;
+        act-&gt;event_count = 1;
+    &#125; else &#123;
+        act-&gt;event_count++;
+    &#125;
+    act-&gt;last_event_jiffies = now;
+
+
+    if (!act-&gt;revoked &amp;&amp; act-&gt;event_count &gt;= USB_IO_THRESHOLD) &#123;
+        act-&gt;revoked = true;
+        ... (경고 메시지 작성 및 전송)
+    &#125;
+    spin_unlock(&amp;activity_lock); &#125;
+</code></pre>
+<ul>
+<li><p>PROBE나 DISCONNECT 이벤트가 발생할 때마다 호출된다.</p>
+</li>
+<li><p>시간 비교: jiffies(현재 시스템 시간)를 이용해 마지막 이벤트로부터 1분이 지났는지 확인한다.</p>
+<p>• 지났으면: 새로운 주기로 보고 카운트를 1로 초기화.</p>
+<p>• 안 지났으면: 카운트 누적.</p>
+</li>
+<li><p>차단 결정: 카운트가 5회 이상이 되면 revoked &#x3D; true로 설정하고 경고 메시지를 보낸다. 이후 is_device_whitelisted 함수가 이 값을 보고 차단을 실행한다.</p>
+</li>
+</ul>
+<br>
+
+<h3 id="USB-Probe-연결-감지-및-차단"><a href="#USB-Probe-연결-감지-및-차단" class="headerlink" title="USB Probe(연결 감지 및 차단)"></a>USB Probe(연결 감지 및 차단)</h3><pre><code>static int usb_drive_probe(struct usb_interface *interface, const struct usb_device_id *id)
+&#123;
+    // ...
+    update_activity_and_maybe_revoke(dev, &quot;PROBE&quot;);
+
+    if (is_device_whitelisted(dev)) &#123;
+        … (허용 로직)
+        ... (Netlink 메시지 전송)
+        ret = -ENODEV;
+    &#125; else &#123;
+        … (차단 로직)
+        ... (Netlink 메시지 전송)
+        ret = 0;
+    &#125;
+    return ret;
+&#125;
+</code></pre>
+<ul>
+<li><p>probe 함수: 리눅스 커널이 USB 장치를 발견하고 이 드라이버(usb_drive_id_table에 매칭됨)를 로드할 때 호출한다.</p>
+</li>
+<li><p>.. 호출: 연결 시도 자체를 이벤트로 기록한다.</p>
+</li>
+<li><p>리턴 값의 의미:</p>
+<p>• -ENODEV 리턴: “나는 이 장치를 처리할 드라이버가 아니다”라는 뜻이다. 커널은 다음 순위 드라이버(일반적인 usb-storage 드라이버)를 찾아 연결한다. 즉 장치 사용 허용입니다.</p>
+<p>• 0 리턴: “내가 이 장치를 성공적으로 맡았다”라는 뜻이다. 하지만 이 코드에는 실제 파일 입출력 로직이 없으므로 해당 장치는 아무것도 할 수 없다. 즉 장치 차단이다.</p>
+</li>
+</ul>
+<br>
+
+<h3 id="초기화-및-종료"><a href="#초기화-및-종료" class="headerlink" title="초기화 및 종료"></a>초기화 및 종료</h3><pre><code>static int __init hello_init(void)
+&#123;
+    spin_lock_init(&amp;activity_lock);
+    for (i = 0; i &lt; ARRAY_SIZE(whitelist); i++) &#123;
+        // ... (구조체 초기화: vid, pid 복사, revoked=false 설정)
+    &#125;
+
+    nl_sk = netlink_kernel_create(&amp;init_net, NETLINK_USB, &amp;cfg);
+
+
+    result = usb_register(&amp;usb_drive_driver);
+    ...
+&#125;
+
+static void __exit hello_exit(void)
+&#123;
+    usb_deregister(&amp;usb_drive_driver);
+    if (nl_sk) netlink_kernel_release(nl_sk);
+    ...
+&#125;
+</code></pre>
+<ul>
+<li><p>hello_init: 모듈 로드 즉 insmod 시 실행된다.</p>
+<p>• 화이트리스트 내용을 바탕으로 activity_table을 초기화한다. 이때 revoked는 false로 시작한다.</p>
+<p>• Netlink 소켓을 열고 USB 드라이버를 커널에 등록한다.</p>
+</li>
+<li><p>hello_exit: 모듈 제거 즉 rmmod 시 실행된다. 등록했던 드라이버와 소켓 자원을 반환한다.</p>
+</li>
+</ul>
+<br>
+
+<h3 id="메시지박스-구현부"><a href="#메시지박스-구현부" class="headerlink" title="메시지박스 구현부"></a>메시지박스 구현부</h3><p>아래의 순서대로 동작한다.</p>
+<pre><code>static int usb_drive_probe(struct usb_interface *interface, const struct usb_device_id *id)
+&#123;
+    struct usb_device *dev = interface_to_usbdev(interface);
+    __u16 vid = le16_to_cpu(dev-&gt;descriptor.idVendor);
+    __u16 pid = le16_to_cpu(dev-&gt;descriptor.idProduct);
+    char msg[128];
+    int ret = 0; // 기본: 차단 (Claim)
+
+    /* PROBE도 I/O 이벤트로 간주해서 활동 업데이트 */
+    update_activity_and_maybe_revoke(dev, &quot;PROBE&quot;);
+</code></pre>
+<ol>
+<li>usb 인터페이스의 구조를 받아 usb 장치의 정보를 얻는 코드로, usb의 VID와 PID를 읽는다. 이때, VID와 PID는 le16_to_cpu()를 이용해서 CPU가 바로 쓸 수 있는 값으로 바꿔준다.</li>
+<li>이후 메세지를 저장하는 용도로 최대 128바이트까지 저장할 수 있는 msg 버퍼를 만들어주고, ret을 0으로 초기화해서 기본적인 동작은 차단하여서 화이트리스트를 구현할 수 있게 해준다.</li>
+<li>마지막으로 usb가 꽂히면 probe이벤트가 발생하여 I&#x2F;O활동으로 업데이트 시켜준다.</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">if (is_device_whitelisted(dev)) &#123;</span><br><span class="line">// [허용]</span><br><span class="line">    snprintf(msg, sizeof(msg), &quot;[ALLOWED] Whitelisted USB Handed Off: VID=0x%04x, PID=0x%04x&quot;, vid, pid);</span><br><span class="line">    netlink_send_msg(msg);</span><br><span class="line">    ret = -ENODEV; // 실제 드라이버가 로드되도록 허용한다.</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">    // [차단]</span><br><span class="line">    snprintf(msg, sizeof(msg), &quot;[BLOCKED] Unauthorized USB Blocked: VID=0x%04x, PID=0x%04x&quot;, vid, pid);</span><br><span class="line">    netlink_send_msg(msg);</span><br><span class="line">    ret = 0; // 이 드라이버가 장치를 선점하여 차단한다.</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">        printk(KERN_INFO &quot;PortGuard Kernel Log Test: %s\n&quot;, msg);</span><br><span class="line">        return ret;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>if문</p>
+<p>• 만약 화이트리스트에 입력된 USB이면 ALLOWED 메세지를 생성해서 넷링크로 이 메세지를 보낸 후, USB가 정상적으로 인식될 수 있게 해준다.</p>
+<p>• 만약 화이트리스트에 입력되지 않은 USB이면 BLOCKED 메세지를 생성해서 넷링크로 이 메세지를 보낸 후, 현재 드라이버가 USB를 선점해서 동작하지 못하도록 차단을 해준다.</p>
+</li>
+<li><p>마지막으로 커널 로그에 USB가 허용되었는 지 차단 되었는지를 기록하고, 실제로 허용&#x2F;차단 동작을 실행해준다.</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">static void usb_drive_disconnect(struct usb_interface *interface)</span><br><span class="line">&#123;</span><br><span class="line">struct usb_device *dev = interface_to_usbdev(interface);</span><br><span class="line">**u16 vid = le16_to_cpu(dev-&gt;descriptor.idVendor);</span><br><span class="line">**u16 pid = le16_to_cpu(dev-&gt;descriptor.idProduct);</span><br><span class="line">char msg[128];</span><br><span class="line"></span><br><span class="line">    /* DISCONNECT또한 I/O 이벤트로 카운트 */</span><br><span class="line">    update_activity_and_maybe_revoke(dev, &quot;DISCONNECT&quot;);</span><br><span class="line"></span><br><span class="line">    // DISCONNECT 이벤트 알림</span><br><span class="line">    snprintf(msg, sizeof(msg), &quot;USB Device Disconnected: VID=0x%04x, PID=0x%04x&quot;, vid, pid);</span><br><span class="line">    netlink_send_msg(msg);</span><br><span class="line">    printk(KERN_INFO &quot;PortGuard Kernel Log Test: %s\n&quot;, msg);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>⇒ USB가 연결해제되었을 때 실행하는 함수로, USB의 VID와 PID를 읽은 후 le16_to_cpu()를 이용해서 CPU가 바로 쓸 수 있는 값으로 바꾼 후, msg 버퍼를 만들어준다. 그리고 DISCONNECT 이벤트를 I&#x2F;O활동으로 업데이트한 후, Disconnected 메세지를 저장해서 넷링크로 사용자 영역에 보낸 후, 커널 로그에 기록해준다.</p>
+<br>
+<br>
+
+<h2 id="usb-block-notifier-c"><a href="#usb-block-notifier-c" class="headerlink" title="usb_block_notifier.c"></a>usb_block_notifier.c</h2><h3 id="GUI-구현을-위한-변수-정의"><a href="#GUI-구현을-위한-변수-정의" class="headerlink" title="GUI 구현을 위한 변수 정의"></a>GUI 구현을 위한 변수 정의</h3><pre><code>// --- GUI 알림 로직: 굵은 글씨 강조만 적용한다. ---
+            char cmd[512];
+            char html_formatted_msg[512];
+            char *title;
+            char *urgency_flag;
+            char *icon_flag;
+</code></pre>
+<ul>
+<li><code>cmd[512]</code>는 notify-send 명령 전체를 최대 512바이트까지 담아둘 수 있도록 만든 버퍼이다.</li>
+<li><code>html_formatted_msg[512]</code>는 msg_data 문자열을 HTML 마크업 형태로 변환하여 저장하는데 사용하는 버퍼로, 최대 512바이트까지 담을 수 있다.</li>
+<li>그리고 <code>title</code>, <code>urgency_flag</code>, <code>icon_flag</code>는 각각 알림 제목, 중요도 옵션, 아이콘 옵션 문자열을 가리키는 포인터로 활용된다.</li>
+</ul>
+<br>
+
+<h3 id="USB-차단"><a href="#USB-차단" class="headerlink" title="USB 차단"></a>USB 차단</h3><pre><code>// 메시지 내용에 따라 제목, 중요도, 아이콘 설정
+            if (strstr(msg_data, &quot;[BLOCKED]&quot;)) &#123;
+                title = &quot;USB SECURITY ALERT! (BLOCKED)&quot;;
+                urgency_flag = &quot;-u critical&quot;;
+                icon_flag = &quot;-i dialog-warning&quot;;
+
+                // 굵게만 처리
+                snprintf(html_formatted_msg, sizeof(html_formatted_msg),
+                        &quot;&lt;b&gt;%s&lt;/b&gt;&quot;, msg_data);
+</code></pre>
+<p>⇒ 만약 msg_data에 [BLOCKED]문자열이 포함되어 있으면, 제목은 USB SECURITY ALERT! (BLOCKED)라는 이름으로 뜨고 가장 높은 중요도로, 경고 아이콘을 띄우게 된다.</p>
+<p><img src="/images/323308_260113_image22.png" alt="그림 22. 경고 아이콘"></p>
+<center><span style="font-size: 90%;">그림 22. 경고 아이콘</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="USB-허용"><a href="#USB-허용" class="headerlink" title="USB 허용"></a>USB 허용</h3><pre><code>&#125; else if (strstr(msg_data, &quot;[ALLOWED]&quot;)) &#123;
+                title = &quot;USB Device Allowed&quot;;
+                urgency_flag = &quot;-u normal&quot;;
+                icon_flag = &quot;-i dialog-information&quot;;
+
+                // 굵게만 처리
+                snprintf(html_formatted_msg, sizeof(html_formatted_msg),
+                        &quot;&lt;b&gt;%s&lt;/b&gt;&quot;, msg_data);
+</code></pre>
+<p>⇒ 만약 msg_data에 [ALLOWD] 문자열이 포함되어 있으면, 제목은 USB Device Allowed라는 이름으로 뜨고 중간 수준의 중요도로, 정보 아이콘을 띄우게 된다.</p>
+<br>
+
+<h3 id="GUI-띄우기"><a href="#GUI-띄우기" class="headerlink" title="GUI 띄우기"></a>GUI 띄우기</h3><pre><code>// notify-send 명령 생성: TYPE:NAME:VALUE 형태를 사용 (최종 안정화)
+            if (snprintf(cmd, sizeof(cmd), &quot;notify-send %s %s -h string:markup:true &#39;%s&#39; &#39;%s&#39;&quot;,
+                        urgency_flag, icon_flag, title, html_formatted_msg) &lt; sizeof(cmd)) &#123;
+                system(cmd);
+</code></pre>
+<p>⇒ 중요도, 아이콘, 제목, HTML(굵은글씨)로 만든 메세지를 합쳐서 notify-send 문자열을 만든 후, system()을 이용해서 문자열을 실행시켜주면 GUI 알림이 팝업으로 뜰 수 있게 되는 것이다.</p>
+<br>
+<br>
+
+<h2 id="실행"><a href="#실행" class="headerlink" title="실행"></a>실행</h2><h3 id="실행-과정"><a href="#실행-과정" class="headerlink" title="실행 과정"></a>실행 과정</h3><p><strong>1. make</strong><br>먼저 make 명령어로 .ko 확장자를 가지는 파일들을 생성한다.</p>
+<p><img src="/images/323308_260113_image23.png" alt="그림 23. make 명령어"></p>
+<center><span style="font-size: 90%;">그림 23. make 명령어</span><br><span style="font-size: 70%;"></span></center>
+
+<p><img src="/images/323308_260113_image24.png" alt="그림 24. usb_block_kernel.ko 파일 생성 확인"></p>
+<center><span style="font-size: 90%;">그림 24. usb_block_kernel.ko 파일 생성 확인</span><br><span style="font-size: 70%;"></span></center> 
+ 
+<br>
+
+<p><strong>2. 컴파일</strong></p>
+<p>그리고 gcc 컴파일러를 통해 usb_block_notifier.c 파일을 실행파일로 컴파일한다.</p>
+<p><img src="/images/323308_260113_image25.png" alt="그림 25. gcc 컴파일"></p>
+<center><span style="font-size: 90%;">그림 25. gcc 컴파일</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>3. 커널 모듈 로드</strong></p>
+<p>이제 모듈을 생성했으니 <code>insmod</code> 명령어로 커널에 모듈을 로드한다.</p>
+<p><img src="/images/323308_260113_image26.png" alt="그림 26. insmod 명령어"></p>
+<center><span style="font-size: 90%;">그림 26. insmod 명령어</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>정상적으로 로드되었는지 확인하기 위해 dmesg명령어로 커널 메시지를 확인한다. 메시지의 하단부에 “kammatte@ubuntu..”가 보이니 모듈이 성공적으로 커널에 로드된 것을 확인할 수 있다.</p>
+<p><img src="/images/323308_260113_image27.png" alt="그림 27. dmesg 명령어"></p>
+<center><span style="font-size: 90%;">그림 27. dmesg 명령어</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p><strong>4. 실행</strong></p>
+<p>USB를 연결하면 ‘New USB Device Detected’창이 뜨며, USB 장치를 어디에 연결할 지 지정할 수 있다. 모듈은 우분투에 로드되어있으므로, virtual machine의 Ubuntu와 연결되도록 지정해주었다.</p>
+<p><img src="/images/323308_260113_image28.png" alt="그림 28. USB 디바이스 연결"></p>
+<center><span style="font-size: 90%;">그림 28. USB 디바이스 연결</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>VID&#x3D;0x325d, PID&#x3D;0x6310을 가진 USB 디바이스는 화이트리스트에 지정되어 있으므로, 최초 연결시 메시지 박스에 [ALLOWED]라는 문구가 출력되며 연결이 허용된다.</p>
+<p><img src="/images/323308_260113_image29.png" alt="그림 29. USB 연결 허용 알림"></p>
+<center><span style="font-size: 90%;">그림 29. USB 연결 허용 알림</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<p>그리고 우리가 구현한 비정상 동작 감지 기능 테스트를 위해, 1분내에 5번 이상의 USB 장치 연결·해제를 진행했다. 진행 결과, 5번째로 연결을 시도했을 때 아래와 같이 이미 화이트리스트에 정의된 USB 장치더라고 [BLOCK] 문구가 뜨며 연결이 실패하는 것을 확인할 수 있었다.</p>
+<p><img src="/images/323308_260113_image30.png" alt="그림 30. USB 연결 불허 확인"></p>
+<center><span style="font-size: 90%;">그림 30. USB 연결 불허 확인</span><br><span style="font-size: 70%;"></span></center>
+
+<br>
+
+<h3 id="정리-2"><a href="#정리-2" class="headerlink" title="정리"></a>정리</h3><p>이번 프로젝트를 통해 리눅스 커널의 USB 서브시스템이 어떻게 동작하는지, 그리고 커널 모듈이 사용자 공간과 어떤 방식으로 상호작용하는지를 실습을 통해 구체적으로 이해할 수 있었다. 해당 모듈은 단순한 장치 식별 기능 + 화이트리스트 기반의 정책과 더불어 비정상적인 연결·해제 패턴을 실시간으로 감지해 스스로 revoke 상태로 전환하는 동적 통제 기능까지 갖추었다. 이는 USB 장치의 VID와 PID만을 비교하는 정적 정책과, 장치의 행동 패턴을 기반으로 위험성을 판단하는 동적 분석이 결합된 형태로 기존에 공개되어있던 커널 모듈들과의 차이점이라고 할 수 있다. 또한 Netlink를 통해 커널 공간에서 발생하는 허용·차단·경고 이벤트를 사용자 공간으로 전달하고, notifier 프로그램에서 이를 GUI 알림으로 시각화하는 과정을 통해 커널과 유저 공간이 어떻게 연결되는지 전체적인 시스템 구조를 직접 경험할 수 있었다.</p>
+<p>이번 모듈 개발을 통해 커널 레벨의 이벤트 처리부터 사용자 공간 알림까지 이어지는 end to end 구조를 실제로 구현해 볼 수 있었으며, 이를 기반으로 장치 정책, 로그 분석, 머신러닝 기반 비정상 행위 탐지 등 다양한 확장 또한 가능할 것이라고 생각된다.</p>
+<br>
+<br>
+<br>
+<br>
+
+<h1 id="참고-문헌"><a href="#참고-문헌" class="headerlink" title="참고 문헌"></a>참고 문헌</h1><p>[1] Bootlin. (2023). A tour of USB Device Controller (UDC) in Linux.<br><span class="exturl" data-url="aHR0cHM6Ly9ib290bGluLmNvbS8=">https://bootlin.com</span></p>
+<p>[2] Charizard. (2020, November 1). [USB] USB 장치. Tistory.<br><span class="exturl" data-url="aHR0cHM6Ly9jaGFyZG9jLnRpc3RvcnkuY29tLzEz">https://chardoc.tistory.com/13</span></p>
+<p>[3] Coding-by-head. (2021). Kernel USB 구조 분석. Tistory.<br><span class="exturl" data-url="aHR0cHM6Ly9jb2RpbmctYnktaGVhZC50aXN0b3J5LmNvbS9lbnRyeS9rZXJuZWwtdXNi">https://coding-by-head.tistory.com/entry/kernel-usb</span></p>
+<p>[4] Corbet, J., Kroah-Hartman, G., &amp; McPherson, A. (2014). Linux Device Drivers (3rd ed.). O’Reilly Media.</p>
+<p>[5] Corbet, J., Rubini, A., &amp; Kroah-Hartman, G. (2005). Linux Device Drivers (3rd ed.). O’Reilly Media.</p>
+<p>[6] Cyworld Blog. (n.d.). 리눅스 커널 Netlink 통신 정리.<br><span class="exturl" data-url="aHR0cHM6Ly9jeXdvcmxkLnRpc3RvcnkuY29tLzU5ODY=">https://cyworld.tistory.com/5986</span></p>
+<p>[7] eom913. (2014). 리눅스 USB 드라이버 프로그래밍 기초. Naver Blog.<br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9lb205MTMvMTQ2MzkzODky">https://blog.naver.com/eom913/146393892</span></p>
+<p>[8] Ferrous Systems. (n.d.). USB Device Descriptors.<br><span class="exturl" data-url="aHR0cHM6Ly9ydXN0LWV4ZXJjaXNlcy5mZXJyb3VzLXN5c3RlbXMuY29tL2xhdGVzdC9ib29rL25yZjUyLXVzYi1kZXZpY2UtZGVzY3JpcHRvcg==">https://rust-exercises.ferrous-systems.com/latest/book/nrf52-usb-device-descriptor</span></p>
+<p>[9] Hesed. (2013, October 17). USB의 전송형태 및 USB 패킷의 종류. Naver Blog.<br><span class="exturl" data-url="aHR0cHM6Ly9ibG9nLm5hdmVyLmNvbS9zaWxsbGx2ZXIvOTAxODMwMDc5OTA=">https://blog.naver.com/sillllver/90183007990</span></p>
+<p>[10] Huihoo Documentation. (2013). usb_device_id 구조체 설명 (Doxygen).<br><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmh1aWhvby5jb20vZG94eWdlbi9saW51eC9rZXJuZWwvMy43L3N0cnVjdHVzYl9fZGV2aWNlX19pZC5odG1s">https://docs.huihoo.com/doxygen/linux/kernel/3.7/structusb__device__id.html</span></p>
+<p>[11] IDS Imaging. (2022). USB Structure and Topology.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cuMXN0dmlzaW9uLmNvbS9jYW1lcmFzL0lEUy9JRFMtbWFudWFscy91RXllX01hbnVhbC9od191c2JfZ3J1bmRsYWdlbl9zdHJ1a3R1ci5odG1s">https://www.1stvision.com/cameras/IDS/IDS-manuals/uEye_Manual/hw_usb_grundlagen_struktur.html</span></p>
+<p>[12] jpark1223. (2013). USB 구조 및 리눅스 커널 USB 개발 흐름. Naver Blog.<br><span class="exturl" data-url="aHR0cHM6Ly9tLmJsb2cubmF2ZXIuY29tL2pwYXJrMTIyMy8xMDAyNzI4MTYxOQ==">https://m.blog.naver.com/jpark1223/10027281619</span></p>
+<p>[13] Kernelconfig.io. (n.d.). CONFIG_USB and HCDs.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsY29uZmlnLmlvL2NvbmZpZ191c2I=">https://www.kernelconfig.io/config_usb</span></p>
+<p>[14] Linux kernel developers. (n.d.). include&#x2F;linux&#x2F;usb.h. Rabexc Codebrowser.<br><span class="exturl" data-url="aHR0cHM6Ly9zYmV4ci5yYWJleGMub3JnL2xhdGVzdC9zb3VyY2VzLzBlL2U5YTNkZDUwODcxOWYyLmh0bWw=">https://sbexr.rabexc.org/latest/sources/0e/e9a3dd508719f2.html</span></p>
+<p>[15] Linux manual pages. (n.d.). netlink(7) — Netlink protocol.<br><span class="exturl" data-url="aHR0cHM6Ly9tYW43Lm9yZy9saW51eC9tYW4tcGFnZXMvbWFuNy9uZXRsaW5rLjcuaHRtbA==">https://man7.org/linux/man-pages/man7/netlink.7.html</span></p>
+<p>[16] Love, R. (2010). Linux Kernel Development (3rd ed.). Addison-Wesley.</p>
+<p>[17] Microsoft. (2023). #define directive (C&#x2F;C++). Microsoft Learn.<br><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2tvLWtyL2NwcC9wcmVwcm9jZXNzb3IvaGFzaC1kZWZpbmUtZGlyZWN0aXZlLWMtY3BwP3ZpZXc9bXN2Yy0xNzA=">https://learn.microsoft.com/ko-kr/cpp/preprocessor/hash-define-directive-c-cpp?view=msvc-170</span></p>
+<p>[18] Microsoft. (n.d.). USB Bulk and Interrupt Transfer.<br><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2VuLXVzL3dpbmRvd3MtaGFyZHdhcmUvZHJpdmVycy91c2Jjb24vdXNiLWJ1bGstYW5kLWludGVycnVwdC10cmFuc2Zlcg==">https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-bulk-and-interrupt-transfer</span></p>
+<p>[19] Microsoft. (n.d.). USB Control Transfer.<br><span class="exturl" data-url="aHR0cHM6Ly9sZWFybi5taWNyb3NvZnQuY29tL2VuLXVzL3dpbmRvd3MtaGFyZHdhcmUvZHJpdmVycy91c2Jjb24vdXNiLWNvbnRyb2wtdHJhbnNmZXI=">https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-control-transfer</span></p>
+<p>[20] Number Analytics (Sarah Lee). (2025, June 18). The Ultimate Guide to Device Hotplug.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cubnVtYmVyYW5hbHl0aWNzLmNvbS9ibG9nL3RoZS11bHRpbWF0ZS1ndWlkZS10by1kZXZpY2UtaG90cGx1Zw==">https://www.numberanalytics.com/blog/the-ultimate-guide-to-device-hotplug</span></p>
+<p>[21] Php. (2024, February 11). Linux 장치 모델(3) Uevent.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cucGhwLmNuL2tvL2ZhcS82NzQxNTMuaHRtbA==">https://www.php.cn/ko/faq/674153.html</span></p>
+<p>[22] pr0gr4m. (2020). Linux kernel network layer 4 정리.<br><span class="exturl" data-url="aHR0cHM6Ly9wcjBncjRtLmdpdGh1Yi5pby9saW51eC9rZXJuZWwvbGF5ZXI0Lw==">https://pr0gr4m.github.io/linux/kernel/layer4/</span></p>
+<p>[23] SUSE. (2023). Dynamic Kernel Device Management with udev (SLES 12 SP5).<br><span class="exturl" data-url="aHR0cHM6Ly9kb2N1bWVudGF0aW9uLnN1c2UuY29tL2VuLXVzL3NsZXMvMTItU1A1L2h0bWwvU0xFUy1hbGwvY2hhLXVkZXYuaHRtbA==">https://documentation.suse.com/en-us/sles/12-SP5/html/SLES-all/cha-udev.html</span></p>
+<p>[24] Sysplay.github.io. (n.d.). Linux Drivers.<br><span class="exturl" data-url="aHR0cHM6Ly9zeXNwbGF5LmdpdGh1Yi5pby9ib29rcy9MaW51eERyaXZlcnMvYm9vay9Db250ZW50L1BhcnQxMS5odG1s">https://sysplay.github.io/books/LinuxDrivers/book/Content/Part11.html</span></p>
+<p>[25] Tenenbaum, A. S., &amp; Bos, H. (2015). Modern Operating Systems (4th ed.). Pearson.</p>
+<p>[26] The Linux Kernel. (n.d.).<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsLm9yZy8=">https://www.kernel.org/</span></p>
+<p>[27] The Linux Kernel Organization. (n.d.). Driver binding and unbinding.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3QvZHJpdmVyLWFwaS9kcml2ZXItbW9kZWwvYmluZGluZy5odG1s">https://www.kernel.org/doc/html/latest/driver-api/driver-model/binding.html</span></p>
+<p>[28] The Linux kernel documentation. (n.d.). Device model: The basic device structure &amp; uevents.<br><span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmtlcm5lbC5vcmcvZHJpdmVyLWFwaS9pbmZyYXN0cnVjdHVyZS5odG1s">https://docs.kernel.org/driver-api/infrastructure.html</span></p>
+<p>[30] The Linux kernel documentation. (n.d.). kobject — Everything you never wanted to know.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvRG9jdW1lbnRhdGlvbi9rb2JqZWN0LnR4dA==">https://www.kernel.org/doc/Documentation/kobject.txt</span></p>
+<p>[31] The Linux kernel documentation. (n.d.). The Linux-USB host-side API.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC92NC4xOC9kcml2ZXItYXBpL3VzYi91c2IuaHRtbA==">https://www.kernel.org/doc/html/v4.18/driver-api/usb/usb.html</span></p>
+<p>[32] Torvalds, L., &amp; The Linux Kernel Organization. (2024). Linux Kernel Source Code (Version 6.6) [Source code].<br><span class="exturl" data-url="aHR0cHM6Ly93d3cua2VybmVsLm9yZy8=">https://www.kernel.org/</span></p>
+<p>[33] USB Implementers Forum. (n.d.). USB Class Codes.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cudXNiLm9yZy9kZWZpbmVkLWNsYXNzLWNvZGVz">https://www.usb.org/defined-class-codes</span></p>
+<p>[34] USB Implementers Forum. (n.d.). Universal Serial Bus Specification.<br><span class="exturl" data-url="aHR0cHM6Ly93d3cudXNiLm9yZy9kb2N1bWVudHM=">https://www.usb.org/documents</span></p>
+<p>[35] wkftkqslek. (2022). 와이파이 프로그래밍 2: Netlink의 개념과 구조. Velog.<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9Ad2tmdGtxc2xlay8lRUMlOTklODAlRUMlOUQlQjQlRUQlOEMlOEMlRUMlOUQlQjQtJUVEJTk0JTg0JUVCJUExJTlDJUVBJUI3JUI4JUVCJTlFJTk4JUVCJUIwJThEMi1OZXRsaW5rJUVDJTlEJTk4LSVFQSVCMCU5QyVFQiU4NSU5MCVFQSVCMyVCQy0lRUElQjUlQUMlRUMlQTElQjA=">https://velog.io/@wkftkqslek/%EC%99%80%EC%9D%B4%ED%8C%8C%EC%9D%B4-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D2-Netlink%EC%9D%98-%EA%B0%9C%EB%85%90%EA%B3%BC-%EA%B5%AC%EC%A1%B0</span></p>
+<p>[36] Whatsmyinterest. (n.d.). netlink (7): kernel - user space 간 IPC 통신.<br><span class="exturl" data-url="aHR0cHM6Ly93aGF0c215aW50ZXJlc3QudGlzdG9yeS5jb20vMTQ=">https://whatsmyinterest.tistory.com/14</span></p>
+<p>[37] Yamyam-spaghetti. (n.d.). OS 임계 영역(Critical section), 프로세스 동기화, 데드락(Deadlock).<br><span class="exturl" data-url="aHR0cHM6Ly95YW15YW0tc3BhZ2hldHRpLnRpc3RvcnkuY29tLzUw">https://yamyam-spaghetti.tistory.com/50</span></p>
+<p>[38] naezan0610. (n.d.). 스핀락(SpinLock), 뮤텍스(Mutex), 그리고 세마포어(Semaphore). Velog.<br><span class="exturl" data-url="aHR0cHM6Ly92ZWxvZy5pby9AbmFlemFuMDYxMC8lRUMlOEElQTQlRUQlOTUlODAlRUIlOUQlQkRTcGluTG9jay0lRUIlQUUlQTQlRUQlODUlOEQlRUMlOEElQTRNdXRleCVFQSVCNyVCOCVFQiVBNiVBQyVFQSVCMyVBMC0lRUMlODQlQjglRUIlQTclODglRUQlOEYlQUMlRUMlOTYlQjRTZW1hcGhvcmU=">https://velog.io/@naezan0610/%EC%8A%A4%ED%95%80%EB%9D%BDSpinLock-%EB%AE%A4%ED%85%8D%EC%8A%A4Mutex%EA%B7%B8%EB%A6%AC%EA%B3%A0-%EC%84%B8%EB%A7%88%ED%8F%AC%EC%96%B4Semaphore</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/System-Hacking/" rel="tag"># System Hacking</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/07/3305_260107/" rel="prev" title="[2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석">
+                  <i class="fa fa-angle-left"></i> [2026 SWING magazine] 윈도우 및 클라우드 환경 연계 포렌식을 통한 악성코드 행위 분석
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/14/3213_260114/" rel="next" title="[2026 SWING magazine] 퍼징의 개념, 구현 그리고 취약점 분석까지">
+                  [2026 SWING magazine] 퍼징의 개념, 구현 그리고 취약점 분석까지 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

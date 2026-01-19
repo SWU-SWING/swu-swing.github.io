@@ -2,6 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://log.swuswing.com/2026/01/13/323308_260113/</loc>
+    
+    <lastmod>2026-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/2026/01/14/323307_260114/</loc>
+    
+    <lastmod>2026-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/2026/01/06/313204_260106/</loc>
+    
+    <lastmod>2026-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/2026/01/14/3213_260114/</loc>
+    
+    <lastmod>2026-01-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://log.swuswing.com/2026/01/07/3305_260107/</loc>
     
     <lastmod>2026-01-13</lastmod>
@@ -39,15 +75,6 @@
   
   <url>
     <loc>https://log.swuswing.com/2026/01/02/323305_260102/</loc>
-    
-    <lastmod>2026-01-13</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/2026/01/06/313204_260106/</loc>
     
     <lastmod>2026-01-13</lastmod>
     
@@ -155,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/2025/09/02/3203_250902/</loc>
+    <loc>https://log.swuswing.com/2025/09/05/3204_250905/</loc>
     
     <lastmod>2026-01-09</lastmod>
     
@@ -164,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/2025/09/05/3204_250905/</loc>
+    <loc>https://log.swuswing.com/2025/09/02/3203_250902/</loc>
     
     <lastmod>2026-01-09</lastmod>
     
@@ -290,7 +317,7 @@
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/2025/05/17/3102_250517/</loc>
+    <loc>https://log.swuswing.com/2025/05/20/3103_250520/</loc>
     
     <lastmod>2026-01-09</lastmod>
     
@@ -299,7 +326,7 @@
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/2025/05/20/3103_250520/</loc>
+    <loc>https://log.swuswing.com/2025/05/17/3102_250517/</loc>
     
     <lastmod>2026-01-09</lastmod>
     
@@ -335,15 +362,6 @@
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/about/index.html</loc>
-    
-    <lastmod>2026-01-09</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://log.swuswing.com/categories/index.html</loc>
     
     <lastmod>2026-01-09</lastmod>
@@ -361,10 +379,19 @@
     <priority>0.6</priority>
   </url>
   
+  <url>
+    <loc>https://log.swuswing.com/about/index.html</loc>
+    
+    <lastmod>2026-01-09</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
   <url>
     <loc>https://log.swuswing.com/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -372,455 +399,469 @@
   
   <url>
     <loc>https://log.swuswing.com/tags/Web-Hacking/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/System-Hacking/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/android/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/bluetooth/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/blueborne/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Bluetooth/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/JavaScript/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Web/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/apk/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/RAT/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Windows/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EC%9D%B8%EC%A0%9D%EC%85%98/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%ED%95%A0%EB%A1%9C%EC%9E%89/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EA%B3%A0%EC%8A%A4%ED%8C%85/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-%EB%8F%84%ED%94%8C%EA%B0%B1%EC%9E%89/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/DNS/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/DNSCrypt/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EB%B3%B4%EC%95%88/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EC%95%94%ED%98%B8%ED%99%94/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/DLL-%EC%9D%B8%EC%A0%9D%EC%85%98/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/API-%ED%9B%84%ED%82%B9/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Detours/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Network/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/NIDS/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/NIPS/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/AI/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/GAN/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/DCGAN/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/LSGAN/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%83%9D%EC%84%B1/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Privacy/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Law/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/policy/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/XSS/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/Secure-Coding/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/WAF/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/Kernel/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/Linux/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/Panic/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/CrashDump/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/Forensics/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/1day/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/SMB/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/XSS/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/Secure-Coding/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/WAF/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/Kernel/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/Linux/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/Panic/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/CrashDump/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/Forensics/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/OWASP-Juice-Shop/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/SQL-Injection/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/%EB%A6%AC%EB%88%85%EC%8A%A4/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/%EC%B7%A8%EC%95%BD%EC%A0%90-%EB%B6%84%EC%84%9D/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/%EC%9D%B5%EC%8A%A4%ED%94%8C%EB%A1%9C%EC%9E%87/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/metasploitable2/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/nmap/</loc>
-    <lastmod>2026-01-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://log.swuswing.com/tags/hydra/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/IoT/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/tags/C/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://log.swuswing.com/tags/forensics/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/tags/%EA%B0%9D%EC%B2%B4-%ED%8F%AC%EC%9D%B8%ED%84%B0/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://log.swuswing.com/tags/memeory-forensics/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/tags/%EA%B0%9D%EC%B2%B4-%EB%B0%B0%EC%97%B4/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://log.swuswing.com/tags/%EB%A6%AC%EB%88%85%EC%8A%A4/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/tags/%EC%A0%95%EC%A0%81-%EB%8F%99%EC%A0%81-%EB%A9%94%EB%AA%A8%EB%A6%AC-%ED%95%A0%EB%8B%B9/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://log.swuswing.com/tags/%EC%B7%A8%EC%95%BD%EC%A0%90-%EB%B6%84%EC%84%9D/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://log.swuswing.com/tags/vector-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <loc>https://log.swuswing.com/tags/%EC%9D%B5%EC%8A%A4%ED%94%8C%EB%A1%9C%EC%9E%87/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/metasploitable2/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/nmap/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/hydra/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%ED%8F%AC%EB%A0%8C%EC%8B%9D/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/HTTP/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/HTTPS/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/C/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/%EA%B0%9D%EC%B2%B4-%ED%8F%AC%EC%9D%B8%ED%84%B0/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/%EA%B0%9D%EC%B2%B4-%EB%B0%B0%EC%97%B4/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/%EC%A0%95%EC%A0%81-%EB%8F%99%EC%A0%81-%EB%A9%94%EB%AA%A8%EB%A6%AC-%ED%95%A0%EB%8B%B9/</loc>
+    <lastmod>2026-01-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://log.swuswing.com/tags/vector-%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/</loc>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Cloud/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/tags/Forensic/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -829,42 +870,42 @@
   
   <url>
     <loc>https://log.swuswing.com/categories/%EC%A7%80%EC%9B%90%EC%84%9C-%EB%9C%AF%EC%96%B4%EB%B3%B4%EA%B8%B0-series/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/categories/free/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/categories/SWING-%ED%95%B4%EC%BA%A0-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://log.swuswing.com/categories/%EC%82%AC%EC%9D%B4%EB%B2%84-%ED%83%90%ED%97%98-series/</loc>
-    <lastmod>2026-01-13</lastmod>
+    <lastmod>2026-01-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
