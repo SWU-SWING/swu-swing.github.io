@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. CVE-2025-29927 취약점해당 취약점은 오픈소스 자바스크립트 프레임워크인 Next.js에서 발생했다. Next.js의 미들웨어(Middleware)에서 권한 확인이 이루어지는 경우 Next.js 애플리케이션 내에서 권한 확인을 우회할 수 있는 취약점이 발견되었다. Next.js는 재귀 요청이 무한 루프를 유발하는 것을 방지하기 위해 내부 헤더">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SEED 4월호] CVE-2025-29927: Next.js 미들웨어 우회 취약점">
+<meta property="og:url" content="https://log.swuswing.com/2026/05/18/3306_260518/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. CVE-2025-29927 취약점해당 취약점은 오픈소스 자바스크립트 프레임워크인 Next.js에서 발생했다. Next.js의 미들웨어(Middleware)에서 권한 확인이 이루어지는 경우 Next.js 애플리케이션 내에서 권한 확인을 우회할 수 있는 취약점이 발견되었다. Next.js는 재귀 요청이 무한 루프를 유발하는 것을 방지하기 위해 내부 헤더">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3306_260518_image9.png">
+<meta property="article:published_time" content="2026-05-18T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-24T12:47:46.062Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="CVE">
+<meta property="article:tag" content="취약점">
+<meta property="article:tag" content="오픈소스">
+<meta property="article:tag" content="Next.js">
+<meta property="article:tag" content="Middleware">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3306_260518_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/05/18/3306_260518/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/05/18/3306_260518/","path":"2026/05/18/3306_260518/","title":"[SEED 4월호] CVE-2025-29927: Next.js 미들웨어 우회 취약점"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[SEED 4월호] CVE-2025-29927: Next.js 미들웨어 우회 취약점 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-CVE-2025-29927-%EC%B7%A8%EC%95%BD%EC%A0%90"><span class="nav-number">1.</span> <span class="nav-text">1. CVE-2025-29927 취약점</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Next-js-Middleware-%EB%9E%80"><span class="nav-number">1.1.</span> <span class="nav-text">1) Next.js Middleware 란?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%EC%98%81%ED%96%A5%EC%9D%84-%EB%B0%9B%EB%8A%94-%EB%B2%84%EC%A0%84-Target"><span class="nav-number">1.2.</span> <span class="nav-text">2) 영향을 받는 버전(Target)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-PoC"><span class="nav-number">1.3.</span> <span class="nav-text">3) PoC</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Next-js-%EB%B2%84%EC%A0%84%EB%B3%84-Middleware-%ED%8A%B9%EC%A7%95"><span class="nav-number">2.</span> <span class="nav-text">2. Next.js 버전별 Middleware 특징</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-v12-2-%EB%AF%B8%EB%A7%8C-%EB%B2%84%EC%A0%84"><span class="nav-number">2.1.</span> <span class="nav-text">1) v12.2 미만 버전</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-v12-2-v14-2-%EB%B2%84%EC%A0%84"><span class="nav-number">2.2.</span> <span class="nav-text">2) v12.2 ~ v14.2 버전</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-v14-2-%EC%9D%B4%ED%9B%84-%EB%B2%84%EC%A0%84"><span class="nav-number">2.3.</span> <span class="nav-text">3) v14.2 이후 버전</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%ED%8C%A8%EC%B9%98-%EB%82%B4%EC%97%AD-%EB%B6%84%EC%84%9D-Patch-Diffing"><span class="nav-number">3.</span> <span class="nav-text">3. 패치 내역 분석(Patch Diffing)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%EC%B0%B8%EA%B3%A0%EB%AC%B8%ED%97%8C"><span class="nav-number">4.</span> <span class="nav-text">4. 참고문헌</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/05/18/3306_260518/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[SEED 4월호] CVE-2025-29927: Next.js 미들웨어 우회 취약점 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [SEED 4월호] CVE-2025-29927: Next.js 미들웨어 우회 취약점
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: bage2room</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-05-18 19:00:00" itemprop="dateCreated datePublished" datetime="2026-05-18T19:00:00+09:00">2026-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/S-E-E-D-series/" itemprop="url" rel="index"><span itemprop="name">S.E.E.D. series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-CVE-2025-29927-취약점"><a href="#1-CVE-2025-29927-취약점" class="headerlink" title="1. CVE-2025-29927 취약점"></a>1. CVE-2025-29927 취약점</h1><p>해당 취약점은 오픈소스 자바스크립트 프레임워크인 Next.js에서 발생했다. Next.js의 미들웨어(Middleware)에서 권한 확인이 이루어지는 경우 Next.js 애플리케이션 내에서 권한 확인을 우회할 수 있는 취약점이 발견되었다.</p>
+<p>Next.js는 재귀 요청이 무한 루프를 유발하는 것을 방지하기 위해 내부 헤더 “x-middleware-subrequest”를 사용한다. 그러나 이 취약점에서는 내부 요청 판별에 사용되는 “x-middleware-subrequest” 헤더 값을 외부 사용자 요청을 통해서도 임의로 포함될 수 있었고, Next.js 서버가 이를 내부 요청으로 오인하면서 Middleware 실행을 건너뛸 수 있음이 확인되었다. 그 결과, 요청이 라우트에 도달하기 전에 수행되어야 하는 중요한 검사들, 즉 인증 쿠키 검증과 같은 절차를 우회할 수 있게 된다.</p>
+<span id="more"></span>
+
+<h2 id="1-Next-js-Middleware-란"><a href="#1-Next-js-Middleware-란" class="headerlink" title="1) Next.js Middleware 란?"></a>1) Next.js Middleware 란?</h2><p><img src="/images/3306_260518_image1.png" alt="그림 1. 클라이언트와 서버 사이에서 동작하는 Middleware 구조"></p>
+<center><span style="font-size: 90%;">그림 1. [클라이언트와 서버 사이에서 동작하는 Middleware 구조]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Middleware는 경로 재작성, 서버 측 리디렉션, 응답에 헤더(CSP 등)와 같은 요소를 추가, 인증 및 권한 부여 등을 위해 사용될 수 있다. 가장 중요한 기능인 인증 및 권한 부여에서, 미들웨어는 특정 페이지 또는 API 경로에 대한 액세스 권한을 부여하기 전에 사용자 신원을 확인하고 세션 쿠키를 확인하는 중간 계층의 역할을 한다.</p>
+<p><img src="/images/3306_260518_image2.png" alt="그림 2. /admin 엔드 포인트 접근 차단"></p>
+<center><span style="font-size: 90%;">그림 2. [/admin 엔드 포인트 접근 차단]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>예를 들어서 사용자가 &#x2F;dashboard&#x2F;admin에 접근하려고 하면, 해당 요청은 먼저 미들웨어를 거치게 된다. 미들웨어는 사용자의 세션 쿠키가 유효한지 확인하고 필요한 권한을 부여한다. 권한이 있는 경우 미들웨어는 요청을 전달하고, 그렇지 않은 경우 사용자를 로그인 페이지로 리디렉션한다.</p>
+<h2 id="2-영향을-받는-버전-Target"><a href="#2-영향을-받는-버전-Target" class="headerlink" title="2) 영향을 받는 버전(Target)"></a>2) 영향을 받는 버전(Target)</h2><ul>
+<li>Next.js 15.x &lt; 15.2.3</li>
+<li>Next.js 14.x &lt; 14.2.25</li>
+<li>Next.js 13.x &lt; 13.5.9</li>
+<li>Next.js 12.x &lt; 12.3.5</li>
+<li>Next.js 11.x : 11.1.4 이상</li>
+</ul>
+<h2 id="3-PoC"><a href="#3-PoC" class="headerlink" title="3) PoC"></a>3) PoC</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /admin HTTP/1.1</span><br><span class="line"></span><br><span class="line">Host: vulnerable-site.com</span><br><span class="line"></span><br><span class="line">x-middleware-subrequest: middleware</span><br></pre></td></tr></table></figure>
+
+<p>Next.js 버전대에 따라 헤더 값에 넣을 미들웨어 이름이 달라진다.</p>
+<table>
+<thead>
+<tr>
+<th>취약 버전</th>
+<th>PoC의 헤더 값 예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v12.2 미만</td>
+<td>x-middleware-subrequest: pages&#x2F;_middleware</td>
+</tr>
+<tr>
+<td>v12.2 ~ v14.2 미만</td>
+<td>x-middleware-subrequest: middleware</td>
+</tr>
+<tr>
+<td>v14.2 이후</td>
+<td>x-middleware-subrequest:<br>middleware:middleware:middleware:middleware:middleware</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+<h1 id="2-Next-js-버전별-Middleware-특징"><a href="#2-Next-js-버전별-Middleware-특징" class="headerlink" title="2. Next.js 버전별 Middleware 특징"></a>2. Next.js 버전별 Middleware 특징</h1><h2 id="1-v12-2-미만-버전"><a href="#1-v12-2-미만-버전" class="headerlink" title="1) v12.2 미만 버전"></a>1) v12.2 미만 버전</h2><p><img src="/images/3306_260518_image3.png" alt="그림 3. v12.0.1 runMiddleware 함수 내부 x-middleware-subrequest 검증 과정"></p>
+<center><span style="font-size: 90%;">그림 3. [v12.0.1 runMiddleware 함수 내부 x-middleware-subrequest 검증 과정]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Next.js 애플리케이션에서 미들웨어를 사용할 때, runMiddleware 함수가 호출된다. 이 함수는 헤더 값을 가져와 미들웨어를 적용할지 여부를 판단하기 위해 x-middleware-subrequest 요청 헤더를 사용한다. 헤더 값은 colon(:)을 구분자로 사용하여 리스트로 분할된 후, 이 리스트에 middlewareInfo.name 값이 포함되어 있는지 확인한다.</p>
+<p>즉 x-middleware-subrequest 요청에 올바른 값을 가진 헤더를 추가하면 미들웨어의 목적과 관계없이 완전히 무시되고, 요청은 미들웨어의 영향 없이 NextResponse.next() 함수를 통해 목적지로 이동할 수 있다.<br>그렇다면 이를 위한 middlewareInfo.name 의 조건이 무엇일까?</p>
+<p><strong>(1) middlewareInfo.name 조건</strong></p>
+<p>v12.2 이전에는 파일 이름이 반드시 “_middleware.ts” 이어야 했다.<br>그리고 pages 라우터만 존재했기 때문에, 미들웨어는 pages 폴더에만 존재해야 했다. (버전 13 이후에 app 라우터가 추가됐다.)<br>이러한 정보들을 통해 미들웨어의 위치를 추정할 수 있으며, 이에 따라 x-middleware-subrequest 헤더 값을 유추할 수 있다. 헤더 값은 디렉터리 이름과 파일 이름으로 구성된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x-middleware-subrequest: pages/_middleware</span><br></pre></td></tr></table></figure>
+
+<p><strong>(2) middleware 위치</strong></p>
+<p>v12.2 이전 버전에는 pages 폴더 아래 여러 위치에 _middleware 파일을 둘 수 있었고 요청 경로가 깊어질수록 여러 미들웨어가 순서대로 실행됐다.</p>
+<p><img src="/images/3306_260518_image4.png" alt="그림 4. 파일 구조별 middleware 위치 예시"></p>
+<center><span style="font-size: 90%;">그림 4. [파일 구조별 middleware 위치 예시]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>여기서 주목해야 할 것은 _middleware.ts 파일의 위치다. 만약 사용자가 &#x2F;about&#x2F;teams 에 접속하면 Next.js는 pages&#x2F;about&#x2F;_middleware.ts를 실행하고, pages&#x2F;about&#x2F;teams&#x2F;_middleware.ts를 실행한 후 최종 페이지에 응답한다. 즉 상위 폴더 미들웨어가 먼저 실행되고 하위 폴더가 후에 실행되는 구조다.</p>
+<p>따라서 공격자는 우회를 시도할 때 가능한 경로가 여러 개일 수 있다. 미들웨어로 보호되는 &#x2F;dashboard&#x2F;panel&#x2F;admin의 접근 권한을 얻기 위한 세 가지의 middlewareInfo.name 후보가 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pages/_middleware </span><br><span class="line">또는</span><br><span class="line">pages/dashboard/_middleware</span><br><span class="line">또는</span><br><span class="line">pages/dashboard/panel/_middleware</span><br></pre></td></tr></table></figure>
+
+<p>Next.js는 해당 미들웨어가 내부 subrequest에서 실행된 적이 있으면 다시 실행하지 않는다. 따라서 요청 헤더에 x-middleware-subrequest: pages&#x2F;_middleware 와 같은 값이 들어온다면 pages&#x2F;_middleware를 이미 실행된 내부 요청으로 인식하고 미들웨어가 실행되지 않고 보호된 페이지로 넘어갈 수 있다. 그러므로 공격이 성공하기 위해선 middleware의 위치를 알고 x-middleware-subrequest 헤더에 올바른 경로 이름을 넣어야 한다.</p>
+<h2 id="2-v12-2-v14-2-버전"><a href="#2-v12-2-v14-2-버전" class="headerlink" title="2) v12.2 ~ v14.2 버전"></a>2) v12.2 ~ v14.2 버전</h2><p><strong>(1) middlewareInfo.name 조건</strong></p>
+<p>v12.2부터는 기존 pages 하위의 _middleware 파일 구조가 사라지고, 미들웨어 파일명이 기존 <code>“_middleware.ts”</code>에서 언더바(<code>_</code>)가 빠진 “middleware.ts”로 변경되었다. 또한 미들웨어는 pages 폴더 내부가 아니라 프로젝트 루트에 위치하게 되면서, 미들웨어 이름 후보는 middleware 하나로 단순화되었다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x-middleware-subrequest: middleware</span><br></pre></td></tr></table></figure>
+<p>또는 &#x2F;src 폴더를 쓰는 경우가 있다. Next.js는 디렉터리를 생성하는 기능을 제공하여, 프로젝트 루트에 Next.js 전용 앱 또는 페이지 디렉터리를 두거나 애플리케이션 코드를 src 디렉터리 아래에 배치하는 일반적인 패턴을 지원한다. 이 경우 페이로드는 아래와 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x-middleware-subrequest: src/middleware</span><br></pre></td></tr></table></figure>
+<p>즉, v12.2 이후 버전에서는 경로의 깊이와 관계없이 후보가 middleware 또는 src&#x2F;middleware 두 가지로 단순화된다. 따라서 v12.2 미만 버전과 달리 공격자는 중첩된 pages 경로에 따른 여러 _middleware 위치를 추측할 필요가 없어졌으며, middleware 또는 src&#x2F;middleware와 같은 제한된 이름 후보만 고려하면 되므로 우회 조건을 파악하기가 더 단순해졌다.</p>
+<h2 id="3-v14-2-이후-버전"><a href="#3-v14-2-이후-버전" class="headerlink" title="3) v14.2 이후 버전"></a>3) v14.2 이후 버전</h2><p><img src="/images/3306_260518_image5.png" alt="그림 5. v.14.2 x-middleware-subrequest 검증 과정"></p>
+<center><span style="font-size: 90%;">그림 5. [v.14.2 x-middleware-subrequest 검증 과정]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>v14.2부터는 미들웨어의 x-middleware-subrequest 헤더의 값을 colon(:)을 기준으로 나눠서 배열로 저장한다. 저장된 배열에 params.name 변수의 값이 몇 개인지 확인하고, 이 값이 일정 횟수 이상 반복되면 미들웨어를 건너뛰고 요청을 보낸 경로의 응답을 받도록 코드가 변경되었다. 여기서 params.name 은 middleware.name 과 동일한 값이다.</p>
+<p>이때 동일한 미들웨어 이름이 일정 횟수 이상 반복된 것으로 판단되면, Next.js는 중복 실행을 방지하기 위해 해당 미들웨어 실행을 건너뛰고 요청 경로의 응답을 반환한다. 그러나 외부 사용자가 해당 헤더 값을 임의로 조작할 수 있었기 때문에, 공격자는 동일한 미들웨어 이름을 반복 삽입하여 서버가 “이미 여러 차례 실행된 내부 서브 요청”으로 판단하게 만들고, 그 결과 미들웨어 실행 횟수 제한 로직을 악용하여 접근 제어를 우회할 수 있다.</p>
+<p>따라서, v14.2 이후에는 최대 반복 횟수(MAX_RECURSION_DEPTH) 값이 5로 설정되어 있었으므로, colon(:)을 기준으로 middleware 경로가 5번 이상 반복되면 미들웨어 검증을 우회할 수 있다. “middleware”를 5번 이상 x-middleware-subrequest 헤더에 입력한다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x-middleware-subrequest : middleware:middleware:middleware:middleware:middleware</span><br></pre></td></tr></table></figure>
+<p>또는 &#x2F;src에 미들웨어가 있을 경우 아래와 같이 적을 수 있다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x-middleware-subrequest:</span><br><span class="line">src/middleware:src/middleware:src/middleware:src/middleware:src/middleware</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/3306_260518_image6.png" alt="그림 6. middleware 취약점 공격(인증우회)"></p>
+<center><span style="font-size: 90%;">그림 6. [middleware 취약점 공격(인증우회)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3306_260518_image7.png" alt="그림 7. middleware 취약점 공격(인증우회) 성공 화면"></p>
+<center><span style="font-size: 90%;">그림 7. [middleware 취약점 공격(인증우회) 성공 화면]</span><br><span style="font-size: 70%;"></span></center><br>
+<br><br>
+
+<h1 id="3-패치-내역-분석-Patch-Diffing"><a href="#3-패치-내역-분석-Patch-Diffing" class="headerlink" title="3. 패치 내역 분석(Patch Diffing)"></a>3. 패치 내역 분석(Patch Diffing)</h1><p><img src="/images/3306_260518_image8.png" alt="그림 8. 패치 후 버전의 packages/next/src/server/lib/router-server.ts"></p>
+<center><span style="font-size: 90%;">그림 8. [패치 후 버전의 packages/next/src/server/lib/router-server.ts]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>패치 후에는 내부 요청 여부를 외부 사용자가 조작 가능한 헤더 값에만 의존하지 않도록 서버가 crypto.getRandomValues 함수를 사용하여 8바이트의 랜덤 값을 생성하고 ‘@next&#x2F;middleware-subrequest-id’ 전역 변수에 저장한다. 이 값은 서버가 내부적으로 생성한 일종의 인증 토큰처럼 사용되며, 이후 서브 요청을 처리할 때 요청에 포함된 값과 서버에 저장된 값을 비교하여 실제 내부 요청인지 검증한다.</p>
+<p><img src="/images/3306_260518_image9.png" alt="그림 9. 패치 후 버전의 packages/next/src/server/lib/server-ipc/utils.ts"></p>
+<center><span style="font-size: 90%;">그림 9. [패치 후 버전의 packages/next/src/server/lib/server-ipc/utils.ts]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>x-middleware-subrequest 헤더와 x-middleware-subrequest-id 헤더 값이 존재하는지 확인하고, x-middleware-subrequest-id 헤더 값이 앞서 전역 변수에 저장된 ‘@next&#x2F;middleware-subrequest-id’와 일치하는지 검사한다. 값이 일치하지 않으면, x-middleware-subrequest 헤더를 삭제하여 이를 활용할 수 없도록 막는다.</p>
+<p>사용자는 내부적으로 저장되는 8바이트 난수 값을 예측할 수 없으므로, 서버 측에서는 x-middleware-subrequest 헤더를 안전하게 활용하여 middleware 내부 실행 여부를 판별할 수 있다.<br><br><br></p>
+<h1 id="4-참고문헌"><a href="#4-참고문헌" class="headerlink" title="4. 참고문헌"></a>4. 참고문헌</h1><ul>
+<li>Allam, R. (2025, March 1). Next.js and the corrupt middleware: the authorizing artifact. zhero_web_security. <span class="exturl" data-url="aHR0cHM6Ly96aGVyby13ZWItc2VjLmdpdGh1Yi5pby9yZXNlYXJjaC1hbmQtdGhpbmdzL25leHRqcy1hbmQtdGhlLWNvcnJ1cHQtbWlkZGxld2FyZQ==">https://zhero-web-sec.github.io/research-and-things/nextjs-and-the-corrupt-middleware</span></li>
+<li>SK shieldus. (2025, April 24). Next.js middleware 우회 취약점(CVE-2025-29927). <span class="exturl" data-url="aHR0cHM6Ly93d3cuc2tzaGllbGR1cy5jb20vc2VjdXJpdHktaW5zaWdodHMvcmVwb3J0cy9uZXh0anMtbWlkZGxld2FyZS1ieXBhc3MtdnVsbmVyYWJpbGl0eQ==">https://www.skshieldus.com/security-insights/reports/nextjs-middleware-bypass-vulnerability</span></li>
+<li>Vercel. (2025). next.js. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3ZlcmNlbC9uZXh0Lmpz">https://github.com/vercel/next.js</span></li>
+<li>hg2lee. (2025, December 15). CVE-2025-29927 (Next.js middleware Bypass) CVSS 9.1. Tistory. <span class="exturl" data-url="aHR0cHM6Ly9oZzJsZWUudGlzdG9yeS5jb20vZW50cnkvQ1ZFLTIwMjUtMjk5MjctTmV4dGpzLW1pZGRsZXdhcmUtQnlwYXNzLUNWU1MtOTE=">https://hg2lee.tistory.com/entry/CVE-2025-29927-Nextjs-middleware-Bypass-CVSS-91</span></li>
+<li>National Vulnerability Database. (2025, March 21). CVE-2025-29927 Detail. NVD. <span class="exturl" data-url="aHR0cHM6Ly9udmQubmlzdC5nb3YvdnVsbi9kZXRhaWwvQ1ZFLTIwMjUtMjk5Mjc=">https://nvd.nist.gov/vuln/detail/CVE-2025-29927</span></li>
+<li>Twolinecode. (2022, August 22). #13. 미들웨어(Middleware)란? Medium. <span class="exturl" data-url="aHR0cHM6Ly9tZWRpdW0uY29tL3R3b2xpbmVjb2RlLzEzLSVFQiVBRiVCOCVFQiU5MyVBNCVFQyU5QiVBOCVFQyU5NiVCNC1taWRkbGV3YXJlLSVFQiU5RSU4MC0yM2FiYjMzZWM0ZjQ=">https://medium.com/twolinecode/13-%EB%AF%B8%EB%93%A4%EC%9B%A8%EC%96%B4-middleware-%EB%9E%80-23abb33ec4f4</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CVE/" rel="tag"># CVE</a>
+              <a href="/tags/%EC%B7%A8%EC%95%BD%EC%A0%90/" rel="tag"># 취약점</a>
+              <a href="/tags/%EC%98%A4%ED%94%88%EC%86%8C%EC%8A%A4/" rel="tag"># 오픈소스</a>
+              <a href="/tags/Next-js/" rel="tag"># Next.js</a>
+              <a href="/tags/Middleware/" rel="tag"># Middleware</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/01/14/323307_260114/" rel="prev" title="[2026 SWING magazine] Volatility 기반 메모리 포렌식과 YARA 탐지 자동화">
+                  <i class="fa fa-angle-left"></i> [2026 SWING magazine] Volatility 기반 메모리 포렌식과 YARA 탐지 자동화
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
