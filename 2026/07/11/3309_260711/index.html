@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="서론해당 글은 포렌식 보고서 작성 원칙(추측을 배제한 객관성 유지, 분석 환경 표기를 통한 재현 가능성 확보, 시간 표기 통일, 증거 위주)을 따라 작성되었다. 다만 필자의 포렌식 스터디 당시 분석 실수를 되짚는 취지의 글이니 만큼, 이 글을 읽는 누구나 따라 할 수 있게끔 보편적으로는 보고서에 포함되지 않는 시행착오와 과정 설명을 일부 포함하였음을 밝힌다">
+<meta property="og:type" content="article">
+<meta property="og:title" content="시나리오 기반 침해사고 분석 보고서: USB 기밀 유출">
+<meta property="og:url" content="https://log.swuswing.com/2026/07/11/3309_260711/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="서론해당 글은 포렌식 보고서 작성 원칙(추측을 배제한 객관성 유지, 분석 환경 표기를 통한 재현 가능성 확보, 시간 표기 통일, 증거 위주)을 따라 작성되었다. 다만 필자의 포렌식 스터디 당시 분석 실수를 되짚는 취지의 글이니 만큼, 이 글을 읽는 누구나 따라 할 수 있게끔 보편적으로는 보고서에 포함되지 않는 시행착오와 과정 설명을 일부 포함하였음을 밝힌다">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image23.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image24.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image25.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image26.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image27.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image28.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image29.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image30.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3309_260711_image31.png">
+<meta property="article:published_time" content="2026-07-10T22:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-11T11:40:18.854Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="forensics">
+<meta property="article:tag" content="침해사고 분석">
+<meta property="article:tag" content="기밀 유출">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3309_260711_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/07/11/3309_260711/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/07/11/3309_260711/","path":"2026/07/11/3309_260711/","title":"시나리오 기반 침해사고 분석 보고서: USB 기밀 유출"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>시나리오 기반 침해사고 분석 보고서: USB 기밀 유출 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%EC%84%9C%EB%A1%A0"><span class="nav-number">1.</span> <span class="nav-text">서론</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EB%B3%B8%EB%A1%A0"><span class="nav-number">2.</span> <span class="nav-text">본론</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">2.1.</span> <span class="nav-text">1) 시나리오</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%EC%82%AC%EC%9A%A9-%EB%8F%84%EA%B5%AC"><span class="nav-number">2.2.</span> <span class="nav-text">2) 사용 도구</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-USB-%EC%97%B0%EA%B2%B0-%ED%9D%94%EC%A0%81-%EB%A1%9C%EA%B7%B8-%EB%B6%84%EC%84%9D"><span class="nav-number">2.3.</span> <span class="nav-text">3) USB 연결 흔적 로그 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-USB-%EC%97%B0%EA%B2%B0-%ED%9D%94%EC%A0%81-%EB%A0%88%EC%A7%80%EC%8A%A4%ED%8A%B8%EB%A6%AC-%EB%B6%84%EC%84%9D"><span class="nav-number">2.4.</span> <span class="nav-text">4) USB 연결 흔적 레지스트리 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%EC%9C%A0%EC%B6%9C%EB%90%9C-%EC%9E%90%EB%A3%8C-%EC%B6%94%EC%A0%81-Prefetch-LNK-Jump-List-UsnJrnl"><span class="nav-number">2.5.</span> <span class="nav-text">5) 유출된 자료 추적 (Prefetch&#x2F;LNK&#x2F;Jump List&#x2F;$UsnJrnl)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%EC%95%88%ED%8B%B0-%ED%8F%AC%EB%A0%8C%EC%8B%9D-%EC%8B%9C%EB%8F%84-%ED%9D%94%EC%A0%81"><span class="nav-number">2.6.</span> <span class="nav-text">6) 안티 포렌식 시도 흔적</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%EA%B2%B0%EB%A1%A0-%EB%B0%8F-%EA%B6%8C%EA%B3%A0-%EC%82%AC%ED%95%AD"><span class="nav-number">3.</span> <span class="nav-text">결론 및 권고 사항</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">80</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/07/11/3309_260711/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="시나리오 기반 침해사고 분석 보고서: USB 기밀 유출 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          시나리오 기반 침해사고 분석 보고서: USB 기밀 유출
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: ycl</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-07-11 07:00:00" itemprop="dateCreated datePublished" datetime="2026-07-11T07:00:00+09:00">2026-07-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SWING-%ED%99%9C%EB%8F%99-%ED%9A%8C%EA%B3%A0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 활동 회고 series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="서론"><a href="#서론" class="headerlink" title="서론"></a>서론</h1><p>해당 글은 포렌식 보고서 작성 원칙(추측을 배제한 객관성 유지, 분석 환경 표기를 통한 재현 가능성 확보, 시간 표기 통일, 증거 위주)을 따라 작성되었다. 다만 필자의 포렌식 스터디 당시 분석 실수를 되짚는 취지의 글이니 만큼, 이 글을 읽는 누구나 따라 할 수 있게끔 보편적으로는 보고서에 포함되지 않는 시행착오와 과정 설명을 일부 포함하였음을 밝힌다. </p>
+<p>본 분석의 주요 쟁점은 다음과 같다. 첫째, 피조사자 학회원의 노트북에 실제로 USB 저장장치가 연결되었는지 여부를 확인하는 것이다. 이를 위해 setupapi.dev.log와 SYSTEM 하이브의 USB 및 USBSTOR 레지스트리 기록을 분석하였다. 둘째, USB 연결 전후로 내부 기밀 자료에 접근하거나 사용한 흔적이 존재하는지 확인하는 것이다. 이를 위해 Prefetch, LNK, Jump List, NTFS 로그($UsnJrnl&#x2F;$J, $LogFile, $MFT)를 분석하여 문서 실행·접근·삭제 기록을 시간 순서에 따라 정리하였다. 셋째, USB를 이용한 자료 반출 또는 관련 흔적 은닉 정황이 존재하는지 검토하는 것이다. 이를 위해 Chrome History를 분석하여 USB 사용 흔적 삭제 및 안티 포렌식 관련 검색·열람 기록을 확인하였다. 따라서 본 보고서는 확보된 디지털 증거를 바탕으로 USB 연결 여부, 기밀 자료 접근 정황, 삭제 및 은닉 시도 가능성을 종합적으로 분석하는 것을 목적으로 한다.</p>
+<span id="more"></span>
+
+<p><br><br></p>
+<h1 id="본론"><a href="#본론" class="headerlink" title="본론"></a>본론</h1><h2 id="1-시나리오"><a href="#1-시나리오" class="headerlink" title="1) 시나리오"></a>1) 시나리오</h2><p>SWING의 내부 기밀 자료가 외부로 유출되었다. 한 학회원의 노트북을 압수한 초동 조사 결과, 자료가 USB 저장장치로 복사된 흔적이 확인되었지만 해당 학회원은 USB 연결 자체를 부인하고 있는 상황. </p>
+<h2 id="2-사용-도구"><a href="#2-사용-도구" class="headerlink" title="2) 사용 도구"></a>2) 사용 도구</h2><ul>
+<li><strong>FTK Imager 8.2.0.26</strong> (<span class="exturl" data-url="aHR0cHM6Ly93d3cuZXh0ZXJyby5jb20vZnRrLWRvd25sb2Fkcw==">https://www.exterro.com/ftk-downloads</span>)</li>
+<li><strong>Registry Explorer 2026.5.0</strong> (<span class="exturl" data-url="aHR0cHM6Ly9lcmljemltbWVybWFuLmdpdGh1Yi5pby8=">https://ericzimmerman.github.io/</span>)</li>
+<li><strong>rla 2026.5.0</strong> (<span class="exturl" data-url="aHR0cHM6Ly9lcmljemltbWVybWFuLmdpdGh1Yi5pby8=">https://ericzimmerman.github.io/</span>)</li>
+<li><strong>LECmd 2026.5.0</strong> (<span class="exturl" data-url="aHR0cHM6Ly9lcmljemltbWVybWFuLmdpdGh1Yi5pby8=">https://ericzimmerman.github.io/</span>)</li>
+<li><strong>JumpList Explorer 2026.5.0</strong> (<span class="exturl" data-url="aHR0cHM6Ly9lcmljemltbWVybWFuLmdpdGh1Yi5pby8=">https://ericzimmerman.github.io/</span>)</li>
+<li><strong>NTFS Log Tracker 1.71</strong>  (<span class="exturl" data-url="aHR0cHM6Ly9zaXRlcy5nb29nbGUuY29tL3NpdGUvZm9yZW5zaWNub3RlL250ZnMtbG9nLXRyYWNrZXI=">https://sites.google.com/site/forensicnote/ntfs-log-tracker</span>)</li>
+<li><strong>DB Browser for SQLite 3.13.1</strong> (<span class="exturl" data-url="aHR0cHM6Ly9zcWxpdGVicm93c2VyLm9yZy8=">https://sqlitebrowser.org/</span>)</li>
+</ul>
+<h2 id="3-USB-연결-흔적-로그-분석"><a href="#3-USB-연결-흔적-로그-분석" class="headerlink" title="3) USB 연결 흔적 로그 분석"></a>3) USB 연결 흔적 로그 분석</h2><p><img src="/images/3309_260711_image1.png" alt="그림 1. C:\Windows\inf\setupapi.dev.log "></p>
+<center><span style="font-size: 90%;">그림 1. [C:\Windows\inf\setupapi.dev.log]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>확보한 디스크 이미지를 FTK Imager에서 열어 setupapi.dev.log를 추출하였다. 본 분석은 setupapi.dev.log 파일을 분석하여 USB 장치 설치 로그에 포함된 정보를 확인하는 것을 목적으로 한다.<br><br></p>
+<p><img src="/images/3309_260711_image2.png" alt="그림 2. setupapi.dev.log 파일 내부 USBSTOR"></p>
+<center><span style="font-size: 90%;">그림 2. [setupapi.dev.log 파일 내부 USBSTOR]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>setupapi.dev.log 파일 내부에서 USB 저장장치 흔적이 잡히는 USBSTOR을 검색하여 분석한 결과, SanDisk USB 저장장치가 시스템에 연결되어 정상적으로 설치 및 시작된 흔적이 확인되었다. </p>
+<p>설치된 USB 정보와 설치 완료 시각은 아래 로그 결과와 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Device Install : 장치 설치 이벤트</span><br><span class="line">Hardware initiated : 사용자가 장치를 꽂아서 하드웨어 감지로 설치 시작</span><br><span class="line">USBSTOR: USB 저장장치</span><br><span class="line">Disk: 디스크 형태의 장치</span><br><span class="line">Ven_SanDisk 제조사: SanDisk</span><br><span class="line">Prod_Cruzer_Blade 제품명: Cruzer Blade</span><br><span class="line">00023711122323170522: USB 시리얼 번호</span><br><span class="line">Section start 2026/02/12 21:42:29.162</span><br></pre></td></tr></table></figure>
+<br>
+
+<p><img src="/images/3309_260711_image3.png" alt="그림 3. setupapi.dev.log 파일 내부 장치 설치 종료"></p>
+<center><span style="font-size: 90%;">그림 3. [setupapi.dev.log 파일 내부 장치 설치 종료]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>아래를 추가로 확인한 결과, dvi: {Install DEVICE exit (0x00000000)}이 출력된 것을 확인하였다. 이는 장치 설치 단계가 종료되었고, 결과 코드 0x00000000로 성공을 의미한다.</p>
+<p>또한 dvi: Install Device: Starting device completed. 21:42:30.675 출력을 통해 설치 후 윈도우가 해당 장치를 실제로 사용할 수 있도록 활성화하는 단계를 완료한 사실을 확인하였다.</p>
+<p>setupapi.dev.log 파일을 분석하여 얻게 된 총체적인 결론은 다음과 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">설치한 장치 종류: USB </span><br><span class="line">제조사: SanDisk</span><br><span class="line">제품명: Cruzer Blade</span><br><span class="line">시리얼 번호: 00023711122323170522</span><br><span class="line">설치 시작 시각: 2026/02/12 21:42:29.162</span><br><span class="line">장치 시작 완료 시각: 2026/02/12 21:42:30.675</span><br><span class="line">결과: 정상 설치 및 시작 완료</span><br></pre></td></tr></table></figure>
+<br>
+
+<h2 id="4-USB-연결-흔적-레지스트리-분석"><a href="#4-USB-연결-흔적-레지스트리-분석" class="headerlink" title="4) USB 연결 흔적 레지스트리 분석"></a>4) USB 연결 흔적 레지스트리 분석</h2><p><img src="/images/3309_260711_image4.png" alt="그림 4. C:\Windows\System32\config 내부"></p>
+<center><span style="font-size: 90%;">그림 4. [C:\Windows\System32\config 내부]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Windows의 레지스트리는 여러 개의 hive 파일로 나뉘어 저장되며 핵심 하이브 파일들은 C:\Windows\System32\config 경로에 존재한다. 해당 경로에서 SYSTEM 하이브를 추출했다. (단, 이때 SYSTEM.LOG1 및 SYSTEM.LOG2를 함께 추출한 후 SYSTEM과 같은 경로에 두고 분석하여야 한다.)<br><br></p>
+<p><img src="/images/3309_260711_image5.png" alt="그림 5. SYSTEM 하이브 내부 USBSTOR 검색"></p>
+<center><span style="font-size: 90%;">그림 5. [SYSTEM 하이브 내부 USBSTOR 검색]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Registry Explorer를 사용해 SYSTEM 하이브를 열어주었다. </p>
+<p>내부에서 USB 저장장치 기록을 보는 대표 위치인 USBSTOR을 검색하였지만 CorrentControlSet\Enum\USBSTOR 경로를 찾아볼 수 없었다.<br><br></p>
+<p><img src="/images/3309_260711_image6.png" alt="그림 6. Select 내부 Current 값 확인"></p>
+<center><span style="font-size: 90%;">그림 6. [Select 내부 Current 값 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>오프라인 SYSTEM 하이브에서 CurrentControlSet이 ControlSet00x에 대응되므로 해당 번호를 확정하기 위해 Select 내부의 Current 값을 확인하였다.  Current 값은 1, 현재 분석 중인 ControlSet001과 일치하므로 원하는 USBSTOR를 찾지 못한 것은 위치 문제와 무관하다.</p>
+<p>즉 해당 오류는 SYSTEM.LOG1 &#x2F; SYSTEM.LOG2에 남아 있는 변경 사항을 SYSTEM 하이브에 반영하지 못한 결과이다.<br><br></p>
+<p><img src="/images/3309_260711_image7.png" alt="그림 7. SYSTEM 하이브 경로"></p>
+<center><span style="font-size: 90%;">그림 7. [SYSTEM 하이브 경로]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3309_260711_image8.png" alt="그림 8. RLA 이용하여 Transaction Log Replay"></p>
+<center><span style="font-size: 90%;">그림 8. [RLA 이용하여 Transaction Log Replay]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>위 분석에서 SYSTEM 하이브가 dirty 상태로 확인되어 SYSTEM.LOG1 및 SYSTEM.LOG2를 기반으로 transaction log replay를 수행하였고, 이후 재분석한 clean SYSTEM 하이브에서 USB 연결 흔적을 확인하였다.<br><br></p>
+<p><img src="/images/3309_260711_image9.png" alt="그림 9. RLA 산출물"></p>
+<center><span style="font-size: 90%;">그림 9. [RLA 산출물]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3309_260711_image10.png" alt="그림 10. clean SYSTEM 하이브 ControlSet001\Enum\USB"></p>
+<center><span style="font-size: 90%;">그림 10. [clean SYSTEM 하이브 ControlSet001\Enum\USB]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Registry Explorer를 사용해 clean SYSTEM 하이브를 열어주었다. </p>
+<p>ControlSet001\Enum\USB에서 VID_0781&amp;PID_5567 하위에 Serial Number 00023711122323170522를 가진 USB 저장장치가 확인되었다. 해당 장치의 Service 값은 USBSTOR이며, Device Description은 USB Mass Storage Device, Friendly Name은 Cruzer Blade로 확인되었다. </p>
+<p>따라서 해당 시스템에는 Serial Number 00023711122323170522를 가진 SanDisk Cruzer Blade USB가 2026-02-12 12:42:29에 시스템에 처음 설치(First Installed)되었으며, 동일 시각에 마지막으로 연결(Last Connected)되었다고 판단된다. First Installed와 Last Connected가 동일하므로 USB가 한 번만 연결되었거나 시스템이 꺼진 상태에서 뽑았다는 정황을 뒷받침한다.</p>
+<p>이는 setupapi.dev.log의 증거와 정확히 일치한다. (Registry Explorer는 UTC 기준으로 시간을 표현하므로 2026-02-12 12:42:29 UTC + 9시간 &#x3D; 2026-02-12 21:42:29 KST) </p>
+<p>단, Last Removed가 비어 있기 때문에 USB가 분리된 시각은 확인할 수 없다.<br><br></p>
+<p><img src="/images/3309_260711_image11.png" alt="그림 11. clean SYSTEM 하이브 ControlSet001\Enum\USBSTOR"></p>
+<center><span style="font-size: 90%;">그림 11. [clean SYSTEM 하이브 ControlSet001\Enum\USBSTOR]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>다음으로 USBSTOR에서 피조사자가 연결한 것으로 추정되는 00023711122323170522 USB 시리얼 번호의 Property Store 속성 카테고리를 살펴보았다.<br><br></p>
+<p><img src="/images/3309_260711_image12.png" alt="그림 12. clean SYSTEM 하이브 ControlSet001\Enum\USB"></p>
+<center><span style="font-size: 90%;">그림 12. [clean SYSTEM 하이브 ControlSet001\Enum\USB]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3309_260711_image13.png" alt="그림 13. clean SYSTEM 하이브 ControlSet001\Enum\USB"></p>
+<center><span style="font-size: 90%;">그림 13. [clean SYSTEM 하이브 ControlSet001\Enum\USB]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3309_260711_image14.png" alt="그림 14. clean SYSTEM 하이브 ControlSet001\Enum\USB"></p>
+<center><span style="font-size: 90%;">그림 14. [clean SYSTEM 하이브 ControlSet001\Enum\USB]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>USBSTOR의 Properties 아래 있는 0064, 0065, 0066 FILETIME 형태의 타임스탬프 값을 분석한 결과 모두 기록된 시각이 2026-02-12 12:42:29로 동일했다. 이는 ControlSet001\Enum\USB  First Installed와 Last Connected가 동일했던 결과와 맥을 같이 하며 해당 시각 USB를 한 번만 연결하였거나 시스템이 꺼진 상태에서 연결을 해제한 정황을 뒷받침한다.<br><br><br></p>
+<h2 id="5-유출된-자료-추적-Prefetch-LNK-Jump-List-UsnJrnl"><a href="#5-유출된-자료-추적-Prefetch-LNK-Jump-List-UsnJrnl" class="headerlink" title="5) 유출된 자료 추적 (Prefetch&#x2F;LNK&#x2F;Jump List&#x2F;$UsnJrnl)"></a>5) 유출된 자료 추적 (Prefetch&#x2F;LNK&#x2F;Jump List&#x2F;$UsnJrnl)</h2><p><img src="/images/3309_260711_image15.png" alt="그림 15. C:\Windows\Prefetch\EXCELE.EXE 프리패치"></p>
+<center><span style="font-size: 90%;">그림 15. [C:\Windows\Prefetch\EXCELE.EXE 프리패치]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3309_260711_image16.png" alt="그림 16. C:\Windows\Prefetch\WINWORD.EXE 프리패치"></p>
+<center><span style="font-size: 90%;">그림 16. [C:\Windows\Prefetch\WINWORD.EXE 프리패치]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>USB 연결 시각은 SYSTEM 하이브의 USBSTOR 및 setupapi.dev.log를 통해 확인하였으므로 이후 Prefetch 분석을 통해 USB 연결 전후에 실행된 프로그램 흔적을 확인하였다.</p>
+<p>C:\Windows\Prefetch 경로에서 발견된 USB 연결 시작 일시(2026-02-12 12:42:29 UTC) 직전 프리패치는 EXCELE.EXE(2026-02-12 12:41:26 UTC), WINWORD.EXE(2026-02-12 12:41:28 UTC)이다. 이는 USB 설치 전 엑셀 파일과 워드 파일을 열었다는 정황을 뒷받침한다.<br><br></p>
+<p><img src="/images/3309_260711_image17.png" alt="그림 17. Users\사용자명\AppData\Roaming\Microsoft\Windows\Recent"></p>
+<center><span style="font-size: 90%;">그림 17. [Users\사용자명\AppData\Roaming\Microsoft\Windows\Recent]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>다음으로 어떤 파일에 접근했는지 알아보기 위한 목적으로 최근 접근한 것들의 바로가기 파일 목록을 분석하였다. 확인 결과 Users\사용자명\AppData\Roaming\Microsoft\Windows\Recent 해당 경로에서 ‘스윙 CTF’, ‘기밀’, ‘학회원 명단’ 등 수상한 이름이 파일들이 발견되었다. 다만 해당 파일들의 이름만으로 피조사자가 해당 파일을 열어보았음을 확정할 수 없다. 세부 사항을 확인하기 위해 SWING_자료_기밀, SWING_학회원명단, SWING_CTF_2026_문제출제계획서 세 바로가기 링크 파일을 추출했다.<br><br></p>
+<p><img src="/images/3309_260711_image18.png" alt="그림 18. LECmd.exe –f “SWING_자료_기밀.lnk 경로”"></p>
+<center><span style="font-size: 90%;">그림 18. [LECmd.exe –f “SWING_자료_기밀.lnk 경로”]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>LECmd를 사용하여 SWING_자료_기밀 링크 파일을 분석하였다.<br>분석 결과 바로가기(.lnk) 파일 자체는 2026-02-12 10:07:02에 생성되었으며, 마지막 수정 및 접근은 12:49:32에 이루어졌다. </p>
+<p>한편 바로가기가 가리키는 원본 파일은 2026-02-12 10:06:55에 생성, 마지막 수정 및 접근은 2026-02-12 12:49:32에 이루어졌다.</p>
+<p>원본 파일 생성 후 거의 바로 바로가기 파일이 만들어졌으며, USB 연결 시간 12:42:29 (UTC) 이후 약 7분 뒤 해당 파일이 접근되었음을 알 수 있다.<br><br></p>
+<p><img src="/images/3309_260711_image19.png" alt="그림 19. LECmd.exe SWING_자료_기밀.lnk 분석 결과"></p>
+<center><span style="font-size: 90%;">그림 19. [LECmd.exe SWING_자료_기밀.lnk 분석 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>추가 분석 결과 바로가기가 참조하는 대상 파일은 C:\Users\been_\Documents\ 경로에 존재하는 것으로 확인되었다. 또한 Volume Information 분석 결과 대상 파일은 Drive Type이 Fixed Storage Media(Hard Drive)인 로컬 저장장치에 위치하였으며, Volume Serial Number는 987FCC5B로 확인되었다.</p>
+<p>바로가기 참조하는 SWING_자료_기밀 파일이 피조사자 노트북의 내부 저장 장치에 존재하나, 이를 통해 파일의 확장자를 인식할 수 없고, USB에 복사되었는지 확정할 수 없다. </p>
+<p><img src="/images/3309_260711_image20.png" alt="그림 20. LECmd.exe –f “SWING_학회원명단.lnk 경로”"></p>
+<center><span style="font-size: 90%;">그림 20. [LECmd.exe –f “SWING_학회원명단.lnk 경로”]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>다음으로 SWING_학회원명단 링크 파일을 분석하였다. 분석 결과 바로가기 파일은 2026-02-12 10:07:27에 생성되었으며, 마지막 수정 및 접근 시각은 2026-02-12 12:41:33으로 확인되었다.</p>
+<p>한편 바로가기가 참조하는 원본 파일은 2026-02-12 10:07:27에 생성 및 수정되었으며, 마지막 접근 시각은 2026-02-12 12:41:32로 확인되었다. </p>
+<p>원본 파일과 바로가기 파일은 동일한 시각(10:07:27)에 생성된 것으로 나타나며, USB 연결 시각인 2026-02-12 12:42:29(UTC)보다 약 57초 이전에 원본 파일이 마지막으로 접근되었다.<br><br></p>
+<p><img src="/images/3309_260711_image21.png" alt="그림 21. LECmd.exe SWING_학회원명단.lnk 분석 결과"></p>
+<center><span style="font-size: 90%;">그림 21. [LECmd.exe SWING_학회원명단.lnk 분석 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>추가 분석 결과 SWING_학회원명단 또한 USB가 아닌 내부 저장장치(HDD&#x2F;SSD) 에 저장되어 있었다. Volume Serial Number가 일치하므로 SWING_자료_기밀과 같은 드라이브에 저장되어 있었음을 알 수 있다.  또한 대상 파일명은 SWING_학회원명단.xlsx로 엑셀 파일이었고, 해당 파일이 Documents\SWING_자료_기밀 폴더 안에 존재하였음을 알 수 있다.</p>
+<p>따라서 SWING_자료_기밀은 폴더였음이 확인되었고, 12:41:26(UTC) EXCEL.EXE 프리패치 실행 직후 12:41:32 ~ 12:41:33(UTC) SWING_학회원명단.xlsx와 이를 참조하는 .lnk 파일의 접근 기록이 확인되었다. 두 기록을 시간상으로 종합하면, Excel 실행 이후 해당 파일이 열람되었을 가능성이 있는 것으로 판단된다.<br><br></p>
+<p><img src="/images/3309_260711_image22.png" alt="그림 22. LECmd.exe –f “SWING_CTF_2026_문제출제계획서.lnk 경로”"></p>
+<center><span style="font-size: 90%;">그림 22. [LECmd.exe –f “SWING_CTF_2026_문제출제계획서.lnk 경로”]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>마지막으로 SWING_CTF_2026_문제출제계획서 링크 파일을 분석하였다. </p>
+<p>분석 결과 바로가기 파일은 2026-02-12 10:07:06에 생성되었으며, 마지막 수정 및 접근은 2026-02-12 12:49:32에 이루어졌다.</p>
+<p>한편 원본 파일은 2026-02-12 10:07:06에 생성되었으며, 생성 직후인 10:07:07에 수정되었다. 마지막 접근은 2026-02-12 12:49:28에 이루어졌다.<br><br></p>
+<p><img src="/images/3309_260711_image23.png" alt="그림 23. SWING_CTF_2026_문제출제계획서 분석 결과"></p>
+<center><span style="font-size: 90%;">그림 23. [SWING_CTF_2026_문제출제계획서 분석 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>추가 분석 결과 바로가기가 참조하는 대상은 SWING_자료_기밀 폴더에 저장된 SWING_CTF_2026_문제출제계획서.docx 파일이었다. 저장된 곳은 SWING_학회원명단.xlsx과 동일했다. </p>
+<p>링크 파일로 알아낸 타임라인을 한국 시각 기준으로 총정리하자면 다음과 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">21:41:26  EXCEL.EXE 실행(Prefetch)</span><br><span class="line">21:41:32  SWING_학회원명단.xlsx 마지막 접근(LNK)</span><br><span class="line">21:42:29  SanDisk Cruzer Blade USB 연결(USBSTOR, setupapi.dev.log)</span><br><span class="line">21:49:28  SWING_CTF_2026_문제출제계획서.docx 마지막 접근(LNK)</span><br><span class="line">21:49:32  SWING_CTF_2026_문제출제계획서.lnk 마지막 접근 및 수정(LNK)</span><br></pre></td></tr></table></figure>
+
+<p>이러한 사실을 통해 USB 연결 직전 Excel 문서(SWING_학회원명단.xlsx)가 접근되었고, 약 1분 후 SanDisk Cruzer Blade USB가 연결되었으며, USB 연결 후 약 7분 뒤 SWING_CTF_2026_문제출제계획서.docx가 접근되었음을 확인하였다. 이는 피조사자가 USB 연결 전후로 SWING_자료_기밀 폴더의 문서들을 연속적으로 확인한 정황을 뒷받침한다.<br><br></p>
+<p><img src="/images/3309_260711_image24.png" alt="그림 24. Users\사용자명\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations"></p>
+<center><span style="font-size: 90%;">그림 24. [Users\사용자명\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>이어서 FTK Imager를 이용해 AutomaticDestinations 폴더에서 Windows가 프로그램별로 남기는 최근 사용 파일 목록 기록인 점프리스트를 모두 추출하였다.<br><br></p>
+<p><img src="/images/3309_260711_image25.png" alt="그림 25. Word에서 파일을 사용한 기록"></p>
+<center><span style="font-size: 90%;">그림 25. [Word에서 파일을 사용한 기록]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>확인 결과 APP ID fb30db0fee58fac8, Microsoft Office Word x64 아래 Entry에 ‘This PC\Documents\SWING_자료_기밀\SWING_CTF_2026_문제출제계획서.docx’이 기록되어 있었다. </p>
+<p>Microsoft Word의 Recent Documents 목록에서 ‘SWING_CTF_2026_문제출제계획서.docx’가 확인되었으므로, 해당 문서가 Microsoft Word를 통해 열람된 정황이 확인된다.<br><br></p>
+<p><img src="/images/3309_260711_image26.png" alt="그림 26. Excel에서 파일을 사용한 기록"></p>
+<center><span style="font-size: 90%;">그림 26. [Excel에서 파일을 사용한 기록]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>추가 확인 결과 APP ID b8ab77100df80ab2, Microsoft Office Excel x64 아래 Entry에 ‘This PC\Documents\SWING_자료_기밀\SWING_학회원명단.xlsx’이 기록되어 있었다. </p>
+<p>Microsoft Excel의 Jump List에 ‘SWING_학회원명단.xlsx’가 등록되어 있는 점을 통해 해당 문서가 Excel 프로그램에서 열람된 정황이 확인된다.</p>
+<p>해당 증거들만으로 문서가 USB 저장장치로 복사되었다고 단정할 수 없다. 이에 따라 NTFS 파일 시스템의 파일 변경 기록 저널인 $UsnJrnl를 추가로 분석하여, 파일 시스템 단위에서 발생한 행위와 시간 흐름을 보다 구체적으로 확인하였다.<br><br></p>
+<p><img src="/images/3309_260711_image27.png" alt="그림 27. LogFile, J, MTF 준비"></p>
+<center><span style="font-size: 90%;">그림 27. [LogFile, J, MTF 준비]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>FTK Imager에서 $UsnJrnl&#x2F;$J, LogFile, MTF를 추출한 뒤 NTFS Log Tracker로 분석하였다.<br><br></p>
+<p><img src="/images/3309_260711_image28.png" alt="그림 28. SWING_학회원명단.xlsx 검색"></p>
+<center><span style="font-size: 90%;">그림 28. [SWING_학회원명단.xlsx 검색]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>SWING_학회원명단.xlsx 파일의 타임라인을 한국 시간 기준으로 정리하면 다음과 같다. </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">21:41:32: 엑셀 문서를 열 때 생기는 임시 잠금 파일 생성</span><br><span class="line">21:41:32: 데이터 기록 (메타데이터 변경)</span><br><span class="line">21:49:34: 데이터 기록</span><br><span class="line">21:50:34: SWING_학회원명단.xlsx 원본 파일 삭제 </span><br></pre></td></tr></table></figure>
+<br>
+
+<p><img src="/images/3309_260711_image29.png" alt="그림 29. SWING_CTF_2026_문제출제계획서.docx 검색"></p>
+<center><span style="font-size: 90%;">그림 29. [SWING_CTF_2026_문제출제계획서.docx 검색]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>이어서 WING_CTF_2026_문제출제계획서.docx 파일의 타임라인을 정리하면 다음과 같다. </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">21:41:27: Word가 문서를 열 때 자동으로 만드는 임시 잠금 파일 생성</span><br><span class="line">21:41:27: 데이터 기록</span><br><span class="line">21:49:32: 임시 파일 닫은 후 삭제</span><br><span class="line">21:50:34: SWING_CTF_2026_문제출제계획서.docx 원본 파일 삭제</span><br></pre></td></tr></table></figure>
+
+<p>NTFS Log Tracker 분석 결과, SWING_학회원명단.xlsx과 SWING_CTF_2026_문제출제계획서.docx에 대해 생성(File_Created), 데이터 기록(Data_Added), 파일 종료(File_Closed), 삭제(File_Deleted) 이벤트가 확인되었다. 이는 USB 연결 전후로 해당 문서들이 파일시스템에서 생성·사용된 뒤 삭제된 정황을 뒷받침한다. 다만 직접적인 파일 복사 이벤트는 확인되지 않았으므로 USB 저장장치로 복사되었다고 단정할 수 없다.<br><br></p>
+<h2 id="6-안티-포렌식-시도-흔적"><a href="#6-안티-포렌식-시도-흔적" class="headerlink" title="6) 안티 포렌식 시도 흔적"></a>6) 안티 포렌식 시도 흔적</h2><p><img src="/images/3309_260711_image30.png" alt="그림 30. C:\Users\사용자명\AppData\Local\Google\Chrome\User Data\Default\History"></p>
+<center><span style="font-size: 90%;">그림 30. [C:\Users\사용자명\AppData\Local\Google\Chrome\User Data\Default\History]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>마지막으로 USB 사용 흔적 은닉 또는 삭제 시도와 관련된 기록을 추가로 분석하였다.</p>
+<p>크롬에서의 검색 기록은 사용자 PC 안의 SQLite 데이터베이스 파일로 저장된다. 해당 파일인 History를 FTK Imager에서 추출한 후 DB Browser for SQLite에서 분석하였다.<br><br></p>
+<p><img src="/images/3309_260711_image31.png" alt="그림 31. urls 테이블"></p>
+<center><span style="font-size: 90%;">그림 31. [urls 테이블]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>사용자가 방문한 사이트와 검색어 흔적을 보기 위해 urls 테이블을 살펴보았다. </p>
+<p>분석 결과 피조사자가 “USB 연결 기록 지우는 법”, “USB 연결 기록 삭제”, “USB 메모리 사용 흔적 삭제”, “USB 사용 흔적 삭제” 등 USB 연결 및 사용 흔적 제거와 관련된 검색을 수행한 기록이 확인되었다. 또한 “안티포렌식 - USB 메모리 사용 흔적 삭제하기”와 같은 안티포렌식 관련 웹페이지를 방문한 기록도 확인되었다. 이와 함께 “CTF 문제 유출 처벌”, “CTF 문제 유출 처벌 - Google 검색” 등의 검색 기록이 확인되어, USB 사용 흔적 제거 및 정보 유출과 관련된 정보를 탐색한 정황이 확인되었다.<br><br><br></p>
+<h1 id="결론-및-권고-사항"><a href="#결론-및-권고-사항" class="headerlink" title="결론 및 권고 사항"></a>결론 및 권고 사항</h1><p>지금까지 피조사자의 노트북 디스크 이미지를 통해 SetupAPI, Prefetch, Jump List, LNK, USBSTOR, NTFS Log($UsnJrnl&#x2F;$J, $LogFile, $MFT)를 종합<br>분석한 결과를 한국 시간 순으로 나열하면 다음과 같다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">21:41:26: EXCEL.EXE 실행</span><br><span class="line">21:41:27: Word 임시파일 생성</span><br><span class="line">21:41:28: WINWORD.EXE 실행</span><br><span class="line">21:41:32: Excel 임시파일 생성 및 데이터 기록</span><br><span class="line">21:42:29: USB 연결</span><br><span class="line">21:49:28: SWING_CTF_2026_문제출제계획서.docx 접근</span><br><span class="line">21:49:32: Word 임시파일 삭제</span><br><span class="line">21:49:34: Excel 임시파일 데이터 갱신</span><br><span class="line">21:50:34: SWING_CTF_2026_문제출제계획서.docx, SWING_학회원명단.xlsx 원본 파일 삭제</span><br></pre></td></tr></table></figure>
+
+<p>또한 Chrome History 분석 결과 USB 연결 기록 삭제 및 USB 사용 흔적 제거 방법, 안티 포렌식 관련 웹페이지를 검색·열람한 기록이 확인되었다. 이는 USB 사용 흔적을 제거하려는 의도를 시사하는 정황 증거로 판단된다. 다만, 해당 검색 기록만으로 실제 안티 포렌식 행위를 수행하였다고 단정할 수 없다. 특히 사용자가 접속한 웹사이트에서는 USBSTOR, setupapi.dev.log에서의 USB 연결 기록 삭제에 대해 설명하였으나 분석 결과 USB 연결 기록이 존재하였기 때문이다.</p>
+<p>현재 확보된 증거만으로는 문서가 실제로 USB 저장장치로 복사되었거나 외부로 유출되었다는 사실을 뒷받침할 수 없다. 하지만 ‘자료가 USB 저장장치로 복사된 흔적이 확인되었지만 해당 학회원은 USB 연결 자체를 부인하고 있는 상황’ 이라는 이번 시나리오에 한해서 현재 확보된 디지털 증거를 종합한 결과 해당 학회원의 진술의 신빙성은 낮다. USBSTOR와 SetupAPI에서 동일 SanDisk USB의 연결 기록이 확인되므로 부인 진술과 디지털 증거가 배치되기 때문이다. 또한 USB 연결 전후의 문서 접근&#x2F;삭제 기록과 USB 사용 흔적 삭제 관련 검색 기록이 함께 확인되어 자료 반출 이후 관련 흔적을 제거하려는 정황이 존재하는 것으로 판단된다. 따라서 본 분석 결과는 해당 학회원의 진술과 상반되는 디지털 증거를 확인하였으며, USB를 이용한 자료 반출 및 이후 증거 은닉 정황을 뒷받침하는 객관적 근거를 제공한다.</p>
+<p>본 사건은 특히 USB를 활용한 정보 유출 사건이다. 따라서 USB 장치 사용 통제 정책을 강화해야 한다. 승인되지 않은 USB 저장장치 연결 차단 및 USB 장치 시리얼 번호 기반 허용 목록 운영을 권고한다. 또한 네트워크 전송 기록, 클라우드 동기화 기록 등 추가 디지털 증거를 확보하여 정보 유출 여부를 종합적으로 판단할 것을 권고한다. 아울러 중요 자료에 대한 USB 사용 통제 및 접근 기록 모니터링을 강화하여 유사 사례를 예방할 필요가 있다.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/forensics/" rel="tag"># forensics</a>
+              <a href="/tags/%EC%B9%A8%ED%95%B4%EC%82%AC%EA%B3%A0-%EB%B6%84%EC%84%9D/" rel="tag"># 침해사고 분석</a>
+              <a href="/tags/%EA%B8%B0%EB%B0%80-%EC%9C%A0%EC%B6%9C/" rel="tag"># 기밀 유출</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/06/19/3308_260706/" rel="prev" title="[SEED 6월호] CVE-2025-24813: Apache Tomcat의 Path Equivalence 취약점">
+                  <i class="fa fa-angle-left"></i> [SEED 6월호] CVE-2025-24813: Apache Tomcat의 Path Equivalence 취약점
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
