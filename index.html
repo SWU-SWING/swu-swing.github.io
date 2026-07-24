@@ -114,7 +114,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -125,7 +125,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-count">86</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -165,6 +165,97 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/07/21/3311_260721/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2026/07/21/3311_260721/" class="post-title-link" itemprop="url">[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: ycl</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-07-21 16:00:00" itemprop="dateCreated datePublished" datetime="2026-07-21T16:00:00+09:00">2026-07-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/S-E-E-D-series/" itemprop="url" rel="index"><span itemprop="name">S.E.E.D. series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h1><p>CVE-2025-0411은 7-Zip의 Mark-of-the-Web(MotW) 우회 취약점이다. 해당 취약점은 인터넷에서 받은 압축파일 안의 파일은 원래 ‘인터넷에서 온 위험한 파일’ 표시가 따라가야 하지만 특정 상황에서 7-Zip이 그 표시를 내부 파일에 전달하지 못한 문제이다. Windows는 인터넷에서 파일을 다운로드할 때 파일 뒤에 숨겨진 출처 정보인 Zone.Identifier가 붙는다. Zone.Identifier 내부에는 ‘ZoneId’라는 숫자 정보가 존재하며 숫자로 파일의 출처를 구분한다. ZoneId가 3일 경우 이 파일은 신뢰할 수 없는 영역, 즉 인터넷에서 왔음을 의미하며 이는 Windows가 파일을 실행하기 전 보안 경고를 띄우는 등의 행위 판단의 근거가 된다. 그러나 7-Zip 24.09 미만 버전에서 중첩 압축파일(zip 파일 안에 또 zip 파일이 존재하는 구조)을 처리할 때 Zone.Identifier가 추출 파일에 정상적으로 전파되지 않아 Windows 보안 경고를 우회할 수 있었다. 이로 인해 공격자는 악성 이중 압축파일을 사용자에게 열도록 유도하여 내부 실행파일이나 스크립트가 인터넷에서 유입된 파일로 인식되지 않게 만들 수 있게 되었으며, 결과적으로 현재 사용자 권한에서 악성코드 실행으로 이어질 수 있었다. 본 보고서에서는 이를 악성 첨부파일 기반 문서 위장형 공격 사례로 분류하고 취약점의 PoC 구조, Exploit 흐름, 패치 현황을 분석할 예정이다.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2026/07/21/3311_260721/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -969,97 +1060,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2026/01/07/3305_260107/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/01/06/313204_260106/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="SWING">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | SW1NGL0G">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2026/01/06/313204_260106/" class="post-title-link" itemprop="url">[2026 SWING magazine] 윈도우 악성코드 인젝션 기법 심층 분석 : Hollowing부터 Ghosting까지</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-  <span class="post-meta-item">
-    <span class="post-meta-item-icon">
-      <i class="far fa-user"></i>
-    </span>
-    <span class="post-meta-item-text">author: 윈도우 악성코드 인젝션 (NHM, wogml, koror0n, Nutella, alvvays)</span>
-  </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2026-01-06 10:00:00" itemprop="dateCreated datePublished" datetime="2026-01-06T10:00:00+09:00">2026-01-06</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">In</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/SWING-%EC%B9%BC%EB%9F%BC-%EB%AA%A8%EC%95%84%EB%B3%B4%EA%B8%B0-series/" itemprop="url" rel="index"><span itemprop="name">SWING 칼럼 모아보기 series</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h1 id="1-서론"><a href="#1-서론" class="headerlink" title="1. 서론"></a>1. 서론</h1><h2 id="가-칼럼-작성-배경"><a href="#가-칼럼-작성-배경" class="headerlink" title="가. 칼럼 작성 배경"></a>가. 칼럼 작성 배경</h2><p>최근 APT(Advanced Persistent Threat) 공격은 국가·기업을 가리지 않고 꾸준히 발생하고 있다. 안랩을 비롯한 여러 보안 업체의 최신 보고서에서 확인되었듯, 공격자들은 다양한 악성코드를 활용해 윈도우 환경을 중심으로 장기간 은밀하게 침투하고 있다. 이러한 APT 공격에는 합법적 프로세스에 악성 행위를 숨기는 “프로세스 인젝션” 기법이 탐지 우회 효과를 위해 주요 수단으로 사용되고 있으며, 날이 갈수록 그 기술이 고도화되고 있다. </p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2026/01/06/313204_260106/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. 들어가며CVE-2025-0411은 7-Zip의 Mark-of-the-Web(MotW) 우회 취약점이다. 해당 취약점은 인터넷에서 받은 압축파일 안의 파일은 원래 ‘인터넷에서 온 위험한 파일’ 표시가 따라가야 하지만 특정 상황에서 7-Zip이 그 표시를 내부 파일에 전달하지 못한 문제이다. Windows는 인터넷에서 파일을 다운로드할 때 파일 뒤에 숨겨">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점">
+<meta property="og:url" content="https://log.swuswing.com/2026/07/21/3311_260721/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. 들어가며CVE-2025-0411은 7-Zip의 Mark-of-the-Web(MotW) 우회 취약점이다. 해당 취약점은 인터넷에서 받은 압축파일 안의 파일은 원래 ‘인터넷에서 온 위험한 파일’ 표시가 따라가야 하지만 특정 상황에서 7-Zip이 그 표시를 내부 파일에 전달하지 못한 문제이다. Windows는 인터넷에서 파일을 다운로드할 때 파일 뒤에 숨겨">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image14.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image15.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image16.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image17.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image18.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image19.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image20.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image21.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image22.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3311_260721_image23.png">
+<meta property="article:published_time" content="2026-07-21T07:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-24T20:04:03.269Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="CVE">
+<meta property="article:tag" content="취약점">
+<meta property="article:tag" content="7-Zip">
+<meta property="article:tag" content="Mark-of-the-Web(MotW)">
+<meta property="article:tag" content="Zone.Identifier">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3311_260721_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/07/21/3311_260721/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/07/21/3311_260721/","path":"2026/07/21/3311_260721/","title":"[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%EB%93%A4%EC%96%B4%EA%B0%80%EB%A9%B0"><span class="nav-number">1.</span> <span class="nav-text">1. 들어가며</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-CVE-2025-0411-%EA%B3%B5%EA%B2%A9-%EC%82%AC%EB%A1%80"><span class="nav-number">2.</span> <span class="nav-text">2. CVE-2025-0411 공격 사례</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%EC%B7%A8%EC%95%BD%EC%A0%90-%EA%B8%B0%EB%B3%B8-%EC%A0%95%EB%B3%B4"><span class="nav-number">3.</span> <span class="nav-text">3. 취약점 기본 정보</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%EC%B7%A8%EC%95%BD%EC%A0%90-%EB%B6%84%EC%84%9D-%EA%B0%9C%EC%9A%94"><span class="nav-number">4.</span> <span class="nav-text">4. 취약점 분석 개요</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-Zone-Identifier-%EC%A0%84%ED%8C%8C-%EB%A1%9C%EC%A7%81-%EB%B6%84%EC%84%9D"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Zone.Identifier 전파 로직 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-PoC-%EB%B6%84%EC%84%9D"><span class="nav-number">4.2.</span> <span class="nav-text">4.2. PoC 분석</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-MotW-%EC%A0%84%ED%8C%8C-%EC%8B%A4%ED%8C%A8-%EA%B2%80%EC%A6%9D"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 MotW 전파 실패 검증</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-Patch"><span class="nav-number">5.</span> <span class="nav-text">5. Patch</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-%EA%B2%B0%EB%A1%A0"><span class="nav-number">6.</span> <span class="nav-text">6. 결론</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-References"><span class="nav-number">7.</span> <span class="nav-text">7. References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">86</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/07/21/3311_260721/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: ycl</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-07-21 16:00:00" itemprop="dateCreated datePublished" datetime="2026-07-21T16:00:00+09:00">2026-07-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/S-E-E-D-series/" itemprop="url" rel="index"><span itemprop="name">S.E.E.D. series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-들어가며"><a href="#1-들어가며" class="headerlink" title="1. 들어가며"></a>1. 들어가며</h1><p>CVE-2025-0411은 7-Zip의 Mark-of-the-Web(MotW) 우회 취약점이다. 해당 취약점은 인터넷에서 받은 압축파일 안의 파일은 원래 ‘인터넷에서 온 위험한 파일’ 표시가 따라가야 하지만 특정 상황에서 7-Zip이 그 표시를 내부 파일에 전달하지 못한 문제이다. Windows는 인터넷에서 파일을 다운로드할 때 파일 뒤에 숨겨진 출처 정보인 Zone.Identifier가 붙는다. Zone.Identifier 내부에는 ‘ZoneId’라는 숫자 정보가 존재하며 숫자로 파일의 출처를 구분한다. ZoneId가 3일 경우 이 파일은 신뢰할 수 없는 영역, 즉 인터넷에서 왔음을 의미하며 이는 Windows가 파일을 실행하기 전 보안 경고를 띄우는 등의 행위 판단의 근거가 된다. 그러나 7-Zip 24.09 미만 버전에서 중첩 압축파일(zip 파일 안에 또 zip 파일이 존재하는 구조)을 처리할 때 Zone.Identifier가 추출 파일에 정상적으로 전파되지 않아 Windows 보안 경고를 우회할 수 있었다. 이로 인해 공격자는 악성 이중 압축파일을 사용자에게 열도록 유도하여 내부 실행파일이나 스크립트가 인터넷에서 유입된 파일로 인식되지 않게 만들 수 있게 되었으며, 결과적으로 현재 사용자 권한에서 악성코드 실행으로 이어질 수 있었다. 본 보고서에서는 이를 악성 첨부파일 기반 문서 위장형 공격 사례로 분류하고 취약점의 PoC 구조, Exploit 흐름, 패치 현황을 분석할 예정이다.</p>
+<span id="more"></span>
+<p><img src="/images/3311_260721_image1.png" alt="그림 1. MoTW로 인해 표시된 Windows Defender SmartScreen 보안 경고"></p>
+<center><span style="font-size: 90%;">그림 1. [MoTW로 인해 표시된 Windows Defender SmartScreen 보안 경고]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+
+<h1 id="2-CVE-2025-0411-공격-사례"><a href="#2-CVE-2025-0411-공격-사례" class="headerlink" title="2. CVE-2025-0411 공격 사례"></a>2. CVE-2025-0411 공격 사례</h1><p>CVE-2025-0411는 실제 SmokeLoader 캠페인에서 악용된 사례가 존재한다. 러시아 사이버 범죄 조직은 우크라이나 정부기관·기업 계정으로 보이는 침해된 이메일 계정을 사용해서 피싱 메일을 보내는 형식으로 우크라이나를 공격했다. 공격 방법은 다음과 같다. 우선 공격 집단은 안쪽 압축파일의 확장자를 .doc처럼 보이도록 만들었다. 이는 겉으로는 .doc 문서처럼 보이지만 마지막 c를 일반 라틴 문자 c가 아니라 키릴 문자 c로 만들어 확장자를 속이는 방식이다.(homoglyph attack) 이 안쪽 파일이 실제로는 7-Zip 아카이브였고, 사용자는 거짓 확장자 때문에 문서로 착각해 열도록 유도당했다. 안쪽 압축파일 내부에는 .url 파일이 들어 있었고 이 .url 파일은 공격자 서버의 추가 ZIP 파일을 가리켰다. 나아가 해당 .url 파일도 ZIP 아이콘처럼 보이게 위장되어 있었고 CVE-2025-0411 악용 때문에 MotW 보호가 빠진 상태였다. 이후 다운로드된 ZIP 안에는 PDF 문서처럼 보이는 실행파일, 예를 들면 .pdf.exe 형태의 파일이 있었으며 이것이 실행되면 SmokeLoader 페이로드가 실행되어 감염으로 이어졌다. SmokeLoader는 Loader&#x2F;Downloader 계열 악성코드로 감염된 PC에 자리 잡은 다음 공격자 서버와 통신하면서 추가 악성코드를 내려받아 실행하는 역할을 수행했다. 결론적으로 해당 사례는 여러 악성코드가 연계되어 실행되며 피해를 끼치는 실전적 구조를 보여준다.</p>
+<p><img src="/images/3311_260721_image2.png" alt="그림 2. CVE-2025-0411 악용 사례 공격"></p>
+<center><span style="font-size: 90%;">그림 2. [CVE-2025-0411 악용 사례 공격]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+<h1 id="3-취약점-기본-정보"><a href="#3-취약점-기본-정보" class="headerlink" title="3. 취약점 기본 정보"></a>3. 취약점 기본 정보</h1><table>
+<thead>
+<tr>
+<th align="center"><strong>취약점</strong></th>
+<th align="left">CVE-2025-0411</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>대상</strong></td>
+<td align="left">7-Zip for Windows</td>
+</tr>
+<tr>
+<td align="center"><strong>핵심 조건</strong></td>
+<td align="left">7-Zip 24.09 미만, 중첩 압축파일, Zone.Identifier(MotW) 전파 옵션 사용</td>
+</tr>
+<tr>
+<td align="center"><strong>영향</strong></td>
+<td align="left">Mark-of-the-Web 우회, Windows 보안 경고 약화, 악성 파일 실행 유도 가능</td>
+</tr>
+<tr>
+<td align="center"><strong>CVSS</strong></td>
+<td align="left">7.0 High</td>
+</tr>
+<tr>
+<td align="center"><strong>취약 버전</strong></td>
+<td align="left">7-Zip 24.09 미만</td>
+</tr>
+<tr>
+<td align="center"><strong>패치 버전</strong></td>
+<td align="left">7-Zip 24.09 이상</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+<h1 id="4-취약점-분석-개요"><a href="#4-취약점-분석-개요" class="headerlink" title="4. 취약점 분석 개요"></a>4. 취약점 분석 개요</h1><p>해당 취약점은 압축을 한 번 푸는 것보다 7-Zip File Manager에서 바깥 압축파일을 열고, 그 안의 안쪽 압축파일을 다시 연 다음, 최종 파일을 추출하는 흐름에서 Zone.Identifier 전파 여부를 검증하는 것이 핵심이다. 검증 순서는 Windows 10 VM 안에서 7-Zip 24.08 설치 후, 이중 압축파일을 생성하고, Zone.Identifier 붙인 뒤 취약한 7-Zip으로 압축 해제 후 내부 파일의 Zone.Identifier가 사라졌는지 확인하는 과정을 거쳐 진행하였다.<br><br></p>
+<h2 id="4-1-Zone-Identifier-전파-로직-분석"><a href="#4-1-Zone-Identifier-전파-로직-분석" class="headerlink" title="4.1 Zone.Identifier 전파 로직 분석"></a>4.1 Zone.Identifier 전파 로직 분석</h2><p><img src="/images/3311_260721_image3.png" alt="그림 3. Zone.Identifier 스트림 이름 식별 로직"></p>
+<center><span style="font-size: 90%;">그림 3. [Zone.Identifier 스트림 이름 식별 로직]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>본격적인 검증 이전 전파 로직을 분석한다. 해당 코드는 Windows의 Mark-of-the-Web 정보가 저장되는 NTFS ADS 이름인 ‘:Zone.Identifier’를 정의하고, 특정 스트림 이름이 Zone.Identifier인지 확인하는 역할을 한다. ‘k_ZoneId_StreamName_With_Colon_Prefix’는 ‘:Zone.Identifier’ 문자열을 상수로 선언한 부분이다. 이 값은 이후 원본 파일의 Zone.Identifier를 읽거나 추출 파일에 Zone.Identifier를 기록할 때 파일 경로 뒤에 붙는 스트림 이름으로 사용된다.</p>
+<p><code>Is_ZoneId_StreamName()</code> 함수는 전달받은 스트림 이름이 Zone.Identifier에 해당하는지 비교한다. 이때 대소문자를 구분하지 않는 비교 함수인 <code>StringsAreEqualNoCase_Ascii()</code>를 사용하여 Zone.Identifier 스트림 여부를 판단한다. 즉, 이 부분은 7-Zip이 파일의 ADS 중 MotW 정보에 해당하는 Zone.Identifier 스트림을 식별하기 위한 전처리 로직이다.<br><br></p>
+<p><img src="/images/3311_260721_image4.png" alt="그림 4. 원본 파일의 Zone.Identifier 읽기 로직"></p>
+<center><span style="font-size: 90%;">그림 4. [원본 파일의 Zone.Identifier 읽기 로직]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><code>ReadZoneFile_Of_BaseFile()</code> 함수는 원본 파일에 존재하는 Zone.Identifier 스트림을 읽어오는 역할을 한다. 함수는 먼저 버퍼를 초기화한 뒤, 전달받은 원본 파일 경로 ‘fileName’에 ‘:Zone.Identifier’ 문자열을 덧붙여 ADS 경로를 생성한다. 예를 들어 원본 파일이 outer.zip이라면 실제로 접근하는 경로는 outer.zip:Zone.Identifier가 된다.</p>
+<p>이후 ‘NIO::CInFile’ 객체를 이용해 해당 ADS를 열고, 파일 크기를 확인한 뒤 그 내용을 버퍼에 저장한다. 코드에서는 파일 크기가 0이거나 일정 크기 이상인 경우 읽기를 중단하도록 처리하고 있으며, 정상적으로 읽은 경우 Zone.Identifier 내용이 buf에 저장된다. 이 버퍼는 이후 추출 파일에 MotW 정보를 다시 기록하기 위한 데이터로 사용된다. 따라서 이 함수는 Zone.Identifier 전파 과정 중 원본 압축파일의 MotW 정보를 읽는 단계에 해당한다.<br><br></p>
+<p><img src="/images/3311_260721_image5.png" alt="그림 5. 추출 파일에 Zone.Identifier 쓰기 로직"></p>
+<center><span style="font-size: 90%;">그림 5. [추출 파일에 Zone.Identifier 쓰기 로직]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><code>WriteZoneFile_To_BaseFile()</code> 함수는 읽어온 Zone.Identifier 정보를 추출된 파일에 다시 기록하는 역할을 한다. 함수는 먼저 추출 대상 파일의 경로를 ‘fileName’으로 전달받고, 해당 경로 뒤에 ‘:Zone.Identifier’ 문자열을 붙여 ADS 경로를 생성한다. 예를 들어 추출된 파일이 benign.txt라면 실제 기록 대상은 benign.txt:Zone.Identifier가 된다.</p>
+<p>이후 ‘NIO::COutFile’ 객체를 이용해 해당 Zone.Identifier 스트림을 생성하고, WriteFull() 함수를 통해 버퍼에 저장된 MotW 정보를 기록한다. 이 과정이 정상적으로 수행되면 추출된 파일에도 [ZoneTransfer], ZoneId&#x3D;3과 같은 인터넷 출처 정보가 유지된다. 따라서 이 함수는 Zone.Identifier 전파 과정 중 추출 파일에 MotW 정보를 쓰는 단계에 해당하며, 원본 압축파일의 외부 출처 정보가 최종 추출 파일까지 유지되도록 하는 핵심 쓰기 로직이다.</p>
+<p>‘ArchiveExtractCallback.cpp’에는 이렇게 Zone.Identifier ADS를 식별하고 원본 파일의 Zone.Identifier를 읽은 뒤 추출 파일에 다시 기록하는 ReadZoneFile_Of_BaseFile() 및 <code>WriteZoneFile_To_BaseFile()</code> 함수가 존재하며, 해당 함수들의 기능적 문제는 없다. 그러나 취약 버전에서는 사용자가 열린 압축파일 내부에서 또 다른 압축파일을 열고 그 내부 파일을 추출하는 경우, 이러한 전파 로직이 최종 파일에 정상적으로 이어지지 않아 MotW 정보가 누락될 수 있었다. 결국 공개된 CVE 설명과 7-Zip 24.09 릴리스 노트, 위의 전파 로직을 기준으로 볼 때 CVE-2025-0411은 특정 함수 한 줄의 오류라기보다 7-Zip File Manager의 중첩 압축파일 처리 경로에서 Zone.Identifier 전파 로직이 최종 추출 파일까지 적용되지 않은 흐름상의 취약점으로 판단된다.<br><br></p>
+<h2 id="4-2-PoC-분석"><a href="#4-2-PoC-분석" class="headerlink" title="4.2. PoC 분석"></a>4.2. PoC 분석</h2><p><img src="/images/3311_260721_image6.png" alt="그림 6. get_7zip_version()"></p>
+<center><span style="font-size: 90%;">그림 6. [get_7zip_version()]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+<p>PoC 분석 대상은 7-Zip-CVE-2025-0411-PoC.py이다. 해당 스크립트는 CVE-2025-0411의 핵심 조건인 중첩 압축 구조를 자동으로 생성하기 위한 Python 기반 PoC이다.</p>
+<p><code>get_7zip_version()</code> 함수는 실습 환경에 설치된 7-Zip의 버전을 확인하기 위한 함수이다. 먼저 <code>subprocess.run([&quot;7z&quot;], capture_output=True, text=True)</code>를 통해 명령 프롬프트에서 7z 명령을 실행하고, 그 출력 결과를 문자열 형태로 저장한다. 이후 정규표현식 7-Zip (\d+).(\d+)을 사용하여 출력값에서 7-Zip의 주 버전과 부 버전을 추출한다. 버전 정보가 정상적으로 확인되면 이를 정수형으로 변환하여 (major, minor) 형태의 튜플로 반환한다. 예를 들어 7-Zip 24.08이 설치되어 있다면 (24, 8)을 반환한다. 만약 7-Zip이 설치되어 있지 않거나 PATH 환경변수에 등록되어 있지 않아 7z 명령을 실행할 수 없는 경우에는 FileNotFoundError 예외가 발생하며, 이때 오류 메시지를 출력하고 None을 반환한다. 따라서 이 함수는 이후 취약 버전 여부를 판단하기 위한 사전 단계로, 현재 시스템의 7-Zip 버전을 자동으로 식별하는 역할을 수행한다.<br><br></p>
+<p><img src="/images/3311_260721_image7.png" alt="그림 7. check_vulnerability(), compile_cpp()"></p>
+<center><span style="font-size: 90%;">그림 7. [check_vulnerability(), compile_cpp()]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+<p><code>check_vulnerability()</code> 함수는 앞서 확인한 7-Zip 버전이 CVE-2025-0411의 취약 버전에 해당하는지 판단하는 함수이다. 코드 상단에 정의된 <code>VULNERABLE_VERSION_THRESHOLD = (24, 9)</code>와 현재 설치된 7-Zip 버전 값을 비교하며, 버전이 24.09 미만인 경우 True를 반환한다. 즉, 7-Zip 24.08과 같이 24.09보다 낮은 버전은 취약한 환경으로 판단되고 24.09 이상 버전은 패치된 환경으로 판단된다.</p>
+<p>이어서 <code>compile_cpp()</code> 함수는 PoC 내부에 포함될 실행 파일을 만들기 위해 C++ 소스 파일을 g++로 컴파일한다. 먼저 <code>os.path.exists(source_file)</code>을 통해 컴파일 대상 소스 파일이 실제로 존재하는지 확인하고 파일이 없을 경우 오류 메시지를 출력한 뒤 False를 반환한다. 소스 파일이 존재하면 <code>subprocess.run()</code>을 사용하여 g++ 컴파일 명령을 실행한다. 이때 source_file을 입력 파일로 사용하고, -o output_file 옵션을 통해 컴파일 결과 실행 파일의 이름을 지정한다. 또한 <code>check=True</code> 옵션을 사용하여 컴파일 과정에서 오류가 발생하면 예외가 발생하도록 처리한다. 컴파일이 정상적으로 완료되면 성공 메시지를 출력하고 True를 반환하며, 실패할 경우 subprocess.CalledProcessError 예외를 처리하여 실패 메시지를 출력한 뒤 False를 반환한다.<br><br></p>
+<p><img src="/images/3311_260721_image8.png" alt="그림 8. compress_file()"></p>
+<center><span style="font-size: 90%;">그림 8. [compress_file()]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+<p><code>compress_file()</code> 함수는 PoC에서 중첩 압축 구조를 만들기 위한 핵심 함수이다. 해당 함수는 입력 파일의 존재 여부를 확인한 뒤 7-Zip 명령어 7z a를 호출하여 지정된 파일을 압축한다. 먼저 <code>os.path.exists(input_file)</code>을 통해 압축 대상 파일이 실제로 존재하는지 확인하고 파일이 존재하지 않을 경우 오류 메시지를 출력한 뒤 False를 반환한다. 입력 파일이 존재하면 <code>subprocess.run([&quot;7z&quot;, &quot;a&quot;, output_archive, input_file], check=True)</code>를 실행하여 7-Zip의 a명령으로 파일을 압축한다. 여기서 a는 archive에 파일을 추가하거나 새 압축파일을 생성하는 명령이며 output_archive는 생성될 압축파일 이름, input_file은 압축 대상 파일을 의미한다. 압축이 정상적으로 완료되면 성공 메시지를 출력하고 True를 반환, 압축 과정에서 오류가 발생하면 subprocess.CalledProcessError 예외를 처리하여 실패 메시지를 출력한 뒤 False를 반환한다.<br><br></p>
+<p><img src="/images/3311_260721_image9.png" alt="그림 9. main()"></p>
+<center><span style="font-size: 90%;">그림 9. [main()]</span><br><span style="font-size: 70%;"></span></center><br>
+<br>
+
+<p><code>main()</code> 함수는 PoC 스크립트의 전체 실행 흐름을 제어하는 중심 함수이다. 먼저 <code>get_7zip_version()</code>을 호출하여 현재 시스템에 설치된 7-Zip 버전을 확인하고 버전 정보가 확인되지 않을 경우 실행을 종료한다. 이후 확인된 버전을 출력하고 <code>check_vulnerability()</code> 함수를 통해 해당 버전이 24.09 미만의 취약 버전인지 판단한다. 만약 취약 버전이 확인되면 사용자에게 계속 진행할지 묻고, 사용자가 동의한 경우에만 PoC 생성 절차를 수행한다. 반대로 24.09 이상 버전인 경우에는 취약하지 않은 환경으로 판단하고 실행을 종료한다. 이후 <code>main()</code> 함수는 executable.cpp를 compiled.exe로 컴파일하고 생성된 실행 파일을 first_compressed.7z로 1차 압축한다. 마지막으로 first_compressed.7z를 다시 double_compressed.7z로 2차 압축하여 중첩 압축 구조를 만든다. 이 구조는 CVE-2025-0411의 핵심 조건인 nested archive(중첩 압축 파일) 환경을 재현하기 위한 것으로 최종적으로 생성된 double_compressed.7z를 통해 7-Zip의 Mark-of-the-Web 전파 실패 여부를 실험할 수 있다.<br><br></p>
+<h2 id="4-3-MotW-전파-실패-검증"><a href="#4-3-MotW-전파-실패-검증" class="headerlink" title="4.3 MotW 전파 실패 검증"></a>4.3 MotW 전파 실패 검증</h2><p><img src="/images/3311_260721_image10.png" alt="그림 10. 7-Zip 24.08 설치 확인"></p>
+<center><span style="font-size: 90%;">그림 10. [7-Zip 24.08 설치 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>취약 제품인 7-Zip 24.08을 Windows VM 안에 설치해 주었다.<br><br></p>
+<p><img src="/images/3311_260721_image11.png" alt="그림 11. 이중 압축 파일 생성"></p>
+<center><span style="font-size: 90%;">그림 11. [이중 압축 파일 생성]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>.txt 파일을 만들고 해당 파일을 이중으로 압축했다. PoC 파일 분석에서의 과정처럼 7-Zip의 a 명령어를 사용했다. 그 결과 outer.zip 내부에 inner.zip이 존재하며 제일 안쪽에 생성한 텍스트 파일 benign.txt이 존재하는 구조가 되었다. benign.txt는 실제 악성코드 대신 사용한 안전한 테스트 파일이다. 본 실습의 목적은 중첩 압축 해제 후 최종 파일에 ‘benign.txt:Zone.Identifier’ ADS가 존재하는지 확인하는 것이기 때문에, 추후 해당 내용을 검증하기 위해 생성되었다.<br><br></p>
+<p><img src="/images/3311_260721_image12.png" alt="그림 12. outer.zip에 Zone.Identifier 부착"></p>
+<center><span style="font-size: 90%;">그림 12. [outer.zip에 Zone.Identifier 부착]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>Zone.Identifier는 다운로드 방식으로 붙는 것이 일반적이지만, 해당 검증은 이중 압축 zip의 압축 해제 과정에서 MotW 전파 여부를 확인하는 것이 핵심 과제이며 텍스트 파일을 직접 만들어 사용했으므로 ZoneId&#x3D;3을 수동으로 붙여주었다. Get-Content 확인 결과 성공적으로 부착된 것이 확인되었다.<br><br></p>
+<p><img src="/images/3311_260721_image13.png" alt="그림 13. 7-Zip File Manager 실행"></p>
+<center><span style="font-size: 90%;">그림 13. [7-Zip File Manager 실행]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>GUI로 압축을 해제하기 위해 7-Zip File Manager를 실행하였다.<br><br></p>
+<p><img src="/images/3311_260721_image14.png" alt="그림 14. Propagate Zone.Id stream → Yes"></p>
+<center><span style="font-size: 90%;">그림 14. [Propagate Zone.Id stream → Yes]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>GUI에서 실행 후 도구(T) → 옵션(O) → 7-Zip 탭에 접속하여 7-Zip GUI의 Zone.Id 전파 옵션을 켜주었다.<br><br></p>
+<p><img src="/images/3311_260721_image15.png" alt="그림 15. 7-Zip 24.08로 이중 압축 해제"></p>
+<center><span style="font-size: 90%;">그림 15. [7-Zip 24.08로 이중 압축 해제]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>outer.zip을 열고 inner.zip을 더블 클릭하는 GUI 방식으로 benign.txt에 접근하여 압축 풀기 버튼을 눌러 C:\motw-lab\gui_2408\ 경로에 해당 파일을 추출하였다.<br><br></p>
+<p><img src="/images/3311_260721_image16.png" alt="그림 16. benign.txt에 Zone.Identifier 전파 여부 확인"></p>
+<center><span style="font-size: 90%;">그림 16. [benign.txt에 Zone.Identifier 전파 여부 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>이중 압축을 전부 해제한 후 가장 먼저 만든 파일인 benign.txt에 Get-Item 확인 결과, Stream 영역에 ‘$DATA’가 존재할 뿐 Zone.Identifier는 찾아볼 수 없었다. 이를 통해 해당 파일이 악성 파일이었을 경우 중첩 압축 해제 과정에서 사라진 Zone.Identifier의 영향으로 보안 검사를 회피할 수 있다는 CVE-2025-0411 취약점을 검증하였다.<br><br><br></p>
+<h1 id="5-Patch"><a href="#5-Patch" class="headerlink" title="5. Patch"></a>5. Patch</h1><p><img src="/images/3311_260721_image17.png" alt="그림 17. 공식 7-Zip 변경 이력 24.09"></p>
+<center><span style="font-size: 90%;">그림 17. [공식 7-Zip 변경 이력 24.09]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>CVE-2025-0411의 패치는 단순 기능 개선이 아니라 중첩 압축파일에서 추출된 파일에 Windows의 Zone.Identifier ADS가 정상적으로 전파되도록 수정한 7-Zip 24.09의 보안 패치이다. 7-Zip의 공식 history 문서는 7-Zip 24.08 이하에서는 MotW가 부여된 외부 압축파일을 처리하는 과정에서 내부 파일이 인터넷 출처 정보를 상속하지 못할 수 있으나 24.09에서는 Zone.Identifier stream 전파 문제가 수정되었다고 명시하고 있다.</p>
+<p>특히 강조된 줄은 22.0 버전 이후 존재한 기존의 Zone.Identifier stream 전파 ­snz 옵션을 사용하지 않고 7-Zip File Manager GUI에서 중첩 압축파일을 열고 추출할 때 Zone.Identifier가 전파되지 않던 버그를 수정한 것을 설명한다. 실질적으로 압축파일 해제는 명령줄이 아닌 GUI 환경에서 보편적으로 이루어지는 것을 감안하여 패치된 것을 알 수 있다.<br><br></p>
+<p><img src="/images/3311_260721_image18.png" alt="그림 18. 7-Zip 24.09 설치 확인"></p>
+<center><span style="font-size: 90%;">그림 18. [7-Zip 24.09 설치 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>패치가 성공적으로 진행되었는지 확인하기 위해 이전 버전 제거 후 7-Zip 24.09 버전을 설치하였다. 패치 검증 역시 24.08 버전과 같은 방식으로 진행하였다.<br><br></p>
+<p><img src="/images/3311_260721_image19.png" alt="그림 19. 7-Zip File Manager 실행"></p>
+<center><span style="font-size: 90%;">그림 19. [7-Zip File Manager 실행]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>GUI로 압축을 해제하기 위해 7-Zip File Manager를 실행했다.<br><br></p>
+<p><img src="/images/3311_260721_image20.png" alt="그림 20. Propagate Zone.Id stream → Yes"></p>
+<center><span style="font-size: 90%;">그림 20. [Propagate Zone.Id stream → Yes]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>실행 후 도구(T) → 옵션(O) → 7-Zip 탭에 접속하여 7-Zip GUI의 Zone.Id 전파 옵션을 켜주었다.<br><br></p>
+<p><img src="/images/3311_260721_image21.png" alt="그림 21. 압축 해제 후 benign.txt 추출"></p>
+<center><span style="font-size: 90%;">그림 21. [압축 해제 후 benign.txt 추출]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>outer.zip을 열고 inner.zip을 더블 클릭하는 GUI 방식으로 benign.txt에 접근하여 압축 풀기 버튼을 눌러 <code>C:\motw-lab\gui_2409\</code> 경로에 해당 파일을 추출하였다.<br><br></p>
+<p><img src="/images/3311_260721_image22.png" alt="그림 22. benign.txt Zone.Identifier 전파 확인"></p>
+<center><span style="font-size: 90%;">그림 22. [benign.txt Zone.Identifier 전파 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>추출한 benign.txt 파일 확인 결과 Stream에 $DATA(실제 파일 내용)와 Zone.Identifier이 모두 나타났다. 이는 ‘benign.txt:Zone.Identifier’ ADS가 존재함을 의미하며 정상적으로 Zone.Identifier가 전파된 것이다. 두 가지가 나타나는 이유는 NTFS 파일 하나 안에 스트림이 두 종류 있다는 뜻으로, -Stream * 명령어 옵션으로 해당 파일에 붙어 있는 모든 데이터 스트림을 보았기 때문이다. 두 가지 결과가 나타났다는 것은 정상적으로 MotW가 붙었다는 사실을 의미한다.<br><br></p>
+<p><img src="/images/3311_260721_image23.png" alt="그림 23. benign.txt ZoneId 확인"></p>
+<center><span style="font-size: 90%;">그림 23. [benign.txt ZoneId 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>마지막으로 benign.txt의 ZoneId를 확인한 결과, 태초에 부여한 3의 결과가 그대로 전파된 것을 검증할 수 있었다.<br><br><br></p>
+<h1 id="6-결론"><a href="#6-결론" class="headerlink" title="6. 결론"></a>6. 결론</h1><p>CVE-2025-0411 취약점은 그 자체만으로 즉시 시스템 장악이 이루어지는 유형은 아니지만 사용자가 외부 출처 파일임을 인지하지 못하게 만들어 악성 파일 실행 가능성을 높인다는 점이 특징이다. 특히 이중 압축파일과 문서 위장 기법이 결합될 경우 사용자는 정상 문서로 오인한 파일을 실행할 수 있으며, SmokeLoader와 같은 실제 공격 사례로 미루어 보았을 때 악성코드는 연계되어 사용되는 특성이 존재하고 해당 취약점이 그 시초가 될 수 있다. 따라서 본 취약점은 단순한 MotW 전파 오류가 아니라 사회공학적 공격과 악성코드 실행을 보조하는 보안 우회 취약점으로서 높은 위험도를 지닌다. 이에 따라 7-Zip 24.09 이상으로 업데이트하고 외부 압축파일의 출처 및 Zone.Identifier 유지 여부를 점검하는 대응이 필요하다.<br><br><br></p>
+<h1 id="7-References"><a href="#7-References" class="headerlink" title="7. References"></a>7. References</h1><ul>
+<li>CVE Program. (2025). CVE-2025-0411. Common Vulnerabilities and Exposures. <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3ZlLm9yZy9DVkVSZWNvcmQ/aWQ9Q1ZFLTIwMjUtMDQxMQ==">https://www.cve.org/CVERecord?id=CVE-2025-0411</span></li>
+<li>National Institute of Standards and Technology. (2025, January 25). CVE-2025-0411 Detail. National Vulnerability Database. <span class="exturl" data-url="aHR0cHM6Ly9udmQubmlzdC5nb3YvdnVsbi9kZXRhaWwvQ1ZFLTIwMjUtMDQxMQ==">https://nvd.nist.gov/vuln/detail/CVE-2025-0411</span></li>
+<li>dhmosfunk. (n.d.). 7-Zip-CVE-2025-0411-POC [GitHub repository]. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2RobW9zZnVuay83LVppcC1DVkUtMjAyNS0wNDExLVBPQw==">https://github.com/dhmosfunk/7-Zip-CVE-2025-0411-POC</span></li>
+<li>ishwardeepp. (n.d.). CVE-2025-0411-MoTW-PoC [GitHub repository]. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2lzaHdhcmRlZXBwL0NWRS0yMDI1LTA0MTEtTW9UVy1Qb0M=">https://github.com/ishwardeepp/CVE-2025-0411-MoTW-PoC</span></li>
+<li>AhnLab Security Emergency response Center. (2025, January 24). 7-Zip Security Update Advisory (CVE-2025-0411). ASEC. <span class="exturl" data-url="aHR0cHM6Ly9hc2VjLmFobmxhYi5jb20vZW4vODU5NTkv">https://asec.ahnlab.com/en/85959/</span></li>
+<li>Tenable. (2025, January 25). CVE-2025-0411. <span class="exturl" data-url="aHR0cHM6Ly93d3cudGVuYWJsZS5jb20vY3ZlL0NWRS0yMDI1LTA0MTE=">https://www.tenable.com/cve/CVE-2025-0411</span></li>
+<li>Girnus, P. (2025, February 4). CVE-2025-0411: Ukrainian Organizations Targeted in Zero-Day Campaign and Homoglyph Attacks. Trend Micro. <span class="exturl" data-url="aHR0cHM6Ly93d3cudHJlbmRtaWNyby5jb20vZW5fdXMvcmVzZWFyY2gvMjUvYS9jdmUtMjAyNS0wNDExLXVrcmFpbmlhbi1vcmdhbml6YXRpb25zLXRhcmdldGVkLmh0bWw=">https://www.trendmicro.com/en_us/research/25/a/cve-2025-0411-ukrainian-organizations-targeted.html</span></li>
+<li>7-Zip. (2024, November 29). 7-Zip History. <span class="exturl" data-url="aHR0cHM6Ly93d3cuNy16aXAub3JnL2hpc3RvcnkudHh0">https://www.7-zip.org/history.txt</span></li>
+<li>Pavlov, I. (2022, June 19). 7-Zip 22.00. SourceForge. <span class="exturl" data-url="aHR0cHM6Ly9zb3VyY2Vmb3JnZS5uZXQvcC9zZXZlbnppcC9kaXNjdXNzaW9uLzQ1Nzk3L3RocmVhZC85YzJkOTA2MWNlLw==">https://sourceforge.net/p/sevenzip/discussion/45797/thread/9c2d9061ce/</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CVE/" rel="tag"># CVE</a>
+              <a href="/tags/%EC%B7%A8%EC%95%BD%EC%A0%90/" rel="tag"># 취약점</a>
+              <a href="/tags/7-Zip/" rel="tag"># 7-Zip</a>
+              <a href="/tags/Mark-of-the-Web-MotW/" rel="tag"># Mark-of-the-Web(MotW)</a>
+              <a href="/tags/Zone-Identifier/" rel="tag"># Zone.Identifier</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/12/3310_260712/" rel="prev" title="안티디버깅(Anti-Debugging)">
+                  <i class="fa fa-angle-left"></i> 안티디버깅(Anti-Debugging)
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
