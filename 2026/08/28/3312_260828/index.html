@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/swing_logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/swing_logo.png" color="#222">
+  <meta name="google-site-verification" content="uoL1t-yrbhPowL65E-xnG5D1FNLOwghJsIG6iqHrEsc">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"log.swuswing.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.19.2","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="1. CVE 설명pfSense는 FreeBSD의 무료 오픈소스 방화벽 및 라우터 소프트웨어로, 웹 기반 인터페이스를 통해 구성 및 관리된다. 개인뿐만 아니라 기업에서도 무료로 사용할 수 있는 이점을 가지고 있어 많은 사용자들이 네트워크 구성에 활용하고 있다. CVE-2024-46538 은 인터페이스 그룹 관리 메뉴의 입력값 검증 미흡으로 임의의 악성 스크립">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SEED 8월호] CVE-2024-46538: pfSense Interface Groups 저장형 XSS 취약점">
+<meta property="og:url" content="https://log.swuswing.com/2026/08/28/3312_260828/index.html">
+<meta property="og:site_name" content="SW1NGL0G">
+<meta property="og:description" content="1. CVE 설명pfSense는 FreeBSD의 무료 오픈소스 방화벽 및 라우터 소프트웨어로, 웹 기반 인터페이스를 통해 구성 및 관리된다. 개인뿐만 아니라 기업에서도 무료로 사용할 수 있는 이점을 가지고 있어 많은 사용자들이 네트워크 구성에 활용하고 있다. CVE-2024-46538 은 인터페이스 그룹 관리 메뉴의 입력값 검증 미흡으로 임의의 악성 스크립">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image1.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image2.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image3.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image4.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image5.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image6.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image7.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image8.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image9.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image10.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image11.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image12.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image13.png">
+<meta property="og:image" content="https://log.swuswing.com/images/3312_260828_image14.png">
+<meta property="article:published_time" content="2026-08-28T07:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-28T12:17:22.714Z">
+<meta property="article:author" content="SWING">
+<meta property="article:tag" content="XSS">
+<meta property="article:tag" content="CVE">
+<meta property="article:tag" content="취약점">
+<meta property="article:tag" content="pfSense">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://log.swuswing.com/images/3312_260828_image1.png">
+
+
+<link rel="canonical" href="https://log.swuswing.com/2026/08/28/3312_260828/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://log.swuswing.com/2026/08/28/3312_260828/","path":"2026/08/28/3312_260828/","title":"[SEED 8월호] CVE-2024-46538: pfSense Interface Groups 저장형 XSS 취약점"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>[SEED 8월호] CVE-2024-46538: pfSense Interface Groups 저장형 XSS 취약점 | SW1NGL0G</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/rss2.xml" title="SW1NGL0G" type="application/rss+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">SW1NGL0G</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-CVE-%EC%84%A4%EB%AA%85"><span class="nav-number">1.</span> <span class="nav-text">1. CVE 설명</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%EA%B3%B5%EA%B2%A9-%EC%8B%9C%EB%82%98%EB%A6%AC%EC%98%A4"><span class="nav-number">2.</span> <span class="nav-text">2. 공격 시나리오</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-Target-%EB%B6%84%EC%84%9D"><span class="nav-number">3.</span> <span class="nav-text">3. Target 분석</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-PoC-%EB%B6%84%EC%84%9D"><span class="nav-number">4.</span> <span class="nav-text">4. PoC 분석</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-mal-js"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 mal.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-CVE-2024-46538-py"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 CVE-2024-46538.py</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%91%A0-getJS-%EC%99%B8%EB%B6%80-%EC%84%9C%EB%B2%84%EC%97%90-%EC%95%85%EC%84%B1-JavaScript-%ED%98%B8%EC%8A%A4%ED%8C%85"><span class="nav-number">4.2.1.</span> <span class="nav-text">① getJS() : 외부 서버에 악성 JavaScript 호스팅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%91%A1-getCSRFToken-CSRF-%ED%86%A0%ED%81%B0-%EC%B6%94%EC%B6%9C"><span class="nav-number">4.2.2.</span> <span class="nav-text">② getCSRFToken() : CSRF 토큰 추출</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%91%A2-getSession-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EB%B0%8F-%EC%84%B8%EC%85%98-%EC%BF%A0%ED%82%A4-%ED%9A%8D%EB%93%9D"><span class="nav-number">4.2.3.</span> <span class="nav-text">③ getSession() : 로그인 및 세션 쿠키 획득</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E2%91%A3-storeScript-XSS-%ED%8E%98%EC%9D%B4%EB%A1%9C%EB%93%9C-%EC%A0%80%EC%9E%A5"><span class="nav-number">4.2.4.</span> <span class="nav-text">④ storeScript() : XSS 페이로드 저장</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-PoC-%EC%9E%AC%ED%98%84-%EA%B2%B0%EA%B3%BC"><span class="nav-number">5.</span> <span class="nav-text">5. PoC 재현 결과</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-Patch"><span class="nav-number">6.</span> <span class="nav-text">6. Patch</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-References"><span class="nav-number">7.</span> <span class="nav-text">7. References</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">SWING</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">87</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOnN3dS5zd2luZ0BnbWFpbC5jb20=" title="E-Mail → mailto:swu.swing@gmail.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0Bzd3Vzd2luZw==" title="FB Page → https:&#x2F;&#x2F;www.facebook.com&#x2F;@swuswing"><i class="fab fa-facebook fa-fw"></i>FB Page</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9zd2luZ19zd3U=" title="Instagram → https:&#x2F;&#x2F;www.instagram.com&#x2F;swing_swu"><i class="fab fa-instagram fa-fw"></i>Instagram</span>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          Links
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <span class="exturl" data-url="aHR0cHM6Ly9zd3Vzd2luZy5jb20v" title="https:&#x2F;&#x2F;swuswing.com&#x2F;">SWING Official Website</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://log.swuswing.com/2026/08/28/3312_260828/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="SWING">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="[SEED 8월호] CVE-2024-46538: pfSense Interface Groups 저장형 XSS 취약점 | SW1NGL0G">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [SEED 8월호] CVE-2024-46538: pfSense Interface Groups 저장형 XSS 취약점
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="far fa-user"></i>
+    </span>
+    <span class="post-meta-item-text">author: bage2room</span>
+  </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2026-08-28 16:00:00" itemprop="dateCreated datePublished" datetime="2026-08-28T16:00:00+09:00">2026-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/S-E-E-D-series/" itemprop="url" rel="index"><span itemprop="name">S.E.E.D. series</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="1-CVE-설명"><a href="#1-CVE-설명" class="headerlink" title="1. CVE 설명"></a>1. CVE 설명</h1><p>pfSense는 FreeBSD의 무료 오픈소스 방화벽 및 라우터 소프트웨어로, 웹 기반 인터페이스를 통해 구성 및 관리된다. 개인뿐만 아니라 기업에서도 무료로 사용할 수 있는 이점을 가지고 있어 많은 사용자들이 네트워크 구성에 활용하고 있다.</p>
+<p>CVE-2024-46538 은 인터페이스 그룹 관리 메뉴의 입력값 검증 미흡으로 임의의 악성 스크립트를 삽입할 수 있기 때문에 발생한다. 공격자는 XSS 취약점을 통해 운영자의 CSRF Token을 탈취할 수 있고, 이를 이용해 관리자 콘솔을 통한 임의 명령 실행까지 유도한다. 관리자 콘솔을 통한 임의 명령 실행으로 악성코드를 설치하면 방화벽 장악 및 규칙 조작 등이 가능하기 때문에 지속적인 공격을 가할 수 있다.</p>
+<span id="more"></span>
+
+<table>
+<thead>
+<tr>
+<th align="center"><strong>대상</strong></th>
+<th align="left">pfSense CE</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>핵심 조건</strong></td>
+<td align="left">인터페이스 그룹 편집 권한(WebCfg - Interfaces: Groups: Edit) 계정 보유, 관리자의 인터페이스 그룹 페이지 접근</td>
+</tr>
+<tr>
+<td align="center"><strong>영향</strong></td>
+<td align="left">CSRF 토큰 탈취, 원격 코드 실행</td>
+</tr>
+<tr>
+<td align="center"><strong>CVSS</strong></td>
+<td align="left">4.8 Medium (NVD CVSS v3.1)</td>
+</tr>
+<tr>
+<td align="center"><strong>취약 버전</strong></td>
+<td align="left">pfSense CE 2.5.2</td>
+</tr>
+<tr>
+<td align="center"><strong>패치 버전</strong></td>
+<td align="left">v2.6.0, v2.7.0, 2.7.2 및 최신 v2.8.1(2026.08.07 기준)</td>
+</tr>
+</tbody></table>
+<p><br><br></p>
+<h1 id="2-공격-시나리오"><a href="#2-공격-시나리오" class="headerlink" title="2. 공격 시나리오"></a>2. 공격 시나리오</h1><p>CVE-2024-46538의 전반적인 공격 흐름은 다음과 같다. Interfaces: Groups: Edit 권한을 가진 계정이 저장한 악성 스크립트가 관리자 세션에서 실행되면서, 단순 XSS가 관리자 권한 탈취 및 root 권한 명령 실행으로 연계된다.</p>
+<p><strong>①</strong> 공격자는 pfSense를 방화벽으로 사용 중인 취약한 서버를 탐색하고 저권한 계정(Interfaces: Groups: Edit 권한 보유 계정)을 확보한다.</p>
+<p><strong>②</strong> 인터페이스 그룹 편집 권한이 있는 계정으로 members 필드에 악성 JavaScript를 저장한다.</p>
+<p><strong>③</strong> 관리자가 인터페이스 그룹 페이지(interfaces_groups.php)에 접근하면 저장된 스크립트가 관리자 브라우저에서 실행된다.</p>
+<p><strong>④</strong> 스크립트가 관리자 세션의 CSRF 토큰을 탈취하고, diag_command.php에 임의 명령 실행 요청을 전송한다.</p>
+<p><strong>⑤</strong> 관리자 권한으로 임의 명령이 실행되어 방화벽 내 악성코드 설치 등이 가능해진다.</p>
+<p><br><br></p>
+<h1 id="3-Target-분석"><a href="#3-Target-분석" class="headerlink" title="3. Target 분석"></a>3. Target 분석</h1><ul>
+<li><strong>영향을 받는 버전(Target)</strong> : pfSense CE 2.5.2</li>
+<li><strong>취약한 부분</strong><br><img src="/images/3312_260828_image1.png" alt="그림 1. /usr/local/www/interfaces_groups_edit.php의 취약 코드"><center><span style="font-size: 90%;">그림 1. [/usr/local/www/interfaces_groups_edit.php의 취약 코드]</span><br><span style="font-size: 70%;"></span></center><br></li>
+</ul>
+<p>취약점의 원인은 interfaces_groups_edit.php에서 사용자 입력 값인 <code>$_POST[&#39;members&#39;]</code> 값을 별도의 필터링 없이 <code>$members</code> 변수에 저장하는 부분이다. 또한 <code>$members</code> 변수는 <code>ifgroupentry</code> 변수의 ‘members’ 키에 해당하는 값으로 저장된다. 이후 <code>a_ifgroups</code>에 저장된 <code>ifgroupentry</code> 변수의 값을 저장하고, 설정값을 config.xml 데이터로 저장하는 <code>write_config</code>를 실행한다.<br><br></p>
+<p><img src="/images/3312_260828_image2.png" alt="그림 2. /usr/local/www/interfaces_groups.php의 취약 부분"></p>
+<center><span style="font-size: 90%;">그림 2. [/usr/local/www/interfaces_groups.php의 취약 부분]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>interfaces_groups.php는 저장된 인터페이스 그룹 정보를 출력하여 나타나는 페이지이다.<br>①에서 config에 저장된 그룹 정보를 <code>$a_ifgroups</code> 에 참조 변수로 가져와 ②→③으로 <code>members</code> 값을 <code>array→str</code> 변환 후, ④에서 별도 필터링 없이 페이지에 그대로 출력한다.<br>interfaces_groups_edit.php 내에도 <code>$a_ifgroups = &amp;$config[&#39;ifgroups&#39;][&#39;ifgroupentry&#39;]</code>와 같이 동일한 형식으로 참조 변수가 선언되어 있다. 이로 인해 interfaces_groups_edit.php 페이지에서 악성 스크립트를 저장하면 config에 즉시 반영되며, interfaces_groups.php에서도 동일한 오염된 값이 출력되어 취약점이 발생하게 된다.</p>
+<p>정리하면, 이 취약점은 두 지점의 문제가 결합되어 발생한다.<br>첫째, interfaces_groups_edit.php에서 사용자 입력값(members)을 필터링 없이 그대로 config에 저장한다.<br>둘째, interfaces_groups.php에서 저장된 값을 출력할 때 htmlspecialchars 등 HTML 인코딩 처리 없이 echo로 그대로 내보낸다.<br>즉, 스크립트를 저장·출력하는 과정에서 필터링이 되지 않기 때문에, 관리자가 페이지를 여는 순간 저장된 스크립트가 실행되는 저장형 XSS가 발생한다.<br><br><br></p>
+<h1 id="4-PoC-분석"><a href="#4-PoC-분석" class="headerlink" title="4. PoC 분석"></a>4. PoC 분석</h1><h2 id="4-1-mal-js"><a href="#4-1-mal-js" class="headerlink" title="4.1 mal.js"></a>4.1 mal.js</h2><p><img src="/images/3312_260828_image3.png" alt="그림 3. 악성 JavaScript 페이로드 (mal.js)"></p>
+<center><span style="font-size: 90%;">그림 3. [악성 JavaScript 페이로드 (mal.js)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>CVE-2024-46538.py(공격 스크립트)는 WebCfg - Interfaces: Groups: Edit 권한 계정으로 로그인한 뒤, 위 필드에 악성 JavaScript(mal.js)를 저장한다. 관리자가 이후 interfaces_groups.php를 조회하면 저장된 스크립트가 관리자 브라우저에서 실행되며, 스크립트는 diag_command.php에 CSRF 토큰과 함께 명령 실행 요청(FormData: txtCommand, submit&#x3D;EXEC 등)을 보내 임의 명령을 실행하고 결과를 탈취한다.<br><br></p>
+<h2 id="4-2-CVE-2024-46538-py"><a href="#4-2-CVE-2024-46538-py" class="headerlink" title="4.2 CVE-2024-46538.py"></a>4.2 CVE-2024-46538.py</h2><p>CVE-2024-46538.py는 아래 4개의 핵심 메서드로 구성된다. 각 메서드는 순차적으로 호출되어 저장형 XSS 공격을 자동화한다.</p>
+<h3 id="①-getJS-외부-서버에-악성-JavaScript-호스팅"><a href="#①-getJS-외부-서버에-악성-JavaScript-호스팅" class="headerlink" title="① getJS() : 외부 서버에 악성 JavaScript 호스팅"></a>① getJS() : 외부 서버에 악성 JavaScript 호스팅</h3><p><img src="/images/3312_260828_image4.png" alt="그림 4. 외부 JavaScript 호스팅 메서드(getJS)"></p>
+<center><span style="font-size: 90%;">그림 4. [외부 JavaScript 호스팅 메서드(getJS)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>api.mocky.io API 서비스를 이용해 악성 JavaScript 내용을 JSON body로 POST 요청을 보내서 외부 접근 가능한 콜백 URL을 생성한다. XSS 페이로드는 해당 URL에서 JavaScript 파일을 <code>&lt;script src&gt;</code> 방식으로 로드하기 때문에, 악성 코드가 인라인으로 삽입되지 않아 탐지를 우회할 수 있다. <code>deleteJS()</code> 메서드를 통해 사용 후 삭제한다.<br><br></p>
+<h3 id="②-getCSRFToken-CSRF-토큰-추출"><a href="#②-getCSRFToken-CSRF-토큰-추출" class="headerlink" title="② getCSRFToken() : CSRF 토큰 추출"></a>② getCSRFToken() : CSRF 토큰 추출</h3><p><img src="/images/3312_260828_image5.png" alt="그림 5. CSRF 토큰 추출 메서드(getCSRFToken)"></p>
+<center><span style="font-size: 90%;">그림 5. [CSRF 토큰 추출 메서드(getCSRFToken)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>pfSense 페이지에서 정규식으로 <code>“__csrf_magic”</code> 숨김 필드를 추출한다. pfSense의 모든 POST 요청에는 CSRF 토큰이 포함되어야 하므로, 로그인 및 XSS 저장 요청 전 반드시 호출된다. 세션 쿠키를 선택적으로 전달하여 인증 전후 모두 사용 가능하다.<br><br></p>
+<h3 id="③-getSession-로그인-및-세션-쿠키-획득"><a href="#③-getSession-로그인-및-세션-쿠키-획득" class="headerlink" title="③ getSession() : 로그인 및 세션 쿠키 획득"></a>③ getSession() : 로그인 및 세션 쿠키 획득</h3><p><img src="/images/3312_260828_image6.png" alt="그림 6. 세션 획득 메서드(getSession)"></p>
+<center><span style="font-size: 90%;">그림 6. [세션 획득 메서드(getSession)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>CSRF 토큰과 계정 정보를 포함해 &#x2F;index.php에 POST 요청으로 로그인한다. pfSense는 로그인 성공 시 302 리다이렉트와 함께 PHPSESSID 세션 쿠키를 발급하며, 이 쿠키를 이후 <code>storeScript()</code> 요청에 사용해 인증된 세션으로 공격을 수행한다.<br><br></p>
+<h3 id="④-storeScript-XSS-페이로드-저장"><a href="#④-storeScript-XSS-페이로드-저장" class="headerlink" title="④ storeScript() : XSS 페이로드 저장"></a>④ storeScript() : XSS 페이로드 저장</h3><p><img src="/images/3312_260828_image7.png" alt="그림 7. XSS 페이로드 저장 메서드(storeScript)"></p>
+<center><span style="font-size: 90%;">그림 7. [XSS 페이로드 저장 메서드(storeScript)]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>공격의 핵심 메서드이다. <code>members[]</code> 파라미터에 <code>&lt;script/src=&quot;[jsUrl]&quot;&gt;&lt;/script&gt;wan</code>을 삽입한다. 스크립트 태그 뒤에 wan을 붙이는 이유는 pfSense가 <code>members</code> 값에서 유효한 인터페이스 이름(wan 등)이 포함되어야 저장을 허용하기 때문이다. 저장 성공 시 302 리다이렉트로 응답하며, 이후 관리자가 interfaces_groups.php에 접근하면 저장된 스크립트가 실행된다.<br><br><br></p>
+<h1 id="5-PoC-재현-결과"><a href="#5-PoC-재현-결과" class="headerlink" title="5. PoC 재현 결과"></a>5. PoC 재현 결과</h1><p><img src="/images/3312_260828_image8.png" alt="그림 8. testuser 계정 생성 확인"></p>
+<center><span style="font-size: 90%;">그림 8. [testuser 계정 생성 확인]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><strong>①</strong> 낮은 권한(WebCfg – <code>Interfaces: Groups: Edit</code>)을 할당한 계정 <code>testuser</code>를 준비한다.</p>
+<p><strong>②</strong> CVE-2024-46538.py를 실행하여 <code>testuser</code> 세션으로 interfaces_groups_edit.php의 members 파라미터에 악성 스크립트(mal.js)를 저장한다.</p>
+<p><strong>③</strong> 관리자(admin) 계정으로 interfaces_groups.php 접속하면 저장된 스크립트가 실행된다.</p>
+<ul>
+<li><strong>테스트 환경</strong><br>피해자 : pfSense CE v2.5.2 (192.168.150.1)<br>공격자 : Kali Linux (192.168.150.10)</li>
+<li><strong>공격 스크립트 실행</strong></li>
+</ul>
+<p><img src="/images/3312_260828_image9.png" alt="그림 9. CVE-2024-46538.py 공격 스크립트 실행"></p>
+<center><span style="font-size: 90%;">그림 9. [CVE-2024-46538.py 공격 스크립트 실행]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p><img src="/images/3312_260828_image10.png" alt="그림 10. 공격 스크립트 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 10. [공격 스크립트 실행 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>스크립트 실행 결과, testuser 계정으로 정상 로그인되어 세션이 발급되고, interfaces_groups_edit.php의 <code>members</code> 파라미터에 mal.js를 로드하는 악성 스크립트가 저장되었다.<br><br></p>
+<p><img src="/images/3312_260828_image11.png" alt="그림 11. 관리자 브라우저에서 id 명령 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 11. [관리자 브라우저에서 id 명령 실행 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>관리자(admin) 계정으로 로그인 후 <span class="exturl" data-url="aHR0cDovLzE5Mi4xNjguMTUwLjEvaW50ZXJmYWNlc19ncm91cHMucGhw">http://192.168.150.1/interfaces_groups.php</span> 페이지에 접속하자, 저장되어 있던 스크립트가 관리자 브라우저 컨텍스트에서 즉시 실행되었다. 스크립트는 diag_command.php에 CSRF 토큰과 함께 명령 실행 요청을 전송했고, 그 결과가 alert 창으로 출력되었다.<br><br></p>
+<p><img src="/images/3312_260828_image12.png" alt="그림 12. cat /etc/passwd 명령 실행 결과"></p>
+<center><span style="font-size: 90%;">그림 12. [cat /etc/passwd 명령 실행 결과]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>mal.js에서 txtCommand의 값을 기존 “id”에서 “cat &#x2F;etc&#x2F;passwd”로 변경하여 진행해 보았다. <code>Interfaces: Groups: Edit</code> 권한만 가진 저권한 계정이 저장한 스크립트가 관리자 세션에서 실행되어 root 권한으로 임의 명령이 실행됨을 확인할 수 있다. 이를 통해 CVE-2024-46538이 단순 XSS에 그치지 않고, 저권한 사용자의 관리자 권한 탈취 및 시스템 전체 장악(RCE)으로 이어질 수 있는 고위험 취약점임을 실제 환경에서 검증했다.<br><br><br></p>
+<h1 id="6-Patch"><a href="#6-Patch" class="headerlink" title="6. Patch"></a>6. Patch</h1><p><img src="/images/3312_260828_image13.png" alt="그림 13. interfaces_groups.php 취약점 패치 전/후"></p>
+<center><span style="font-size: 90%;">그림 13. [interfaces_groups.php 취약점 패치 전/후]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>interfaces_groups.php 파일에서, PHP에서 HTML 예약 문자를 안전한 엔티티로 바꾸어 XSS 공격을 막는 도구인 <code>htmlspecialchars</code> 함수를 통해 출력되도록 수정되었다.<br><br></p>
+<p><img src="/images/3312_260828_image14.png" alt="그림 14. interfaces_groups_edit.php 취약점 패치 전/후"></p>
+<center><span style="font-size: 90%;">그림 14. [interfaces_groups_edit.php 취약점 패치 전/후]</span><br><span style="font-size: 70%;"></span></center><br>
+
+<p>interfaces_groups_edit.php 파일에서, 먼저 <code>$_POST[&#39;members&#39;]</code>로 넘어온 각 값이 실제로 존재하는 인터페이스인지 <code>array_key_exists</code>로 하나씩 검사한다. 목록에 있는 인터페이스라면 <code>$validmembers</code>에 추가하고, 없으면 <code>&quot;invalid interface&quot;</code> 에러 처리 후 검증에 통과한 <code>$validmembers</code>만 저장하도록 수정되었다.<br><br><br></p>
+<h1 id="7-References"><a href="#7-References" class="headerlink" title="7. References"></a>7. References</h1><ul>
+<li>SK Shieldus. (2024). pfSense XSS 취약점(CVE-2024-46538). <span class="exturl" data-url="aHR0cHM6Ly93d3cuc2tzaGllbGR1cy5jb20vcmVwb3J0L2Vxc3RJbnNpZ2h0L2N2ZTI0MTEuaHRtbA==">https://www.skshieldus.com/report/eqstInsight/cve2411.html</span></li>
+<li>EQSTLab. (2024). CVE-2024-46538 [GitHub repository]. GitHub. <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0VRU1RMYWIvQ1ZFLTIwMjQtNDY1Mzg=">https://github.com/EQSTLab/CVE-2024-46538</span></li>
+<li>poiri3r. (2026). [One-day] CVE-2024-46538 취약점 분석. <span class="exturl" data-url="aHR0cHM6Ly9wb2lyaTNyLnRpc3RvcnkuY29tLzExMQ==">https://poiri3r.tistory.com/111</span></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/XSS/" rel="tag"># XSS</a>
+              <a href="/tags/CVE/" rel="tag"># CVE</a>
+              <a href="/tags/%EC%B7%A8%EC%95%BD%EC%A0%90/" rel="tag"># 취약점</a>
+              <a href="/tags/pfSense/" rel="tag"># pfSense</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/07/21/3311_260721/" rel="prev" title="[SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점">
+                  <i class="fa fa-angle-left"></i> [SEED 7월호] CVE-2025-0411: 7-Zip MotW 우회 취약점
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy;
+    
+      2024 – <span itemprop="copyrightYear">2026</span>
+    
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">SWING</span>
+  </div>
+  <div class="powered-by">Powered by <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZy9tdXNlLw==">NexT.Muse</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
